@@ -1,0 +1,340 @@
+RQDA <- function() {
+########################### aux functions
+########################### 
+NI <- function(...){
+gmessage("Not Implemented Yet.",con=TRUE)
+}
+
+########################### GUI FOR ROOT
+########################### 
+".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis.",parent=c(10,10),
+                        width=250,height=600,visible=FALSE,handler=function(h,...){
+                        tryCatch(dispose(.rqda$.root_edit),error=function(e){})
+                        close_proj(assignenv=h$action$env)
+},
+                        action=list(env=.rqda)
+                        )
+
+addHandlerUnrealize(.root_rqdagui, handler = function(h,...) {
+  ## make sure is the project should be closed by issuing a confirm window.
+  val <- gconfirm("Really EXIST?\n\nYou can use RQDA() to start this program again.", parent=h$obj)
+  if(as.logical(val))
+    return(FALSE)             # destroy
+  else
+    return(TRUE)              # don't destroy
+}
+                    )
+
+".nb_rqdagui" <- gnotebook(3,container=.root_rqdagui,closebuttons=FALSE)
+
+addhandlermousemotion(.root_rqdagui,handler=function(h,...){
+  ## check if the meta data has been deleted.
+  if (!exists(".rqda",.GlobalEnv)) 
+    ##gmessage("Meta data has been deleted.\nRun rqdameta() manually in order to work properly.",icon="error",cont=)
+    if (gconfirm("Meta data has been deleted, generate it gain?",con=TRUE)) {
+      rqdameta()
+      dispose(.root_rqdagui)
+      RQDA()
+    }
+})
+
+########################### GUI FOR PROJECT
+########################### 
+".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project")
+".newproj_gui" <- gbutton("New Project",container=.proj_gui,handler=function(h,...){
+  path=gfile(type="save") 
+  if (path!=""){
+    ## if path="", then click "cancel".
+    Encoding(path) <- "UTF-8"
+    new_proj(path,assignenv=h$action$env)}
+  },
+                          action=list(env=.rqda)
+                          )
+
+
+".open.proj_gui" <- gbutton("Open Project",container=.proj_gui,handler=function(h,...){
+  path <- gfile(type="open",filter=list("rqda"=list(patterns = c("*.rqda"))))
+  if (path!=""){
+    Encoding(path) <- "UTF-8"
+    open_proj(path,assignenv=h$action$env)
+  }
+},
+                            action=list(env=.rqda)
+                            )
+
+
+".close.proj_gui" <- gbutton("Close Project",container=.proj_gui,handler=function(h,...){
+  close_proj(assignenv=h$action$env)
+},
+                             action=list(env=.rqda)
+                             )
+
+".projinfo_gui" <- gbutton("Current Project",container=.proj_gui,handler=function(h,...){
+    if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
+    con <- get(h$action$conName,h$action$env)
+    dbname <- dbGetInfo(.rqda$qdacon)$dbname
+    ##substr(dbname, nchar(dbname)-15,nchar(dbname))
+    gmessage(dbname,title="Info about current project.",con=TRUE)
+    }
+  },
+                          action=list(env=.rqda,conName="qdacon")
+                          )
+
+
+glabel("Basic Usage of RQDA:\n
+1. New Project or Open project.\n
+2. Update file list or Import files.\n
+3. Update code list or Add codes.\n
+4. Open a file and begin coding.\n
+Author: <ronggui.huang@gmail.com>\n",container=.proj_gui)
+
+
+
+########################### GUI for FILES 
+###########################
+
+".files_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Files")
+".files_button" <- ggroup(container=.files_pan,horizontal=TRUE)
+
+.importfilebutton <-gbutton("Import",container=.files_button,handler=function(h,...){
+    if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
+  path <- gfile(type="open",filter=list("text files" = list(mime.types = c("text/plain"))))
+  if (path!=""){
+    Encoding(path) <- "UTF-8"
+    importfile(path,pathEncoding="UTF-8",con=h$action$env$qdacon,assignenv=h$action$env)
+    ## updatefilelist()
+    ## add codes here
+  }
+ }
+},action=list(env=.rqda,conName="qdacon"))
+
+##gbutton("Update",contain=.files_button,handler=function(h,...){
+##   if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
+##   fnamesupdate(h$action$conName,h$action$env)
+##}
+##},action=list(env=.rqda,conName="qdacon"))
+
+gbutton(" View ",contain=.files_button,handler=function(h,...){
+  if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
+    if (length(svalue(.fnames_rqda))==0){gmessage("Select a file first.",icon="error",con=TRUE)}
+    else{
+    tryCatch(dispose(h$action$env$.root_edit),error=function(e) {})## notice the error handler
+    assign(".root_edit",gwindow(title=svalue(.fnames_rqda), parent=c(270,10),width=600,height=600),env=h$action$env)
+    .root_edit <- get(".root_edit",h$action$env)
+    addHandlerUnrealize(.root_edit, handler = function(h,...) {
+      ## make sure is the project should be closed by issuing a confirm window.
+      val <- gconfirm("Really close window", parent=h$obj)
+      if(as.logical(val))
+        return(FALSE)             # destroy
+      else
+        return(TRUE)              # don't destroy
+    }
+                        )
+    assign(".openfile_gui",gtext(container=.root_edit,font.attr=c(sizes="large")),env=h$action$env)
+    con <- get(h$action$conName,h$action$env)
+    content <- dbGetQuery(con, sprintf("select file from source where name='%s'",svalue(.fnames_rqda)))[1,1] 
+    ## turn data.frame to 1-length character.
+    W <- get(".openfile_gui",h$action$env)
+    add(W,content,font.attr=c(sizes="large"))
+    slot(W,"widget")@widget$SetEditable(FALSE)
+    ## make sure it is read only file in the text window.
+}}
+},
+        action=list(env=.rqda,conName="qdacon")
+        )
+
+
+gbutton(" Delete ",contain=.files_button,handler=function(h,...){
+NI()
+}
+        )
+
+
+".fnames_rqda" <- gtable("Click Here to see the File list.",container=.files_pan)
+.fnames_rqda[] <-NULL # get around of the text argument.
+
+
+addHandlerMouseMotion(.fnames_rqda, handler <- function(h, 
+                                                        ## updating the file name list.
+                                                        ...) {
+  if (is_projOpen(env = h$action$env, conName = h$action$conName, 
+                   message = FALSE)) {
+    ##     cat("Mouse Motion updated.", fill = TRUE)
+    fnamesupdate(assignenv = h$action$env, conName = h$action$conName, 
+                 assignfileName = h$action$assignfileName,widget=h$action$widget)
+  }
+}, action = list(env = .rqda, conName = "qdacon", assignfileName = "files_index",widget=.fnames_rqda))
+
+
+addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
+  ## updating the file name list, and update the status of curent selected file.
+  if (is_projOpen(env = h$action$env, conName = h$action$conName, 
+                   message = FALSE)) {
+    fnamesupdate(assignenv = h$action$env, conName = h$action$conName, 
+                assignfileName = h$action$assignfileName,h$action$widget)
+    ##    cat("clicked.", fill = TRUE)
+    files_index <- get(h$action$assignfileName, h$action$env)
+    assign("currentFile", svalue(.fnames_rqda), env = h$action$env)
+    currentFile <- get("currentFile", h$action$env)
+    currentFid <- files_index[files_index[["name"]] == 
+                              currentFile, "id", drop = TRUE]
+    if (is.null(currentFid)) 
+                currentFid <- integer(0)
+    assign("currentFid", currentFid, env = h$action$env)
+  }
+}, action = list(env = .rqda, conName = "qdacon", assignfileName = "files_index",widget=.fnames_rqda))
+
+
+".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes")
+".codes_button" <- glayout(container=.codes_pan)
+
+                                        #.codes_button[1,1]<- gbutton("Update",handler=function(h,...){
+###
+###
+                                        #} )
+
+.codes_button[1,1]<- gbutton("ADD",
+                             handler=function(h,...) {
+                               if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
+                                 add1<-gwindow("Add code",width=200,heigh=30,parent=c(270,10))
+                               add2<-ggroup(cont=add1)
+                               add3<-gedit(con=add2)
+                                 add4<-gbutton("OK",con=add2,handler=function(h,...){
+                                   codename <- svalue(add3)
+                                 Encoding(codename) <- "UTF-8"
+                                   ## browser()
+                                   addcode(codename,conName=h$action$conName,assignenv=h$action$env,
+                                           assigname=h$action$assignname)
+                                   codesupdate(conName = h$action$conName, assignenv = h$action$env, 
+                                               assignfileName =h$action$assignfileName,
+                                               widget=get(h$action$widget)
+                                               )
+                                   dispose(add2)
+                                 },action=h$action # explicitly pass the action argument
+                                             )## end of add4
+                               }},
+                             action=list(env=.rqda,name="codename",conName="qdacon",assignname="codes_index",
+                               assignfileName="codes_index",widget=".codes_rqda")
+                             ## widget should be character, and in the codesupdate() call, use get() to access the widget.
+                             )
+
+.codes_button[1,2]<- gbutton("Delete",
+                             handler=function(h,...) {
+                               NI()
+                             }
+                             )
+
+.codes_button[1,3]<- gbutton("HL ALL",
+                             handler=function(h,...) {
+                               con <- get(h$action$conName,h$action$env)
+                               mark_index <- dbGetQuery(con, "select selfirst, selend  from coding")
+                               HL(get(h$action$widget,h$action$env),index=mark_index)
+                             },action=list(env=.rqda,conName="qdacon",widget=".openfile_gui")
+                             )
+
+.codes_button[2,1]<- gbutton("Open",
+                             handler=function(h,...) {
+                               NI()
+                             })
+
+.codes_button[2,2]<- gbutton("Unmark",
+                             handler=function(h,...) {
+                               NI()
+                             })
+
+.codes_button[2,3]<- gbutton("Mark",
+                             handler=function(h,...) {
+                               tryCatch({
+                                ans <- mark(get(h$action$widget,env=h$action$env))
+                                currentCid <- get("currentCid",h$action$env)
+                                currentFid <- get("currentFid",h$action$env)
+                                DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,
+                                                  selfirst=ans$start,selend=ans$end,status=1)
+                                con <- get(h$action$conName,h$action$env)
+                                dbWriteTable(con,"coding",DAT,row.name=FALSE,append=TRUE)
+                                 },error=function(e){})
+                             },action=list(env=.rqda,conName="qdacon",widget=".openfile_gui")
+                             )
+
+##.codes_button[2,4]<- gbutton("HL SEL",
+##                             handler=function(h,...) {
+##   sel_index <- dbGetQuery(qdacon, "select selfirst, selend, cid  from coding")
+##   ClearMark(.marktxt_rqda,max(sel_index[,2]))
+##   sel_index <- subset(sel_index,cid==currentCid,selection=c("selfirst","selend"))
+##   HL(.marktxt_rqda,index=sel_index)
+##                             })
+
+".codes_rqda" <- gtable("Please click Update",container=.codes_pan)
+.codes_rqda[] <- NULL 
+
+
+addHandlerClicked(.codes_rqda,handler <- function(h,...){
+  ## without it, button mark doesn't work due to lack of currentCid.
+  ## BUG: only clear the mark but ont highlight the selected text chunk.
+  codes_index <- get(h$action$fileName, h$action$env)
+  assign("currentCode",svalue(.codes_rqda),env=h$action$env) ## current code
+  currentCode <- get("currentCode", h$action$env)
+  currentCid <- codes_index[codes_index[["name"]] == currentCode, "id", drop = TRUE]
+  if (is.null(currentCid)) currentCid <- integer(0)
+  assign("currentCid", currentCid, env = h$action$env)
+  ## above code: update the meta data -- CurrentCode and Current code id.
+  ## following code: Only mark the text chuck according to the current code.
+  tryCatch({
+    widget <- get(h$action$marktxtwidget,h$action$env)
+    ## if widget is not open, then error;which means no need to highlight anything.
+    con <- get(h$action$conName,h$action$env)
+    sel_index <- dbGetQuery(con, "select selfirst, selend, cid from coding")
+  if (nrow(sel_index)>0){
+    Maxindex <- max(sel_index["selend"],na.rm=TRUE)
+    ClearMark(widget,Maxindex)
+    ##sel_index <- subset(sel_index,cid==currentCid,selection=c("selfirst","selend"))
+    sel_index <- sel_index[sel_index$cid==currentCid,c("selfirst","selend")]
+    HL(widget,index=sel_index)
+  }
+  },error=function(e){})
+},action=list(env=.rqda,fileName="codes_index",conName="qdacon",marktxtwidget=".openfile_gui"
+    )
+                  )
+
+
+addHandlerMouseMotion(.codes_rqda, handler <- function(h, 
+                                                       ## updating the file name list.
+                                                       ...) {
+  if (is_projOpen(env = h$action$env, conName = h$action$conName,message = FALSE)) {
+    ##    cat("Mouse Motion updated.", fill = TRUE)
+    codesupdate(conName = h$action$conName, assignenv = h$action$env, 
+                assignfileName = h$action$assignfileName,widget=h$action$widget)
+  }
+}, action = list(env = .rqda, conName = "qdacon", assignfileName = "codes_index",widget=.codes_rqda))
+
+
+addhandlerdoubleclick(.codes_rqda,handler <- function(h,...){
+## reserved for rename??
+  codes_index <- get(h$action$fileName, h$action$env)
+  assign("currentCode",svalue(.codes_rqda),env=h$action$env) ## current code
+  currentCode <- get("currentCode", h$action$env)
+  currentCid <- codes_index[codes_index[["name"]] == currentCode, "id", drop = TRUE]
+  if (is.null(currentCid)) currentCid <- integer(0)
+  assign("currentCid", currentCid, env = h$action$env)
+  ## above code: update the meta data -- CurrentCode and Current code id.
+  ## following code: Only mark the text chuck according to the current code.
+  tryCatch({
+    widget <- get(h$action$marktxtwidget,h$action$env)
+    ## if widget is not open, then error;which means no need to highlight anything.
+    con <- get(h$action$conName,h$action$env)
+    sel_index <- dbGetQuery(con, "select selfirst, selend, cid from coding")
+  if (nrow(sel_index)>0){
+    Maxindex <- max(sel_index["selend"],na.rm=TRUE)
+    ClearMark(widget,Maxindex)
+  ##   sel_index <- subset(sel_index,cid==currentCid,selection=c("selfirst","selend"))
+       sel_index <- sel_index[sel_index$cid==currentCid,c("selfirst","selend")]
+    HL(widget,index=sel_index)}
+  },error=function(e){})
+},action=list(env=.rqda,fileName="codes_index",conName="qdacon",marktxtwidget=".openfile_gui"
+    )
+                  )
+
+visible(.root_rqdagui) <- TRUE
+svalue(.nb_rqdagui) <- 1 ## make sure the project tab gain the focus.
+### make it a function RQDA().
+}
