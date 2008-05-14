@@ -10,7 +10,8 @@
 \alias{mark}
 \alias{new_proj}
 \alias{open_proj}
-\alias{RQDA}
+%%\alias{RQDA}
+%% RQDA() appears in RQDA-package.rd
 \alias{rqdameta}
 %% add related alias functions here.
 \title{Internal Grid Functions}

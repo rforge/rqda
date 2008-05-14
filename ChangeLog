@@ -1,0 +1,6 @@
+2008-5-14
+	* Use /R/sysdata.rda to store meta data such as .rqda environment, so no need to generate it in .GlobalEnv.
+	* Add RQDA-package.rd in /man.
+
+	
+	

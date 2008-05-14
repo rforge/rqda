@@ -27,16 +27,17 @@ addHandlerUnrealize(.root_rqdagui, handler = function(h,...) {
 
 ".nb_rqdagui" <- gnotebook(3,container=.root_rqdagui,closebuttons=FALSE)
 
-addhandlermousemotion(.root_rqdagui,handler=function(h,...){
-  ## check if the meta data has been deleted.
-  if (!exists(".rqda",.GlobalEnv)) 
-    ##gmessage("Meta data has been deleted.\nRun rqdameta() manually in order to work properly.",icon="error",cont=)
-    if (gconfirm("Meta data has been deleted, generate it gain?",con=TRUE)) {
-      rqdameta()
-      dispose(.root_rqdagui)
-      RQDA()
-    }
-})
+##addhandlermousemotion(.root_rqdagui,handler=function(h,...){
+### no longer needed, generated the metadata and store it as sysdata.rda in R subdirectroy.
+## check if the meta data has been deleted.
+##if (!exists(".rqda",.GlobalEnv)) 
+##gmessage("Meta data has been deleted.\nRun rqdameta() manually in order to work properly.",icon="error",cont=)
+## if (gconfirm("Meta data has been deleted, generate it gain?",con=TRUE)) {
+##  rqdameta()
+## dispose(.root_rqdagui)
+##RQDA()
+##}
+##})
 
 ########################### GUI FOR PROJECT
 ########################### 
