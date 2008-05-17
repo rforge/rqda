@@ -1,3 +1,7 @@
+2008-5-17
+	* Open coding text chunk is added.
+	* "Unmark" button works now.
+	
 2008-5-14
 	* Use /R/sysdata.rda to store meta data such as .rqda environment, so no need to generate it in .GlobalEnv.
 	* Add RQDA-package.rd in /man.

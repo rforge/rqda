@@ -39,8 +39,7 @@ Maintainer: Huang <ronggui.huang@gmail.com>
 %~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 }
 \examples{
-## not run
-#library(RQDA)
-#RQDA()
-##
+\dontrun{library(RQDA)
+RQDA()
+}
 }

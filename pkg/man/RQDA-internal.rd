@@ -13,6 +13,8 @@
 %%\alias{RQDA}
 %% RQDA() appears in RQDA-package.rd
 \alias{rqdameta}
+\alias{retrieval}
+\alias{sindex}
 %% add related alias functions here.
 \title{Internal Grid Functions}
 \description{

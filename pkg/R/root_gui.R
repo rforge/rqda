@@ -122,15 +122,15 @@ gbutton(" View ",contain=.files_button,handler=function(h,...){
     tryCatch(dispose(h$action$env$.root_edit),error=function(e) {})## notice the error handler
     assign(".root_edit",gwindow(title=svalue(.fnames_rqda), parent=c(270,10),width=600,height=600),env=h$action$env)
     .root_edit <- get(".root_edit",h$action$env)
-    addHandlerUnrealize(.root_edit, handler = function(h,...) {
+   ## addHandlerUnrealize(.root_edit, handler = function(h,...) {
       ## make sure is the project should be closed by issuing a confirm window.
-      val <- gconfirm("Really close window", parent=h$obj)
-      if(as.logical(val))
-        return(FALSE)             # destroy
-      else
-        return(TRUE)              # don't destroy
-    }
-                        )
+     ## val <- gconfirm("Really close window", parent=h$obj)
+      ##if(as.logical(val))
+       ## return(FALSE)             # destroy
+      ##else
+       ## return(TRUE)              # don't destroy
+    ##}
+    ## ) 
     assign(".openfile_gui",gtext(container=.root_edit,font.attr=c(sizes="large")),env=h$action$env)
     con <- get(h$action$conName,h$action$env)
     content <- dbGetQuery(con, sprintf("select file from source where name='%s'",svalue(.fnames_rqda)))[1,1] 
@@ -139,6 +139,10 @@ gbutton(" View ",contain=.files_button,handler=function(h,...){
     add(W,content,font.attr=c(sizes="large"))
     slot(W,"widget")@widget$SetEditable(FALSE)
     ## make sure it is read only file in the text window.
+
+codings_index <- dbGetQuery(con,"select rowid, cid, fid, selfirst, selend, status from coding where status=1")
+assign("codings_index", codings_index, h$action$env) 
+
 }}
 },
         action=list(env=.rqda,conName="qdacon")
@@ -186,6 +190,10 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
 }, action = list(env = .rqda, conName = "qdacon", assignfileName = "files_index",widget=.fnames_rqda))
 
 
+
+########################### GUI for CODES
+###########################
+
 ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes")
 ".codes_button" <- glayout(container=.codes_pan)
 
@@ -227,34 +235,70 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
 
 .codes_button[1,3]<- gbutton("HL ALL",
                              handler=function(h,...) {
-                               con <- get(h$action$conName,h$action$env)
-                               mark_index <- dbGetQuery(con, "select selfirst, selend  from coding")
-                               HL(get(h$action$widget,h$action$env),index=mark_index)
-                             },action=list(env=.rqda,conName="qdacon",widget=".openfile_gui")
+                               if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
+                                 con <- get(h$action$conName,h$action$env)
+                                 fid <- get(h$action$currentFid,h$action$env)
+                                 mark_index <- dbGetQuery(con, sprintf("select selfirst, selend,status from coding where fid=%i",fid))
+                                 ## only select thoses with the open_file and not deleted (status=1).
+                                 ClearMark(get(h$action$widget,h$action$env),0,max(mark_index$selend))
+                                 HL(get(h$action$widget,h$action$env),index=mark_index[mark_index$status==1,1:2])
+                               }
+                             },
+                             action=list(env=.rqda,conName="qdacon",widget=".openfile_gui",currentFid="currentFid")
                              )
 
 .codes_button[2,1]<- gbutton("Open",
                              handler=function(h,...) {
-                               NI()
-                             })
+                               retrieval(h$action$cid,h$action$conName,h$action$env,h$action$Code)
+                               },
+                             action=list(cid="currentCid",conName="qdacon",env=.rqda,Code="currentCode")
+                             )
 
 .codes_button[2,2]<- gbutton("Unmark",
                              handler=function(h,...) {
-                               NI()
-                             })
+                               con <- get(h$action$conName,h$action$env)
+                               W <- get(h$action$widget,env=h$action$env) ## widget
+                               sel_index <- sindex(W)
+                               codings_index <- get(h$action$codings_index,h$action$env)
+                               currentCid <- get("currentCid",h$action$env)
+                               currentFid <- get("currentFid",h$action$env)
+                               codings_index_current <- codings_index[(codings_index$cid==currentCid & codings_index$fid==currentFid),]
+                               ## should only work with those related to current code and current file.
+                               rowid <- codings_index_current$rowid[(codings_index_current$selfirst  >= sel_index$startN) &
+                                                            (codings_index_current$selend  <= sel_index$endN)]
+                               if (is.numeric(rowid)) for (j in rowid){
+                                dbGetQuery(con,sprintf("update coding set status=0 where rowid=%i", j))  }
+                               ## better to get around the loop by sqlite condition expression.
+                               codings_index$status[codings_index$rowid==rowid] <- 0
+                               assign("codings_index",h$action$env)
+                               ClearMark(W,min=sel_index$startN,max=sel_index$endN)
+                               ## This clear all the marks in the gtext window, even for the non-current code. can improve.
+                             },
+                             action=list(env=.rqda,conName="qdacon",widget=".openfile_gui",codings_index="codings_index")
+                             )
 
 .codes_button[2,3]<- gbutton("Mark",
                              handler=function(h,...) {
                                tryCatch({
+                                ## browser()
                                 ans <- mark(get(h$action$widget,env=h$action$env))
+                                if (ans$start != ans$end){ 
+                                ## when selected no text, makes on sense to do anything.
                                 currentCid <- get("currentCid",h$action$env)
                                 currentFid <- get("currentFid",h$action$env)
                                 DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,
                                                   selfirst=ans$start,selend=ans$end,status=1)
                                 con <- get(h$action$conName,h$action$env)
-                                dbWriteTable(con,"coding",DAT,row.name=FALSE,append=TRUE)
-                                 },error=function(e){})
-                             },action=list(env=.rqda,conName="qdacon",widget=".openfile_gui")
+                                success <- dbWriteTable(con,"coding",DAT,row.name=FALSE,append=TRUE)
+                                if (!success) gmessage("Fail to write to database.")
+                                ## further testing: update codings_index in .rqda env.
+                                codings_index <- dbGetQuery(con,"select rowid, cid, fid, selfirst, selend, status from coding where status=1")
+                                assign("codings_index", codings_index, h$action$env) 
+                                ## end furthing testing
+                                }
+                              },error=function(e){})
+                             },
+                             action=list(env=.rqda,conName="qdacon",widget=".openfile_gui")
                              )
 
 ##.codes_button[2,4]<- gbutton("HL SEL",
@@ -271,7 +315,7 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
 
 addHandlerClicked(.codes_rqda,handler <- function(h,...){
   ## without it, button mark doesn't work due to lack of currentCid.
-  ## BUG: only clear the mark but ont highlight the selected text chunk.
+  ## BUG: only clear the mark but not highlight the selected text chunk.
   codes_index <- get(h$action$fileName, h$action$env)
   assign("currentCode",svalue(.codes_rqda),env=h$action$env) ## current code
   currentCode <- get("currentCode", h$action$env)
@@ -280,16 +324,16 @@ addHandlerClicked(.codes_rqda,handler <- function(h,...){
   assign("currentCid", currentCid, env = h$action$env)
   ## above code: update the meta data -- CurrentCode and Current code id.
   ## following code: Only mark the text chuck according to the current code.
+  currentFid <- get("currentFid", h$action$env)
   tryCatch({
     widget <- get(h$action$marktxtwidget,h$action$env)
     ## if widget is not open, then error;which means no need to highlight anything.
     con <- get(h$action$conName,h$action$env)
-    sel_index <- dbGetQuery(con, "select selfirst, selend, cid from coding")
+    sel_index <- dbGetQuery(con, sprintf("select selfirst, selend, cid, status from coding where fid=%i",currentFid))
+    Maxindex <- max(sel_index["selend"],na.rm=TRUE)  
+    sel_index <- sel_index[(sel_index$cid==currentCid & sel_index$status==1),c("selfirst","selend")]
+    ClearMark(widget,min=0,max=Maxindex)
   if (nrow(sel_index)>0){
-    Maxindex <- max(sel_index["selend"],na.rm=TRUE)
-    ClearMark(widget,Maxindex)
-    ##sel_index <- subset(sel_index,cid==currentCid,selection=c("selfirst","selend"))
-    sel_index <- sel_index[sel_index$cid==currentCid,c("selfirst","selend")]
     HL(widget,index=sel_index)
   }
   },error=function(e){})
@@ -299,7 +343,7 @@ addHandlerClicked(.codes_rqda,handler <- function(h,...){
 
 
 addHandlerMouseMotion(.codes_rqda, handler <- function(h, 
-                                                       ## updating the file name list.
+                                                       ## updating the codes name list.
                                                        ...) {
   if (is_projOpen(env = h$action$env, conName = h$action$conName,message = FALSE)) {
     ##    cat("Mouse Motion updated.", fill = TRUE)
@@ -310,10 +354,10 @@ addHandlerMouseMotion(.codes_rqda, handler <- function(h,
 
 
 addhandlerdoubleclick(.codes_rqda,handler <- function(h,...){
-## reserved for rename??
   codes_index <- get(h$action$fileName, h$action$env)
   assign("currentCode",svalue(.codes_rqda),env=h$action$env) ## current code
   currentCode <- get("currentCode", h$action$env)
+  currentFid <- get("currentFid", h$action$env)
   currentCid <- codes_index[codes_index[["name"]] == currentCode, "id", drop = TRUE]
   if (is.null(currentCid)) currentCid <- integer(0)
   assign("currentCid", currentCid, env = h$action$env)
@@ -323,12 +367,11 @@ addhandlerdoubleclick(.codes_rqda,handler <- function(h,...){
     widget <- get(h$action$marktxtwidget,h$action$env)
     ## if widget is not open, then error;which means no need to highlight anything.
     con <- get(h$action$conName,h$action$env)
-    sel_index <- dbGetQuery(con, "select selfirst, selend, cid from coding")
-  if (nrow(sel_index)>0){
-    Maxindex <- max(sel_index["selend"],na.rm=TRUE)
-    ClearMark(widget,Maxindex)
-  ##   sel_index <- subset(sel_index,cid==currentCid,selection=c("selfirst","selend"))
-       sel_index <- sel_index[sel_index$cid==currentCid,c("selfirst","selend")]
+    sel_index <- dbGetQuery(con, sprintf("select selfirst, selend, cid, status from coding where fid=%i",currentFid))
+    Maxindex <- max(sel_index["selend"],na.rm=TRUE)  
+    sel_index <- sel_index[(sel_index$cid==currentCid & sel_index$status==1),c("selfirst","selend")]
+    ClearMark(widget,min=0,max=Maxindex)
+if (nrow(sel_index)>0){
     HL(widget,index=sel_index)}
   },error=function(e){})
 },action=list(env=.rqda,fileName="codes_index",conName="qdacon",marktxtwidget=".openfile_gui"

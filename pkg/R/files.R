@@ -41,7 +41,7 @@ fnamesupdate <- function(conName="qdacon",assignenv=.rqda,assignfileName="files_
  ##update file names list.
  ## should have widget argument, or the ".fnames_rqda" cannot be found.
  con <- get(conName,assignenv)
- fnames <- dbGetQuery(con, "select name, id from source")
+ fnames <- dbGetQuery(con, "select name, id from source where status=1")
  assign(assignfileName, fnames ,env=assignenv) 
  tryCatch(widget[] <- fnames[['name']],error=function(e){})
 }
