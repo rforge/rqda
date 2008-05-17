@@ -249,13 +249,15 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
 
 .codes_button[2,1]<- gbutton("Open",
                              handler=function(h,...) {
+    if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
                                retrieval(h$action$cid,h$action$conName,h$action$env,h$action$Code)
-                               },
+                               }},
                              action=list(cid="currentCid",conName="qdacon",env=.rqda,Code="currentCode")
                              )
 
 .codes_button[2,2]<- gbutton("Unmark",
                              handler=function(h,...) {
+    if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
                                con <- get(h$action$conName,h$action$env)
                                W <- get(h$action$widget,env=h$action$env) ## widget
                                sel_index <- sindex(W)
@@ -273,12 +275,13 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
                                assign("codings_index",h$action$env)
                                ClearMark(W,min=sel_index$startN,max=sel_index$endN)
                                ## This clear all the marks in the gtext window, even for the non-current code. can improve.
-                             },
+                             }},
                              action=list(env=.rqda,conName="qdacon",widget=".openfile_gui",codings_index="codings_index")
                              )
 
 .codes_button[2,3]<- gbutton("Mark",
                              handler=function(h,...) {
+    if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
                                tryCatch({
                                 ## browser()
                                 ans <- mark(get(h$action$widget,env=h$action$env))
@@ -297,7 +300,7 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
                                 ## end furthing testing
                                 }
                               },error=function(e){})
-                             },
+                             }},
                              action=list(env=.rqda,conName="qdacon",widget=".openfile_gui")
                              )
 
