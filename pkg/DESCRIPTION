@@ -1,7 +1,7 @@
 Package: RQDA
 Type: Package
 Title: Qualitative data analysis
-Version: 0.1
+Version: 0.1.2
 Date: 2008-05-11
 Author: Huang Ronggui
 Maintainer: Huang <ronggui.huang@gmail.com>

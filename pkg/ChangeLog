@@ -1,3 +1,11 @@
+2008-10-31
+	* Add functionality of delete selected code.
+	* Add helper functions to show the temp deleted file/code/coding
+	* Add helpter functions to delete file/code/coding for ever
+
+2008-10-29
+	* Add functionality of delete selected file.
+
 2008-5-17
 	* Open coding text chunk is added.
 	* "Unmark" button works now.
@@ -5,6 +13,3 @@
 2008-5-14
 	* Use /R/sysdata.rda to store meta data such as .rqda environment, so no need to generate it in .GlobalEnv.
 	* Add RQDA-package.rd in /man.
-
-	
-	

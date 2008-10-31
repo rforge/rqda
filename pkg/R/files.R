@@ -1,18 +1,23 @@
-importfile <- function(path,pathEncoding="unknown",con="qdacon",assignenv=NULL,assigname="files_index", ...){
-  ## import a file into a DBI connection _con_.
-  readTXT <- function(path){
-    ## read txt file into a one-length character vector.
-    readChar(path,file.info(path)[,'size']+1000,TRUE)
-  }
-  
+importfile <- function(path,#pathEncoding="unknown",
+                       encoding,con="qdacon",assignenv=NULL,assigname="files_index", ...){
+## import a file into a DBI connection _con_.
+#  readTXT <- function(path){
+#    ## read txt file into a one-length character vector.
+#    if (.Platform$OS.type=="windows"){
+#	readChar(path,file.info(path)[,'size']+1000,TRUE)
+#    } else readChar(path,file.info(path)[,'size']+1000)
+#  }
+#
   enc <- function(x) gsub("'", "''", x)
   ## replace " with two '. to make insert smoothly.
 
-  Encoding(path) <- pathEncoding
-  Fname <- basename(path)
+  #Encoding(path) <- pathEncoding
+  Fname <- gsub("\\.[[:alpha:]]*$","",basename(path)) ## remove the suffix such as .txt
   
   if ( Fname!="" ) {
-    content <- readTXT(path)
+    content <- readLines(path,warn=FALSE,encoding=encoding)
+    content <- paste(content,collapse="\n")
+    #Encoding(content) <- contentEncoding
     content <- enc(content)
     maxid <- dbGetQuery(con,"select max(id) from source")[[1]]
     nextid <- ifelse(is.na(maxid),0+1, maxid+1)
@@ -21,11 +26,13 @@ importfile <- function(path,pathEncoding="unknown",con="qdacon",assignenv=NULL,a
     if (nextid==1) {
       write <- TRUE
     } else {
-     ## browser()
       allFnames <- RSQLite:::sqliteQuickColumn(con,"source","name")
       if (!any(Fname==allFnames)) {
         write <- TRUE
-      }}
+      } else {
+            gmessage("A file withe the same name exists in the database!")
+            }
+      }
       if (write ) {
         dbGetQuery(con,sprintf("insert into source (name, file, id, status ) values ('%s', '%s',%i, %i)",
                                Fname,content, nextid, 1))
@@ -45,4 +52,10 @@ fnamesupdate <- function(conName="qdacon",assignenv=.rqda,assignfileName="files_
  assign(assignfileName, fnames ,env=assignenv) 
  tryCatch(widget[] <- fnames[['name']],error=function(e){})
 }
+
+setEncoding <- function(encoding="unknown"){
+# specify what encoding is used in the imported files.
+.rqda$encoding <- encoding
+}
+
 

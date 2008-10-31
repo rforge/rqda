@@ -87,7 +87,8 @@ glabel("Basic Usage of RQDA:\n
 2. Update file list or Import files.\n
 3. Update code list or Add codes.\n
 4. Open a file and begin coding.\n
-Author: <ronggui.huang@gmail.com>\n",container=.proj_gui)
+Author: <ronggui.huang@gmail.com>\n
+This software is part of my PhD research.\n",container=.proj_gui)
 
 
 
@@ -102,7 +103,7 @@ Author: <ronggui.huang@gmail.com>\n",container=.proj_gui)
   path <- gfile(type="open",filter=list("text files" = list(mime.types = c("text/plain"))))
   if (path!=""){
     Encoding(path) <- "UTF-8"
-    importfile(path,pathEncoding="UTF-8",con=h$action$env$qdacon,assignenv=h$action$env)
+    importfile(path,encoding=get("encoding",envir=h$action$env),con=h$action$env$qdacon,assignenv=h$action$env)
     ## updatefilelist()
     ## add codes here
   }
@@ -149,9 +150,22 @@ assign("codings_index", codings_index, h$action$env)
         )
 
 
-gbutton(" Delete ",contain=.files_button,handler=function(h,...){
-NI()
-}
+gbutton(" Delete ",contain=.files_button,handler=function(h,...)
+         {
+         if (is_projOpen(env=h$action$env,conName=h$action$conName) & length(svalue(.fnames_rqda))!=0) {
+        ## if the project open and a file is selected, then continue the action
+        del <- gconfirm("Really delete the file?",icon="question")
+        if (isTRUE(del)){
+        dbGetQuery(get(h$action$conName,h$action$env), sprintf("update source set status=0 where id=%s",h$action$env$currentFid))
+        ## set the status of the selected file to 0
+        assign("currentFid",integer(0),envir=h$action$env)
+        assign("currentFile",character(0),envir=h$action$env)
+        ## set "currentFid" and "currentFile" in .rqda to integer(0) and character(0)
+        fnamesupdate(assignenv=h$action$env)
+        ## reset files_index in .rqda by updatefilelist()
+        }
+        }
+        },action=list(env=.rqda,conName="qdacon")
         )
 
 
@@ -190,6 +204,26 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
 }, action = list(env = .rqda, conName = "qdacon", assignfileName = "files_index",widget=.fnames_rqda))
 
 
+########################### GUI for FILES TREE
+###########################
+#".files_tree" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Files Tree")
+#".files_tree_pg" <- gpanedgroup(cont=.files_tree,horizontal = FALSE)
+#ft_buttons <- glayout(con=.files_tree_pg)
+#ft_buttons[1,1] <- gbutton("ADD",handler=function(h,...){
+#item <- ginput("Enter Level 2 label! ", icon="info",parent=.files_tree)
+#Encoding(item) <- "UTF-8"
+#ft_gt1[] <- c(item,ft_gt1[][!is.na(ft_gt1[])])
+#})
+#ft_buttons[1,2] <- gbutton("Delete")
+#ft_buttons[1,3] <- gbutton("OK")
+#ft_buttons[1,4] <- gl <- glabel("")
+#ft_pg2 <- ggroup(cont=.files_tree_pg,horizontal = FALSE)
+#ft_gt1 <- gtable(data.frame("Level 2 Categories"="Categories",stringsAsFactors=FALSE),con=ft_pg2,multiple=FALSE,expand=TRUE)
+#ft_gt1[] <- NULL
+#ft_gt2 <- gtable(data.frame("Files in current Category"="Category",stringsAsFactors=FALSE),container=ft_pg2,expand=T)
+#ft_gt2[] <- NULL
+#ft_gt3 <- gtable(data.frame("Files List"="env$files_index$name",stringsAsFactors=FALSE),container=ft_pg2,multiple=TRUE,expand=T)
+#ft_gt3[] <- NULL
 
 ########################### GUI for CODES
 ###########################
@@ -205,22 +239,22 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
 .codes_button[1,1]<- gbutton("ADD",
                              handler=function(h,...) {
                                if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
-                                 add1<-gwindow("Add code",width=200,heigh=30,parent=c(270,10))
-                               add2<-ggroup(cont=add1)
-                               add3<-gedit(con=add2)
-                                 add4<-gbutton("OK",con=add2,handler=function(h,...){
-                                   codename <- svalue(add3)
-                                 Encoding(codename) <- "UTF-8"
-                                   ## browser()
-                                   addcode(codename,conName=h$action$conName,assignenv=h$action$env,
+                               ##add1<-gwindow("Add code",width=200,heigh=30,parent=c(270,10))
+                               ##add2<-ggroup(cont=add1)
+                               ##add3<-gedit(con=add2)
+                               ##add4<-gbutton("OK",con=add2,handler=function(h,...){
+                               ##codename <- svalue(add3)
+                                 codename <- ginput("Enter new code. ", icon="info")
+                                 codename <- iconv(codename,from="UTF-8")
+                                 addcode(codename,conName=h$action$conName,assignenv=h$action$env,
                                            assigname=h$action$assignname)
                                    codesupdate(conName = h$action$conName, assignenv = h$action$env, 
                                                assignfileName =h$action$assignfileName,
                                                widget=get(h$action$widget)
                                                )
-                                   dispose(add2)
-                                 },action=h$action # explicitly pass the action argument
-                                             )## end of add4
+                              ##dispose(add2)
+                              ##   },action=h$action # explicitly pass the action argument
+                              ##               )## end of add4
                                }},
                              action=list(env=.rqda,name="codename",conName="qdacon",assignname="codes_index",
                                assignfileName="codes_index",widget=".codes_rqda")
@@ -228,10 +262,25 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
                              )
 
 .codes_button[1,2]<- gbutton("Delete",
-                             handler=function(h,...) {
-                               NI()
-                             }
-                             )
+                             handler=function(h,...)
+                              {
+         if (is_projOpen(env=h$action$env,conName=h$action$conName) & length(svalue(.codes_rqda))!=0) {
+        ## if project is open and one code is selected,then continue
+        del <- gconfirm("Really delete the code?",icon="question")
+        if (isTRUE(del)){
+        dbGetQuery(get(h$action$conName,h$action$env), sprintf("update freecode set status=0 where id=%s",h$action$env$currentCid))
+        ## set status in table freecode to 0
+        dbGetQuery(get(h$action$conName,h$action$env), sprintf("update coding set status=0 where cid=%s",h$action$env$currentCid))
+        ##  set status in table coding to 0, so when press "HL ALL", the text chunk associated with deleted code will be ignored.
+        assign("currentCid",integer(0),envir=h$action$env)
+        assign("currentCode",character(0),envir=h$action$env)
+        ## set "currentCid" and "currentCode" to integer(0) and character(0)
+        codesupdate(assignenv=h$action$env)
+        ## update "codes_index" in .rqda by codesupdate
+        }
+        }
+        },action=list(env=.rqda,conName="qdacon")
+        )
 
 .codes_button[1,3]<- gbutton("HL ALL",
                              handler=function(h,...) {
@@ -260,7 +309,9 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
     if (is_projOpen(env=h$action$env,conName=h$action$conName)) {
                                con <- get(h$action$conName,h$action$env)
                                W <- get(h$action$widget,env=h$action$env) ## widget
-                               sel_index <- sindex(W)
+                               sel_index <- tryCatch(sindex(W),error=function(e) {})
+                               ## if the not file is open, unmark doesn't work.
+                               if (!is.null(sel_index)) {
                                codings_index <- get(h$action$codings_index,h$action$env)
                                currentCid <- get("currentCid",h$action$env)
                                currentFid <- get("currentFid",h$action$env)
@@ -275,7 +326,7 @@ addHandlerClicked(.fnames_rqda, handler <- function(h, ...) {
                                assign("codings_index",h$action$env)
                                ClearMark(W,min=sel_index$startN,max=sel_index$endN)
                                ## This clear all the marks in the gtext window, even for the non-current code. can improve.
-                             }},
+                             }}},
                              action=list(env=.rqda,conName="qdacon",widget=".openfile_gui",codings_index="codings_index")
                              )
 
@@ -381,7 +432,33 @@ if (nrow(sel_index)>0){
     )
                   )
 
+
+
+########################### GUI for CODES TREE
+###########################
+#".codes_tree" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes Tree")
+#".codes_tree_pg" <- gpanedgroup(cont=.codes_tree,horizontal = FALSE)
+#ct_buttons <- glayout(con=.codes_tree_pg)
+#ct_buttons[1,1] <- gbutton("ADD",handler=function(h,...){
+#item <- ginput("Enter Level 2 label! ", icon="info",parent=.codes_tree)
+#Encoding(item) <- "UTF-8"
+#ct_gt1[] <- c(item,ct_gt1[][!is.na(ct_gt1[])])
+#})
+#ct_buttons[1,2] <- gbutton("Delete")
+#ct_buttons[1,3] <- gbutton("OK")
+#ct_buttons[1,4] <- gl <- glabel("")
+#ct_pg2 <- ggroup(cont=.codes_tree_pg,horizontal = FALSE)
+#ct_gt1 <- gtable(data.frame("Level 2 Categories"="Categories",stringsAsFactors=FALSE),con=ct_pg2,multiple=FALSE,expand=TRUE)
+#ct_gt1[] <- NULL
+#ct_gt2 <- gtable(data.frame("Codes in current Category"="Category",stringsAsFactors=FALSE),container=ct_pg2,expand=T)
+#ct_gt2[] <- NULL
+#ct_gt3 <- gtable(data.frame("Codes List"="env$files_index$name",stringsAsFactors=FALSE),container=ct_pg2,multiple=TRUE,expand=T)
+#ct_gt3[] <- NULL
+
+#########################
+#########################
 visible(.root_rqdagui) <- TRUE
 svalue(.nb_rqdagui) <- 1 ## make sure the project tab gain the focus.
 ### make it a function RQDA().
 }
+
