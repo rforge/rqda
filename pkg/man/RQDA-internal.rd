@@ -9,10 +9,8 @@
 \alias{is_projOpen}
 \alias{mark}
 \alias{new_proj}
-\alias{setEncoding}
+\alias{setEncoding} %% to be documented independently.
 \alias{open_proj}
-%%\alias{RQDA}
-%% RQDA() appears in RQDA-package.rd
 \alias{rqdameta}
 \alias{retrieval}
 \alias{sindex}

@@ -1,56 +1,48 @@
-\name{list.deleted}
+\name{File/code/coding deletion}
 \alias{list.deleted}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\alias{pdelete}
+\alias{undelete}
+\title{ Show, permanently delete or un-delete(reuse) the unused file, code, and coding.}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  \code{list.deleted} shows the file, code and coding tagged with deletion
+  mark.
+  \code{pdelete} _p_ermanently delete them.
+  \code{undelete} let you reuse the temporary tagged as deleted file and code.
 }
 \usage{
 list.deleted(type = c("file", "code", "coding"))
+pdelete(type = c("file", "code", "coding"),ask = FALSE)
+undelete(type=c("file","code"))
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{type}{ ~~Describe \code{type} here~~ }
+  \item{type}{ What kind of info would you like to show or clear.}
+  \item{ask} {You can choose which ones to be deleted when is
+  TRUE. Otherwise, it will delete all with temporary tagged with
+  deletion mark, that is status=0.}
 }
+
 \details{
-  ~~ If necessary, more details than the description above ~~
+  By GUI, you can delete file and code (together with the related
+  coding), which just sets the status from 1 to 0. In this sense,
+  deletion from GUI is temporary.After that, you can use
+  \code{list.deleted} to show which ones are tagged as deleted.
+  By \code{pdelete}, you can permenantly delete those tagged with mark
+  of status=0, all of them by setting ask=FALSE, or you can choose which
+  ones to be deleted permenantly.By \code{undelete}, you can undo the
+  temporary deleted files and codes. It offers a GUI so you can choose
+  in the list. For the time being, it is not the true reserve process of
+  GUI  deletion, as the deletion-tagged _coding_ will not set to the
+  original status.
 }
+
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+For \code{list.deleted}, a data frame if there are some item tagged with
+status=0.
+For \code{pdelete} and \code{undelete}, no value is return. This
+function is for is side-effect.
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(type=c("file","code","coding")){
-## list the deleted file/code/coding
-if (!isIdCurrent(.rqda$qdacon)) print("No project is open!") else {
-type <- match.arg(type)
-if (type=="file"){
-ans <- dbGetQuery(.rqda$qdacon, "select name from source where status=0")
-  } else if (type=="code"){
-ans <- dbGetQuery(.rqda$qdacon, "select name from freecode where status=0")
-  } else if (type=="coding") {
-ans <- dbGetQuery(.rqda$qdacon, "select seltext from coding where status=0")
-  }
-  }
-if (nrow(ans)==0) sprintf("No \%s is deleted.",type) else ans
-  }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+\author{Ronggui HUANG}
 \keyword{ utilities }
 

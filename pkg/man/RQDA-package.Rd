@@ -6,7 +6,7 @@
 Qualitative data analysis
 }
 \description{
-Qualitative Data Analysis based on R language. Current version only supports plain text.
+  Qualitative Data Analysis based on R language. Current version only supports plain text.
 }
 \details{
 \tabular{ll}{
@@ -20,24 +20,25 @@ LazyLoad: \tab yes\cr
 }
 %% description of the package
 %% main functions.
-The only function for end-user is the RQDA(), you can use RQDA() to
+The workhorse function for end-user is the RQDA(), you can use RQDA() to
 start the GUI after library(QRDA).
 }
 \author{
-Huang Ronggui
+  Huang Ronggui
+  
+  Maintainer: Huang <ronggui.huang@gmail.com>
+}
 
-Maintainer: Huang <ronggui.huang@gmail.com>
-}
-\references{
+%%\references{
 %% reference here
-}
+%%}
 %%~~ Optionally other standard keywords, one per line, from file KEYWORDS ~~
 %%~~ in the R documentation directory ~~
 \keyword{ package }
-\seealso{
+%%\seealso{
 %~~ Optional links to other man pages, e.g. ~~
 %~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
+%%}
 \examples{
 \dontrun{library(RQDA)
 RQDA()

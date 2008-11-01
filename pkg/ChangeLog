@@ -1,7 +1,14 @@
+2008-11-01
+	* Add functionality of file/code/coding memo.
+	
 2008-10-31
 	* Add functionality of delete selected code.
-	* Add helper functions to show the temp deleted file/code/coding
-	* Add helpter functions to delete file/code/coding for ever
+	* Add helper functions to show the temp deleted file/code/coding.
+	* Add helper functions to delete file/code/coding permanently.
+	* Add helper functions to undo the temporary deletion.
+	* Minor changes to the database structure, adding memo, owner and date.
+	* some minor bugs are fixed.
+	* Now, RQDA() will launch when the package is attached.
 
 2008-10-29
 	* Add functionality of delete selected file.
