@@ -2,22 +2,29 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=gb2312">
-	<TITLE></TITLE>
+	<TITLE>Welcome to the RQDA Project!</TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.0  (Win32)">
 	<META NAME="AUTHOR" CONTENT="wincent">
 	<META NAME="CREATED" CONTENT="20081101;12455800">
 	<META NAME="CHANGEDBY" CONTENT="wincent">
-	<META NAME="CHANGED" CONTENT="20081101;16300600">
+	<META NAME="CHANGED" CONTENT="20081103;11045400">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="wincent">
+	<STYLE TYPE="text/css">
+	<!--
+		CODE.cjk { font-family: "新宋体", monospace }
+	-->
+	</STYLE>
 </HEAD>
+
 <BODY LANG="zh-CN" DIR="LTR">
-<P ALIGN=CENTER><FONT COLOR="#008000"><FONT FACE="Times New Roman, serif"><FONT SIZE=4 STYLE="font-size: 15pt"><SPAN LANG="en-US">Welcome
-to the RQDA Project!</SPAN></FONT></FONT></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>What
-is RQDA and its features?</B></SPAN></FONT></P>
+
+<P ALIGN=CENTER><FONT COLOR="#008000"><FONT FACE="Times New Roman, serif"><FONT SIZE=4 STYLE="font-size: 15pt"><SPAN LANG="en-US">Welcome to the RQDA Project!</SPAN></FONT></FONT></FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>Whatis RQDA and its features?</B></SPAN></FONT></P>
 <P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">RDQA
 </SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">is
 a package for Qualitative Data Analysis built upon <A HREF="http://www.r-project.org/">R</A>,
@@ -37,48 +44,70 @@ Analysis features. Besides, it seamlessly integrated with R, which
 means that a) statistical analysis on the coding is possible, and b)
 functions about data manipulation and analysis can be easily extended
 by writing R functions. To some extent, </SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>RQDA
-and R makes an integrated platform for both quantitative and 
+and R makes an integrated platform for both quantitative and
 qualitative data analysis.</B></SPAN></FONT></SPAN></FONT></P>
 <P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">By
-the GUI, it can:<BR>** Import documents from plain text<BR>** Support
-non-English documents, Simplified Chinese Character is well-tested
-under Windows<BR>** Character-level coding using codes<BR>** Memos of
-documents and codes<BR>** Retrieval of coding<BR>** Single-file
-(*.rqda) format, which is basically SQLite database<BR>** Temporary
-deletion of files and codes<BR><BR>By R functions, it can:<BR>** Show
-the temporary deletion files and codes<BR>** Undo the temporary
-deletion<BR>** Permanently erase the temporary deletion<BR><BR>Other
-functions may be added with the development of the software in the
-future.</SPAN></FONT></P>
+the GUI, it can:
+<li>Import documents from plain text
+<li>Support non-English documents, Simplified Chinese Character is well-tested under Windows
+<li>Character-level coding using codes
+<li>Memos of documents and codes
+<li>Retrieval of coding
+<li>Single-file (*.rqda) format, which is basically SQLite database
+<li>Temporary deletion of files and codes
+
+<BR><BR>By R functions, it can:
+<li>Show the temporary deletion files and codes
+<li>Undo the temporary deletion
+<li>Permanently erase the temporary deletion
+
+<BR><BR>Other functions may be added with the development of the software in the future.</SPAN></FONT></P>
 <P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>INSTALLATION</B></SPAN></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">RQDA
-is based on R, so you have to install R and relevant packages in
-order to use RQDA.<BR>** Go to <A HREF="http://cran.r-project.org/">CRAN</A>,
+<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">RQDA is based on R, so you have to install R and relevant packages in
+order to use RQDA.
+
+<li>Go to <A HREF="http://cran.r-project.org/">CRAN</A>,
 download R and install it. For Linux and BSD users, you can download
 binary version of R or the sources. For Windows users, you can
 download the binary version of R from the <A HREF="http://cran.r-project.org/bin/windows/base/">download
 page</A>. More instruction about installing R is in the <A HREF="http://cran.r-project.org/doc/manuals/R-admin.html">R
-Installation and Administration</A> Manual.<BR>** Launch R (as usual
+Installation and Administration</A> Manual.
+
+<li>Launch R (as usual
 applications under Windows; or by command $R within shell terminal
 under Linux and FreeBSD). Then, you can see the prompt &ldquo;&gt;&rdquo;,
-which indicates that R is ready for further commands.<BR>** Install
+which indicates that R is ready for further commands.
+
+<li>Install
 relevant packages by R command:
-</SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><I><B>install.packages(c(&ldquo;DBI&rdquo;,&rdquo;RSQLite&rdquo;,&rdquo;RGtk2&rdquo;,&rdquo;gWidgets&rdquo;,&quot;gWidgetsRGtk2&quot;))<BR>**
-</B></I></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Install
-RQDA package (to be eleborated)<BR>** Launch RQDA by command
-</SPAN></SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><I><B>library(RQDA)
+</SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><I><B>install.packages(c(&ldquo;DBI&rdquo;,&rdquo;RSQLite&rdquo;,&rdquo;RGtk2&rdquo;,&rdquo;gWidgets&rdquo;,&quot;gWidgetsRGtk2&quot;))
+
+<li></B></I></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Install
+RQDA package: For Linux/BSD, use command:
+</SPAN></SPAN></SPAN></FONT><STRONG><CODE CLASS="western"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><I>install.packages(&quot;RQDA&quot;,repos=&quot;http://R-Forge.R-project.org&quot;)</I></SPAN></FONT></CODE></STRONG><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">
+</SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
+For Windows, manually download the <A HREF="http://rqda.r-forge.r-project.org/RQDA_0.1.3.zip">package of RQDA(0.1.3)</A>,
+then install it by clicking the menu: &ldquo;</SPAN></SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Packages</SPAN></SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">&rdquo;
+&ndash; &ldquo;</SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Install
+package(s) from local zip files...</SPAN></SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">&rdquo;</SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
+</SPAN></SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
+
+<li>Launch RQDA by command </SPAN></SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><I><B>library(RQDA)
 </B></I></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">from
 within R. Then you can see the RQDA GUI.</SPAN></SPAN></SPAN></FONT></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><IMG SRC="Main.png" NAME="Main GUI" ALIGN=LEFT WIDTH=680 HEIGHT=488 BORDER=0><BR CLEAR=LEFT><BR>
 </P>
 <P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>More
 information?</B></SPAN></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">**
-The </SPAN></FONT><STRONG><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">project
+<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">
+<li>The </SPAN></FONT><STRONG><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">project
 summary page</SPAN></SPAN></FONT></STRONG><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">
 you can find </SPAN></FONT><STRONG><A HREF="http://r-forge.r-project.org/projects/rqda/"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">here</SPAN></FONT></A></STRONG><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">.
-<BR>** Homepage of <A HREF="http://ronggui.huang.googlepages.com/">the
-author</A>.<BR>** <A HREF="http://www.pressure.to/qda/">Weft QDA</A>,
+
+<li>Homepage of <A HREF="http://ronggui.huang.googlepages.com/">the
+author</A>.
+
+<li><A HREF="http://www.pressure.to/qda/">Weft QDA</A>,
 a similar project based on <A HREF="http://www.ruby-lang.org/en/">Ruby.</A></SPAN></FONT></SPAN></FONT></P>
 <P ALIGN=LEFT><BR><BR>
 </P>
