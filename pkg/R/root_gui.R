@@ -167,7 +167,7 @@ This software is part of my PhD research.\n",
         tryCatch(dispose(h$action$env$.filememo),error=function(e) {})
         ## Close the open file memo first, then open a new one
         ## .filememo is the container of .fmemocontent,widget for the content of memo
-        assign(".filememo",gwindow(title=paste("Memo",selectedFN,sep=":"), parent=c(270,10),width=400,height=400),env=h$action$env)
+        assign(".filememo",gwindow(title=paste("File Memo",selectedFN,sep=":"), parent=c(270,10),width=400,height=400),env=h$action$env)
         .filememo <- get(".filememo",h$action$env)
         .filememo2 <- gpanedgroup(horizontal = FALSE, con=.filememo)
         ## use .filememo2, so can add a save button to it.
