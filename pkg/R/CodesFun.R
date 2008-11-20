@@ -1,4 +1,4 @@
-addcode <- function(name,conName="qdacon",assignenv=.rqda,assigname="codes_index",...) {
+addcode <- function(name,conName="qdacon",assignenv=.rqda,...) {
   if (name != ""){
     con <- get(conName,assignenv)
     maxid <- dbGetQuery(con,"select max(id) from freecode")[[1]]
@@ -7,30 +7,29 @@ addcode <- function(name,conName="qdacon",assignenv=.rqda,assigname="codes_index
     if (nextid==1){
       write <- TRUE
     } else {
-      allnames <- RSQLite:::sqliteQuickColumn(con,"freecode","name")
-      if (!any(name==allnames)) {
-        write <- TRUE
-      }
+      dup <- dbGetQuery(con,sprintf("select name from freecode where name=='%s'",name))
+      if (nrow(dup)==0) write <- TRUE
     }
     if (write ) {
-      dbGetQuery(con,sprintf("insert into freecode (name, id, status) values ('%s', %i, %i)",name,nextid, 1))
+      dbGetQuery(con,sprintf("insert into freecode (name, id, status,date,owner)
+                                            values ('%s', %i, %i,%s, %s)",
+                             name,nextid, 1, shQuote(date()),shQuote(.rqda$owner)))
     }
-    assign(assigname, dbGetQuery(con,"select name,id from freecode"),env=assignenv)
   }
 }
 
 
 
-codesupdate <- function(conName="qdacon",assignenv=.rqda,
-                        assignfileName="codes_index",
-                        widget,...){
-  ## the widget should be get(".codes_rqda",env=.rqda)
-  con <- get(conName,assignenv)
-  codesName <- dbGetQuery(con, "select name, id from freecode where status=1")
-  assign(assignfileName, codesName ,env=assignenv) 
-  tryCatch(widget[] <- codesName[['name']],error=function(e){})
+CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,...)
+{
+  if (isIdCurrent(.rqda$qdacon)){
+  codesName <- dbGetQuery(.rqda$qdacon, "select name, id from freecode where status=1")
+  if (nrow(codesName)!=0) {
+  Encoding(codesName[['name']]) <- "UTF-8"
+  tryCatch(CodeNamesWidget[] <- codesName[['name']], error=function(e){})
+  } else cat("Project is closed already.\n")
 }
-
+}
 
 
 mark <- function(widget){
@@ -38,11 +37,12 @@ mark <- function(widget){
   startI <- index$startI ## start and end iter
   endI <- index$endI
   selected <- index$seltext
+  Encoding(selected) <- "UTF-8"
   startN <- index$startN # translate iter pointer to number
   endN <- index$endN
   if (startN != endN){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
-    buffer$createTag("red.foreground",foreground = "red");
+    buffer$createTag("red.foreground",foreground = "red")
     buffer$ApplyTagByName("red.foreground",startI,endI); ## change colors
   }
   ## only when selected text chunk is not "", apply the color scheme.
@@ -92,21 +92,26 @@ sindex <- function(widget){
 
 
 
-retrieval <- function(currentCid,conName,env,currentCode="currentCode",assignenv=.rqda){
-  currentCid <- get(currentCid,env)
-  currentCode <- get(currentCode,env)
-  con <- get(conName,env)
-  retrieval <- dbGetQuery(con,sprintf("select cid,fid, seltext from coding where status==1 and cid=%i",currentCid))
+retrieval <- function(){
+  currentCode <- svalue(.rqda$.codes_rqda)
+  Encoding(currentCode) <- "UTF-8"
+  currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
+  ## reliable is more important                       
+  retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
   fid <- unique(retrieval$fid)
-  .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(270,10),width=600,height=600)
+  .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(370,10),width=600,height=600)
   .retreivalgui <- gtext(con=.gw)
   for (i in fid){
-    fname <- paste("Source: ", .rqda$files_index$name[.rqda$files_index$id==i], sep="")
+    FileNames <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
+    tryCatch(Encoding(FileNames) <- "UTF-8",error=function(e){})
+    fname <- paste("Source: ", FileNames, sep="")
     seltext <- retrieval$seltext[retrieval$fid==i]
-    ##seltext <- gsub("\n","", seltext,fixed=TRUE)
     seltext <- paste(seltext,collapse="\n\n")
+    CodingIndex <- retrieval[retrieval$fid==i,c("selfirst","selend")]
+    CodingIndex <- apply(CodingIndex,1,FUN=function(x) paste(x,sep="",collapse=":"))
     Encoding(seltext) <- "UTF-8"
     add(.retreivalgui,fname,font.attr=c(style="italic",size="x-large"))
+    add(.retreivalgui,CodingIndex,font.attr=c(style="italic",size="x-large"))
     add(.retreivalgui,"\n",font.attr=c(style="italic"))
     add(.retreivalgui,seltext,font.attr=c(style="normal",size="large"))
     add(.retreivalgui,"\n",font.attr=c(style="italic"))

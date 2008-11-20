@@ -1,3 +1,10 @@
+2008-11-19 (as verion 0.1.4)
+	* Add project memo
+	* rename of file/free code names
+	* reorganize the code for memo(s)
+	* Handle Encoding better (use UTF-8 for storage in date base)
+	* Add cases category
+	
 2008-11-01
 	* Add functionality of file/code/coding memo.
 	

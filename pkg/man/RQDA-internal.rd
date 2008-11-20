@@ -9,7 +9,15 @@
 \alias{is_projOpen}
 \alias{mark}
 \alias{new_proj}
-\alias{setEncoding} %% to be documented independently.
+\alias{Proj_MemoButton}
+\alias{File_MemoButton}
+\alias{CodeMemoButton}
+\alias{CodingMemoButton}
+\alias{File_RenameButton}
+%% to be documented independently.
+\alias{setEncoding}
+\alias{rename}
+%% to be documented independently.
 \alias{open_proj}
 \alias{rqdameta}
 \alias{retrieval}
