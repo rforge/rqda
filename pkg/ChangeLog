@@ -1,3 +1,7 @@
+2008-11-23 (as version 0.1.5)
+	* Add AddTo/DropFrom Buttons for Code-Category.
+	* Improve the display of retrieved coding.
+	
 2008-11-22
 	* change "Add Code Category" Button to popup menu
 	* Open selected file by double click.

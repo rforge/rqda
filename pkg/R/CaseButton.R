@@ -5,7 +5,9 @@ CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,...)
   if (nrow(CaseName)!=0) {
     Encoding(CaseName[['name']]) <- "UTF-8"
     tryCatch(CaseNamesWidget[] <- CaseName[['name']], error=function(e){})
-  }}
+  } else tryCatch(CaseNamesWidget[] <- NULL, error=function(e){}) 
+## when nrow(CaseName)==0, update it to NULL
+}
 }
 
 #################
@@ -174,19 +176,25 @@ AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNam
 CaseNamesWidgetMenu <- list()
 CaseNamesWidgetMenu$WebSearch$Baidu$handler <- function(h,...){
     KeyWord <- svalue(.rqda$.CasesNamesWidget)
+    if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
 }
+}
 CaseNamesWidgetMenu$WebSearch$Google$handler <- function(h,...){
     KeyWord <- svalue(.rqda$.CasesNamesWidget)
+    if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
 }
+}
 CaseNamesWidgetMenu$WebSearch$Yahoo$handler <- function(h,...){
     KeyWord <- svalue(.rqda$.CasesNamesWidget)
+    if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
                      ,KeyWord))
+}
 }
 
 

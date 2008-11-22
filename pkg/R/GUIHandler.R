@@ -70,6 +70,7 @@ Handler <- function(){
   
   
   addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
+            if (is_projOpen(env=.rqda,conName="qdacon")){
     CodeNamesUpdate(CodeNamesWidget=.rqda$.codes_rqda)
     con <- .rqda$qdacon
     SelectedCode <- currentCode <- svalue(.rqda$.codes_rqda)
@@ -94,7 +95,7 @@ Handler <- function(){
       },error=function(e){}) # end of mark text chuck
     }
   }
-  },action=list(marktxtwidget=".openfile_gui")
+  }},action=list(marktxtwidget=".openfile_gui")
                     )
 
 
@@ -135,6 +136,9 @@ Handler <- function(){
   },action=list(marktxtwidget=".openfile_gui")
                     )
 
+  addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
+    UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
+})
 
 add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
 ## popup menu by right-click on CaseNamesWidget

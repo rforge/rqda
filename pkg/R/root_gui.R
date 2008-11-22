@@ -36,7 +36,9 @@ RQDA <- function() {
 2. Import files.\n
 3. Add codes.\n
 4. Open a file and begin coding.\n
-Author: <ronggui.huang@gmail.com>\n",
+Author: <ronggui.huang@gmail.com>\n
+License: FreeBSD\n
+Version: 0.1.5\n",
          container=.proj_gui)
 
 
@@ -70,7 +72,7 @@ Author: <ronggui.huang@gmail.com>\n",
   .codes_button[1,5]<- CodingMemoButton(label="C2Memo")
   .codes_button[2,1]<- HL_ALLButton()
   .codes_button[2,2]<- RetrievalButton("Retrieval")
-  .codes_button[2,3]<- RetrievalButton(label="Extend")
+  .codes_button[2,3]<- gbutton("Extend",handler=function(h,...)NI())
   .codes_button[2,4]<- Unmark_Button()
   .codes_button[2,5]<- Mark_Button()
 
@@ -95,21 +97,21 @@ Author: <ronggui.huang@gmail.com>\n",
   ".Ccat_PW" <- ggroup(cont=.codecat_pan,horizontal = FALSE)## parent Widget of C-cat
   ".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE)
    .CodeCatWidget[] <- NULL; names(.CodeCatWidget)<-"Code Category"
-   ".CodeofCat" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE)
+   ".CodeofCat" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
    .CodeofCat[] <- NULL;names(.CodeofCat)<-"Codes of This Category"
    .codecat_buttons[1,1] <- AddCodeCatButton("Add")
    .codecat_buttons[1,2] <- CodeCat_RenameButton("Rename")
    .codecat_buttons[1,3] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
-   .codecat_buttons[1,4] <- gbutton("AddTo")
-   .codecat_buttons[1,5] <- gbutton("DropFrom")
+   .codecat_buttons[1,4] <- CodeCatAddToButton("AddTo")
+   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropFrom")
 
 ######################### GUI  for F-cat
 #########################
-   ".fcat_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Cat")
+##   ".fcat_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Cat")
 
 ######################### GUI  for settings
 #########################
-   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings")
+##   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings")
 
   
 ######################### Put them together
@@ -125,6 +127,7 @@ assign(".codes_rqda",.codes_rqda,env=.rqda)
 assign(".fnames_rqda",.fnames_rqda,env=.rqda)
 assign(".CasesNamesWidget",.CasesNamesWidget,env=.rqda)
 assign(".CodeCatWidget",.CodeCatWidget,env=.rqda)
+assign(".CodeofCat",.CodeofCat,env=.rqda)
 
 ##########################
 ### set the positions

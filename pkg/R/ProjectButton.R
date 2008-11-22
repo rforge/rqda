@@ -11,7 +11,8 @@ gbutton("New Project",container=container,handler=function(h,...){
 
 OpenProjectButton <- function(container=.proj_gui){
 gbutton("Open Project",container=container,handler=function(h,...){
-    path <- gfile(type="open",filter=list("rqda"=list(patterns = c("*.rqda","*.*"))))
+    path <- gfile(type="open",filter=list("rqda"=list(patterns = c("*.rqda")),
+                                          "All files" = list(patterns = c("*"))))
     if (path!=""){
       Encoding(path) <- "UTF-8"
       open_proj(path,assignenv=.rqda)
@@ -19,6 +20,7 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(FileNamesUpdate(),error=function(e){})
       tryCatch(CaseNamesUpdate(),error=function(e){})
       tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
+      tryCatch(UpdateCodeofCatWidget(),error=function(e){})
 
     }
   }
@@ -33,6 +35,7 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
       tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
+      tryCatch(UpdateCodeofCatWidget(),error=function(e){})
       }
                                )
 

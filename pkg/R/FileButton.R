@@ -2,7 +2,8 @@ ImportFileButton <- function(label="Import", container,...)
 {
   gbutton(label, contain=container, handler=function(h,...){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
-      path <- gfile(type="open",filter=list("text files" = list(mime.types = c("text/plain"))))
+      path <- gfile(type="open",filter=list("text files" = list(mime.types = c("text/plain")),
+              "All files" = list(patterns = c("*"))))
       if (path!=""){
         Encoding(path) <- "UTF-8" ## have to convert, otherwise, can not find the file.
         ImportFile(path,con=.rqda$qdacon)

@@ -27,7 +27,7 @@ CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,...)
   if (nrow(codesName)!=0) {
   Encoding(codesName[['name']]) <- "UTF-8"
   tryCatch(CodeNamesWidget[] <- codesName[['name']], error=function(e){})
-  } else cat("Project is closed already.\n")
+  } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=T)
 }
 }
 
@@ -98,27 +98,34 @@ sindex <- function(widget){
 
 retrieval <- function(){
   currentCode <- svalue(.rqda$.codes_rqda)
+  if (length(currentCode)!=0){
   Encoding(currentCode) <- "UTF-8"
   currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
   ## reliable is more important                       
   retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
+  if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=T) else {
+  retrieval <-  retrieval[order( retrieval$fid),]
   fid <- unique(retrieval$fid)
+  retrieval$fname <-""
   .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(370,10),width=600,height=600)
   .retreivalgui <- gtext(con=.gw)
   for (i in fid){
-    FileNames <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
-    tryCatch(Encoding(FileNames) <- "UTF-8",error=function(e){})
-    fname <- paste("Source: ", FileNames, sep="")
-    seltext <- retrieval$seltext[retrieval$fid==i]
-    seltext <- paste(seltext,collapse="\n\n")
-    CodingIndex <- retrieval[retrieval$fid==i,c("selfirst","selend")]
-    CodingIndex <- apply(CodingIndex,1,FUN=function(x) paste(x,sep="",collapse=":"))
-    Encoding(seltext) <- "UTF-8"
-    add(.retreivalgui,fname,font.attr=c(style="italic",size="x-large"))
-    add(.retreivalgui,CodingIndex,font.attr=c(style="italic",size="x-large"))
-    add(.retreivalgui,"\n",font.attr=c(style="italic"))
-    add(.retreivalgui,seltext,font.attr=c(style="normal",size="large"))
-    add(.retreivalgui,"\n",font.attr=c(style="italic"))
+    FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
+    tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
+    ##fname <- paste("Source: ", FileNames, sep="")
+    retrieval$fname[retrieval$fid==i] <- FileName
+  }
+  Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
+  
+  apply(retrieval,1, function(x){
+     metaData <- sprintf("%s [%s:%s]\n",x[['fname']],x[['selfirst']],x[['selend']])
+     add(.retreivalgui,metaData,font.attr=c(foreground="red",size="x-large"),do.newline=FALSE)
+     add(.retreivalgui,x[['seltext']],font.attr=c(style="normal",size="large"),do.newline=FALSE)
+     add(.retreivalgui,"\n\n",font.attr=c(style="normal",size="large"),do.newline=FALSE)
+   }
+        )
+}
   }
 }
+
 

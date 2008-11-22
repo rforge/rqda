@@ -58,14 +58,16 @@ DeleteCodeCatButton <- function(label="Delete"){
                 Encoding(Selected) <- "UTF-8"
                 catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from codecat where status==1 and name=='%s'",Selected))[,1]
                 if (length(catid) ==1){
-                dbGetQuery(.rqda$qdacon,sprintf("update codecat set status=0 where name=='%s'",Selected))
-                ## set status in table freecode to 0
-                UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat")
-                tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treecode set status=0 where cid=='%s'",catid)),error=function(e){})
+                  dbGetQuery(.rqda$qdacon,sprintf("update codecat set status=0 where name=='%s'",Selected))
+                  ## set status in table freecode to 0
+                  UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat")
+                  tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treecode set status=0 where catid=='%s'",catid)),error=function(e){}) 
+                  ## should delete all the related codelists
+                  UpdateCodeofCatWidget() ## update the code of cat widget
                 } else gmessage("The Category Name is not unique.",con=T)
-
+                
               }
-                                 }
+            }
           }
           )
 }
@@ -93,11 +95,76 @@ CodeCat_RenameButton <- function(label="Rename",Widget=.rqda$.CodeCatWidget,...)
           )
 }
 
+UpdateCodeofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.CodeofCat){
+  SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
+  if (length(SelectedCodeCat)!=0){
+    ## if code cat is selected, then continue
+    Encoding(SelectedCodeCat) <- "UTF-8"
+    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from codecat where status=1 and name='%s'",SelectedCodeCat))[,1]
+    Total_cid <- dbGetQuery(con,sprintf("select cid from treecode where status==1 and catid==%i",catid))
+    if (nrow(Total_cid)!=0){
+      items <- dbGetQuery(con,"select name,id from freecode where status==1")
+      if (nrow(items)!=0) {
+        items <- items[items$id %in% Total_cid$cid,"name"]
+        Encoding(items) <- "UTF-8"
+      } else items <- NULL
+    } else items <- NULL
+  } else items <- NULL
+    tryCatch(Widget[] <- items,error=function(e){})
+}
+
 CodeCatAddToButton <- function(label="AddTo",Widget=.rqda$.CodeCatWidget,...)
 {
   gbutton(label,handler=function(h,...) {
-  Selected <- select.list()
+    ## SelectedCodeCat and its id (table codecat): svalue()-> Name; sql->catid
+    SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
+    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from codecat where status=1 and name='%s'",SelectedCodeCat))[,1]
+    ## CodeList and the id (table freecode): sql -> name and id where status==1
+    freecode <-  dbGetQuery(.rqda$qdacon,"select name, id from freecode where status=1")
+    Encoding(SelectedCodeCat) <- Encoding(freecode[['name']]) <- "UTF-8"
+    ## Get CodeList already in the category (table treecode): sql -> cid where catid==catid
+    codeofcat <- dbGetQuery(.rqda$qdacon,sprintf("select cid from treecode where status=1 and catid=%i",catid))
+    if (nrow(codeofcat)!=0){
+    ## compute those not in the category, then push them to select.list()
+    codeoutofcat <- subset(freecode,!(id %in% codeofcat$cid))
+    } else  codeoutofcat <- freecode
+    Selected <- select.list(codeoutofcat[['name']],multiple=TRUE)
+    if (length(Selected)!=0){
+    Selected <- iconv(Selected,to="UTF-8")
+    cid <- codeoutofcat[codeoutofcat$name %in% Selected,"id"]
+    Dat <- data.frame(cid=cid,catid=catid,date=date(),dateM=date(),memo="",status=1)
+    ## Push selected codeList to table treecode
+    dbWriteTable(.rqda$qdacon,"treecode",Dat,row.names=FALSE,append=TRUE)
+    ## update .CodeofCat Widget
+    UpdateCodeofCatWidget()
+  }
 }
-)
+          )
 }
+## update .rqda$.CodeofCat[] by click handler on .rqda$.CodeCatWidget
 
+CodeCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.CodeofCat,...)
+{
+  gbutton(label,handler=function(h,...) {
+    ## Get CodeList already in the category (table treecode): svalue()
+    CodeOfCat <- svalue(Widget)
+    if ((NumofSelected <- length(CodeOfCat)) ==0) {
+      gmessage("Please select the Codes you want to delete.",con=T)} else
+    {
+      ## Give a confirm msg
+      del <- gconfirm(sprintf("Delete %i code(s) from this category. Are you sure?",NumofSelected),con=T,icon="question")
+      if (isTRUE(del)){
+        ## set status==0 for those selected CodeList (table treecode)
+    SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
+    Encoding(SelectedCodeCat) <- Encoding(CodeOfCat)<- "UTF-8"
+    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from codecat where status=1 and name='%s'",SelectedCodeCat))[,1]
+    for (i in CodeOfCat){
+    cid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where status=1 and name='%s'",i))[,1]
+    dbGetQuery(.rqda$qdacon,sprintf("update treecode set status==0 where catid==%i and cid==%i",catid,cid))
+  }
+    ## update .CodeofCat Widget
+    UpdateCodeofCatWidget()
+}}
+  }
+          )
+}
