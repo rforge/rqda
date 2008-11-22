@@ -1,3 +1,13 @@
+2008-11-22
+	* change "Add Code Category" Button to popup menu
+	* Open selected file by double click.
+	* Retrieve coding chuck by double click.
+	* Add/rename/delete Buttons for Code-Category.
+	
+2008-11-21
+	* Add WebSearch Case button (for convienence)
+	* Add "Add Code Category" Button
+	
 2008-11-19 (as verion 0.1.4)
 	* Add project memo
 	* rename of file/free code names

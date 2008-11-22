@@ -42,14 +42,14 @@ mark <- function(widget){
   endN <- index$endN
   if (startN != endN){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
-    buffer$createTag("red.foreground",foreground = "red")
-    buffer$ApplyTagByName("red.foreground",startI,endI); ## change colors
+    # buffer$createTag("blue.foreground",foreground = "blue")
+    # buffer$ApplyTagByName("blue.foreground",startI,endI)
+     buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
+     buffer$ApplyTagByName("red.background",startI,endI); ## change colors   
   }
   ## only when selected text chunk is not "", apply the color scheme.
   return(list(start=startN,end=endN,text=selected))
 }
-
-
 
 ClearMark <- function(widget,min=0, max){
   ## max position of marked text.
@@ -57,7 +57,9 @@ ClearMark <- function(widget,min=0, max){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     startI <-gtkTextBufferGetIterAtOffset(buffer,min)$iter # translate number back to iter
     endI <-gtkTextBufferGetIterAtOffset(buffer,max)$iter
-    gtkTextBufferRemoveTagByName(buffer,"red.foreground",startI,endI)},
+#    gtkTextBufferRemoveTagByName(buffer,"red.foreground",startI,endI)},
+    gtkTextBufferRemoveTagByName(buffer,"red.background",startI,endI)},
+
            error=function(e){})
 }
 
@@ -71,8 +73,10 @@ HL <- function(W,index){
              buffer <- slot(W,"widget")@widget$GetBuffer()
              start <-gtkTextBufferGetIterAtOffset(buffer,x[1])$iter # translate number back to iter
              end <-gtkTextBufferGetIterAtOffset(buffer,x[2])$iter
-             buffer$createTag("red.foreground",foreground = "red")  
-             buffer$ApplyTagByName("red.foreground",start,end)}),
+#             buffer$createTag("red.foreground",foreground = "red")  
+#             buffer$ApplyTagByName("red.foreground",start,end)}),
+             buffer$createTag("red.background",background = "red")  
+             buffer$ApplyTagByName("red.background",start,end)}),
            error=function(e){})
 }
 

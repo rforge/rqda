@@ -1,3 +1,15 @@
+CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,...)
+{
+  if (isIdCurrent(.rqda$qdacon)){
+  CaseName <- dbGetQuery(.rqda$qdacon, "select name, id from cases where status=1")
+  if (nrow(CaseName)!=0) {
+    Encoding(CaseName[['name']]) <- "UTF-8"
+    tryCatch(CaseNamesWidget[] <- CaseName[['name']], error=function(e){})
+  }}
+}
+
+#################
+
 AddCaseButton <- function(label="ADD"){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -72,16 +84,6 @@ AddCase <- function(name,conName="qdacon",assignenv=.rqda,...) {
   }
 }
 
-CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,...)
-{
-  CaseName <- dbGetQuery(.rqda$qdacon, "select name, id from cases where status=1")
-  if (nrow(CaseName)!=0) {
-    Encoding(CaseName[['name']]) <- "UTF-8"
-    tryCatch(CaseNamesWidget[] <- CaseName[['name']], error=function(e){})
-  }
-}
-
-
 
 CaseMark_Button<-function(){
   gbutton("Mark",
@@ -148,5 +150,45 @@ CaseMemoButton <- function(label="Memo",...){
   }
           )
 }
+
+AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
+  gbutton(label,handler=function(h,...) {
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+    KeyWord <- svalue(CaseNamesWidget)
+    engine <- select.list(c("Baidu","Google","Yahoo"))
+    if (engine=="Baidu") {
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
+    }
+    if (engine=="Yahoo") {
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
+                     ,KeyWord))
+     }
+    if (engine=="Google")browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
+    }
+          }
+          )
+}
+
+CaseNamesWidgetMenu <- list()
+CaseNamesWidgetMenu$WebSearch$Baidu$handler <- function(h,...){
+    KeyWord <- svalue(.rqda$.CasesNamesWidget)
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
+}
+CaseNamesWidgetMenu$WebSearch$Google$handler <- function(h,...){
+    KeyWord <- svalue(.rqda$.CasesNamesWidget)
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
+}
+CaseNamesWidgetMenu$WebSearch$Yahoo$handler <- function(h,...){
+    KeyWord <- svalue(.rqda$.CasesNamesWidget)
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
+                     ,KeyWord))
+}
+
+
 
 

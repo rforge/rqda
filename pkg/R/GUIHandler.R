@@ -30,6 +30,30 @@ Handler <- function(){
                         )
 
 
+  addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...)
+  ##function copied from ViewFileButton handler
+  {
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+      if (length(svalue(.rqda$.fnames_rqda))==0){gmessage("Select a file first.",icon="error",con=TRUE)}
+      else {
+        tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
+        ## notice the error handler
+        assign(".root_edit",gwindow(title=svalue(.rqda$.fnames_rqda), parent=c(370,10),width=600,height=600),env=.rqda)
+        .root_edit <- get(".root_edit",.rqda)
+        assign(".openfile_gui",gtext(container=.root_edit,font.attr=c(sizes="large")),env=.rqda)
+        content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",svalue(.rqda$.fnames_rqda)))[1,1] 
+        Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
+        ## turn data.frame to 1-length character.
+        W <- get(".openfile_gui",.rqda)
+        add(W,content,font.attr=c(sizes="large"))
+        slot(W,"widget")@widget$SetEditable(FALSE)
+        ## make sure it is read only file in the text window.
+      }
+    }
+  }##end of function  copied from ViewFileButton handler
+                        )
+
+
   ## handler for .codes_rqda
 
   addHandlerMouseMotion(.rqda$.codes_rqda, handler <- function(h, ...) {
@@ -39,6 +63,10 @@ Handler <- function(){
   }
                         )
 
+  addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
+            if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval()
+          }
+                        )
   
   
   addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
@@ -108,5 +136,7 @@ Handler <- function(){
                     )
 
 
+add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
+## popup menu by right-click on CaseNamesWidget
 }
 

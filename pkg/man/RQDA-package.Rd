@@ -15,7 +15,7 @@ Type: \tab Package\cr
 Version: \tab 0.1\cr
 Date: \tab 2008-05-11\cr
 Depends: \tab DBI, RSQLite, RGtk2, gWidgets, gWidgetsRGtk2\cr
-License: \tab Non-commercial use only.\cr
+License: \tab FreeBSD\cr
 LazyLoad: \tab yes\cr
 }
 %% description of the package

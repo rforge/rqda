@@ -24,60 +24,19 @@ RQDA <- function() {
 ########################### GUI FOR PROJECT
 ########################### 
   ".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project")
-
-  ".newproj_gui" <- gbutton("New Project",container=.proj_gui,handler=function(h,...){
-    path=gfile(type="save") 
-    if (path!=""){
-      ## if path="", then click "cancel".
-      Encoding(path) <- "UTF-8"
-      new_proj(path,assignenv=.rqda)}
-  }
-                            )
-  
-  
-  ".open.proj_gui" <- gbutton("Open Project",container=.proj_gui,handler=function(h,...){
-    path <- gfile(type="open",filter=list("rqda"=list(patterns = c("*.rqda","*.*"))))
-    if (path!=""){
-      Encoding(path) <- "UTF-8"
-      open_proj(path,assignenv=.rqda)
-      tryCatch(CodeNamesUpdate(),error=function(e){})
-      tryCatch(FileNamesUpdate(),error=function(e){})
-      tryCatch(CaseNamesUpdate(),error=function(e){})
-    }
-  }
-                              )
-  
+  ".newproj_gui" <- NewProjectButton(container=.proj_gui)
+  ".open.proj_gui" <- OpenProjectButton(container=.proj_gui)
   ".project_memo" <- Proj_MemoButton(label = "Porject Memo", container = .proj_gui)
   ## project memo button
-  
-  ".close.proj_gui" <- gbutton("Close Project",container=.proj_gui,handler=function(h,...){
-      close_proj(assignenv=.rqda)
-      tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
-  }
-                               )
-
-  
-  ".projinfo_gui" <- gbutton("Current Project",container=.proj_gui,handler=function(h,...){
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      con <- .rqda$qdacon
-      dbname <- dbGetInfo(.rqda$qdacon)$dbname
-      ##substr(dbname, nchar(dbname)-15,nchar(dbname))
-      gmessage(dbname,title="Info about current project.",con=TRUE)
-    }
-  },
-                             action=list(env=.rqda,conName="qdacon")
-                             )
-
+  ".close.proj_gui" <- CloseProjectButton(container=.proj_gui)
+  ".projinfo_gui" <- ProjectInforButton(container=.proj_gui)
 
   glabel("Basic Usage of RQDA:\n
 1. New Project or Open project.\n
 2. Import files.\n
 3. Add codes.\n
 4. Open a file and begin coding.\n
-Author: <ronggui.huang@gmail.com>\n
-This software is part of my PhD research.\n",
+Author: <ronggui.huang@gmail.com>\n",
          container=.proj_gui)
 
 
@@ -88,6 +47,7 @@ This software is part of my PhD research.\n",
   ".files_button" <- ggroup(container=.files_pan,horizontal=TRUE)
   ".fnames_rqda" <- gtable("Click Here to see the File list.",container=.files_pan)
   .fnames_rqda[] <-NULL # get around of the text argument.
+  names(.fnames_rqda) <- "Files"
   ImportFileButton("Import",con=.files_button)
   DeleteFileButton("Delete",con=.files_button)
   ViewFileButton("Open",con=.files_button)
@@ -102,7 +62,7 @@ This software is part of my PhD research.\n",
   ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes")
   ".codes_button" <- glayout(container=.codes_pan)
   ".codes_rqda" <- gtable("Please click Update",container=.codes_pan)
-  .codes_rqda[] <- NULL 
+  .codes_rqda[] <- NULL ;names(.codes_rqda) <- "Codes List"
   .codes_button[1,1]<- AddCodeButton()
   .codes_button[1,2]<- DeleteCodeButton()
   .codes_button[1,3] <- FreeCode_RenameButton(label="Rename",CodeNamesWidget=.codes_rqda)
@@ -113,8 +73,7 @@ This software is part of my PhD research.\n",
   .codes_button[2,3]<- RetrievalButton(label="Extend")
   .codes_button[2,4]<- Unmark_Button()
   .codes_button[2,5]<- Mark_Button()
-  
-    
+
 ######################### GUI  for cases
 #########################
   ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Case")
@@ -126,14 +85,27 @@ This software is part of my PhD research.\n",
   .case_buttons[1,3] <- Case_RenameButton()
   .case_buttons[1,4] <- CaseMark_Button()
   .case_buttons[1,5] <- CaseMemoButton()
+  ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
+  
+
+######################### GUI  for C-cat
+#########################
+  ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="C-Cat")
+  ".codecat_buttons" <- glayout(container=.codecat_pan)
+  ".Ccat_PW" <- ggroup(cont=.codecat_pan,horizontal = FALSE)## parent Widget of C-cat
+  ".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE)
+   .CodeCatWidget[] <- NULL; names(.CodeCatWidget)<-"Code Category"
+   ".CodeofCat" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE)
+   .CodeofCat[] <- NULL;names(.CodeofCat)<-"Codes of This Category"
+   .codecat_buttons[1,1] <- AddCodeCatButton("Add")
+   .codecat_buttons[1,2] <- CodeCat_RenameButton("Rename")
+   .codecat_buttons[1,3] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
+   .codecat_buttons[1,4] <- gbutton("AddTo")
+   .codecat_buttons[1,5] <- gbutton("DropFrom")
 
 ######################### GUI  for F-cat
 #########################
    ".fcat_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Cat")
-
-######################### GUI  for C-cat
-#########################
-  ".codecat_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="C-Cat")
 
 ######################### GUI  for settings
 #########################
@@ -152,7 +124,14 @@ assign(".files_button",.files_button,env=.rqda)
 assign(".codes_rqda",.codes_rqda,env=.rqda)
 assign(".fnames_rqda",.fnames_rqda,env=.rqda)
 assign(".CasesNamesWidget",.CasesNamesWidget,env=.rqda)
- 
+assign(".CodeCatWidget",.CodeCatWidget,env=.rqda)
+
+##########################
+### set the positions
+svalue(.codes_pan) <- 0.1
+svalue(.codecat_pan)<-0.035
+svalue(.case_pan)<-0.035
+
 ##########################
 Handler()
 }

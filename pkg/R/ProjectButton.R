@@ -1,3 +1,57 @@
+NewProjectButton <- function(container=.proj_gui){
+gbutton("New Project",container=container,handler=function(h,...){
+    path=gfile(type="save") 
+    if (path!=""){
+      ## if path="", then click "cancel".
+      Encoding(path) <- "UTF-8"
+      new_proj(path,assignenv=.rqda)}
+  }
+                            )
+}
+
+OpenProjectButton <- function(container=.proj_gui){
+gbutton("Open Project",container=container,handler=function(h,...){
+    path <- gfile(type="open",filter=list("rqda"=list(patterns = c("*.rqda","*.*"))))
+    if (path!=""){
+      Encoding(path) <- "UTF-8"
+      open_proj(path,assignenv=.rqda)
+      tryCatch(CodeNamesUpdate(),error=function(e){})
+      tryCatch(FileNamesUpdate(),error=function(e){})
+      tryCatch(CaseNamesUpdate(),error=function(e){})
+      tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
+
+    }
+  }
+                              )
+}
+
+
+CloseProjectButton <- function(container=.proj_gui){
+gbutton("Close Project",container=container,handler=function(h,...){
+      close_proj(assignenv=.rqda)
+      tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
+      tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
+      }
+                               )
+
+}
+
+ProjectInforButton <- function(container=.proj_gui){
+gbutton("Current Project",container=container,handler=function(h,...){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+      con <- .rqda$qdacon
+      dbname <- dbGetInfo(.rqda$qdacon)$dbname
+      ##substr(dbname, nchar(dbname)-15,nchar(dbname))
+      gmessage(dbname,title="Info about current project.",con=TRUE)
+    }
+  },
+                             action=list(env=.rqda,conName="qdacon")
+                             )
+}
+
+
 Proj_MemoButton <- function(label="Porject Memo",container=.proj_gui,...){
 #### Each button a separate function -> more easy to debug, and the main function root_gui is shorter.
 ### The memo in dataset is UTF-8
