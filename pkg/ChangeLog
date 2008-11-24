@@ -1,3 +1,7 @@
+2008-11-24
+	* Can back to the original file from Retrieval text chunck (Improve the retreival button).
+	  has a bug: can not scroll to the right position.
+	
 2008-11-23 (as version 0.1.5)
 	* Add AddTo/DropFrom Buttons for Code-Category.
 	* Improve the display of retrieved coding.
@@ -19,7 +23,7 @@
 	* Handle Encoding better (use UTF-8 for storage in date base)
 	* Add cases category
 	
-2008-11-01
+2008-11-01(as version 0.1.3)
 	* Add functionality of file/code/coding memo.
 	
 2008-10-31

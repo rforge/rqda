@@ -71,10 +71,10 @@ Version: 0.1.5\n",
   .codes_button[1,4] <- CodeMemoButton(label="C-Memo")
   .codes_button[1,5]<- CodingMemoButton(label="C2Memo")
   .codes_button[2,1]<- HL_ALLButton()
-  .codes_button[2,2]<- RetrievalButton("Retrieval")
-  .codes_button[2,3]<- gbutton("Extend",handler=function(h,...)NI())
-  .codes_button[2,4]<- Unmark_Button()
-  .codes_button[2,5]<- Mark_Button()
+ # .codes_button[2,2]<- RetrievalButton("Retrieval")
+  .codes_button[2,2]<- ExtendButton("Retrieval")
+  .codes_button[2,3]<- Unmark_Button()
+  .codes_button[2,4]<- Mark_Button()
 
 ######################### GUI  for cases
 #########################

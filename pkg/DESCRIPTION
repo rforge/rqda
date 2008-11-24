@@ -9,3 +9,4 @@ Depends: DBI, RSQLite, RGtk2, gWidgets, gWidgetsRGtk2
 Description: Qualitative Data Analysis based on R language. Current version only supports plain text.
 License: FreeBSD
 LazyLoad: yes
+URL: http://rqda.r-forge.r-project.org/

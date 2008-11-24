@@ -42,6 +42,16 @@ RetrievalButton <- function(label){
           )
 }
 
+ExtendButton <- function(label){
+  gbutton(label,
+          handler=function(h,...) {
+            if (is_projOpen(env=.rqda,conName="qdacon")) {
+              retrieval2()
+            }
+          }
+          )
+}
+
 
 HL_ALLButton <- function(){
   gbutton("HL ALL",
