@@ -22,8 +22,46 @@
 \alias{rqdameta}
 \alias{retrieval}
 \alias{sindex}
+\alias{AddCase}
+\alias{AddCaseButton}
+\alias{AddCodeButton}
+\alias{AddCodeCatButton}
+\alias{AddTodbTable}
+\alias{AddWebSearchButton}
+\alias{CaseMark_Button}
+\alias{CaseMemoButton}
+\alias{CaseNamesUpdate}
+\alias{CaseNamesWidgetMenu}
+\alias{Case_RenameButton}
+\alias{CloseProjectButton}
+\alias{CodeCatAddToButton}
+\alias{CodeCatDropFromButton}
+\alias{CodeCat_RenameButton}
+\alias{CodeNamesUpdate}
+\alias{DeleteCaseButton}
+\alias{DeleteCodeButton}
+\alias{DeleteCodeCatButton}
+\alias{DeleteFileButton}
+\alias{ExtendButton}
+\alias{FileNamesUpdate}
+\alias{FreeCode_RenameButton}
+\alias{HL_ALLButton}
+\alias{Handler}
+\alias{ImportFile}
+\alias{ImportFileButton}
+\alias{Mark_Button}
+\alias{NewProjectButton}
+\alias{OpenProjectButton}
+\alias{ProjectInforButton}
+\alias{RetrievalButton}
+\alias{Unmark_Button}
+\alias{UpdateCodeofCatWidget}
+\alias{UpdateTableWidget}
+\alias{ViewFileButton}
+\alias{enc}
+\alias{retrieval2}
 %% add related alias functions here.
-\title{Internal Grid Functions}
+\title{Internal Functions}
 \description{
   Internal RQDA functions.
 }

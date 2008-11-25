@@ -27,7 +27,7 @@ CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,...)
   if (nrow(codesName)!=0) {
   Encoding(codesName[['name']]) <- "UTF-8"
   tryCatch(CodeNamesWidget[] <- codesName[['name']], error=function(e){})
-  } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=T)
+  } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
 }
 }
 
@@ -103,7 +103,7 @@ retrieval <- function(){
   currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
   ## reliable is more important                       
   retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
-  if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=T) else {
+  if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
   retrieval <-  retrieval[order( retrieval$fid),]
   fid <- unique(retrieval$fid)
   retrieval$fname <-""
@@ -135,7 +135,7 @@ retrieval2 <- function(){
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
     ## reliable is more important                       
     retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i order by fid",currentCid))
-    if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=T) else {
+    if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
       ## retrieval <-  retrieval[order( retrieval$fid),]
       ## use sql to order the fid
       fid <- unique(retrieval$fid)
@@ -165,7 +165,7 @@ retrieval2 <- function(){
             .rqda$.displayFile@widget@widget$SetEditable(FALSE)
             gtkTextViewScrollToIter(.rqda$.displayFile@widget@widget,
                                       .rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter,
-                                      0.001,xal=0,yal=0,use.align=T)## doesn't seem to work.
+                                      0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
             }    
          CallBackFUN
         }

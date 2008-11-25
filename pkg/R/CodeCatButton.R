@@ -64,7 +64,7 @@ DeleteCodeCatButton <- function(label="Delete"){
                   tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treecode set status=0 where catid=='%s'",catid)),error=function(e){}) 
                   ## should delete all the related codelists
                   UpdateCodeofCatWidget() ## update the code of cat widget
-                } else gmessage("The Category Name is not unique.",con=T)
+                } else gmessage("The Category Name is not unique.",con=TRUE)
                 
               }
             }
@@ -149,10 +149,10 @@ CodeCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.CodeofCat,...)
     ## Get CodeList already in the category (table treecode): svalue()
     CodeOfCat <- svalue(Widget)
     if ((NumofSelected <- length(CodeOfCat)) ==0) {
-      gmessage("Please select the Codes you want to delete.",con=T)} else
+      gmessage("Please select the Codes you want to delete.",con=TRUE)} else
     {
       ## Give a confirm msg
-      del <- gconfirm(sprintf("Delete %i code(s) from this category. Are you sure?",NumofSelected),con=T,icon="question")
+      del <- gconfirm(sprintf("Delete %i code(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
       if (isTRUE(del)){
         ## set status==0 for those selected CodeList (table treecode)
     SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)

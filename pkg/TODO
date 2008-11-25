@@ -2,7 +2,7 @@ tree-like structure of files.
 
 summary functions for review of coding.
 
-functions cleaning treecode/codecat table.
+functions cleaning treecode/codecat table. and the previous deletion functions should be modified.
 
 ### less important
 should add document on the table structure.

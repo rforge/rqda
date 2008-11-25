@@ -67,14 +67,13 @@ undelete <- function(type=c("file","code")){
                                                   paste(paste("'",del,"'",sep=""),collapse=",")))
           assign("currentFid",integer(0),envir=.rqda)
           assign("currentFile",character(0),envir=.rqda)
-          fnamesupdate(assignenv=.rqda)
-          ## update "currentFid"  "currentFile" "files_index"
+          FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
         } else if (type=="code"){
           ans <- dbGetQuery(.rqda$qdacon, sprintf("update freecode set status=1 where status=0 AND name in (%s)",
                                                   paste(paste("'",del,"'",sep=""),collapse=",")))
           assign("currentCid",integer(0),envir=.rqda)
           assign("currentCode",character(0),envir=.rqda)
-          codesupdate(assignenv=.rqda)
+          CodeNamesUpdate(CodeNamesWidget=.rqda$.codes_rqda)
           ## update "codes_index" "currentCid"  "currentCode"
         }
         ## else if (type=="coding") {

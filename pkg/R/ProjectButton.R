@@ -1,4 +1,4 @@
-NewProjectButton <- function(container=.proj_gui){
+NewProjectButton <- function(container){
 gbutton("New Project",container=container,handler=function(h,...){
     path=gfile(type="save") 
     if (path!=""){
@@ -9,7 +9,7 @@ gbutton("New Project",container=container,handler=function(h,...){
                             )
 }
 
-OpenProjectButton <- function(container=.proj_gui){
+OpenProjectButton <- function(container){
 gbutton("Open Project",container=container,handler=function(h,...){
     path <- gfile(type="open",filter=list("rqda"=list(patterns = c("*.rqda")),
                                           "All files" = list(patterns = c("*"))))
@@ -28,7 +28,7 @@ gbutton("Open Project",container=container,handler=function(h,...){
 }
 
 
-CloseProjectButton <- function(container=.proj_gui){
+CloseProjectButton <- function(container){
 gbutton("Close Project",container=container,handler=function(h,...){
       close_proj(assignenv=.rqda)
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
@@ -41,7 +41,7 @@ gbutton("Close Project",container=container,handler=function(h,...){
 
 }
 
-ProjectInforButton <- function(container=.proj_gui){
+ProjectInforButton <- function(container){
 gbutton("Current Project",container=container,handler=function(h,...){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       con <- .rqda$qdacon
@@ -55,7 +55,7 @@ gbutton("Current Project",container=container,handler=function(h,...){
 }
 
 
-Proj_MemoButton <- function(label="Porject Memo",container=.proj_gui,...){
+Proj_MemoButton <- function(label="Porject Memo",container,...){
 #### Each button a separate function -> more easy to debug, and the main function root_gui is shorter.
 ### The memo in dataset is UTF-8
   ## label of button

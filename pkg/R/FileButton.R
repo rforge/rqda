@@ -58,7 +58,7 @@ ViewFileButton <-  function(label="Open", container,...){
 }
 
 
-File_MemoButton <- function(label="F-Memo", container=.files_button,FileWidget=.fnames_rqda,...){
+File_MemoButton <- function(label="F-Memo", container=.rqda$.files_button,FileWidget=.rqda$.fnames_rqda,...){
   ## memo of selected file.
   gbutton(label, contain=container, handler=function(h,...) {
     if (is_projOpen(env=.rqda,"qdacon")) {
@@ -102,7 +102,7 @@ File_MemoButton <- function(label="F-Memo", container=.files_button,FileWidget=.
 
 
 
-File_RenameButton <- function(label="Rename", container=.files_button,FileWidget=.fnames_rqda,...)
+File_RenameButton <- function(label="Rename", container=.rqda$.files_button,FileWidget=.rqda$.fnames_rqda,...)
 {
   ## rename of selected file.
   gbutton(label, contain=container, handler=function(h,...) {

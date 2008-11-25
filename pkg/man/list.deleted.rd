@@ -6,7 +6,7 @@
 \description{
   \code{list.deleted} shows the file, code and coding tagged with deletion
   mark.
-  \code{pdelete} _p_ermanently delete them.
+  \code{pdelete} Permanently delete them.
   \code{undelete} let you reuse the temporary tagged as deleted file and code.
 }
 \usage{
@@ -32,7 +32,7 @@ undelete(type=c("file","code"))
   ones to be deleted permenantly.By \code{undelete}, you can undo the
   temporary deleted files and codes. It offers a GUI so you can choose
   in the list. For the time being, it is not the true reserve process of
-  GUI  deletion, as the deletion-tagged _coding_ will not set to the
+  GUI  deletion, as the deletion-tagged coding will not set to the
   original status.
 }
 
