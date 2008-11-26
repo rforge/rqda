@@ -2,52 +2,21 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=gb2312">
-	<TITLE>Welcome to the RQDA Project!</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.0  (Win32)">
+	<TITLE>Welcome to RQDA Project</TITLE>
 	<META NAME="AUTHOR" CONTENT="wincent">
 	<META NAME="CREATED" CONTENT="20081101;12455800">
-	<META NAME="CHANGEDBY" CONTENT="wincent">
-	<META NAME="CHANGED" CONTENT="20081103;11045400">
-	<META NAME="Info 1" CONTENT="">
-	<META NAME="Info 2" CONTENT="">
-	<META NAME="Info 3" CONTENT="">
-	<META NAME="Info 4" CONTENT="">
-	<META NAME="CHANGEDBY" CONTENT="wincent">
-	<STYLE TYPE="text/css">
-	<!--
-		CODE.cjk { font-family: "新宋体", monospace }
-	-->
-	</STYLE>
+        <link rel="stylesheet" href="rqda.css">
 </HEAD>
 
-<BODY LANG="zh-CN" DIR="LTR">
+<BODY>
 
-<P ALIGN=CENTER><FONT COLOR="#008000"><FONT FACE="Times New Roman, serif"><FONT SIZE=4 STYLE="font-size: 15pt"><SPAN LANG="en-US">Welcome to the RQDA Project!</SPAN></FONT></FONT></FONT></P>
+<P ALIGN=CENTER><FONT COLOR="#008000"><FONT FACE="Times New Roman, serif"><FONT SIZE=4 STYLE="font-size: 15pt"><SPAN LANG="en-US">Welcome to RQDA Project!</SPAN></FONT></FONT></FONT></P>
 
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>Whatis RQDA and its features?</B></SPAN></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">RDQA
-</SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">is
-a package for Qualitative Data Analysis built upon <A HREF="http://www.r-project.org/">R</A>,
-a </SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>free</B></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">
-qualitative analysis software application. It works both on the
-Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and MacOS
-platforms. </SPAN></FONT><STRONG><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">RQDA</SPAN></SPAN></FONT></STRONG><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">
-</SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">i</SPAN></SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">s
-an easy-to-use tool to assist in the analysis of textual data. At the
-present, it supports only plain text format data. All the information
-is stored in <A HREF="http://www.sqlite.org/">SQLite</A> database via
-the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>.
-The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>,
-via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>.
-It includes a number of standard Computer-Aided Qualitative Data
-Analysis features. Besides, it seamlessly integrated with R, which
-means that a) statistical analysis on the coding is possible, and b)
-functions about data manipulation and analysis can be easily extended
-by writing R functions. To some extent, </SPAN></FONT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>RQDA
-and R makes an integrated platform for both quantitative and
-qualitative data analysis.</B></SPAN></FONT></SPAN></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">By
-the GUI, it can:
+<h1>What is RQDA and its features?</h1>
+
+<P>RDQA is a <A HREF="http://www.r-project.org/">R</A> package for Qualitative Data Analysis, a <B>free</B> qualitative analysis software application (<A HREF="License.html">New BSD style license</A>). It works both on the Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and (probably) MacOS platforms. RQDA is an easy-to-use tool to assist in the analysis of textual data. At the present, it supports only plain text format data. All the information is stored in <A HREF="http://www.sqlite.org/">SQLite</A> database via the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>. The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>, via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>. It includes a number of standard Computer-Aided Qualitative Data Analysis features. Besides, it seamlessly integrated with R, which means that a) statistical analysis on the coding is possible, and b) functions about data manipulation and analysis can be easily extended by writing R functions. To some extent, <B>RQDA and R makes an integrated platform for both quantitative and qualitative data analysis.</B>
+
+<p>By the GUI, it can:
 <li>Import documents from plain text
 <li>Support non-English documents, Simplified Chinese Character is well-tested under Windows
 <li>Character-level coding using codes
@@ -60,54 +29,52 @@ the GUI, it can:
 <li>Temporary delete files and codes
 <li> Rename the files,code, code category, case and others
 
-<BR><BR>By R functions, it can:
+<p>By R functions, it can:
 <li>Show the temporary deletion files and codes
 <li>Undo the temporary deletion
 <li>Permanently erase the temporary deletion
 
-<BR><BR>Other functions may be added with the development of the software in the future.</SPAN></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>INSTALLATION</B></SPAN></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">RQDA is based on R, so you have to install R and relevant packages in
+<p>Other functions may be added with the development of the software in the future.
+
+<p>
+<h1>Installation</h1>
+
+<p>RQDA is based on R, so you have to install R and relevant packages in
 order to use RQDA.
 
-<li>Go to <A HREF="http://cran.r-project.org/">CRAN</A>,
-download R and install it. For Linux and BSD users, you can download
-binary version of R or the sources. For Windows users, you can
-download the binary version of R from the <A HREF="http://cran.r-project.org/bin/windows/base/">download
-page</A>. For MacOS users, download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download
-page</A>, More instruction about installing R is in the <A HREF="http://cran.r-project.org/doc/manuals/R-admin.html">R
-Installation and Administration</A> Manual.
+<li>Go to <A HREF="http://cran.r-project.org/">CRAN</A>, download R and install it. For Linux and BSD users, you can download binary version of R or the sources. For Windows users, you can download the binary version of R from the <A HREF="http://cran.r-project.org/bin/windows/base/">download page</A>. For MacOS users, download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download page</A>, More instruction about installing R is in the <A HREF="http://cran.r-project.org/doc/manuals/R-admin.html">R Installation and Administration</A> Manual.
 
-<li>Launch R (as usual
-applications under Windows; or by command $R within shell terminal
-under Linux and FreeBSD). Then, you can see the prompt &ldquo;&gt;&rdquo;,
-which indicates that R is ready for further commands.
+<li>Launch R (as usual applications under Windows; or by command $R within shell terminal under Linux and FreeBSD). Then, you can see the prompt &ldquo;&gt;&rdquo;,which indicates that R is ready for further commands.
 
-<li>Install relevant packages by R command: <I><B>install.packages(c(&quot;DBI&quot;,&quot;RSQLite&quot;,&quot;RGtk2&quot;,&quot;gWidgets&quot;,&quot;gWidgetsRGtk2&quot;))</B></I>
+<li>Install relevant packages by R command: <I>install.packages(c("DBI","RSQLite","RGtk2","gWidgets","gWidgetsRGtk2"))</I> . Because RGtk2 depends on GTK+, you may need to install GTK+ if you have difficulty in installing RGtk2. For windows user, <A HREF="http://downloads.sourceforge.net/gladewin32/gtk-2.10.11-win32-1.exe?modtime=1175123376&big_mirror=0">download</A> GTK+ and install it. For MacOS users, <A HREF="http://r.research.att.com/gtk2-runtime.dmg">download</A> GTK+ here and install it. For Debian-based Linux users, you may use $ sudo apt-get install r-cran-rgtk2 to install RGtk2. For other Linux users, you may have to manually install GTK+, <A HREF="http://www.gtk.org/download-linux.html"> download</A> the source tarball, and follow the <A HREF="http://library.gnome.org/devel/gtk/unstable/gtk-building.html">instructions</A> of installation.
 
-<li>Install RQDA package: use command:
-<B><I>install.packages(&quot;RQDA&quot;,repos=&quot;http://R-Forge.R-project.org&quot;)</B></I>.
+<li>Install RQDA package: use command: <I>install.packages("RQDA",repos="http://R-Forge.R-project.org")</I>.
 
-<li>Launch RQDA by command <I><B>library(RQDA)</B></I> from within R. Then you can see the RQDA GUI.
+<li>Launch RQDA by command <I>library(RQDA)</I> from within R. Then you can see the RQDA GUI.
 
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><IMG SRC="Main.png" NAME="Main GUI" ALIGN=LEFT  BORDER=0><BR CLEAR=LEFT><BR>
-</P>
+<h1>Documentation</h1>
+Under construction (contributions are more than welcome).
 
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>Reference</B></SPAN></FONT></P>
+<p>
+<h1>Reference</h1>
 <li> Kelle, U. (ed.).1995."Computer-aided qualitative data analysis : theory, methods and practice." Sage Publications.
 
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><B>More
-information?</B></SPAN></FONT></P>
-<P ALIGN=LEFT><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US"><FONT FACE="Times New Roman, serif"><SPAN LANG="en-US">
+<p>
+<h1>How to cite the software</h1>
+<p>Huang Ronggui (2008). RQDA: R-based Qualitative Data Analysis package. R package version 0.1.5. http://rqda.r-forge.r-project.org/
+
+<h1>More Informaiton</h1>
 
 <li>The project summary page you can find <A HREF="http://r-forge.r-project.org/projects/rqda/">here</A>.
 
-<li>Homepage of <A HREF="http://ronggui.huang.googlepages.com/">the
-author</A>.
+<li>Homepage of <A HREF="http://ronggui.huang.googlepages.com/">the author</A>.
 
-<li><A HREF="http://www.pressure.to/qda/">Weft QDA</A>,
-a similar project based on <A HREF="http://www.ruby-lang.org/en/">Ruby.</A></SPAN></FONT></SPAN></FONT></P>
-<P ALIGN=LEFT><BR><BR>
+<li><A HREF="http://www.pressure.to/qda/">Weft QDA</A>, a similar project based on <A HREF="http://www.ruby-lang.org/en/">Ruby.</A>
+
+<p>
+<h1>Screenshots</h1>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><IMG SRC="Main.png" NAME="Main GUI" ALIGN=LEFT  BORDER=0><BR CLEAR=LEFT><BR>
 </P>
+
 </BODY>
 </HTML>
