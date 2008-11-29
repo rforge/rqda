@@ -24,6 +24,7 @@
 <li>Retrieval of coding, and easily back to the original file (ease the problem of segmentation)
 <li>Single-file (*.rqda) format, which is basically SQLite database. Data are stored in UTF-8, so it should be portable
 <li>Facilitator helps to categorize codes,which is key to theory building. I deliberately avoid using tree-like categorization
+<li>Facilitator helps to categorize files
 <li>There is a case category, which is crucial feature to bridge qualitative and quantitative research
 <li>Search information about selected case from the Internet vis popup menu
 <li>Temporary delete files and codes
@@ -34,10 +35,12 @@
 <li>Undo the temporary deletion
 <li>Permanently erase the temporary deletion
 
-<p>Other functions may be added with the development of the software in the future.
+<p>Other functions may be added with the development of the software in the future. Click <A HREF="ChangeLog.txt">here</A> to see the <B>new features</B>.
 
 <p>
 <h1>Installation</h1>
+
+<li>Because RGtk2 depends on GTK+, you may need to install GTK+ before install RGtk2. For windows user, <A HREF="http://downloads.sourceforge.net/gladewin32/gtk-2.10.11-win32-1.exe?modtime=1175123376&big_mirror=0">download</A> GTK+ and install it. For MacOS users, <A HREF="http://r.research.att.com/gtk2-runtime.dmg">download</A> GTK+ here and install it. For Debian-based Linux users, you may use <i>sudo apt-get install libgtk2.0-dev</i> to install GTK+ library. For other Linux users, you may have to manually install GTK+, <A HREF="http://www.gtk.org/download-linux.html"> download</A> the source tarball, and follow the <A HREF="http://library.gnome.org/devel/gtk/unstable/gtk-building.html">instructions</A> of installation.
 
 <p>RQDA is based on R, so you have to install R and relevant packages in
 order to use RQDA.
@@ -46,14 +49,29 @@ order to use RQDA.
 
 <li>Launch R (as usual applications under Windows; or by command $R within shell terminal under Linux and FreeBSD). Then, you can see the prompt &ldquo;&gt;&rdquo;,which indicates that R is ready for further commands.
 
-<li>Install relevant packages by R command: <I>install.packages(c("DBI","RSQLite","RGtk2","gWidgets","gWidgetsRGtk2"))</I> . Because RGtk2 depends on GTK+, you may need to install GTK+ if you have difficulty in installing RGtk2. For windows user, <A HREF="http://downloads.sourceforge.net/gladewin32/gtk-2.10.11-win32-1.exe?modtime=1175123376&big_mirror=0">download</A> GTK+ and install it. For MacOS users, <A HREF="http://r.research.att.com/gtk2-runtime.dmg">download</A> GTK+ here and install it. For Debian-based Linux users, you may use $ sudo apt-get install r-cran-rgtk2 to install RGtk2. For other Linux users, you may have to manually install GTK+, <A HREF="http://www.gtk.org/download-linux.html"> download</A> the source tarball, and follow the <A HREF="http://library.gnome.org/devel/gtk/unstable/gtk-building.html">instructions</A> of installation.
+<li>Install relevant packages by R command: <I>install.packages(c("DBI","RSQLite","RGtk2","gWidgets","gWidgetsRGtk2"))</I> . 
 
 <li>Install RQDA package: use command: <I>install.packages("RQDA",repos="http://R-Forge.R-project.org")</I>.
 
 <li>Launch RQDA by command <I>library(RQDA)</I> from within R. Then you can see the RQDA GUI.
 
+
+
+
+
+
+
+
+
 <h1>Documentation</h1>
-Under construction (contributions are more than welcome).
+
+<p>Under Linux/FreeBSD, you should set the locale of R to UTF-8 to get a better support of non-English documents. In my FreeBSD box, I set the locale of R by this R command: <i>Sys.setlocale(locale = "zh_CN.UTF-8")</i>.
+
+<p>Basic usage: 1. Open or create new project. 2. Import files. 3. Select a file and open it by click button open. 4. Add codes. 5. Select a codes, select text segment in the open file, and press button mark. Select the same text segment and click button Unmark, you can undo the action. 6. Do more coding as step 5. 7. Select a code and click button retrieval to see what text segments have been attached to that code.
+
+<p>About memo buttons in the code tab: 1. C-memo is used to attach memo to a selected code. You can select a code then click C-memo button to view/add memo. 2. C2Memo is used to attach a memo to a coded segments. In the open file, you can see the coded segments (highlighted), select one segment, and click C2Memo, you can view/add memo to that coded-segment.
+
+<p>Under construction (contributions are more than welcome).
 
 <p>
 <h1>Reference</h1>

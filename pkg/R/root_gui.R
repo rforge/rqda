@@ -26,7 +26,7 @@ RQDA <- function() {
   ".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project")
   ".newproj_gui" <- NewProjectButton(container=.proj_gui)
   ".open.proj_gui" <- OpenProjectButton(container=.proj_gui)
-  ".project_memo" <- Proj_MemoButton(label = "Porject Memo", container = .proj_gui)
+  ".project_memo" <- Proj_MemoButton(label = "Project Memo", container = .proj_gui)
   ## project memo button
   ".close.proj_gui" <- CloseProjectButton(container=.proj_gui)
   ".projinfo_gui" <- ProjectInforButton(container=.proj_gui)
@@ -81,7 +81,7 @@ Version: 0.1.5\n",
   ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Case")
   ".case_buttons" <- glayout(container=.case_pan)
   ".CasesNamesWidget" <- gtable("Please click Update",container=.case_pan)
-  .CasesNamesWidget[] <- NULL 
+  .CasesNamesWidget[] <- NULL ; names(.CasesNamesWidget) <- "Cases"
   .case_buttons[1,1] <- AddCaseButton()
   .case_buttons[1,2] <- DeleteCaseButton()
   .case_buttons[1,3] <- Case_RenameButton()
@@ -107,7 +107,18 @@ Version: 0.1.5\n",
 
 ######################### GUI  for F-cat
 #########################
-##   ".fcat_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Cat")
+  ".filecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Cat")
+  ".filecat_buttons" <- glayout(container=.filecat_pan)
+  ".Fcat_PW" <- ggroup(cont=.filecat_pan,horizontal = FALSE)## parent Widget of F-cat
+  ".FileCatWidget" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE)
+   .FileCatWidget[] <- NULL; names(.FileCatWidget)<-"File Category"
+   ".FileofCat" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE,multiple=TRUE)
+   .FileofCat[] <- NULL;names(.FileofCat)<-"Files of This Category"
+   .filecat_buttons[1,1] <- AddFileCatButton("Add")
+   .filecat_buttons[1,2] <- FileCat_RenameButton("Rename")
+   .filecat_buttons[1,3] <- DeleteFileCatButton("Delete") ## should take care of treecode table
+   .filecat_buttons[1,4] <- FileCatAddToButton("AddTo")
+   .filecat_buttons[1,5] <- FileCatDropFromButton("DropFrom")
 
 ######################### GUI  for settings
 #########################
@@ -128,12 +139,15 @@ assign(".fnames_rqda",.fnames_rqda,env=.rqda)
 assign(".CasesNamesWidget",.CasesNamesWidget,env=.rqda)
 assign(".CodeCatWidget",.CodeCatWidget,env=.rqda)
 assign(".CodeofCat",.CodeofCat,env=.rqda)
+assign(".FileCatWidget",.FileCatWidget,env=.rqda)
+assign(".FileofCat",.FileofCat,env=.rqda)
 
 ##########################
 ### set the positions
-svalue(.codes_pan) <- 0.1
-svalue(.codecat_pan)<-0.035
-svalue(.case_pan)<-0.035
+svalue(.codes_pan) <- 0.13
+svalue(.codecat_pan)<-0.07
+svalue(.filecat_pan)<-0.07
+svalue(.case_pan)<-0.07
 
 ##########################
 Handler()

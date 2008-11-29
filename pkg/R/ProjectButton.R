@@ -21,6 +21,8 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(CaseNamesUpdate(),error=function(e){})
       tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
       tryCatch(UpdateCodeofCatWidget(),error=function(e){})
+      tryCatch(UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat"),error=function(e){})
+      tryCatch(UpdateFileofCatWidget(),error=function(e){})
 
     }
   }
@@ -36,6 +38,8 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
       tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
       tryCatch(UpdateCodeofCatWidget(),error=function(e){})
+      tryCatch(UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat"),error=function(e){})
+      tryCatch(UpdateFileofCatWidget(),error=function(e){})
       }
                                )
 

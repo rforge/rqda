@@ -46,7 +46,7 @@ ExtendButton <- function(label){
   gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
-              retrieval2()
+              retrieval2(CodeNameWidget=.rqda$.codes_rqda)
             }
           }
           )

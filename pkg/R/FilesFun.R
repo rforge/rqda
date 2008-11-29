@@ -56,3 +56,32 @@ setEncoding <- function(encoding="unknown"){
 
 enc <- function(x) gsub("'", "''", x)
 ## replace " with two '. to make insert smoothly.
+
+ViewFileFun <- function(FileNameWidget){
+## FileNameWidget=.rqda$.fnames_rqda in Files Tab
+## FileNameWidget=.rqda$.FileofCat in F-CAT Tab
+        if (is_projOpen(env = .rqda, conName = "qdacon")) {
+            if (length(svalue(FileNameWidget)) == 0) {
+                gmessage("Select a file first.", icon = "error", 
+                  con = TRUE)
+            }
+            else {
+                tryCatch(dispose(.rqda$.root_edit), error = function(e) {
+                })
+                SelectedFileName <- svalue(FileNameWidget)
+                assign(".root_edit", gwindow(title = SelectedFileName, 
+                  parent = c(370, 10), width = 600, height = 600), 
+                  env = .rqda)
+                .root_edit <- get(".root_edit", .rqda)
+                assign(".openfile_gui", gtext(container = .root_edit, 
+                  font.attr = c(sizes = "large")), env = .rqda)
+                Encoding(SelectedFileName) <- "unknown"
+                content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'", 
+                  SelectedFileName))[1, 1]
+                Encoding(content) <- "UTF-8"
+                W <- get(".openfile_gui", .rqda)
+                add(W, content, font.attr = c(sizes = "large"))
+                slot(W, "widget")@widget$SetEditable(FALSE)
+            }
+        }
+    }

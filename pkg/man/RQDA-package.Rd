@@ -3,7 +3,7 @@
 \alias{RQDA}
 \docType{package}
 \title{
-Qualitative data analysis
+  R-based Qualitative Data Analysis package
 }
 \description{
   Qualitative Data Analysis based on R language. Current version only supports plain text.

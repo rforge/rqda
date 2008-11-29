@@ -42,10 +42,10 @@ mark <- function(widget){
   endN <- index$endN
   if (startN != endN){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
-    # buffer$createTag("blue.foreground",foreground = "blue")
-    # buffer$ApplyTagByName("blue.foreground",startI,endI)
-     buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
-     buffer$ApplyTagByName("red.background",startI,endI); ## change colors   
+    buffer$createTag("red.foreground",foreground = "red")
+    buffer$ApplyTagByName("red.foreground",startI,endI)
+    ## buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
+    ## buffer$ApplyTagByName("red.background",startI,endI); ## change colors   
   }
   ## only when selected text chunk is not "", apply the color scheme.
   return(list(start=startN,end=endN,text=selected))
@@ -128,8 +128,10 @@ retrieval <- function(){
   }
 }
 
-retrieval2 <- function(){
-  currentCode <- svalue(.rqda$.codes_rqda)
+retrieval2 <- function(CodeNameWidget){
+## CodeNameWidget=.rqda$.codes_rqda for Codes Tab
+## CodeNameWidget=.rqda$.CodeofCat for C-Cat Tab
+  currentCode <- svalue(CodeNameWidget)
   if (length(currentCode)!=0){
     Encoding(currentCode) <- "UTF-8"
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
@@ -154,7 +156,7 @@ retrieval2 <- function(){
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
           CallBackFUN <- function(button){  
             tryCatch(dispose(.rqda$.rootBackToFile),error=function(e) {})
-            root <- gwindow(title=FileName, parent=c(370,10),width=600,height=600)
+            root <- gwindow(title=FileName, parent=c(370,40),width=580,height=300)
             assign(".rootBackToFile",root,env=.rqda)
             displayFile <- gtext(container=root,font.attr=c(sizes="large"))
             assign(".displayFile",displayFile,env=.rqda)
@@ -163,9 +165,13 @@ retrieval2 <- function(){
             add(.rqda$.displayFile,content,font.attr=c(sizes="large"))
             HL(.rqda$.displayFile,data.frame(begin=BeginPosition,end=EndPosition))
             .rqda$.displayFile@widget@widget$SetEditable(FALSE)
-            gtkTextViewScrollToIter(.rqda$.displayFile@widget@widget,
-                                      .rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter,
-                                      0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
+            MarkHere <- .rqda$.displayFile@widget@widget$GetBuffer()$CreateMark(mark.name = "MarkHere", where=.rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter)
+            # create a mark -> more reliable to use ScrollToMark than ScrollToIter
+            #gtkTextViewScrollToIter(.rqda$.displayFile@widget@widget,
+            #                          .rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter,
+            #                          0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
+            gtkTextViewScrollToMark(.rqda$.displayFile@widget@widget,
+                                      MarkHere,0,xal=0,yal=0.2,use.align=TRUE)
             }    
          CallBackFUN
         }
@@ -174,7 +180,7 @@ retrieval2 <- function(){
       iter <- buffer$getIterAtOffset(0)$iter
 create.tags <- function(buffer)
 {
-buffer$createTag("big",size = 20 * PANGO_SCALE)
+buffer$createTag("big",size = 14 * PANGO_SCALE)
 buffer$createTag("x-large",scale = PANGO_SCALE_X_LARGE)
 buffer$createTag("large",scale = PANGO_SCALE_LARGE)
 buffer$createTag("red.foreground",foreground = "red")

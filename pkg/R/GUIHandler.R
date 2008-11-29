@@ -4,7 +4,7 @@ Handler <- function(){
   ## handler for Root
   addHandlerUnrealize(.rqda$.root_rqdagui, handler = function(h,...) {
     ## make sure is the project should be closed by issuing a confirm window.
-    val <- gconfirm("Really EXIST?\n\nYou can use RQDA() to start this program again.", parent=h$obj)
+    val <- gconfirm("Really EXIT?\n\nYou can use RQDA() to start this program again.", parent=h$obj)
     if(as.logical(val))
       return(FALSE)             # destroy
     else
@@ -38,10 +38,15 @@ Handler <- function(){
       else {
         tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
         ## notice the error handler
-        assign(".root_edit",gwindow(title=svalue(.rqda$.fnames_rqda), parent=c(370,10),width=600,height=600),env=.rqda)
+        SelectedFile <- svalue(.rqda$.fnames_rqda)
+        assign(".root_edit",gwindow(title=SelectedFile, parent=c(370,10),width=600,height=600),env=.rqda)
         .root_edit <- get(".root_edit",.rqda)
         assign(".openfile_gui",gtext(container=.root_edit,font.attr=c(sizes="large")),env=.rqda)
-        content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",svalue(.rqda$.fnames_rqda)))[1,1] 
+        Encoding(SelectedFile) <- "unknown"
+        ## By default, SelectedFile is in UTF-8, if not set to unknown, under FreeBSD,
+        ## it will convert to the current encoding before the query
+        ## so it should be set to unknow in order to get the correct qunery result.
+        content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",SelectedFile))[1,1]
         Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
         ## turn data.frame to 1-length character.
         W <- get(".openfile_gui",.rqda)
@@ -139,6 +144,17 @@ Handler <- function(){
   addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
     UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
 })
+
+  addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
+            if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval2(CodeNameWidget=.rqda$.CodeofCat)
+          }
+                        )
+
+  addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
+    UpdateFileofCatWidget(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
+})
+
+addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
 
 add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
 ## popup menu by right-click on CaseNamesWidget

@@ -10,13 +10,18 @@
   \code{undelete} let you reuse the temporary tagged as deleted file and code.
 }
 \usage{
-list.deleted(type = c("file", "code", "coding"))
-pdelete(type = c("file", "code", "coding"),ask = FALSE)
+list.deleted(type = c("file","code","case","codecategory","coding"))
+pdelete(type = c("file","code","case","codecategory","coding"),ask = FALSE)
 undelete(type=c("file","code"))
 }
 
 \arguments{
-  \item{type}{ What kind of info would you like to show or clear.}
+  \item{type}{ What kind of info would you like to show or clear.$_file_$
+  is the name of file (in the Files tab). $_code_$ is the name of codes
+  (in the Codes tab). $_case_$ is the
+  name of case (in the Case tab). $_codecategory_$ is name of code
+  category (in the C-Cat tab). $_coding_$ is the text segment associated
+  with specific code.}
   \item{ask} {You can choose which ones to be deleted when is
   TRUE. Otherwise, it will delete all with temporary tagged with
   deletion mark, that is status=0.}

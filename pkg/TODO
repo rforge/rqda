@@ -4,5 +4,6 @@ summary functions for review of coding.
 
 functions cleaning treecode/codecat table. and the previous deletion functions should be modified.
 
+add warning when duplicated file/code etc. are added.
 ### less important
 should add document on the table structure.
