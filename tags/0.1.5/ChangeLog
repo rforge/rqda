@@ -1,17 +1,3 @@
-2008-11-29
-	* enhancement of function list.deleted() and pdelete()
-	* better handle the encoding issue in ViewFileButton and handler for openning a file.
-	* Add F-Cat (file-category) to help organized the files.
-	* Add doubleclick handlers to CodeOfCat and FileOfCat to retrieve coding and open file.
-	* fix typo (Thanks Adrian Dusa)
-	* fix a minor bug of CodeNamesUpdate()
-	
-2008-11-25
-	*Take care of the warning from R CMD check
-	
-2008-11-24
-	* Can back to the original file from Retrieved text chunck (by retrieval2 function).
-	
 2008-11-23 (as version 0.1.5)
 	* Add AddTo/DropFrom Buttons for Code-Category.
 	* Improve the display of retrieved coding.
@@ -33,7 +19,7 @@
 	* Handle Encoding better (use UTF-8 for storage in date base)
 	* Add cases category
 	
-2008-11-01(as version 0.1.3)
+2008-11-01
 	* Add functionality of file/code/coding memo.
 	
 2008-10-31

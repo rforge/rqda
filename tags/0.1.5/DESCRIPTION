@@ -1,0 +1,11 @@
+Package: RQDA
+Type: Package
+Title: Qualitative data analysis
+Version: 0.1.5
+Date: 2008-11-01
+Author: Huang Ronggui
+Maintainer: Huang <ronggui.huang@gmail.com>
+Depends: DBI, RSQLite, RGtk2, gWidgets, gWidgetsRGtk2
+Description: Qualitative Data Analysis based on R language. Current version only supports plain text.
+License: FreeBSD
+LazyLoad: yes

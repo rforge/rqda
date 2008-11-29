@@ -27,7 +27,8 @@ CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,...)
   if (nrow(codesName)!=0) {
   Encoding(codesName[['name']]) <- "UTF-8"
   tryCatch(CodeNamesWidget[] <- codesName[['name']], error=function(e){})
-  }} else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
+  } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=T)
+}
 }
 
 
@@ -41,10 +42,10 @@ mark <- function(widget){
   endN <- index$endN
   if (startN != endN){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
-    buffer$createTag("red.foreground",foreground = "red")
-    buffer$ApplyTagByName("red.foreground",startI,endI)
-    ## buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
-    ## buffer$ApplyTagByName("red.background",startI,endI); ## change colors   
+    # buffer$createTag("blue.foreground",foreground = "blue")
+    # buffer$ApplyTagByName("blue.foreground",startI,endI)
+     buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
+     buffer$ApplyTagByName("red.background",startI,endI); ## change colors   
   }
   ## only when selected text chunk is not "", apply the color scheme.
   return(list(start=startN,end=endN,text=selected))
@@ -102,7 +103,7 @@ retrieval <- function(){
   currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
   ## reliable is more important                       
   retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
-  if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
+  if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=T) else {
   retrieval <-  retrieval[order( retrieval$fid),]
   fid <- unique(retrieval$fid)
   retrieval$fname <-""
@@ -126,87 +127,5 @@ retrieval <- function(){
 }
   }
 }
-
-retrieval2 <- function(CodeNameWidget){
-## CodeNameWidget=.rqda$.codes_rqda for Codes Tab
-## CodeNameWidget=.rqda$.CodeofCat for C-Cat Tab
-  currentCode <- svalue(CodeNameWidget)
-  if (length(currentCode)!=0){
-    Encoding(currentCode) <- "UTF-8"
-    currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
-    ## reliable is more important                       
-    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i order by fid",currentCid))
-    if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
-      ## retrieval <-  retrieval[order( retrieval$fid),]
-      ## use sql to order the fid
-      fid <- unique(retrieval$fid)
-      retrieval$fname <-""
-      .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(370,10),width=600,height=600)
-      .retreivalgui <- gtext(con=.gw)
-      for (i in fid){
-        FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
-        tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
-        ##fname <- paste("Source: ", FileNames, sep="")
-        retrieval$fname[retrieval$fid==i] <- FileName
-      }
-      Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
-
-      ## modification begins
-        ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
-          CallBackFUN <- function(button){  
-            tryCatch(dispose(.rqda$.rootBackToFile),error=function(e) {})
-            root <- gwindow(title=FileName, parent=c(370,40),width=580,height=300)
-            assign(".rootBackToFile",root,env=.rqda)
-            displayFile <- gtext(container=root,font.attr=c(sizes="large"))
-            assign(".displayFile",displayFile,env=.rqda)
-            content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",FileName))[1,1]
-            Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
-            add(.rqda$.displayFile,content,font.attr=c(sizes="large"))
-            HL(.rqda$.displayFile,data.frame(begin=BeginPosition,end=EndPosition))
-            .rqda$.displayFile@widget@widget$SetEditable(FALSE)
-            MarkHere <- .rqda$.displayFile@widget@widget$GetBuffer()$CreateMark(mark.name = "MarkHere", where=.rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter)
-            # create a mark -> more reliable to use ScrollToMark than ScrollToIter
-            #gtkTextViewScrollToIter(.rqda$.displayFile@widget@widget,
-            #                          .rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter,
-            #                          0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
-            gtkTextViewScrollToMark(.rqda$.displayFile@widget@widget,
-                                      MarkHere,0,xal=0,yal=0.2,use.align=TRUE)
-            }    
-         CallBackFUN
-        }
-
-      buffer <- .retreivalgui@widget@widget$GetBuffer()
-      iter <- buffer$getIterAtOffset(0)$iter
-create.tags <- function(buffer)
-{
-buffer$createTag("big",size = 14 * PANGO_SCALE)
-buffer$createTag("x-large",scale = PANGO_SCALE_X_LARGE)
-buffer$createTag("large",scale = PANGO_SCALE_LARGE)
-buffer$createTag("red.foreground",foreground = "red")
-}
-create.tags(buffer)
-
-      apply(retrieval,1, function(x){
-        metaData <- sprintf("%s [%s:%s]",x[['fname']],x[['selfirst']],x[['selend']])
-        buffer$InsertWithTagsByName(iter, metaData,"x-large","red.foreground")
-        anchorcreated <- buffer$createChildAnchor(iter)
-        iter$BackwardChar()
-        anchor <- iter$getChildAnchor()  
-        widget <- gtkButtonNewWithLabel("Back")
-        gSignalConnect(widget, "clicked", ComputeCallbackFun(x[['selfirst']],x[['selend']],x[['fname']]))
-        .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
-        widget$showAll()
-        iter$ForwardChar()
-        buffer$insert(iter, "\n")
-        buffer$InsertWithTagsByName(iter, x[['seltext']],"large")
-        buffer$insert(iter, "\n\n")
-      }
-            )
-    }
-  }
-}
-
-
-
 
 

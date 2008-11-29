@@ -12,8 +12,8 @@ AddCodeButton <- function(label="Add"){
 }
 
 
-DeleteCodeButton <- function(label="Delete"){
-  gbutton(label,
+DeleteCodeButton <- function(){
+  gbutton(" Delete ",
           handler=function(h,...)
           {
             if (is_projOpen(env=.rqda,conName="qdacon") &
@@ -37,16 +37,6 @@ RetrievalButton <- function(label){
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               retrieval()
-            }
-          }
-          )
-}
-
-ExtendButton <- function(label){
-  gbutton(label,
-          handler=function(h,...) {
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              retrieval2(CodeNameWidget=.rqda$.codes_rqda)
             }
           }
           )
@@ -252,7 +242,7 @@ CodingMemoButton <- function(label="C2Memo")
 
 
 
-FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rqda,...)
+FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.codes_rqda,...)
 {
   ## rename of selected file.
   gbutton(label,handler=function(h,...) {
