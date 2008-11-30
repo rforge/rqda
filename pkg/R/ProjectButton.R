@@ -32,7 +32,6 @@ gbutton("Open Project",container=container,handler=function(h,...){
 
 CloseProjectButton <- function(container){
 gbutton("Close Project",container=container,handler=function(h,...){
-      close_proj(assignenv=.rqda)
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
@@ -40,6 +39,7 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(UpdateCodeofCatWidget(),error=function(e){})
       tryCatch(UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat"),error=function(e){})
       tryCatch(UpdateFileofCatWidget(),error=function(e){})
+      close_proj(assignenv=.rqda)
       }
                                )
 

@@ -56,8 +56,8 @@ ClearMark <- function(widget,min=0, max){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     startI <-gtkTextBufferGetIterAtOffset(buffer,min)$iter # translate number back to iter
     endI <-gtkTextBufferGetIterAtOffset(buffer,max)$iter
-#    gtkTextBufferRemoveTagByName(buffer,"red.foreground",startI,endI)},
-    gtkTextBufferRemoveTagByName(buffer,"red.background",startI,endI)},
+    gtkTextBufferRemoveTagByName(buffer,"red.foreground",startI,endI)},
+#    gtkTextBufferRemoveTagByName(buffer,"red.background",startI,endI)},
 
            error=function(e){})
 }
@@ -72,10 +72,10 @@ HL <- function(W,index){
              buffer <- slot(W,"widget")@widget$GetBuffer()
              start <-gtkTextBufferGetIterAtOffset(buffer,x[1])$iter # translate number back to iter
              end <-gtkTextBufferGetIterAtOffset(buffer,x[2])$iter
-#             buffer$createTag("red.foreground",foreground = "red")  
-#             buffer$ApplyTagByName("red.foreground",start,end)}),
-             buffer$createTag("red.background",background = "red")  
-             buffer$ApplyTagByName("red.background",start,end)}),
+             buffer$createTag("red.foreground",foreground = "red")  
+             buffer$ApplyTagByName("red.foreground",start,end)}),
+#             buffer$createTag("red.background",background = "red")  
+#             buffer$ApplyTagByName("red.background",start,end)}),
            error=function(e){})
 }
 

@@ -16,11 +16,11 @@ undelete(type=c("file","code"))
 }
 
 \arguments{
-  \item{type}{ What kind of info would you like to show or clear.$_file_$
-  is the name of file (in the Files tab). $_code_$ is the name of codes
-  (in the Codes tab). $_case_$ is the
-  name of case (in the Case tab). $_codecategory_$ is name of code
-  category (in the C-Cat tab). $_coding_$ is the text segment associated
+  \item{type}{ What kind of info would you like to show or clear. "file"
+  is the name of file (in the Files tab). "code" is the name of codes
+  (in the Codes tab). "case" is the
+  name of case (in the Case tab). "codecategory" is name of code
+  category (in the C-Cat tab). "coding" is the text segment associated
   with specific code.}
   \item{ask} {You can choose which ones to be deleted when is
   TRUE. Otherwise, it will delete all with temporary tagged with

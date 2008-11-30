@@ -5,7 +5,20 @@
 	<TITLE>Welcome to RQDA Project</TITLE>
 	<META NAME="AUTHOR" CONTENT="wincent">
 	<META NAME="CREATED" CONTENT="20081101;12455800">
-        <link rel="stylesheet" href="rqda.css">
+        <!link rel="stylesheet" href="rqda.css">
+        <style type="text/css">
+body {
+  padding-left: 3em;
+  padding-right: 3em;
+  font-family: "Times New Roman",Times, serif;
+  color: darkblue;
+  font-size:12px}
+h1 {
+  font-family: Helvetica, Arial,SunSans-Regular, sans-serif;
+  font-size:13px
+  }
+          </style>
+
 </HEAD>
 
 <BODY>
@@ -64,14 +77,21 @@ order to use RQDA.
 
 
 <h1>Documentation</h1>
-
-<p>Under Linux/FreeBSD, you should set the locale of R to UTF-8 to get a better support of non-English documents. In my FreeBSD box, I set the locale of R by this R command: <i>Sys.setlocale(locale = "zh_CN.UTF-8")</i>.
+<p>Under construction (contributions are more than welcome).
 
 <p>Basic usage: 1. Open or create new project. 2. Import files. 3. Select a file and open it by click button open. 4. Add codes. 5. Select a codes, select text segment in the open file, and press button mark. Select the same text segment and click button Unmark, you can undo the action. 6. Do more coding as step 5. 7. Select a code and click button retrieval to see what text segments have been attached to that code.
 
 <p>About memo buttons in the code tab: 1. C-memo is used to attach memo to a selected code. You can select a code then click C-memo button to view/add memo. 2. C2Memo is used to attach a memo to a coded segments. In the open file, you can see the coded segments (highlighted), select one segment, and click C2Memo, you can view/add memo to that coded-segment.
 
-<p>Under construction (contributions are more than welcome).
+<p><B>Tips</B>
+<br>1. Under Linux/FreeBSD, you should set the locale of R to UTF-8 to get a better support of non-English documents. In my FreeBSD box, I set the locale of R by this R command: <i>Sys.setlocale(locale = "zh_CN.UTF-8")</i>.
+<br>2. When RDQA is launched, it is better to minimize the main window of R (e.g. Rgui, Rterm, terminal from which R is launched).
+<br>3. Besides the C-Cat and F-Cat, you can use a trick to help organize files, codes list,and cases by using specific name rules. For example, if you name a group of codes with 1 as prefix and another group of codes with 2 as prefix, then you can click the triangle symbol in ther right-upper corners of the Codes List table, then the codes are sorted according to their prefix. Similar trick applies to others.
+
+<p><b>FAQ</b>
+<br><B>Q</B>:How can I get help?
+<br>A: You can join the <A HREF="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/rqda-help">rqda-help</A> list and post questions via email.
+
 
 <p>
 <h1>Reference</h1>

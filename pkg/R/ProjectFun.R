@@ -52,7 +52,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       ## coding: information about the project
       dbGetQuery(con,"create table project  (encoding text, detabaseversion text, date text,dateM text,
                                              memo text,BOM integer)")
-      dbGetQuery(con,sprintf("insert into project (detabaseversion,date) values ('0.1.5','%s')",date()))
+      dbGetQuery(con,sprintf("insert into project (detabaseversion,date,memo) values ('0.1.5','%s','')",date()))
       if (dbExistsTable(con,"cases")) dbRemoveTable(con, "cases")
       dbGetQuery(con,"create table cases  (name text, memo text,
                                            owner text,date text,dateM text,

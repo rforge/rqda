@@ -60,7 +60,15 @@
 \alias{ViewFileButton}
 \alias{enc}
 \alias{retrieval2}
+\alias{FileCatAddToButton}
+\alias{FileCatDropFromButton}
+\alias{FileCat_RenameButton}
+\alias{AddFileCatButton}
+\alias{DeleteFileCatButton}
+\alias{UpdateFileofCatWidget}
+\alias{ViewFileFun}
 %% add related alias functions here.
+
 \title{Internal Functions}
 \description{
   Internal RQDA functions.
