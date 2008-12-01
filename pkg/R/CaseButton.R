@@ -16,11 +16,13 @@ AddCaseButton <- function(label="ADD"){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       CaseName <- ginput("Enter new Case Name. ", icon="info")
-      Encoding(CaseName) <- "UTF-8"
-      AddCase(CaseName)
-      CaseNamesUpdate()
+      if (CaseName!="") {
+        Encoding(CaseName) <- "UTF-8"
+        AddCase(CaseName)
+        CaseNamesUpdate()
+      }
     }
-          }
+  }
           )
 }
 
@@ -51,13 +53,15 @@ Case_RenameButton <- function(label="Rename",CaseNamesWidget=.rqda$.CasesNamesWi
       ## if project is open, then continue
       selectedCaseName <- svalue(CaseNamesWidget)
       if (length(selectedCaseName)==0){
-        gmessage("Select a Case first.",icon="error",con=TRUE)
+        gmessage("Select a Case first.",text=selectedCaseName,icon="error",con=TRUE)
       }
       else {
         ## get the new file names
-        NewName <- ginput("Enter new Case name. ", icon="info")
-        Encoding(NewName) <- "UTF-8"
-        rename(selectedCaseName,NewName,"cases")
+        NewName <- ginput("Enter new Case name. ", text=selectedCaseName, icon="info")
+        if (NewName != ""){
+          Encoding(NewName) <- "UTF-8"
+          rename(selectedCaseName,NewName,"cases")
+        }
       }
     }
   }

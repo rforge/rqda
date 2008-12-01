@@ -3,12 +3,14 @@ AddCodeButton <- function(label="Add"){
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               codename <- ginput("Enter new code. ", icon="info")
-              Encoding(codename) <- "UTF-8"
-              addcode(codename)
-              CodeNamesUpdate()
+              if (codename!=""){
+                Encoding(codename) <- "UTF-8"
+                addcode(codename)
+                CodeNamesUpdate()
+              }
             }
           }
-        )
+          )
 }
 
 
@@ -264,11 +266,13 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
       }
       else {
         ## get the new file names
-        NewCodeName <- ginput("Enter new code name. ", icon="info")
-        Encoding(NewCodeName) <- "UTF-8"
-        ## update the name in source table by a function
-        rename(selectedCodeName,NewCodeName,"freecode")
-        ## (name is the only field should be modifed, as other table use ID rather than name)
+        NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
+        if (NewCodeName != "") {
+          Encoding(NewCodeName) <- "UTF-8"
+          ## update the name in source table by a function
+          rename(selectedCodeName,NewCodeName,"freecode")
+          ## (name is the only field should be modifed, as other table use ID rather than name)
+        }
       }
     }
   }

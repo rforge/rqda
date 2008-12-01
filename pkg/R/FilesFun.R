@@ -85,3 +85,43 @@ ViewFileFun <- function(FileNameWidget){
             }
         }
     }
+
+
+write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...){
+  ## import a list of files into the source table
+  ## FileList is a list of file content, with names(FileList) the name of the files.
+  WriteToTable <- function(Fname,content){
+    ## helper function
+    FnameUTF8 <- iconv(Fname,to="UTF-8")
+    content <- enc(content)
+    if (Encoding(content)!="UTF-8"){
+      content <- iconv(content,to="UTF-8") ## UTF-8 file content
+    }
+    maxid <- dbGetQuery(con,"select max(id) from source")[[1]]
+    nextid <- ifelse(is.na(maxid),0+1, maxid+1)
+    write <- FALSE
+  ## check if the content should be written into con.
+    if (nextid==1) {
+      write <- TRUE
+      ## if this is the first file, no need to worry about the duplication issue.
+    } else {
+      if (nrow(dbGetQuery(con,sprintf("select name from source where name=='%s'",FnameUTF8)))==0) {
+      ## no duplication file exists, then write.
+        write <- TRUE
+      } else {
+        cat(sprintf("%s exists in the database!\n",Fname))
+      }
+    }
+  if (write ) {
+    dbGetQuery(con,sprintf("insert into source (name, file, id, status,date,owner )
+                             values ('%s', '%s',%i, %i, '%s', '%s')",
+                           Fname,content, nextid, 1,date(),.rqda$owner))
+  }
+  }
+  FileNames <- names(FileList)
+  FileNames[FileNames==""] <- as.character(1:sum(FileNames==""))
+
+  for (i in 1:length(FileList)) {
+    WriteToTable(FileNames[i],FileList[[i]])
+  }
+}

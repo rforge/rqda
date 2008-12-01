@@ -30,15 +30,12 @@ RQDA <- function() {
   ## project memo button
   ".close.proj_gui" <- CloseProjectButton(container=.proj_gui)
   ".projinfo_gui" <- ProjectInforButton(container=.proj_gui)
+   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
 
-  glabel("Basic Usage of RQDA:\n
-1. New Project or Open project.\n
-2. Import files.\n
-3. Add codes.\n
-4. Open a file and begin coding.\n
-Author: <ronggui.huang@gmail.com>\n
-License: FreeBSD\n
-Version: 0.1.5\n",
+  glabel(
+"Author: <ronggui.huang@gmail.com>\n
+License: New style BSD License\n
+Version: 0.1.5 rev 25\n",
          container=.proj_gui)
 
 

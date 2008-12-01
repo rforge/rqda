@@ -1,3 +1,8 @@
+2008-12-01
+	* enhance the rename buttons.
+	* bugfix of add buttons: continue only when click confirm in the ginput widget.
+	* New function write.FileList() to import files by batch.
+	
 2008-11-30
 	* fix some minor bugs.
 	

@@ -22,12 +22,12 @@ Handler <- function(){
   }
                     )
 
-  addHandlerMouseMotion(.rqda$.fnames_rqda, handler <- function(h,...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-      FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
-    }
-  }
-                        )
+##   addHandlerMouseMotion(.rqda$.fnames_rqda, handler <- function(h,...) {
+##     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+##       FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
+##     }
+##   }
+##                         )
 
 
   addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...)
@@ -61,12 +61,12 @@ Handler <- function(){
 
   ## handler for .codes_rqda
 
-  addHandlerMouseMotion(.rqda$.codes_rqda, handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName ="qdacon",message = FALSE)) {
-       CodeNamesUpdate(CodeNamesWidget=.rqda$.codes_rqda)
-    }
-  }
-                        )
+##   addHandlerMouseMotion(.rqda$.codes_rqda, handler <- function(h, ...) {
+##     if (is_projOpen(env = .rqda, conName ="qdacon",message = FALSE)) {
+##        CodeNamesUpdate(CodeNamesWidget=.rqda$.codes_rqda)
+##     }
+##   }
+##                         )
 
   addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval()

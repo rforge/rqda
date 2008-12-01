@@ -3,11 +3,13 @@ AddFileCatButton <- function(label="ADD"){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       item <- ginput("Enter new File Category. ", icon="info")
-      Encoding(item) <- "UTF-8"
-      AddTodbTable(item,"filecat",Id="catid") ## FILE CATegory
-      UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
+      if (item != ""){
+        Encoding(item) <- "UTF-8"
+        AddTodbTable(item,"filecat",Id="catid") ## FILE CATegory
+        UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
+      }
     }
-          }
+  }
           )
 }
 
@@ -51,10 +53,12 @@ FileCat_RenameButton <- function(label="Rename",Widget=.rqda$.FileCatWidget,...)
       }
       else {
         ## get the new file names
-        NewName <- ginput("Enter new Cateory name. ", icon="info")
-        Encoding(NewName) <- "UTF-8"
-        rename(OldName,NewName,"filecat")
-        UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
+        NewName <- ginput("Enter new Cateory name. ",text=OldName, icon="info")
+        if (NewName != "") {
+          Encoding(NewName) <- "UTF-8"
+          rename(OldName,NewName,"filecat")
+          UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
+        }
       }
     }
   }
