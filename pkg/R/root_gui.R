@@ -35,7 +35,7 @@ RQDA <- function() {
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: New style BSD License\n
-Version: 0.1.5 rev 25\n",
+Version: 0.1.5 rev 26\n",
          container=.proj_gui)
 
 
@@ -77,8 +77,12 @@ Version: 0.1.5 rev 25\n",
 #########################
   ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Case")
   ".case_buttons" <- glayout(container=.case_pan)
-  ".CasesNamesWidget" <- gtable("Please click Update",container=.case_pan)
+  ".case_PW" <- ggroup(cont=.case_pan,horizontal = FALSE)
+  ".CasesNamesWidget" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=FALSE)
   .CasesNamesWidget[] <- NULL ; names(.CasesNamesWidget) <- "Cases"
+  ".FileofCase" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=FALSE)
+  .FileofCase[] <- NULL;names(.FileofCase)<-"Files of This Case"
+
   .case_buttons[1,1] <- AddCaseButton()
   .case_buttons[1,2] <- DeleteCaseButton()
   .case_buttons[1,3] <- Case_RenameButton()
@@ -134,6 +138,7 @@ assign(".files_button",.files_button,env=.rqda)
 assign(".codes_rqda",.codes_rqda,env=.rqda)
 assign(".fnames_rqda",.fnames_rqda,env=.rqda)
 assign(".CasesNamesWidget",.CasesNamesWidget,env=.rqda)
+assign(".FileofCase",.FileofCase,env=.rqda)
 assign(".CodeCatWidget",.CodeCatWidget,env=.rqda)
 assign(".CodeofCat",.CodeofCat,env=.rqda)
 assign(".FileCatWidget",.FileCatWidget,env=.rqda)

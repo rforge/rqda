@@ -4,13 +4,11 @@ summary functions for review of coding.
 
 functions cleaning treecode/codecat table. and the previous deletion functions should be modified.
 
-add warning when duplicated file/code etc. are added.
-
 Merge *rqda from different coders.
 
 inter-coder reliability 
 
-assign file to F-cat by pop-up menu.
+change Highlight behavior of Case.
 
 ### less important
 should add document on the table structure.

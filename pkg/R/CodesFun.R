@@ -154,22 +154,23 @@ retrieval2 <- function(CodeNameWidget){
       ## modification begins
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
           CallBackFUN <- function(button){  
-            tryCatch(dispose(.rqda$.rootBackToFile),error=function(e) {})
+            tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
             root <- gwindow(title=FileName, parent=c(370,40),width=580,height=300)
-            assign(".rootBackToFile",root,env=.rqda)
-            displayFile <- gtext(container=root,font.attr=c(sizes="large"))
-            assign(".displayFile",displayFile,env=.rqda)
+            ## use the same names as the of ViewFile, so can do coding when back to the original file.
+            assign(".root_edit",root,env=.rqda)
+            displayFile <- gtext(container=.rqda$.root_edit,font.attr=c(sizes="large"))
+            assign(".openfile_gui",displayFile,env=.rqda)
             content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",FileName))[1,1]
             Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
-            add(.rqda$.displayFile,content,font.attr=c(sizes="large"))
-            HL(.rqda$.displayFile,data.frame(begin=BeginPosition,end=EndPosition))
-            .rqda$.displayFile@widget@widget$SetEditable(FALSE)
-            MarkHere <- .rqda$.displayFile@widget@widget$GetBuffer()$CreateMark(mark.name = "MarkHere", where=.rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter)
+            add(.rqda$.openfile_gui,content,font.attr=c(sizes="large"))
+            HL(.rqda$.openfile_gui,data.frame(begin=BeginPosition,end=EndPosition))
+            .rqda$.openfile_gui@widget@widget$SetEditable(FALSE)
+            MarkHere <- .rqda$.openfile_gui@widget@widget$GetBuffer()$CreateMark(mark.name = "MarkHere", where=.rqda$.openfile_gui@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter)
             # create a mark -> more reliable to use ScrollToMark than ScrollToIter
-            #gtkTextViewScrollToIter(.rqda$.displayFile@widget@widget,
-            #                          .rqda$.displayFile@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter,
+            #gtkTextViewScrollToIter(.rqda$.openfile_gui@widget@widget,
+            #                          .rqda$.openfile_gui@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter,
             #                          0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
-            gtkTextViewScrollToMark(.rqda$.displayFile@widget@widget,
+            gtkTextViewScrollToMark(.rqda$.openfile_gui@widget@widget,
                                       MarkHere,0,xal=0,yal=0.2,use.align=TRUE)
             }    
          CallBackFUN

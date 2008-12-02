@@ -30,6 +30,10 @@ Handler <- function(){
 ##                         )
 
 
+add3rdmousepopupmenu(.rqda$.fnames_rqda, AddFileToCaseMenu)
+## right click to add file to a case category
+
+
   addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...)
   ##function copied from ViewFileButton handler
   {
@@ -158,5 +162,14 @@ addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(F
 
 add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
 ## popup menu by right-click on CaseNamesWidget
+
+addhandlerclicked(.rqda$.CasesNamesWidget, handler <- function(h,...) {UpdateFileofCaseWidget()})
+
+addhandlerdoubleclick(.rqda$.FileofCase, handler <- function(h,...) {
+ViewFileFun(FileNameWidget=.rqda$.FileofCase)
+HL_Case()
+}
+)
+
 }
 

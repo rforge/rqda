@@ -1,17 +1,3 @@
-CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,...)
-{
-  if (isIdCurrent(.rqda$qdacon)){
-  CaseName <- dbGetQuery(.rqda$qdacon, "select name, id from cases where status=1")
-  if (nrow(CaseName)!=0) {
-    Encoding(CaseName[['name']]) <- "UTF-8"
-    tryCatch(CaseNamesWidget[] <- CaseName[['name']], error=function(e){})
-  } else tryCatch(CaseNamesWidget[] <- NULL, error=function(e){}) 
-## when nrow(CaseName)==0, update it to NULL
-}
-}
-
-#################
-
 AddCaseButton <- function(label="ADD"){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -68,59 +54,6 @@ Case_RenameButton <- function(label="Rename",CaseNamesWidget=.rqda$.CasesNamesWi
           )
 }
 
-
-###############
-AddCase <- function(name,conName="qdacon",assignenv=.rqda,...) {
-  if (name != ""){
-    con <- get(conName,assignenv)
-    maxid <- dbGetQuery(con,"select max(id) from cases")[[1]]
-    nextid <- ifelse(is.na(maxid),0+1, maxid+1)
-    write <- FALSE
-    if (nextid==1){
-      write <- TRUE
-    } else {
-      dup <- dbGetQuery(con,sprintf("select name from cases where name=='%s'",name))
-      if (nrow(dup)==0) write <- TRUE
-    }
-    if (write ) {
-      dbGetQuery(con,sprintf("insert into cases (name, id, status,date,owner)
-                                            values ('%s', %i, %i,%s, %s)",
-                             name,nextid, 1, shQuote(date()),shQuote(.rqda$owner)))
-    }
-  }
-}
-
-
-CaseMark_Button<-function(){
-  gbutton("Mark",
-          handler=function(h,...) {
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              con <- .rqda$qdacon
-                                   tryCatch({
-                                     ans <- mark(get(h$action$widget,env=.rqda)) ## can change the color
-                                     if (ans$start != ans$end){ 
-                                       ## when selected no text, makes on sense to do anything.
-                                       SelectedCase <- svalue(.rqda$.CasesNamesWidget)
-                                       Encoding(SelectedCase) <- "UTF-8"
-                                       currentCid <-  dbGetQuery(con,sprintf("select id from cases where name=='%s'",
-                                                                             SelectedCase))[,1]
-                                       SelectedFile <- svalue(.rqda$.root_edit)
-                                       Encoding(SelectedFile) <- "UTF-8"
-                                       currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
-                                                                             SelectedFile))[,1]
-                                       DAT <- data.frame(cid=currentCid,fid=currentFid,
-                                                         selfirst=ans$start,selend=ans$end,status=1,
-                                                         owner=.rqda$owner,date=date(),memo="")
-                                       success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
-                                       if (!success) gmessage("Fail to write to database.")
-                                     }
-                                   },error=function(e){}
-                                            )
-            }
-          },
-          action=list(widget=".openfile_gui")
-          )
-}
 
 
 CaseMemoButton <- function(label="Memo",...){
@@ -202,5 +135,10 @@ CaseNamesWidgetMenu$WebSearch$Yahoo$handler <- function(h,...){
 }
 
 
-
-
+## pop-up menu of add to case
+AddFileToCaseMenu <- list()
+AddFileToCaseMenu$AddFileTo$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      AddFileToCaselinkage()
+    }
+  }

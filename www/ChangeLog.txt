@@ -1,7 +1,13 @@
+2008-12-03
+	* Attached file to case by pop-up menu in Files Tab.
+	* Now can open associated files of a case from Cases Tab.
+	* new function of write.FileList() to import a batch of files.
+	
 2008-12-01
 	* enhance the rename buttons.
 	* bugfix of add buttons: continue only when click confirm in the ginput widget.
 	* New function write.FileList() to import files by batch.
+	* Enchance the retrieval2 function so coding on the file (openned by clicking back button) is possible.
 	
 2008-11-30
 	* fix some minor bugs.
