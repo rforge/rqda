@@ -71,10 +71,10 @@ HL_ALLButton <- function(){
                 ## if W is null, then there is no valid widget. No need to HL.
                 ## Though W may be expired, but ClearMark and HL will take care of the issue.
                 mark_index <-
-                  dbGetQuery(con,sprintf("select selfirst,selend,status from coding where fid=%i",currentFid))
+                  dbGetQuery(con,sprintf("select selfirst,selend,status from coding where fid=%i and status=1",currentFid))
                 ## only select thoses with the open_file and not deleted (status=1).
                 ClearMark(W ,0 , max(mark_index$selend))
-                HL(W,index=mark_index[mark_index$status==1,1:2])
+                HL(W,index=mark_index)
               }
             }
           },

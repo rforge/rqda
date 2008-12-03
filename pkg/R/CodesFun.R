@@ -31,7 +31,9 @@ CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,...)
 }
 
 
-mark <- function(widget){
+mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL){
+  ## modified so can change fore.col and back.col easily
+  ## when col is NULL, it is skipped
   index <- sindex(widget)
   startI <- index$startI ## start and end iter
   endI <- index$endI
@@ -41,8 +43,21 @@ mark <- function(widget){
   endN <- index$endN
   if (startN != endN){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
-    buffer$createTag("red.foreground",foreground = "red")
-    buffer$ApplyTagByName("red.foreground",startI,endI)
+    TagTable <- buffer$GetTagTable()
+    if (!is.null(fore.col)){
+      if (is.null(TagTable$Lookup("MarkForeGround"))) {
+      TagTable$Add(buffer$createTag("MarkForeGround",foreground = fore.col))
+      }
+      buffer$ApplyTagByName("MarkForeGround",startI,endI)
+    }
+    if (!is.null(back.col)){
+      if (is.null(TagTable$Lookup("MarkBackGround"))) {
+      TagTable$Add(buffer$createTag("MarkBackGround",background = back.col))
+      }
+      buffer$ApplyTagByName("MarkBackGround",startI,endI)
+    }
+    ## buffer$createTag("red.foreground",foreground = "red")
+    ## buffer$ApplyTagByName("red.foreground",startI,endI)
     ## buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
     ## buffer$ApplyTagByName("red.background",startI,endI); ## change colors   
   }
@@ -50,32 +65,49 @@ mark <- function(widget){
   return(list(start=startN,end=endN,text=selected))
 }
 
-ClearMark <- function(widget,min=0, max){
+
+ClearMark <- function(widget,min=0, max, clear.fore.col=TRUE,clear.back.col=FALSE){
   ## max position of marked text.
   tryCatch({
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     startI <-gtkTextBufferGetIterAtOffset(buffer,min)$iter # translate number back to iter
     endI <-gtkTextBufferGetIterAtOffset(buffer,max)$iter
-    gtkTextBufferRemoveTagByName(buffer,"red.foreground",startI,endI)},
-#    gtkTextBufferRemoveTagByName(buffer,"red.background",startI,endI)},
-
+    TagTable <- buffer$GetTagTable()
+    if (clear.fore.col && !is.null(TagTable$Lookup("MarkForeGround"))) gtkTextBufferRemoveTagByName(buffer,"MarkForeGround",startI,endI)
+    if (clear.back.col && !is.null(TagTable$Lookup("MarkBackGround"))) gtkTextBufferRemoveTagByName(buffer,"MarkBackGround",startI,endI)
+  },
            error=function(e){})
 }
 
 
-HL <- function(W,index){
+HL <- function(W,index,fore.col=.rqda$fore.col,back.col=NULL){
   ## W is the gtext widget of the text.
   ## highlight text chuck according to index
   ## index is a data frame, each row == one text chuck.
+  buffer <- slot(W,"widget")@widget$GetBuffer()
+  TagTable <- buffer$GetTagTable()
+  if (!is.null(fore.col)){
+    if (is.null(TagTable$Lookup("MarkForeGround"))) {
+      TagTable$Add(buffer$createTag("MarkForeGround",foreground = fore.col))
+    }
+  }
+  if (!is.null(back.col)){
+    if (is.null(TagTable$Lookup("MarkBackGround"))) {
+      TagTable$Add(buffer$createTag("MarkBackGround",background = back.col))
+    }
+  }
   tryCatch(
            apply(index,1, function(x){
-             buffer <- slot(W,"widget")@widget$GetBuffer()
              start <-gtkTextBufferGetIterAtOffset(buffer,x[1])$iter # translate number back to iter
              end <-gtkTextBufferGetIterAtOffset(buffer,x[2])$iter
-             buffer$createTag("red.foreground",foreground = "red")  
-             buffer$ApplyTagByName("red.foreground",start,end)}),
-#             buffer$createTag("red.background",background = "red")  
-#             buffer$ApplyTagByName("red.background",start,end)}),
+             if (!is.null(fore.col)){
+               buffer$ApplyTagByName("MarkForeGround",start,end)
+             }
+             if (!is.null(back.col)){
+               buffer$ApplyTagByName("MarkBackGround",start,end)
+             }
+           }
+                 ),
            error=function(e){})
 }
 

@@ -1,7 +1,11 @@
+2008-12-04
+	* Better handler colors for coding and case-mark. Now can customize colors for coding-mark (set .rqda$fore.col, default is "blue") and case-mark (set .rqda$back.col, default is "gray92").
+	
 2008-12-03
 	* Attached file to case by pop-up menu in Files Tab.
 	* Now can open associated files of a case from Cases Tab.
 	* new function of write.FileList() to import a batch of files.
+
 	
 2008-12-01
 	* enhance the rename buttons.

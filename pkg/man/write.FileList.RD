@@ -16,9 +16,7 @@ write.FileList(FileList, encoding = .rqda$encoding, con = .rqda$qdacon, ...)
   \item{con}{ Don't change this argument.}
   \item{\dots}{ \code{\dots} is not used.}
 }
-\details{
 
-}
 \value{
  This function is used for the side-effects. No value is return.
 }

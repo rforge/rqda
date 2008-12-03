@@ -33,39 +33,6 @@ AddCase <- function(name,conName="qdacon",assignenv=.rqda,...) {
 }
 
 
-CaseMark_Button<-function(){
-  gbutton("Mark",
-          handler=function(h,...) {
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              con <- .rqda$qdacon
-                                   tryCatch({
-                                     ans <- mark(get(h$action$widget,env=.rqda)) ## can change the color
-                                     if (ans$start != ans$end){ 
-                                       ## when selected no text, makes on sense to do anything.
-                                       SelectedCase <- svalue(.rqda$.CasesNamesWidget)
-                                       Encoding(SelectedCase) <- "UTF-8"
-                                       currentCid <-  dbGetQuery(con,sprintf("select id from cases where name=='%s'",
-                                                                             SelectedCase))[,1]
-                                       SelectedFile <- svalue(.rqda$.root_edit)
-                                       Encoding(SelectedFile) <- "UTF-8"
-                                       currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
-                                                                             SelectedFile))[,1]
-                                       DAT <- data.frame(cid=currentCid,fid=currentFid,
-                                                         selfirst=ans$start,selend=ans$end,status=1,
-                                                         owner=.rqda$owner,date=date(),memo="")
-                                       success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
-                                       if (!success) gmessage("Fail to write to database.")
-                                     }
-                                   },error=function(e){}
-                                            )
-            }
-          },
-          action=list(widget=".openfile_gui")
-          )
-}
-
-
-
 AddFileToCaselinkage <- function(){
   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
   filename <- svalue(.rqda$.fnames_rqda)
@@ -126,7 +93,7 @@ HL_Case <- function(){
                   dbGetQuery(con,sprintf("select selfirst,selend from caselinkage where fid=%i and status==1",currentFid))
                 if (nrow(mark_index)!=0){
                   ClearMark(W ,0 , max(mark_index$selend))
-                  HL(W,index=mark_index)
+                  HL(W,index=mark_index,fore.col=NULL,back.col=.rqda$back.col)
                 }
               }
             }

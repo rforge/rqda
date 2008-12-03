@@ -67,6 +67,10 @@
 \alias{DeleteFileCatButton}
 \alias{UpdateFileofCatWidget}
 \alias{ViewFileFun}
+\alias{AddFileToCaselinkage}
+\alias{AddFileToCaseMenu}
+\alias{HL_Case}
+\alias{UpdateFileofCaseWidget}
 %% add related alias functions here.
 
 \title{Internal Functions}

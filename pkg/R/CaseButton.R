@@ -90,6 +90,40 @@ CaseMemoButton <- function(label="Memo",...){
           )
 }
 
+
+CaseMark_Button<-function(){
+  gbutton("Mark",
+          handler=function(h,...) {
+            if (is_projOpen(env=.rqda,conName="qdacon")) {
+              con <- .rqda$qdacon
+                                   tryCatch({
+                                     ans <- mark(get(h$action$widget,env=.rqda),fore.col=NULL,back.col=.rqda$back.col)
+                                     ## can change the color
+                                     if (ans$start != ans$end){ 
+                                       ## when selected no text, makes on sense to do anything.
+                                       SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+                                       Encoding(SelectedCase) <- "UTF-8"
+                                       currentCid <-  dbGetQuery(con,sprintf("select id from cases where name=='%s'",
+                                                                             SelectedCase))[,1]
+                                       SelectedFile <- svalue(.rqda$.root_edit)
+                                       Encoding(SelectedFile) <- "UTF-8"
+                                       currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
+                                                                             SelectedFile))[,1]
+                                       DAT <- data.frame(cid=currentCid,fid=currentFid,
+                                                         selfirst=ans$start,selend=ans$end,status=1,
+                                                         owner=.rqda$owner,date=date(),memo="")
+                                       success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
+                                       if (!success) gmessage("Fail to write to database.")
+                                     }
+                                   },error=function(e){}
+                                            )
+            }
+          },
+          action=list(widget=".openfile_gui")
+          )
+}
+
+
 AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
