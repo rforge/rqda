@@ -47,7 +47,7 @@ AddFileToCaselinkage <- function(){
   if (nrow(cases)!=0){
     Encoding(cases$name) <- "UTF-8"
     ans <- select.list(cases$name,multiple=FALSE)
-    if (length(ans)!=0){
+    if (ans!=""){
     ans <- iconv(ans,to="UTF-8")
     caseid <- cases$id[cases$name %in% ans]
     
@@ -98,3 +98,5 @@ HL_Case <- function(){
               }
             }
           }
+
+

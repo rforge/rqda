@@ -168,11 +168,56 @@ CaseNamesWidgetMenu$WebSearch$Yahoo$handler <- function(h,...){
 }
 }
 
-
-## pop-up menu of add to case
-AddFileToCaseMenu <- list()
-AddFileToCaseMenu$AddFileTo$handler <- function(h, ...) {
+CaseNamesWidgetMenu$"AddFile(s)"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-      AddFileToCaselinkage()
+      SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+      caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
+      freefile <-  dbGetQuery(.rqda$qdacon,"select name, id, file from source where status=1")
+      fileofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and caseid=%i",caseid))
+      Encoding(freefile[['name']]) <- Encoding(freefile[['file']]) <- "UTF-8"
+      if (nrow(fileofcase)!=0){
+        fileoutofcase <- subset(freefile,!(id %in% fileofcase$fid))
+      } else  fileoutofcase <- freefile
+      if (length(fileoutofcase[['name']])==0) gmessage("All files are linked with this case.", cont=TRUE) else {
+        Selected <- select.list(fileoutofcase[['name']],multiple=TRUE)
+        if (length(Selected)> 0) {
+          Selected <- iconv(Selected,to="UTF-8")
+          fid <- fileoutofcase[fileoutofcase$name %in% Selected,"id"]
+          selend <- nchar(fileoutofcase[fileoutofcase$name %in% Selected,"file"])
+          Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend,status=1,owner=.rqda$owner,date=date(),memo="")
+          dbWriteTable(.rqda$qdacon,"caselinkage",Dat,row.names=FALSE,append=TRUE)
+          UpdateFileofCaseWidget()
+        }
+      }
     }
   }
+
+
+
+## pop-up menu of .rqda$.FileofCase
+FileofCaseWidgetMenu <- list() ## not used yet.
+FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    FileOfCat <- svalue(.rqda$.FileofCase)
+    if ((NumofSelected <- length(FileOfCat)) ==0) {
+      gmessage("Please select the Files you want to delete.",con=TRUE)} else
+    {
+      ## Give a confirm msg
+      del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
+      if (isTRUE(del)){
+        SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+        ## Encoding(SelectedCase) <- Encoding(FileOfCat)<- "UTF-8"
+        caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
+        for (i in FileOfCat){
+          fid <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",i))[,1]
+          dbGetQuery(.rqda$qdacon,sprintf("update caselinkage set status==0 where caseid==%i and fid==%i",caseid,fid))
+        }
+        ## update Widget
+        UpdateFileofCaseWidget()
+      }
+    }
+  }
+}
+
+
+

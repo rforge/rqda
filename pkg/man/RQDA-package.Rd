@@ -17,7 +17,7 @@ Date: \tab 2008-11-22\cr
 Depends: \tab DBI, RSQLite, RGtk2, gWidgets, gWidgetsRGtk2\cr
 License: \tab New style BSD License\cr
 LazyLoad: \tab yes\cr
-URL: \tab http://rqda.r-forge.r-project.org/ \cr
+URL: \tab \url{http://rqda.r-forge.r-project.org/} \cr
 }
 %% description of the package
 %% main functions.

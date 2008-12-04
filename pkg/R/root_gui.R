@@ -35,7 +35,7 @@ RQDA <- function() {
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: New style BSD License\n
-Version: 0.1.5 rev 27\n",
+Version: 0.1.5 rev 28\n",
          container=.proj_gui)
 
 
@@ -80,14 +80,14 @@ Version: 0.1.5 rev 27\n",
   ".case_PW" <- ggroup(cont=.case_pan,horizontal = FALSE)
   ".CasesNamesWidget" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=FALSE)
   .CasesNamesWidget[] <- NULL ; names(.CasesNamesWidget) <- "Cases"
-  ".FileofCase" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=FALSE)
+  ".FileofCase" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=TRUE)
   .FileofCase[] <- NULL;names(.FileofCase)<-"Files of This Case"
 
   .case_buttons[1,1] <- AddCaseButton()
   .case_buttons[1,2] <- DeleteCaseButton()
   .case_buttons[1,3] <- Case_RenameButton()
-  .case_buttons[1,4] <- CaseMark_Button()
-  .case_buttons[1,5] <- CaseMemoButton()
+  .case_buttons[1,4] <- CaseMemoButton()
+  .case_buttons[1,5] <- CaseMark_Button()
   ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
   
 
@@ -103,8 +103,8 @@ Version: 0.1.5 rev 27\n",
    .codecat_buttons[1,1] <- AddCodeCatButton("Add")
    .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
    .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
-   .codecat_buttons[1,4] <- CodeCatAddToButton("AddTo")
-   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropFrom")
+   .codecat_buttons[1,4] <- CodeCatAddToButton("AddCode")
+   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropCode")
 
 ######################### GUI  for F-cat
 #########################
@@ -118,8 +118,8 @@ Version: 0.1.5 rev 27\n",
    .filecat_buttons[1,1] <- AddFileCatButton("Add")
    .filecat_buttons[1,2] <- DeleteFileCatButton("Delete") ## should take care of treecode table
    .filecat_buttons[1,3] <- FileCat_RenameButton("Rename")
-   .filecat_buttons[1,4] <- FileCatAddToButton("AddTo")
-   .filecat_buttons[1,5] <- FileCatDropFromButton("DropFrom")
+   .filecat_buttons[1,4] <- FileCatAddToButton("AddFile")
+   .filecat_buttons[1,5] <- FileCatDropFromButton("DropFile")
 
 ######################### GUI  for settings
 #########################

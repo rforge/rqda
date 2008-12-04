@@ -129,3 +129,38 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
   }
           )
 }
+
+
+
+AddToFileCategory<- function(){
+  ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
+  filename <- svalue(.rqda$.fnames_rqda)
+  Encoding(filename) <- "unknown"
+  query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name = '%s' and status=1",filename))
+  fid <- query$id
+  Encoding(query$file) <- "UTF-8"
+  
+  ## select a F-cat name -> F-cat id
+  Fcat <- dbGetQuery(.rqda$qdacon,"select catid, name from filecat where status=1")
+  if (nrow(Fcat)!=0){
+    Encoding(Fcat$name) <- "UTF-8"
+    ans <- select.list(Fcat$name,multiple=FALSE)
+    if (ans!=""){
+      ans <- iconv(ans,to="UTF-8")
+      Fcatid <- Fcat$catid[Fcat$name %in% ans]
+      exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and fid=%i and catid=%i",fid,Fcatid))
+    if (nrow(exist)==0){
+    ## write only when the selected file associated with specific f-cat is not there
+      DAT <- data.frame(fid=fid, catid=Fcatid, date=date(),dateM=date(),memo='',status=1)
+      ## should pay attention to the var order of DAT, must be the same as that of treefile table
+      success <- dbWriteTable(.rqda$qdacon,"treefile",DAT,row.name=FALSE,append=TRUE)
+      ## write to caselinkage table
+      if (success) {
+      UpdateFileofCatWidget()
+      }
+      if (!success) gmessage("Fail to write to database.")
+    }
+    }
+  }
+}
+

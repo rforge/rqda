@@ -132,3 +132,19 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
 }
 
 
+
+## pop-up menu of add to case and F-cat from Files Tab
+AddFileToCaseMenu <- list()
+AddFileToCaseMenu$AddToCase$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      AddFileToCaselinkage()
+      UpdateFileofCaseWidget()
+    }
+  }
+
+AddFileToCaseMenu$AddToCategory$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      AddToFileCategory()
+      UpdateFileofCatWidget()
+    }
+  }
