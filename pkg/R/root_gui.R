@@ -103,8 +103,8 @@ Version: 0.1.5 rev 28\n",
    .codecat_buttons[1,1] <- AddCodeCatButton("Add")
    .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
    .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
-   .codecat_buttons[1,4] <- CodeCatAddToButton("AddCode")
-   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropCode")
+   .codecat_buttons[1,4] <- CodeCatAddToButton("AddTo")
+   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropFrom")
 
 ######################### GUI  for F-cat
 #########################
@@ -118,8 +118,8 @@ Version: 0.1.5 rev 28\n",
    .filecat_buttons[1,1] <- AddFileCatButton("Add")
    .filecat_buttons[1,2] <- DeleteFileCatButton("Delete") ## should take care of treecode table
    .filecat_buttons[1,3] <- FileCat_RenameButton("Rename")
-   .filecat_buttons[1,4] <- FileCatAddToButton("AddFile")
-   .filecat_buttons[1,5] <- FileCatDropFromButton("DropFile")
+   .filecat_buttons[1,4] <- FileCatAddToButton("AddTo")
+   .filecat_buttons[1,5] <- FileCatDropFromButton("DropFrom")
 
 ######################### GUI  for settings
 #########################
