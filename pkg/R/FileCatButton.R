@@ -164,3 +164,11 @@ AddToFileCategory<- function(){
   }
 }
 
+
+##FileCatWidgetMenu <- list()
+##FileCatWidgetMenu$Memo$handler <- function(h,...){
+## if (is_projOpen(env=.rqda,conName="qdacon")) {
+## MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
+## see CodeCatButton.R  for definition of MemoWidget
+##}
+##}

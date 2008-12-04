@@ -71,6 +71,7 @@
 \alias{AddFileToCaseMenu}
 \alias{HL_Case}
 \alias{UpdateFileofCaseWidget}
+\alias{MemoWidget}
 %% add related alias functions here.
 
 \title{Internal Functions}

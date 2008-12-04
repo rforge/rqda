@@ -1,5 +1,12 @@
+2008-12-05
+	* New functionality of add memo to File category and Code category.
+	
 2008-12-04
-	* Better handler colors for coding and case-mark. Now can customize colors for coding-mark (set .rqda$fore.col, default is "blue") and case-mark (set .rqda$back.col, default is "gray92").
+	* Better handler colors for coding and case-mark. Now can customize colors for coding-mark 
+	(set .rqda$fore.col, default is "blue") and case-mark (set .rqda$back.col, default is "gray92").
+	* Add selected file to File-category by popup menu in Files Tab.
+	* Popup menu in Cases tab to link files with selected case.
+	* Drop selected Files from Files.of.This.Case Widget by clicking popu menu.
 	
 2008-12-03
 	* Attached file to case by pop-up menu in Files Tab.

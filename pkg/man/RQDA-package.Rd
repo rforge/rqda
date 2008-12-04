@@ -13,7 +13,7 @@
 Package: \tab RQDA\cr
 Type: \tab Package\cr
 Version: \tab 0.1.5\cr
-Date: \tab 2008-11-22\cr
+Date: \tab 2008-11-30\cr
 Depends: \tab DBI, RSQLite, RGtk2, gWidgets, gWidgetsRGtk2\cr
 License: \tab New style BSD License\cr
 LazyLoad: \tab yes\cr
