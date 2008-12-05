@@ -14,13 +14,13 @@ Handler <- function(){
 
   ## handler for .fnames_rqda (gtable holding the file names)
 
-  addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
-    ## updating the file name list, and update the status of curent selected file.
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-      FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
-    }
-  }
-                    )
+##  addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
+##    ## updating the file name list, and update the status of curent selected file.
+##    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+##      FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
+##    }
+##  }
+##                    )
 
 ##   addHandlerMouseMotion(.rqda$.fnames_rqda, handler <- function(h,...) {
 ##     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
@@ -30,7 +30,7 @@ Handler <- function(){
 ##                         )
 
 
-add3rdmousepopupmenu(.rqda$.fnames_rqda, AddFileToCaseMenu)
+add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
 ## right click to add file to a case category
 
 

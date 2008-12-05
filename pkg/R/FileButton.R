@@ -7,6 +7,7 @@ ImportFileButton <- function(label="Import", container,...)
       if (path!=""){
         Encoding(path) <- "UTF-8" ## have to convert, otherwise, can not find the file.
         ImportFile(path,con=.rqda$qdacon)
+         FileNamesUpdate()
       }
     }
   }
@@ -123,6 +124,7 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
           ## Newfilename <- iconv(codename,from="UTF-8") ## now use UTF-8 for SQLite data set.
           ## update the name in source table by a function
           rename(selectedFN,NewFileName,"source")
+          FileNamesUpdate()
           ## (name is the only field should be modifed, as other table use fid rather than name)
         }
       }
@@ -134,17 +136,30 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
 
 
 ## pop-up menu of add to case and F-cat from Files Tab
-AddFileToCaseMenu <- list()
-AddFileToCaseMenu$AddToCase$handler <- function(h, ...) {
+FileNamesWidgetMenu <- list()
+FileNamesWidgetMenu$"Add To Case"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       AddFileToCaselinkage()
       UpdateFileofCaseWidget()
     }
   }
 
-AddFileToCaseMenu$AddToCategory$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Add To Category"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       AddToFileCategory()
       UpdateFileofCatWidget()
     }
   }
+
+FileNamesWidgetMenu$"Sorted by import time"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+     FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
+    }
+  }
+
+FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+ MemoWidget("File",.rqda$.fnames_rqda,"source")
+## see CodeCatButton.R  for definition of MemoWidget
+}
+}

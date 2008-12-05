@@ -1,3 +1,9 @@
+2008-12-06
+	* bugfix of Freecode rename button and others.
+	* Memo in Popup menu in Files Tab.
+	* Enhance Mark buttons, so it will not save duplicated information in database.
+	* New function relation() for caculating relation between two coding.
+
 2008-12-05
 	* New functionality of add memo to File category and Code category.
 	* Reorganize the memo for Cases.  Now opem case memo by double-click or popup menu

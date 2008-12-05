@@ -47,6 +47,7 @@ Case_RenameButton <- function(label="Rename",CaseNamesWidget=.rqda$.CasesNamesWi
         if (NewName != ""){
           Encoding(NewName) <- "UTF-8"
           rename(selectedCaseName,NewName,"cases")
+          CaseNamesUpdate()
         }
       }
     }
@@ -94,34 +95,70 @@ CaseMemoButton <- function(label="Memo",...){
 
 CaseMark_Button<-function(){
   gbutton("Mark",
-          handler=function(h,...) {
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              con <- .rqda$qdacon
-                                   tryCatch({
-                                     ans <- mark(get(h$action$widget,env=.rqda),fore.col=NULL,back.col=.rqda$back.col)
-                                     ## can change the color
-                                     if (ans$start != ans$end){ 
-                                       ## when selected no text, makes on sense to do anything.
-                                       SelectedCase <- svalue(.rqda$.CasesNamesWidget)
-                                       Encoding(SelectedCase) <- "UTF-8"
-                                       currentCid <-  dbGetQuery(con,sprintf("select id from cases where name=='%s'",
-                                                                             SelectedCase))[,1]
-                                       SelectedFile <- svalue(.rqda$.root_edit)
-                                       Encoding(SelectedFile) <- "UTF-8"
-                                       currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
-                                                                             SelectedFile))[,1]
-                                       DAT <- data.frame(cid=currentCid,fid=currentFid,
-                                                         selfirst=ans$start,selend=ans$end,status=1,
-                                                         owner=.rqda$owner,date=date(),memo="")
-                                       success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
-                                       if (!success) gmessage("Fail to write to database.")
-                                     }
-                                   },error=function(e){}
-                                            )
-            }
-          },
-          action=list(widget=".openfile_gui")
+          handler=function(h,...) {MarkCaseFun()}
           )
+}
+
+MarkCaseFun <- function(){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    con <- .rqda$qdacon
+    tryCatch({
+      ans <- mark(get(".openfile_gui",env=.rqda),fore.col=NULL,back.col=.rqda$back.col)
+      ## can change the color
+      if (ans$start != ans$end){ 
+        ## when selected no text, makes on sense to do anything.
+        SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+        Encoding(SelectedCase) <- "UTF-8"
+        currentCid <-  dbGetQuery(con,sprintf("select id from cases where name=='%s'",
+                                              SelectedCase))[,1]
+        SelectedFile <- svalue(.rqda$.root_edit)
+        Encoding(SelectedFile) <- "UTF-8"
+        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
+                                              SelectedFile))[,1]
+        ## Query of caselinkage
+        ExistLinkage <-  dbGetQuery(con,sprintf("select rowid, selfirst, selend,status from caselinkage where caseid==%i and fid=%i and status=1",currentCid,currentFid))
+        DAT <- data.frame(cid=currentCid,fid=currentFid,
+                          selfirst=ans$start,selend=ans$end,status=1,
+                          owner=.rqda$owner,date=date(),memo="")
+        if (nrow(ExistLinkage)==0){
+          ## if there are no relevant caselinkage, write the caselinkage table
+          success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
+          if (!success) gmessage("Fail to write to database.")
+        } else {
+          Relations <- apply(ExistLinkage,1,FUN=function(x) relation(x[c("selfirst","selend")],c(ans$start,ans$end)))
+          ExistLinkage$Relation <- sapply(Relations,FUN=function(x)x$Relation)
+          if (!any(ExistLinkage$Relation=="exact")){
+            ## if there are exact caselinkage, skip; if no exact linkage then continue
+            ExistLinkage$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
+            ExistLinkage$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
+            ExistLinkage$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
+            if (all(ExistLinkage$Relation=="proximity")){
+              success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
+              if (!success) gmessage("Fail to write to database.")
+            } else {
+              del1 <- ExistLinkage$WhichMin==2 & ExistLinkage$Relation =="inclusion"; del1[is.na(del1)] <- FALSE
+              del2 <- ExistLinkage$Relation =="overlap"; del2[is.na(del2)] <- FALSE
+              del <- (del1 | del2)
+              if (any(del)){
+              Sel <- c(min(ExistLinkage$Start[del]), max(ExistLinkage$End[del]))
+              memo <- dbGetQuery(.rqda$qdacon,sprintf("select memo from caselinkage where rowid in (%s)",
+                                                      paste(ExistLinkage$rowid[del],collapse=",",sep="")))$memo
+              memo <- paste(memo,collapse="",sep="")
+              dbGetQuery(.rqda$qdacon,sprintf("delete from caselinkage where rowid in (%s)",
+                                              paste(ExistLinkage$rowid[del],collapse=",",sep="")))
+              DAT <- data.frame(cid=currentCid,fid=currentFid,
+                                selfirst=Sel[1],selend=Sel[2],status=1,
+                                owner=.rqda$owner,date=date(),memo=memo)
+              success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
+              if (!success) gmessage("Fail to write to database.")
+            }
+            }
+            }
+          }
+        }
+    },error=function(e){}
+             )
+  }
 }
 
 
@@ -157,63 +194,62 @@ CaseUnMark_Button<-function(label="Unmark"){
             )
         }
   
-  AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
-    gbutton(label,handler=function(h,...) {
-      if (is_projOpen(env=.rqda,conName="qdacon")) {
-        KeyWord <- svalue(CaseNamesWidget)
-        engine <- select.list(c("Baidu","Google","Yahoo"))
-        if (engine=="Baidu") {
-          KeyWord <- iconv(KeyWord, from="UTF-8")
-          browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
-        }
-        if (engine=="Yahoo") {
-          KeyWord <- iconv(KeyWord, from="UTF-8")
-          browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
-                            ,KeyWord))
-        }
-    if (engine=="Google")browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
-      }
-    }
-            )
-}
+##   AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
+##     gbutton(label,handler=function(h,...) {
+##       if (is_projOpen(env=.rqda,conName="qdacon")) {
+##         KeyWord <- svalue(CaseNamesWidget)
+##         engine <- select.list(c("Baidu","Google","Yahoo"))
+##         if (engine=="Baidu") {
+##           KeyWord <- iconv(KeyWord, from="UTF-8")
+##           browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
+##         }
+##         if (engine=="Yahoo") {
+##           KeyWord <- iconv(KeyWord, from="UTF-8")
+##           browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
+##                             ,KeyWord))
+##         }
+##     if (engine=="Google")browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
+##       }
+##     }
+##             )
+## }
   
-  CaseNamesWidgetMenu <- list()
-  CaseNamesWidgetMenu$WebSearch$Baidu$handler <- function(h,...){
-    KeyWord <- svalue(.rqda$.CasesNamesWidget)
-    if (length(KeyWord)!=0){
+CaseNamesWidgetMenu <- list()
+CaseNamesWidgetMenu$"Web Search"$Baidu$handler <- function(h,...){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
   }
-  }
-CaseNamesWidgetMenu$WebSearch$Google$handler <- function(h,...){
+}
+CaseNamesWidgetMenu$"Web Search"$Google$handler <- function(h,...){
   KeyWord <- svalue(.rqda$.CasesNamesWidget)
   if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
   }
 }
-  CaseNamesWidgetMenu$WebSearch$Yahoo$handler <- function(h,...){
-    KeyWord <- svalue(.rqda$.CasesNamesWidget)
-    if (length(KeyWord)!=0){
+CaseNamesWidgetMenu$"Web Search"$Yahoo$handler <- function(h,...){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
-                     ,KeyWord))
+                      ,KeyWord))
   }
 }
-  
-  CaseNamesWidgetMenu$"AddFile(s)"$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-      SelectedCase <- svalue(.rqda$.CasesNamesWidget)
-      caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
-      freefile <-  dbGetQuery(.rqda$qdacon,"select name, id, file from source where status=1")
-      fileofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and caseid=%i",caseid))
-      Encoding(freefile[['name']]) <- Encoding(freefile[['file']]) <- "UTF-8"
-      if (nrow(fileofcase)!=0){
-        fileoutofcase <- subset(freefile,!(id %in% fileofcase$fid))
+CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+    caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
+    freefile <-  dbGetQuery(.rqda$qdacon,"select name, id, file from source where status=1")
+    fileofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and caseid=%i",caseid))
+    Encoding(freefile[['name']]) <- Encoding(freefile[['file']]) <- "UTF-8"
+    if (nrow(fileofcase)!=0){
+      fileoutofcase <- subset(freefile,!(id %in% fileofcase$fid))
       } else  fileoutofcase <- freefile
-      if (length(fileoutofcase[['name']])==0) gmessage("All files are linked with this case.", cont=TRUE) else {
-        Selected <- select.list(fileoutofcase[['name']],multiple=TRUE)
-        if (length(Selected)> 0) {
+    if (length(fileoutofcase[['name']])==0) gmessage("All files are linked with this case.", cont=TRUE) else {
+      Selected <- select.list(fileoutofcase[['name']],multiple=TRUE)
+      if (length(Selected)> 0) {
           Selected <- iconv(Selected,to="UTF-8")
           fid <- fileoutofcase[fileoutofcase$name %in% Selected,"id"]
           selend <- nchar(fileoutofcase[fileoutofcase$name %in% Selected,"file"])
@@ -221,29 +257,27 @@ CaseNamesWidgetMenu$WebSearch$Google$handler <- function(h,...){
           dbWriteTable(.rqda$qdacon,"caselinkage",Dat,row.names=FALSE,append=TRUE)
           UpdateFileofCaseWidget()
         }
-      }
     }
   }
-  
-  
-CaseNamesWidgetMenu$Memo$handler <- function(h,...){
+  }
+CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     MemoWidget("Case",.rqda$.CasesNamesWidget,"cases")
     ## see CodeCatButton.R  for definition of MemoWidget
+  }
 }
-}
-  
-  
+
+
   ## pop-up menu of .rqda$.FileofCase
 FileofCaseWidgetMenu <- list() ## not used yet.
-  FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-      FileOfCat <- svalue(.rqda$.FileofCase)
-      if ((NumofSelected <- length(FileOfCat)) ==0) {
+FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    FileOfCat <- svalue(.rqda$.FileofCase)
+    if ((NumofSelected <- length(FileOfCat)) ==0) {
       gmessage("Please select the Files you want to delete.",con=TRUE)} else
-      {
-        ## Give a confirm msg
-        del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
+    {
+      ## Give a confirm msg
+      del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
       if (isTRUE(del)){
         SelectedCase <- svalue(.rqda$.CasesNamesWidget)
         ## Encoding(SelectedCase) <- Encoding(FileOfCat)<- "UTF-8"
@@ -255,7 +289,6 @@ FileofCaseWidgetMenu <- list() ## not used yet.
         ## update Widget
         UpdateFileofCaseWidget()
       }
-      }
+    }
   }
   }
-  

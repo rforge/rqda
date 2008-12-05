@@ -9,7 +9,7 @@ RQDA <- function() {
   
 ########################### GUI FOR ROOT
 ########################### 
-  ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis.",parent=c(10,10),
+  ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis.",parent=c(2,10),
                              width=300,height=600,visible=FALSE,handler=function(h,...){
                                tryCatch(dispose(.rqda$.root_edit),error=function(e){})
                                close_proj(assignenv=.rqda)
@@ -35,7 +35,7 @@ RQDA <- function() {
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: New style BSD License\n
-Version: 0.1.5 rev 31\n",
+Version: 0.1.5 rev 35\n",
          container=.proj_gui)
 
 
@@ -67,11 +67,11 @@ Version: 0.1.5 rev 31\n",
   .codes_button[1,3] <- FreeCode_RenameButton(label="Rename",CodeNamesWidget=.codes_rqda)
   .codes_button[1,4] <- CodeMemoButton(label="C-Memo")
   .codes_button[1,5]<- CodingMemoButton(label="C2Memo")
-  .codes_button[2,1]<- HL_ALLButton()
+  .codes_button[2,2]<- HL_ALLButton()
  # .codes_button[2,2]<- RetrievalButton("Retrieval")
-  .codes_button[2,2]<- ExtendButton("Retrieval")
-  .codes_button[2,3]<- Unmark_Button()
-  .codes_button[2,4]<- Mark_Button()
+  .codes_button[2,3]<- ExtendButton("Retrieval")
+  .codes_button[2,4]<- Unmark_Button()
+  .codes_button[2,5]<- Mark_Button()
 
 ######################### GUI  for cases
 #########################

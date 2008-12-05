@@ -68,11 +68,19 @@
 \alias{UpdateFileofCatWidget}
 \alias{ViewFileFun}
 \alias{AddFileToCaselinkage}
-\alias{AddFileToCaseMenu}
+%\alias{AddFileToCaseMenu} % renamed as FileNamesWidgetMenu
 \alias{HL_Case}
 \alias{UpdateFileofCaseWidget}
 \alias{MemoWidget}
 \alias{addSettingGUI}
+\alias{AddToFileCategory}
+\alias{CaseUnMark_Button}
+\alias{CodeCatWidgetMenu}
+\alias{FileCatWidgetMenu}
+\alias{FileofCaseWidgetMenu}
+\alias{FileNamesWidgetMenu}
+\alias{MarkCodeFun}
+\alias{MarkCaseFun}
 %% add related alias functions here.
 
 \title{Internal Functions}

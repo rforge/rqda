@@ -86,36 +86,67 @@ HL_ALLButton <- function(){
 
 Mark_Button<-function(){
   gbutton("Mark",
-          handler=function(h,...) {
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              con <- .rqda$qdacon
-                                   tryCatch({
-                                     ans <- mark(get(h$action$widget,env=.rqda)) ## can change the color
-                                     if (ans$start != ans$end){ 
-                                       ## when selected no text, makes on sense to do anything.
-                                       SelectedCode <- svalue(.rqda$.codes_rqda)
-                                       Encoding(SelectedCode) <- "UTF-8"
-                                       currentCid <-  dbGetQuery(con,sprintf("select id from freecode where name=='%s'",
-                                                                             SelectedCode))[,1]
-                                       SelectedFile <- svalue(.rqda$.root_edit)
-                                       Encoding(SelectedFile) <- "UTF-8"
-                                       currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
-                                                                             SelectedFile))[,1]
-                                       DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,
-                                                         selfirst=ans$start,selend=ans$end,status=1,
-                                                         owner=.rqda$owner,date=date(),memo="")
-                                       success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
-                                       if (!success) gmessage("Fail to write to database.")
-                                     }
-                                   },error=function(e){}
-                                            )
-            }
-          },
-          action=list(widget=".openfile_gui")
+          handler=function(h,...) {MarkCodeFun()}
           )
 }
 
-
+MarkCodeFun <- function(){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    con <- .rqda$qdacon
+    tryCatch({
+      W <- get(".openfile_gui",env=.rqda)
+      ans <- mark(W) ## can change the color
+      if (ans$start != ans$end){ 
+        ## when selected no text, makes on sense to do anything.
+        SelectedCode <- svalue(.rqda$.codes_rqda)
+        Encoding(SelectedCode) <- "UTF-8"
+        currentCid <-  dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+        SelectedFile <- svalue(.rqda$.root_edit)
+        Encoding(SelectedFile) <- "UTF-8"
+        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+        Exist <-  dbGetQuery(con,sprintf("select rowid, selfirst, selend from coding where cid==%i and fid=%i and status=1",currentCid,currentFid))
+        DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,selfirst=ans$start,selend=ans$end,status=1,
+                          owner=.rqda$owner,date=date(),memo="")
+        if (nrow(Exist)==0){
+          success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
+          if (!success) gmessage("Fail to write to database.")
+        } else {
+          Relations <- apply(Exist,1,FUN=function(x) relation(x[c("selfirst","selend")],c(ans$start,ans$end)))
+          Exist$Relation <- sapply(Relations,FUN=function(x)x$Relation)
+          if (!any(Exist$Relation=="exact")){
+            Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
+            Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
+            Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
+            if (all(Exist$Relation=="proximity")){
+              success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
+              if (!success) gmessage("Fail to write to database.")
+            } else {
+              del1 <- Exist$WhichMin==2 & Exist$Relation =="inclusion"; del1[is.na(del1)] <- FALSE
+              del2 <- Exist$Relation =="overlap"; del2[is.na(del2)] <- FALSE
+              del <- (del1 | del2)
+              if (any(del)){
+                Sel <- c(min(Exist$Start[del]), max(Exist$End[del]))
+                memo <- dbGetQuery(.rqda$qdacon,sprintf("select memo from coding where rowid in (%s)",
+                                                paste(Exist$rowid[del],collapse=",",sep="")))$memo
+                memo <- paste(memo,collapse="",sep="")
+                dbGetQuery(.rqda$qdacon,sprintf("delete from coding where rowid in (%s)",
+                                                paste(Exist$rowid[del],collapse=",",sep="")))
+                tt <- svalue(W); Encoding(tt) <- "UTF-8"
+                DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=substr(tt,Sel[1],Sel[2]),
+                                  selfirst=Sel[1],selend=Sel[2],status=1,
+                                  owner=.rqda$owner,date=date(),memo=memo)
+                success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
+                if (!success) gmessage("Fail to write to database.")
+              }
+            }
+          }
+        }
+      }
+    },error=function(e){}
+             )
+  }
+}
+                                     
 Unmark_Button <- function(){
   gbutton("Unmark",
                                handler=function(h,...) {
@@ -272,6 +303,7 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
           ## update the name in source table by a function
           rename(selectedCodeName,NewCodeName,"freecode")
           ## (name is the only field should be modifed, as other table use ID rather than name)
+          CodeNamesUpdate()
         }
       }
     }
