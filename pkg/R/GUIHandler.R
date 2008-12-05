@@ -98,9 +98,9 @@ add3rdmousepopupmenu(.rqda$.fnames_rqda, AddFileToCaseMenu)
             sel_index <-  dbGetQuery(con,sprintf("select selfirst, selend from coding where
                                                    cid==%i and fid==%i and status==1",currentCid, currentFid))
             Maxindex <- dbGetQuery(con, sprintf("select max(selend) from coding where fid==%i", currentFid))[1,1]
-            ClearMark(widget,min=0,max=Maxindex)
+            ClearMark(widget,min=0,max=Maxindex,clear.fore.col = TRUE, clear.back.col =FALSE)
         if (nrow(sel_index)>0){
-          HL(widget,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)}
+          HL(widget,index=sel_index,fore.col=.rqda$fore.col,back.col=NULL)}
           },error=function(e){}) # end of mark text chuck
         }
       }
