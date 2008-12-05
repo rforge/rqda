@@ -124,8 +124,8 @@ Version: 0.1.5 rev 31\n",
 
 ######################### GUI  for settings
 #########################
-##   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings")
-
+   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings")
+   addSettingGUI(cont=.settings_gui)
   
 ######################### Put them together
 #########################

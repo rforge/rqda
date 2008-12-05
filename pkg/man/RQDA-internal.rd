@@ -72,6 +72,7 @@
 \alias{HL_Case}
 \alias{UpdateFileofCaseWidget}
 \alias{MemoWidget}
+\alias{addSettingGUI}
 %% add related alias functions here.
 
 \title{Internal Functions}
