@@ -115,7 +115,7 @@ add3rdmousepopupmenu(.rqda$.fnames_rqda, AddFileToCaseMenu)
 ##  }
 ##                        )
   
-
+ addhandlerdoubleclick(.rqda$.CasesNamesWidget, handler=function(h,...) MemoWidget("Case",.rqda$.CasesNamesWidget,"cases"))
 
   addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
     CaseNamesUpdate(.rqda$.CasesNamesWidget)
@@ -150,6 +150,7 @@ add3rdmousepopupmenu(.rqda$.fnames_rqda, AddFileToCaseMenu)
 })
 
  addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))
+ add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
 
   addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval2(CodeNameWidget=.rqda$.CodeofCat)
@@ -161,6 +162,9 @@ add3rdmousepopupmenu(.rqda$.fnames_rqda, AddFileToCaseMenu)
 })
 
 addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat"))
+
+add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
+
 
 addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
 

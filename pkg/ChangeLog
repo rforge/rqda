@@ -1,5 +1,7 @@
 2008-12-05
 	* New functionality of add memo to File category and Code category.
+	* Reorganize the memo for Cases.  Now opem case memo by double-click or popup menu
+	* Unmark button for cases.
 	
 2008-12-04
 	* Better handler colors for coding and case-mark. Now can customize colors for coding-mark 

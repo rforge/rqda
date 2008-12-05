@@ -57,6 +57,7 @@ Case_RenameButton <- function(label="Rename",CaseNamesWidget=.rqda$.CasesNamesWi
 
 
 CaseMemoButton <- function(label="Memo",...){
+## no longer used
   gbutton(label, handler=function(h,...) {
     ## code memo: such as meaning of code etc.
     if (is_projOpen(env=.rqda,"qdacon")) {
@@ -124,51 +125,83 @@ CaseMark_Button<-function(){
 }
 
 
-AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-    KeyWord <- svalue(CaseNamesWidget)
-    engine <- select.list(c("Baidu","Google","Yahoo"))
-    if (engine=="Baidu") {
-    KeyWord <- iconv(KeyWord, from="UTF-8")
-    browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
-    }
-    if (engine=="Yahoo") {
-    KeyWord <- iconv(KeyWord, from="UTF-8")
-    browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
-                     ,KeyWord))
-     }
-    if (engine=="Google")browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
-    }
-          }
-          )
-}
 
-CaseNamesWidgetMenu <- list()
-CaseNamesWidgetMenu$WebSearch$Baidu$handler <- function(h,...){
+CaseUnMark_Button<-function(label="Unmark"){
+  gbutton(label,
+          handler=function(h,...) {
+            if (is_projOpen(env=.rqda,conName="qdacon")) {
+              con <- .rqda$qdacon
+              W <- tryCatch(get(h$action$widget,env=.rqda),error=function(e){})
+              ## get the widget for file display. If it does not exist, then return NULL.
+              sel_index <- tryCatch(sindex(W),error=function(e) {})
+              ## if the not file is open, unmark doesn't work.
+              if (!is.null(sel_index)) {
+                SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+                ## Encoding(SelectedCase) <- "UTF-8"
+                caseid <-  dbGetQuery(.rqda$qdacon,sprintf("select id from cases where name=='%s'",SelectedCase))[,1]
+                SelectedFile <- svalue(.rqda$.root_edit)
+                ## Encoding(SelectedFile) <- "UTF-8"
+                currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'", SelectedFile))[,1]
+                codings_index <-  dbGetQuery(con,sprintf("select rowid, caseid, fid, selfirst, selend from caselinkage where caseid==%i and fid==%i", caseid, currentFid))
+                ## should only work with those related to current case and current file.
+                rowid <- codings_index$rowid[(codings_index$selfirst  >= sel_index$startN) &
+                                             (codings_index$selend  <= sel_index$endN)]
+                if (is.numeric(rowid)) for (j in rowid) {
+                  dbGetQuery(con,sprintf("update caselinkage set status=0 where rowid=%i", j))
+                }
+                ## better to get around the loop by sqlite condition expression.
+                ClearMark(W,min=sel_index$startN,max=sel_index$endN,clear.fore.col = FALSE, clear.back.col = TRUE)
+                ## even for the non-current code. can improve.
+              }
+            }},action=list(widget=".openfile_gui")
+            )
+        }
+  
+  AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
+    gbutton(label,handler=function(h,...) {
+      if (is_projOpen(env=.rqda,conName="qdacon")) {
+        KeyWord <- svalue(CaseNamesWidget)
+        engine <- select.list(c("Baidu","Google","Yahoo"))
+        if (engine=="Baidu") {
+          KeyWord <- iconv(KeyWord, from="UTF-8")
+          browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
+        }
+        if (engine=="Yahoo") {
+          KeyWord <- iconv(KeyWord, from="UTF-8")
+          browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
+                            ,KeyWord))
+        }
+    if (engine=="Google")browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
+      }
+    }
+            )
+}
+  
+  CaseNamesWidgetMenu <- list()
+  CaseNamesWidgetMenu$WebSearch$Baidu$handler <- function(h,...){
     KeyWord <- svalue(.rqda$.CasesNamesWidget)
     if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
-}
-}
+  }
+  }
 CaseNamesWidgetMenu$WebSearch$Google$handler <- function(h,...){
-    KeyWord <- svalue(.rqda$.CasesNamesWidget)
-    if (length(KeyWord)!=0){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
+  }
 }
-}
-CaseNamesWidgetMenu$WebSearch$Yahoo$handler <- function(h,...){
+  CaseNamesWidgetMenu$WebSearch$Yahoo$handler <- function(h,...){
     KeyWord <- svalue(.rqda$.CasesNamesWidget)
     if (length(KeyWord)!=0){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
                      ,KeyWord))
+  }
 }
-}
-
-CaseNamesWidgetMenu$"AddFile(s)"$handler <- function(h, ...) {
+  
+  CaseNamesWidgetMenu$"AddFile(s)"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       SelectedCase <- svalue(.rqda$.CasesNamesWidget)
       caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
@@ -191,19 +224,26 @@ CaseNamesWidgetMenu$"AddFile(s)"$handler <- function(h, ...) {
       }
     }
   }
-
-
-
-## pop-up menu of .rqda$.FileofCase
+  
+  
+CaseNamesWidgetMenu$Memo$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    MemoWidget("Case",.rqda$.CasesNamesWidget,"cases")
+    ## see CodeCatButton.R  for definition of MemoWidget
+}
+}
+  
+  
+  ## pop-up menu of .rqda$.FileofCase
 FileofCaseWidgetMenu <- list() ## not used yet.
-FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
-  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    FileOfCat <- svalue(.rqda$.FileofCase)
-    if ((NumofSelected <- length(FileOfCat)) ==0) {
+  FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      FileOfCat <- svalue(.rqda$.FileofCase)
+      if ((NumofSelected <- length(FileOfCat)) ==0) {
       gmessage("Please select the Files you want to delete.",con=TRUE)} else
-    {
-      ## Give a confirm msg
-      del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
+      {
+        ## Give a confirm msg
+        del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
       if (isTRUE(del)){
         SelectedCase <- svalue(.rqda$.CasesNamesWidget)
         ## Encoding(SelectedCase) <- Encoding(FileOfCat)<- "UTF-8"
@@ -215,9 +255,7 @@ FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
         ## update Widget
         UpdateFileofCaseWidget()
       }
-    }
+      }
   }
-}
-
-
-
+  }
+  

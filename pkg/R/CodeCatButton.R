@@ -185,7 +185,7 @@ MemoWidget <- function(prefix,widget,dbTable){
         gmessage("No selection first.",icon="error",con=TRUE)
       }
       else {
-        tryCatch(eval(sprintf("dispose(.rqda$.%smemo)",prefix)),error=function(e) {})
+        tryCatch(eval(parse(text=sprintf("dispose(.rqda$.%smemo)",prefix))),error=function(e) {})
         assign(sprintf(".%smemo",prefix),gwindow(title=sprintf("%s Memo:%s",prefix,Selected),
                                    parent=c(370,10),width=600,height=400),env=.rqda)
         assign(sprintf(".%smemo2",prefix),
@@ -211,10 +211,10 @@ MemoWidget <- function(prefix,widget,dbTable){
   }
 
 
-##CodeCatWidgetMenu <- list()
-##CodeCatWidgetMenu$Memo$handler <- function(h,...){
-## if (is_projOpen(env=.rqda,conName="qdacon")) {
-## MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
-##}
-##}
+CodeCatWidgetMenu <- list()
+CodeCatWidgetMenu$Memo$handler <- function(h,...){
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+ MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
+}
+}
 

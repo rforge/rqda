@@ -35,7 +35,7 @@ RQDA <- function() {
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: New style BSD License\n
-Version: 0.1.5 rev 28\n",
+Version: 0.1.5 rev 31\n",
          container=.proj_gui)
 
 
@@ -86,7 +86,8 @@ Version: 0.1.5 rev 28\n",
   .case_buttons[1,1] <- AddCaseButton()
   .case_buttons[1,2] <- DeleteCaseButton()
   .case_buttons[1,3] <- Case_RenameButton()
-  .case_buttons[1,4] <- CaseMemoButton()
+  ##.case_buttons[1,4] <- CaseMemoButton()
+  .case_buttons[1,4] <- CaseUnMark_Button()
   .case_buttons[1,5] <- CaseMark_Button()
   ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
   
