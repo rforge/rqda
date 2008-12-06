@@ -19,6 +19,11 @@ Setting <- list(type = "ggroup",
                             type = "gedit",
                             text = .rqda$encoding
                             ),
+                       list(name = "BOM",
+                            label = "BOM",
+                            type = "gcombobox",
+                            items = c(FALSE, TRUE)
+                            ),
                        list(name = "fore.col",
                             label = "Color for Coding",
                             type = "gedit",
@@ -28,13 +33,7 @@ Setting <- list(type = "ggroup",
                             label = "Color for Case",
                             type = "gedit",
                             text = .rqda$back.col
-                            ),
-                       list(name = "BOM",
-                            label = "BOM",
-                            type = "gcombobox",
-                            items = c(FALSE, TRUE)
                             )
-
                        )
                      )
                 )

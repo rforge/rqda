@@ -70,18 +70,26 @@ ViewFileFun <- function(FileNameWidget){
                 })
                 SelectedFileName <- svalue(FileNameWidget)
                 assign(".root_edit", gwindow(title = SelectedFileName, 
-                  parent = c(370, 10), width = 600, height = 600), 
+                  parent = c(395, 10), width = 600, height = 600), 
                   env = .rqda)
                 .root_edit <- get(".root_edit", .rqda)
                 assign(".openfile_gui", gtext(container = .root_edit, 
                   font.attr = c(sizes = "large")), env = .rqda)
                 Encoding(SelectedFileName) <- "unknown"
-                content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'", 
-                  SelectedFileName))[1, 1]
+                IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'", 
+                  SelectedFileName))
+                content <- IDandContent$file
                 Encoding(content) <- "UTF-8"
                 W <- get(".openfile_gui", .rqda)
                 add(W, content, font.attr = c(sizes = "large"))
                 slot(W, "widget")@widget$SetEditable(FALSE)
+                mark_index <-
+                  dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend from coding where fid=%i and status=1",IDandContent$id))
+                if (nrow(mark_index)!=0){
+                ## make sense only when there is coding there
+                  ClearMark(W ,0 , max(mark_index$selend))
+                  HL(W,index=mark_index)
+                }
             }
         }
     }

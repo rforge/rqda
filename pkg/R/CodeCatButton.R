@@ -66,8 +66,7 @@ DeleteCodeCatButton <- function(label="Delete"){
                   tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treecode set status=0 where catid=='%s'",catid)),error=function(e){}) 
                   ## should delete all the related codelists
                   UpdateCodeofCatWidget() ## update the code of cat widget
-                } else gmessage("The Category Name is not unique.",con=TRUE)
-                
+                } else gmessage("The Category Name is not unique.",con=TRUE)            
               }
             }
           }
@@ -182,12 +181,12 @@ MemoWidget <- function(prefix,widget,dbTable){
   if (is_projOpen(env=.rqda,"qdacon")) {
       Selected <- svalue(widget)
       if (length(Selected)==0){
-        gmessage("No selection first.",icon="error",con=TRUE)
+        gmessage("Select first.",icon="error",con=TRUE)
       }
       else {
         tryCatch(eval(parse(text=sprintf("dispose(.rqda$.%smemo)",prefix))),error=function(e) {})
         assign(sprintf(".%smemo",prefix),gwindow(title=sprintf("%s Memo:%s",prefix,Selected),
-                                   parent=c(370,10),width=600,height=400),env=.rqda)
+                                   parent=c(395,10),width=600,height=400),env=.rqda)
         assign(sprintf(".%smemo2",prefix),
                gpanedgroup(horizontal = FALSE, con=get(sprintf(".%smemo",prefix),env=.rqda)),
                env=.rqda)
@@ -217,4 +216,16 @@ CodeCatWidgetMenu$Memo$handler <- function(h,...){
  MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
 }
 }
+CodeCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+    UpdateCodeofCatWidget()
+}
+}
 
+##
+CodeofCatWidgetMenu <- list()
+CodeofCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+ UpdateCodeofCatWidget()
+}
+}

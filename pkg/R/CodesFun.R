@@ -138,7 +138,7 @@ retrieval <- function(){
   retrieval <-  retrieval[order( retrieval$fid),]
   fid <- unique(retrieval$fid)
   retrieval$fname <-""
-  .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(370,10),width=600,height=600)
+  .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(395,10),width=600,height=600)
   .retreivalgui <- gtext(con=.gw)
   for (i in fid){
     FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
@@ -173,7 +173,7 @@ retrieval2 <- function(CodeNameWidget){
       ## use sql to order the fid
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
-      .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(370,10),width=600,height=600)
+      .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(395,10),width=600,height=600)
       .retreivalgui <- gtext(con=.gw)
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
@@ -187,7 +187,7 @@ retrieval2 <- function(CodeNameWidget){
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
           CallBackFUN <- function(button){  
             tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
-            root <- gwindow(title=FileName, parent=c(370,40),width=580,height=300)
+            root <- gwindow(title=FileName, parent=c(395,40),width=580,height=300)
             ## use the same names as the of ViewFile, so can do coding when back to the original file.
             assign(".root_edit",root,env=.rqda)
             displayFile <- gtext(container=.rqda$.root_edit,font.attr=c(sizes="large"))

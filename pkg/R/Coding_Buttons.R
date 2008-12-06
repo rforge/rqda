@@ -25,8 +25,11 @@ DeleteCodeButton <- function(label="Delete"){
               if (isTRUE(del)){
                 SelectedCode <- svalue(.rqda$.codes_rqda)
                 Encoding(SelectedCode) <- "UTF-8"
+                cid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",SelectedCode))$id
                 dbGetQuery(.rqda$qdacon,sprintf("update freecode set status=0 where name=='%s'",SelectedCode))
                 ## set status in table freecode to 0
+                dbGetQuery(.rqda$qdacon,sprintf("update coding set status=0 where cid==%i",cid))
+                ## set status in table coding to 0
                 CodeNamesUpdate()
               }
                                  }
@@ -174,8 +177,9 @@ codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, sele
                                      rowid <- codings_index$rowid[(codings_index$selfirst  >= sel_index$startN) &
                                                                   (codings_index$selend  <= sel_index$endN)]
                                      if (is.numeric(rowid)) for (j in rowid) {
-                                       dbGetQuery(con,sprintf("update coding set status=0 where rowid=%i", j))  }
+                                       dbGetQuery(con,sprintf("update coding set status=-1 where rowid=%i", j))  }
                                      ## better to get around the loop by sqlite condition expression.
+                                     ## status=-1 to differentiate the result of delete button
                                      ClearMark(W,min=sel_index$startN,max=sel_index$endN)
                                      ## This clear all the marks in the gtext window,
                                      ## even for the non-current code. can improve.
@@ -190,38 +194,43 @@ codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, sele
 
 
 CodeMemoButton <- function(label="C-Memo",...){
-  gbutton(label, handler=function(h,...) {
-    ## code memo: such as meaning of code etc.
-    if (is_projOpen(env=.rqda,"qdacon")) {
-      currentCode <- svalue(.rqda$.codes_rqda)
-      if (length(currentCode)==0){
-        gmessage("Select a code first.",icon="error",con=TRUE)
-      }
-      else {
-        tryCatch(dispose(.rqda$.codememo),error=function(e) {})
-        assign(".codememo",gwindow(title=paste("Code Memo",.rqda$currentCode,sep=":"),
-                                   parent=c(370,10),width=600,height=400),env=.rqda)
-        .codememo <- .rqda$.codememo
-        .codememo2 <- gpanedgroup(horizontal = FALSE, con=.codememo)
-        gbutton("Save Code Memo",con=.codememo2,handler=function(h,...){
-          newcontent <- svalue(W)
-          Encoding(newcontent) <- "UTF-8"
-          newcontent <- enc(newcontent) ## take care of double quote.
-          Encoding(currentCode) <- "UTF-8"
-          dbGetQuery(.rqda$qdacon,sprintf("update freecode set memo='%s' where name='%s'",newcontent,currentCode))
-        }
-                )## end of save memo button
-        assign(".cmemocontent",gtext(container=.codememo2,font.attr=c(sizes="large")),env=.rqda)
-        prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from freecode where name='%s'",currentCode))[1,1]
-        if (is.na(prvcontent)) prvcontent <- ""
-        Encoding(prvcontent) <- "UTF-8"
-        W <- .rqda$.cmemocontent
-        add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
-      }
-    }
+  gbutton(label, handler=function(h,...){
+    MemoWidget("code",.rqda$.codes_rqda,"freecode")
   }
           )
 }
+##           {
+##     ## code memo: such as meaning of code etc.
+##     if (is_projOpen(env=.rqda,"qdacon")) {
+##       currentCode <- svalue(.rqda$.codes_rqda)
+##       if (length(currentCode)==0){
+##         gmessage("Select a code first.",icon="error",con=TRUE)
+##       }
+##       else {
+##         tryCatch(dispose(.rqda$.codememo),error=function(e) {})
+##         assign(".codememo",gwindow(title=paste("Code Memo",.rqda$currentCode,sep=":"),
+##                                    parent=c(370,10),width=600,height=400),env=.rqda)
+##         .codememo <- .rqda$.codememo
+##         .codememo2 <- gpanedgroup(horizontal = FALSE, con=.codememo)
+##         gbutton("Save Code Memo",con=.codememo2,handler=function(h,...){
+##           newcontent <- svalue(W)
+##           Encoding(newcontent) <- "UTF-8"
+##           newcontent <- enc(newcontent) ## take care of double quote.
+##           Encoding(currentCode) <- "UTF-8"
+##           dbGetQuery(.rqda$qdacon,sprintf("update freecode set memo='%s' where name='%s'",newcontent,currentCode))
+##         }
+##                 )## end of save memo button
+##         assign(".cmemocontent",gtext(container=.codememo2,font.attr=c(sizes="large")),env=.rqda)
+##         prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from freecode where name='%s'",currentCode))[1,1]
+##         if (is.na(prvcontent)) prvcontent <- ""
+##         Encoding(prvcontent) <- "UTF-8"
+##         W <- .rqda$.cmemocontent
+##         add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+##       }
+##     }
+##   }
+##           )
+## }
 
 
 
@@ -257,7 +266,7 @@ CodingMemoButton <- function(label="C2Memo")
             tryCatch(dispose(.rqda$.codingmemo),error=function(e) {})
             ## Close the coding memo first, then open a new one
             assign(".codingmemo",gwindow(title=paste("Coding Memo for",SelectedCode,sep=":"),
-                                         parent=c(370,10),width=600,height=400
+                                         parent=c(395,10),width=600,height=400
                                          ), env=.rqda
                    )
             .codingmemo <- get(".codingmemo",env=.rqda)
@@ -310,4 +319,17 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
   }
           )
 }
+
+## popup-menu
+CodesNamesWidgetMenu <- list()
+CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    MemoWidget("code",.rqda$.codes_rqda,"freecode")
+    }
+  }
+CodesNamesWidgetMenu$"Sort by created time"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+     CodeNamesUpdate()
+    }
+  }
 

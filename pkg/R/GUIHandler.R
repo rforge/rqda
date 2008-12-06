@@ -30,37 +30,38 @@ Handler <- function(){
 ##                         )
 
 
-add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
-## right click to add file to a case category
+  add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
+  ## right click to add file to a case category
 
-
-  addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...)
-  ##function copied from ViewFileButton handler
-  {
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      if (length(svalue(.rqda$.fnames_rqda))==0){gmessage("Select a file first.",icon="error",con=TRUE)}
-      else {
-        tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
-        ## notice the error handler
-        SelectedFile <- svalue(.rqda$.fnames_rqda)
-        assign(".root_edit",gwindow(title=SelectedFile, parent=c(370,10),width=600,height=600),env=.rqda)
-        .root_edit <- get(".root_edit",.rqda)
-        assign(".openfile_gui",gtext(container=.root_edit,font.attr=c(sizes="large")),env=.rqda)
-        Encoding(SelectedFile) <- "unknown"
-        ## By default, SelectedFile is in UTF-8, if not set to unknown, under FreeBSD,
-        ## it will convert to the current encoding before the query
-        ## so it should be set to unknow in order to get the correct qunery result.
-        content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",SelectedFile))[1,1]
-        Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
-        ## turn data.frame to 1-length character.
-        W <- get(".openfile_gui",.rqda)
-        add(W,content,font.attr=c(sizes="large"))
-        slot(W,"widget")@widget$SetEditable(FALSE)
-        ## make sure it is read only file in the text window.
-      }
-    }
-  }##end of function  copied from ViewFileButton handler
-                        )
+  addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))
+                       
+##   addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...)
+##   ##function copied from ViewFileButton handler
+##   {
+##     if (is_projOpen(env=.rqda,conName="qdacon")) {
+##       if (length(svalue(.rqda$.fnames_rqda))==0){gmessage("Select a file first.",icon="error",con=TRUE)}
+##       else {
+##         tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
+##         ## notice the error handler
+##         SelectedFile <- svalue(.rqda$.fnames_rqda)
+##         assign(".root_edit",gwindow(title=SelectedFile, parent=c(370,10),width=600,height=600),env=.rqda)
+##         .root_edit <- get(".root_edit",.rqda)
+##         assign(".openfile_gui",gtext(container=.root_edit,font.attr=c(sizes="large")),env=.rqda)
+##         Encoding(SelectedFile) <- "unknown"
+##         ## By default, SelectedFile is in UTF-8, if not set to unknown, under FreeBSD,
+##         ## it will convert to the current encoding before the query
+##         ## so it should be set to unknow in order to get the correct qunery result.
+##         content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",SelectedFile))[1,1]
+##         Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
+##         ## turn data.frame to 1-length character.
+##         W <- get(".openfile_gui",.rqda)
+##         add(W,content,font.attr=c(sizes="large"))
+##         slot(W,"widget")@widget$SetEditable(FALSE)
+##         ## make sure it is read only file in the text window.
+##       }
+##     }
+##   }##end of function  copied from ViewFileButton handler
+##                         )
 
 
   ## handler for .codes_rqda
@@ -76,7 +77,7 @@ add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
             if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval()
           }
                         )
-  
+  add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
   
   addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
     if (is_projOpen(env=.rqda,conName="qdacon")){
@@ -118,7 +119,7 @@ add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
  addhandlerdoubleclick(.rqda$.CasesNamesWidget, handler=function(h,...) MemoWidget("Case",.rqda$.CasesNamesWidget,"cases"))
 
   addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
-    CaseNamesUpdate(.rqda$.CasesNamesWidget)
+    ## CaseNamesUpdate(.rqda$.CasesNamesWidget)
     con <- .rqda$qdacon
     SelectedCase <- currentCase <- svalue(.rqda$.CasesNamesWidget)
     if (length(SelectedCase)!=0) {
@@ -157,6 +158,8 @@ add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
           }
                         )
 
+ add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
+
   addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
     UpdateFileofCatWidget(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
 })
@@ -167,6 +170,8 @@ add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
 
 
 addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
+
+add3rdmousepopupmenu(.rqda$.FileofCat,FileofCatWidgetMenu)
 
 add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
 ## popup menu by right-click on CaseNamesWidget

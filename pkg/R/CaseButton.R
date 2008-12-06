@@ -22,8 +22,11 @@ DeleteCaseButton <- function(label="Delete"){
               if (isTRUE(del)){
                 SelectedCase <- svalue(.rqda$.CasesNamesWidget)
                 Encoding(SelectedCase) <- "UTF-8"
+                caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where name=='%s'",SelectedCase))$id
                 dbGetQuery(.rqda$qdacon,sprintf("update cases set status=0 where name=='%s'",SelectedCase))
                 ## set status in table freecode to 0
+                dbGetQuery(.rqda$qdacon,sprintf("update caselinkage set status=0 where caseid=%i",caseid))
+                ## set status in table caselinkage to 0
                 CaseNamesUpdate()
               }
                                  }
@@ -215,28 +218,6 @@ CaseUnMark_Button<-function(label="Unmark"){
 ## }
   
 CaseNamesWidgetMenu <- list()
-CaseNamesWidgetMenu$"Web Search"$Baidu$handler <- function(h,...){
-  KeyWord <- svalue(.rqda$.CasesNamesWidget)
-  if (length(KeyWord)!=0){
-    KeyWord <- iconv(KeyWord, from="UTF-8")
-    browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
-  }
-}
-CaseNamesWidgetMenu$"Web Search"$Google$handler <- function(h,...){
-  KeyWord <- svalue(.rqda$.CasesNamesWidget)
-  if (length(KeyWord)!=0){
-    KeyWord <- iconv(KeyWord, from="UTF-8")
-    browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
-  }
-}
-CaseNamesWidgetMenu$"Web Search"$Yahoo$handler <- function(h,...){
-  KeyWord <- svalue(.rqda$.CasesNamesWidget)
-  if (length(KeyWord)!=0){
-    KeyWord <- iconv(KeyWord, from="UTF-8")
-    browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
-                      ,KeyWord))
-  }
-}
 CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     SelectedCase <- svalue(.rqda$.CasesNamesWidget)
@@ -266,11 +247,36 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
     ## see CodeCatButton.R  for definition of MemoWidget
   }
 }
+CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){
+CaseNamesUpdate(.rqda$.CasesNamesWidget)
+}
+CaseNamesWidgetMenu$"Web Search"$Baidu$handler <- function(h,...){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
+  }
+}
+CaseNamesWidgetMenu$"Web Search"$Google$handler <- function(h,...){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
+  }
+}
+CaseNamesWidgetMenu$"Web Search"$Yahoo$handler <- function(h,...){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
+                      ,KeyWord))
+  }
+}
 
 
-  ## pop-up menu of .rqda$.FileofCase
+## pop-up menu of .rqda$.FileofCase
 FileofCaseWidgetMenu <- list() ## not used yet.
-FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
+FileofCaseWidgetMenu$"Drop Selected File(s)"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     FileOfCat <- svalue(.rqda$.FileofCase)
     if ((NumofSelected <- length(FileOfCat)) ==0) {
@@ -292,3 +298,7 @@ FileofCaseWidgetMenu$"DropFile(s)"$handler <- function(h, ...) {
     }
   }
   }
+FileofCaseWidgetMenu$"Sort by imported time"$handler <- function(h,...){
+        UpdateFileofCaseWidget()
+}
+

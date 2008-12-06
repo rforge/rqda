@@ -172,3 +172,18 @@ FileCatWidgetMenu$Memo$handler <- function(h,...){
 ## see CodeCatButton.R  for definition of MemoWidget
 }
 }
+FileCatWidgetMenu$"Sort by created time"$handler <- function(h,...)
+{
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+ UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
+ }
+}
+
+## popup menu for files of this category
+FileofCatWidgetMenu <- list()
+FileofCatWidgetMenu$"Sort by created time"$handler <- function(h,...)
+{
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+      UpdateFileofCatWidget()
+ }
+}

@@ -81,6 +81,9 @@
 \alias{FileNamesWidgetMenu}
 \alias{MarkCodeFun}
 \alias{MarkCaseFun}
+\alias{CodeofCatWidgetMenu}
+\alias{CodesNamesWidgetMenu}
+\alias{FileofCatWidgetMenu}
 %% add related alias functions here.
 
 \title{Internal Functions}
