@@ -35,10 +35,10 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
-      tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
-      tryCatch(UpdateCodeofCatWidget(),error=function(e){})
-      tryCatch(UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat"),error=function(e){})
-      tryCatch(UpdateFileofCatWidget(),error=function(e){})
+      tryCatch(.rqda$.CodeCatWidget[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.CodeofCat[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.FileCatWidget[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.FileofCat[]<-NULL,error=function(e){})
       close_proj(assignenv=.rqda)
       }
                                )
@@ -56,6 +56,15 @@ gbutton("Current Project",container=container,handler=function(h,...){
   },
                              action=list(env=.rqda,conName="qdacon")
                              )
+}
+
+BackupProjectButton <- function(container){
+gbutton("Backup Project",container=container,handler=function(h,...){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+      backup_proj(con=.rqda$qdacon)
+    }
+  }
+        )
 }
 
 

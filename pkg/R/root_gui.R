@@ -30,7 +30,8 @@ RQDA <- function() {
   ## project memo button
   ".close.proj_gui" <- CloseProjectButton(container=.proj_gui)
   ".projinfo_gui" <- ProjectInforButton(container=.proj_gui)
-   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
+  BackupProjectButton(container=.proj_gui)
+  gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
 
   glabel(
 "Author: <ronggui.huang@gmail.com>\n

@@ -1,8 +1,16 @@
-2008-12-06
+2008-12-07
+	* Better handler the issue of write permission in new project and open project button
+	* new function/button to backup project
+	* fix bug in close project button
+	
+2008-12-06 (rc2 of v1.6)
 	* bugfix of Freecode rename button and others.
 	* Memo in Popup menu in Files Tab.
 	* Enhance Mark buttons, so it will not save duplicated information in database.
 	* New function relation() for caculating relation between two coding.
+	* Improve ViewFileFun() so the codings are highlighted when a file is opened.
+	* Add some popup menus.
+	* Improve pdelete(),list.deleted() and undelete(). New function of CleanProject().
 
 2008-12-05
 	* New functionality of add memo to File category and Code category.

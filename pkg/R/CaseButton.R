@@ -250,13 +250,6 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
 CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){
 CaseNamesUpdate(.rqda$.CasesNamesWidget)
 }
-CaseNamesWidgetMenu$"Web Search"$Baidu$handler <- function(h,...){
-  KeyWord <- svalue(.rqda$.CasesNamesWidget)
-  if (length(KeyWord)!=0){
-    KeyWord <- iconv(KeyWord, from="UTF-8")
-    browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
-  }
-}
 CaseNamesWidgetMenu$"Web Search"$Google$handler <- function(h,...){
   KeyWord <- svalue(.rqda$.CasesNamesWidget)
   if (length(KeyWord)!=0){
@@ -270,6 +263,20 @@ CaseNamesWidgetMenu$"Web Search"$Yahoo$handler <- function(h,...){
     KeyWord <- iconv(KeyWord, from="UTF-8")
     browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
                       ,KeyWord))
+  }
+}
+CaseNamesWidgetMenu$"Web Search"$Baidu$handler <- function(h,...){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
+  }
+}
+CaseNamesWidgetMenu$"Web Search"$Sogou$handler <- function(h,...){
+  KeyWord <- svalue(.rqda$.CasesNamesWidget)
+  if (length(KeyWord)!=0){
+    KeyWord <- iconv(KeyWord, from="UTF-8")
+    browseURL(sprintf("http://www.sogou.com/sohu?query=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
   }
 }
 

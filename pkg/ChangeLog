@@ -1,3 +1,8 @@
+2008-12-07
+	* Better handler the issue of write permission in new project and open project button
+	* new function/button to backup project
+	* fix bug in close project button
+	
 2008-12-06 (rc2 of v1.6)
 	* bugfix of Freecode rename button and others.
 	* Memo in Popup menu in Files Tab.

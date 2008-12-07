@@ -84,6 +84,8 @@
 \alias{CodeofCatWidgetMenu}
 \alias{CodesNamesWidgetMenu}
 \alias{FileofCatWidgetMenu}
+\alias{backup_proj}
+\alias{BackupProjectButton}
 %% add related alias functions here.
 
 \title{Internal Functions}

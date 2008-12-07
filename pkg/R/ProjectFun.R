@@ -1,16 +1,25 @@
 new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
-  sucess <- file.create(tmpNamme <- tempfile(pattern = "file", tmpdir = dirname(path)))
+  ## sucess <- file.create(tmpNamme <- tempfile(pattern = "file", tmpdir = dirname(path)))
+  sucess <- (file.access(names=dirname(path),mode=2)==0)
   if (!sucess) {
     gmessage("No write permission.",icon="error",container=TRUE) 
   }
   else{
-    unlink(tmpNamme)
+    ## unlink(tmpNamme)
     path <- paste(gsub("\\.rqda$","",path),"rqda",sep=".") ## deal with the ".rqda"
     override <- FALSE
-    if (fexist <- file.exists(path)) override <- gconfirm("Over write existing project?",icon="warning")
+    if (fexist <- file.exists(path)) {
+      ## if there exists a file, should ask; and test if have write access to overwrite it.
+      override <- gconfirm("Over write existing project?",icon="warning")
+      if (file.access(path, 2) != 0 && override) {
+        override <- FALSE
+        gmessage("You have no write permission to overwrite it.",con=TRUE,icon="error")
+      }
+    }
     if (!fexist | override ){
       ## close con in assignmenv first.
       tryCatch(close_proj(conName=conName,assignenv=assignenv),error=function(e){})
+      
       assign(conName,dbConnect(drv=dbDriver("SQLite"),dbname=path),envir=assignenv)
       con <- get(conName,assignenv)
       
@@ -73,7 +82,14 @@ open_proj <- function(path,conName="qdacon",assignenv=.rqda,...){
            },
            error=function(e){})
   ## Fist close the con if it exist, then open a new con.
-  assign(conName, dbConnect(drv=dbDriver("SQLite"),dbname=path),envi=assignenv)
+  if (file.access(path, 2) == 0) {
+    assign(conName, dbConnect(drv=dbDriver("SQLite"),dbname=path),envi=assignenv)
+  } else if (file.access(path, 4) == 0){
+    assign(conName, dbConnect(drv=dbDriver("SQLite"),dbname=path),envi=assignenv)
+    gmessage("You don't have write access to the *.rqda file. You can only read the project.",con=TRUE,icon="warning")
+  } else {
+    gmessage("You don't have read access to the *.rqda file. Fail to open.",con=TRUE,icon="error")
+}
 }
 
 
@@ -100,4 +116,14 @@ is_projOpen <- function(env=.rqda,conName="qdacon",message=TRUE){
   } ,error=function(e){}) 
   if (!open & message) gmessage("No Project is Open.",icon="warning",con=TRUE)
   return(open)
+}
+
+backup_proj <- function(con){
+## con=.rqda$qdacon
+dbname <- dbGetInfo(con)$dbname
+backupname <- sprintf("%s_%s",dbname,format(Sys.time(), "%H%M%S%d%m%Y"))
+success <- file.copy(from=dbname, to=backupname , overwrite = FALSE)
+if (!success) {
+gmessage("Fail to back up the project.",con=TRUE,icon="error")
+}
 }
