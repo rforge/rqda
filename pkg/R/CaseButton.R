@@ -308,7 +308,23 @@ FileofCaseWidgetMenu$"Drop Selected File(s)"$handler <- function(h, ...) {
 FileofCaseWidgetMenu$"File Memo"$handler <- function(h,...){
         MemoWidget("File",.rqda$.FileofCase,"source")
 }
+FileofCaseWidgetMenu$"Show Uncoded Files Only (sorted)"$handler <- function(h,...){
+if (is_projOpen(env=.rqda,conName="qdacon")) {
+   fid <- GetFileId(condition="case",type="uncoded")
+   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCase,FileId=fid)
+ }
+}
+FileofCaseWidgetMenu$"Show Coded Files Only (sorted)"$handler <- function(h,...){
+if (is_projOpen(env=.rqda,conName="qdacon")) {
+   fid <- GetFileId(condition="case",type="coded")
+   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCase,FileId=fid)
+ }
+}
 FileofCaseWidgetMenu$"Sort by imported time"$handler <- function(h,...){
-        UpdateFileofCaseWidget()
+## UpdateFileofCaseWidget()
+if (is_projOpen(env=.rqda,conName="qdacon")) {
+   fid <- GetFileId(condition="case",type="all")
+   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCase,FileId=fid)
+ }
 }
 

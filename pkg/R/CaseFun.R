@@ -96,7 +96,7 @@ HL_Case <- function(){
                 mark_index <-
                   dbGetQuery(con,sprintf("select selfirst,selend from caselinkage where fid=%i and status==1",currentFid))
                 if (nrow(mark_index)!=0){
-                  ClearMark(W ,0 , max(mark_index$selend))
+                  ClearMark(W ,0 , max(mark_index$selend,clear.fore.col = FALSE, clear.back.col = TRUE))
                   HL(W,index=mark_index,fore.col=NULL,back.col=.rqda$back.col)
                 }
               }
