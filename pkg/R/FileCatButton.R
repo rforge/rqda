@@ -182,6 +182,11 @@ FileCatWidgetMenu$"Sort by created time"$handler <- function(h,...)
 
 ## popup menu for files of this category
 FileofCatWidgetMenu <- list()
+FileofCatWidgetMenu$"File Memo"$handler <- function(h,...){
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+ MemoWidget("File",.rqda$.FileofCat,"source")
+}
+}
 FileofCatWidgetMenu$"Open Selected File"$handler <- function(h,...){
 ViewFileFun(FileNameWidget=.rqda$.FileofCat)
 }

@@ -21,11 +21,38 @@ h1 {
 
 <BODY>
 
+<h1><a href="#user manual">User's Manual</a></h1>
+<h1><a href="#tips">Tips<a></h1>
+<h1><a href="#faq">FAQ<a></h1>
+<hr>
+
 <h1><a id="user manual">User's Manual</a></h1>
-<p>Under construction (contributions are more than welcome).
+<p>Under construction (<b>contributions are more than welcome</b>).
 
-<p>Basic usage: 1. Open or create new project. 2. Import files. 3. Select a file and open it by click button open. 4. Add codes. 5. Select a codes, select text segment in the open file, and press button mark. Select the same text segment and click button Unmark, you can undo the action. 6. Do more coding as step 5. 7. Select a code and click button retrieval to see what text segments have been attached to that code.
+<p><b>1. Project </b>
+<p>You can create a new project in by clicking the new project button in Project Tab. RQDA will create a *.rqda file, which is a  SQLite database. All the information (e.g. files, code list, all kinds of memo, coding, and relation between codes or between files etc.) is stored in that single file. Single *.rqda file makes backup or data migration much easier.
 
+<p>If you have a project already, you can open it by clicking open project button. Only when a project is open can you conduct futher analysis. You can click current project button to inspect which *.rqda file you are working on.
+
+<p> You can back up your project by clicking backup button. For example, I am working on demo.rqda file, and click backup button, I gets a backup file named demo.rqda_17245808122008. The suffix means that the backup action happens at 17:24:58 of 8 Dec, 2008.
+
+<p>Before you go on, you may would like to set the "Name of coder" in Settings Tab, so you can learn who is resposible for the following actions (file import, coding etc.). You can replace "default" with your name and then click OK button.
+
+<p><b>2. Import files</b>
+<p> After open a project, you can import files by click import button in the Files Tab. By default, the file should be a plain text with encoding of ASCII, otherwise, you should set the File encoding in Settings Tab before you import files.
+
+<p> If you want to import a lots of files, you can use R function write.FileList() to import them. For more information about its usage, please consult to ?write.FileList. 
+
+<p> You can delete files. First select one file you want to delete, then click delete button in Files Tab. Similarly, you can rename the selected file name (one file per time). You can select a file, and click open button to open the file, so you can read the content of it. You can open a file by double click as well.
+
+<p><b>3. Coding </b>
+<p>Basically, the essence of QDA is to apply a label to a text segment. The label is usually a meaning concept in the research, which is called <b>"code"</b> here. So you have to generate a code list. You can add a code to the list by clicking add button in Codes Tab, input a code in the input window, and click OK. You can add unlimited number of codes, but you should think hard on what codes are useful in the research so to avoid overwhelming of codes. You can rename and delete a code from the code list. The operation is similar to that of files.
+
+<p>When you have imported a list of files and generate a code list, then you can go on the process of coding. First, you should open a file. Then you read and think, if you think some words is relevant to a code, you can apply that code to the text segment: select a code, select that text segment, and click mark button in the Codes Tab. Then you can find that text segment is highlighted with color (by default, it is blue). We call this process <b>"coding"</b>. You can undo the coding as well: select the same text segment and click Unmark button in the Codes Tab. Now, the highlight is remove, which means that you have succesfully remove that coding. 
+
+<p>If you want to see what information has been attached to a code, you can  double click a code to retrieval all the related coding to that code. Of course, you can select a code, and then click retrieval button to conduct similar operation. This process is called <b>"coding retrieval"</b>.
+
+<p><b>4. Writing memo</b>
 <p>About memo buttons in the code tab: 1. C-memo is used to attach memo to a selected code. You can select a code then click C-memo button to view/add memo. 2. C2Memo is used to attach a memo to a coded segments. In the open file, you can see the coded segments (highlighted), select one segment, and click C2Memo, you can view/add memo to that coded-segment.
 
 
@@ -34,7 +61,7 @@ h1 {
 <br>2. When RDQA is launched, it is better to minimize the main window of R (e.g. Rgui, Rterm, terminal from which R is launched).
 <br>3. Besides the C-Cat and F-Cat, you can use a trick to help organize files, codes list,and cases by using specific name rules. For example, if you name a group of codes with 1 as prefix and another group of codes with 2 as prefix, then you can click the triangle symbol in ther right-upper corners of the Codes List table, then the codes are sorted according to their prefix. Similar trick applies to others.
 
-<h1><aid="faq">FAQ<a></h1>
+<h1><a id="faq">FAQ<a></h1>
 <br><B>Q:</B>How can I get help?
 <br>A: You can join the <A HREF="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/rqda-help">rqda-help</A> list and post questions via email.
 <br><B>Q:</B>Can I conduct statistical analysis of the codes?

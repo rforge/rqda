@@ -28,7 +28,7 @@ CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sort=TRUE,decreasi
   if (nrow(freecode)!=0) {
     Encoding(codeName) <- "UTF-8"
     if (sort){
-      codeName <- codeName[OrderByTime(codeName,decreasing=decreasing)]
+      codeName <- codeName[OrderByTime(freecode$date,decreasing=decreasing)]
     }
   }
   tryCatch(CodeNamesWidget[] <- codeName, error=function(e){})
