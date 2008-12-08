@@ -1,13 +1,16 @@
-CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,...)
+CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,decreasing=FALSE,...)
 {
   if (isIdCurrent(.rqda$qdacon)){
-  CaseName <- dbGetQuery(.rqda$qdacon, "select name, id from cases where status=1")
-  if (nrow(CaseName)!=0) {
-    Encoding(CaseName[['name']]) <- "UTF-8"
-    tryCatch(CaseNamesWidget[] <- CaseName[['name']], error=function(e){})
-  } else tryCatch(CaseNamesWidget[] <- NULL, error=function(e){}) 
-## when nrow(CaseName)==0, update it to NULL
-}
+  CaseName <- dbGetQuery(.rqda$qdacon, "select name, id,date from cases where status=1")
+  if (nrow(CaseName)==0) {
+    case <- NULL
+  } else {
+    case <- CaseName$name
+    Encoding(case) <- "UTF-8"
+    case <- case[OrderByTime(CaseName$date,decreasing=decreasing)]
+  }
+     tryCatch(CaseNamesWidget[] <- case, error=function(e){})
+  }
 }
 
 #################
@@ -71,14 +74,15 @@ UpdateFileofCaseWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCase){
     ## Encoding(Selected) <- "UTF-8"
     Total_fid <- dbGetQuery(con,sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))
     if (nrow(Total_fid)!=0){
-      items <- dbGetQuery(con,"select name,id from source where status==1")
+      items <- dbGetQuery(con,"select name,id,date from source where status==1")
       if (nrow(items)!=0) {
-        items <- items[items$id %in% Total_fid$fid,"name"]
+        items <- items[items$id %in% Total_fid$fid,c("name","date")]
+        items <- items$name[OrderByTime(items$date)]
         Encoding(items) <- "UTF-8"
       } else items <- NULL
     } else items <- NULL
   } else items <- NULL
-    tryCatch(Widget[] <- items,error=function(e){})
+  tryCatch(Widget[] <- items,error=function(e){})
 }
 
 HL_Case <- function(){

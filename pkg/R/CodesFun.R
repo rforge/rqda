@@ -20,14 +20,19 @@ addcode <- function(name,conName="qdacon",assignenv=.rqda,...) {
 
 
 
-CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,...)
+CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sort=TRUE,decreasing = FALSE,...)
 {
   if (isIdCurrent(.rqda$qdacon)){
-  codesName <- dbGetQuery(.rqda$qdacon, "select name, id from freecode where status=1")
-  if (nrow(codesName)!=0) {
-  Encoding(codesName[['name']]) <- "UTF-8"
-  tryCatch(CodeNamesWidget[] <- codesName[['name']], error=function(e){})
-  }} else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
+  freecode <- dbGetQuery(.rqda$qdacon, "select name, id,date from freecode where status=1")
+  codeName <- freecode$name
+  if (nrow(freecode)!=0) {
+    Encoding(codeName) <- "UTF-8"
+    if (sort){
+      codeName <- codeName[OrderByTime(codeName,decreasing=decreasing)]
+    }
+  }
+  tryCatch(CodeNamesWidget[] <- codeName, error=function(e){})
+  } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
 }
 
 

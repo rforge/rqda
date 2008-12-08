@@ -86,6 +86,11 @@
 \alias{FileofCatWidgetMenu}
 \alias{backup_proj}
 \alias{BackupProjectButton}
+\alias{UncodedFileNamesUpdate}
+\alias{ProjectMemoWidget}
+\alias{FileNameWidgetUpdate}
+\alias{GetFileId}
+\alias{OrderByTime}
 %% add related alias functions here.
 
 \title{Internal Functions}

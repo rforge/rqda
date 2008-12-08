@@ -250,7 +250,9 @@ CodingMemoButton <- function(label="C2Memo")
         SelectedCode <- svalue(.rqda$.codes_rqda); Encoding(SelectedCode) <- "UTF-8"
         if (length(SelectedCode)==0) gmessage("Select a code first!") else {
           currentCid <-  dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
-          SelectedFile <- svalue(.rqda$.fnames_rqda); Encoding(SelectedFile) <- "UTF-8"
+          ## SelectedFile <- svalue(.rqda$.fnames_rqda); Encoding(SelectedFile) <- "UTF-8"
+          ## confused when selected file is not the open one
+          SelectedFile <- svalue(.rqda$.root_edit); Encoding(SelectedFile) <- "UTF-8" ## more reliable
           currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
           codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, selend from coding where
                                                    cid==%i and fid==%i ",currentCid, currentFid))

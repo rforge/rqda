@@ -305,6 +305,9 @@ FileofCaseWidgetMenu$"Drop Selected File(s)"$handler <- function(h, ...) {
     }
   }
   }
+FileofCaseWidgetMenu$"File Memo"$handler <- function(h,...){
+        MemoWidget("File",.rqda$.FileofCase,"source")
+}
 FileofCaseWidgetMenu$"Sort by imported time"$handler <- function(h,...){
         UpdateFileofCaseWidget()
 }

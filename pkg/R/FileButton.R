@@ -177,11 +177,21 @@ FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
 FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
   ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
 }
-FileNamesWidgetMenu$"Sort by import time"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show Uncoded Files Only (Sorted)"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-     FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
+      ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)
+      FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="uncoded"))
+      ## By default, the file names in the widget will be sorted.
     }
   }
-
-
-
+FileNamesWidgetMenu$"Show Coded Files Only (Sorted)"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="coded"))
+  }
+}
+FileNamesWidgetMenu$"Sort All By Imported Time"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+     ##FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
+     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="all"))
+    }
+  }

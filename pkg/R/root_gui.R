@@ -24,12 +24,12 @@ RQDA <- function() {
 ########################### GUI FOR PROJECT
 ########################### 
   ".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project")
-  ".newproj_gui" <- NewProjectButton(container=.proj_gui)
-  ".open.proj_gui" <- OpenProjectButton(container=.proj_gui)
-  ".project_memo" <- Proj_MemoButton(label = "Project Memo", container = .proj_gui)
+  NewProjectButton(container=.proj_gui)
+  OpenProjectButton(container=.proj_gui)
+  CloseProjectButton(container=.proj_gui)
+  Proj_MemoButton(label = "Project Memo", container = .proj_gui)
   ## project memo button
-  ".close.proj_gui" <- CloseProjectButton(container=.proj_gui)
-  ".projinfo_gui" <- ProjectInforButton(container=.proj_gui)
+  ProjectInforButton(container=.proj_gui)
   BackupProjectButton(container=.proj_gui)
   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
 
@@ -37,7 +37,8 @@ RQDA <- function() {
 "Author: <ronggui.huang@gmail.com>\n
 License: New style BSD License\n
 Version: 0.1.6 RC2\n",
-         container=.proj_gui)
+         container=.proj_gui
+        )
 
 
 
@@ -76,7 +77,7 @@ Version: 0.1.6 RC2\n",
 
 ######################### GUI  for cases
 #########################
-  ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Case")
+  ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Cases")
   ".case_buttons" <- glayout(container=.case_pan)
   ".case_PW" <- ggroup(cont=.case_pan,horizontal = FALSE)
   ".CasesNamesWidget" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=FALSE)

@@ -1,7 +1,14 @@
+2008-12-08
+	* New function of OrderByTime() for computing time order explicitly.
+	* "Show Uncoded files only" popup menu will sort the uncoded file by imported time.
+	* Add "Show Coded files only" popup menu in Files Tabs and F-cat Tab.
+	* "Sort by ..." in the all the popup-menus call OrderByTime to sort the data.
+
 2008-12-07
 	* Better handler the issue of write permission in new project and open project button
 	* new function/button to backup project
 	* fix bug in close project button
+	* Popup menu of Files Tab: "Show uncoded files only" (useful when there are large number of files).
 	
 2008-12-06 (rc2 of v1.6)
 	* bugfix of Freecode rename button and others.

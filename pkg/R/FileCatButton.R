@@ -72,9 +72,10 @@ UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat){
     catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",SelectedFileCat))[,1]
     Total_fid <- dbGetQuery(con,sprintf("select fid from treefile where status==1 and catid==%i",catid))
     if (nrow(Total_fid)!=0){
-      items <- dbGetQuery(con,"select name,id from source where status==1")
+      items <- dbGetQuery(con,"select name,id,date from source where status==1")
       if (nrow(items)!=0) {
-        items <- items[items$id %in% Total_fid$fid,"name"]
+        items <- items[items$id %in% Total_fid$fid,c("name","date")]
+        items <- items$name[OrderByTime(items$date)] ## sort by date
         Encoding(items) <- "UTF-8"
       } else items <- NULL
     } else items <- NULL
@@ -181,9 +182,31 @@ FileCatWidgetMenu$"Sort by created time"$handler <- function(h,...)
 
 ## popup menu for files of this category
 FileofCatWidgetMenu <- list()
-FileofCatWidgetMenu$"Sort by created time"$handler <- function(h,...)
+FileofCatWidgetMenu$"Open Selected File"$handler <- function(h,...){
+ViewFileFun(FileNameWidget=.rqda$.FileofCat)
+}
+FileofCatWidgetMenu$"Show Uncoded Files Only (Sorted)"$handler <- function(h,...){
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+   fid <- GetFileId(condition="filecategory",type="uncoded")
+   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
+ }
+}
+FileofCatWidgetMenu$"Show Coded Files Only (Sorted)"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    fid <- GetFileId(condition="filecategory",type="coded")
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
+  }
+}
+## FileofCatWidgetMenu$"Sort All By Created Time"$handler <- function(h,...)
+## {
+##  if (is_projOpen(env=.rqda,conName="qdacon")) {
+##       UpdateFileofCatWidget()
+##  }
+## }
+FileofCatWidgetMenu$"Sort All By Created Time"$handler <- function(h,...)
 {
  if (is_projOpen(env=.rqda,conName="qdacon")) {
-      UpdateFileofCatWidget()
+   fid <- GetFileId(condition="filecategory",type="all")
+   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
  }
 }

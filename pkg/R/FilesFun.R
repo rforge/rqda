@@ -37,22 +37,51 @@ ImportFile <- function(path,encoding=.rqda$encoding,con=.rqda$qdacon,...){
 }
 
 
-
-FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,...){
+FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreasing = FALSE,...){
   ##update file names list in the FileNamesWidget
   wopt <- options(warn=-2)
   on.exit(options(wopt))
-  fnames <- dbGetQuery(.rqda$qdacon, "select name, id from source where status=1")
-  if (nrow(fnames)!=0) Encoding(fnames[['name']]) <- "UTF-8"
-  tryCatch(FileNamesWidget[] <- fnames[['name']],error=function(e){})
+  source <- dbGetQuery(.rqda$qdacon, "select name, date, id from source where status=1")
+  if (nrow(source)!=0) {
+    fnames <- source$name
+    Encoding(fnames) <- "UTF-8"
+    if (sort){
+      fnames <- fnames[OrderByTime(source$date,decreasing=decreasing)]
+    }
+    tryCatch(FileNamesWidget[] <- fnames,error=function(e){})
+  }
 }
 
 
 
-setEncoding <- function(encoding="unknown"){
-  ## specify what encoding is used in the imported files.
-  .rqda$encoding <- encoding
-}
+## UncodedFileNamesUpdate <- function(FileNamesWidget = .rqda$.fnames_rqda, sort=TRUE, decreasing = FALSE){
+## replaced by the general function of FileNameWigetUpdate() and GetFileId()
+## ## only show the uncoded file names in the .rqda$.fnames_rqda
+## ## The fnames will be sort if sort=TRUE
+##   fid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
+##   if (!is.null(fid)){
+##     fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
+##     fid_uncoded <- fid[! (fid %in% fid_coded)]
+##     source <- dbGetQuery(.rqda$qdacon,
+##                          sprintf("select name,date, id from source where status=1 and id in (%s)",
+##                                  paste(fid_uncoded,sep="",collapse=",")))
+##     if (nrow(source) != 0){
+##       fnames <- source$name
+##       Encoding(fnames) <- "UTF-8"
+##       if (sort){
+##       fnames <- fnames[OrderByTime(source$date,decreasing=decreasing)]
+##       }
+##     }
+##     tryCatch(FileNamesWidget[] <- fnames, error = function(e) {})
+##   }
+## }
+
+
+## setEncoding <- function(encoding="unknown"){
+  ## moved to utils.R
+##   ## specify what encoding is used in the imported files.
+##   .rqda$encoding <- encoding
+## }
 
 enc <- function(x) gsub("'", "''", x)
 ## replace " with two '. to make insert smoothly.
@@ -135,4 +164,125 @@ write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...
     }
     FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
     } else gmessage("Open a project first.", con=TRUE)
+}
+
+
+ProjectMemoWidget <- function(){
+  if (is_projOpen(env=.rqda,"qdacon")) {
+    ## use enviroment, so you can refer to the same object easily, this is the beauty of environment
+    ## if project is open, then continue
+    tryCatch(dispose(.rqda$.projmemo),error=function(e) {})
+    ## Close the open project memo first, then open a new one
+    ## .projmemo is the container of .projmemocontent,widget for the content of memo
+    assign(".projmemo",gwindow(title="Project Memo", parent=c(395,10),width=600,height=400),env=.rqda)
+    .projmemo <- get(".projmemo",.rqda)
+    .projmemo2 <- gpanedgroup(horizontal = FALSE, con=.projmemo)
+    ## use .projmemo2, so can add a save button to it.
+    gbutton("Save memo",con=.projmemo2,handler=function(h,...){
+      ## send the new content of memo back to database
+      newcontent <- svalue(W)
+      Encoding(newcontent) <- "UTF-8"
+      newcontent <- enc(newcontent) ## take care of double quote.
+      dbGetQuery(.rqda$qdacon,sprintf("update project set memo='%s' where rowid==1", ## only one row is needed
+                                      newcontent)
+                 ## have to quote the character in the sql expression
+                 )
+    }
+            )## end of save memo button
+    assign(".projmemocontent",gtext(container=.projmemo2,font.attr=c(sizes="large")),env=.rqda)
+    prvcontent <- dbGetQuery(.rqda$qdacon, "select memo from project")[1,1]
+    ## [1,1]turn data.frame to 1-length character. Existing content of memo
+    if (length(prvcontent)==0) {
+      dbGetQuery(.rqda$qdacon,"replace into project (memo) values('')")
+      prvcontent <- ""
+      ## if there is no record in project table, it fails to save memo, so insert sth into it
+    }
+    W <- .rqda$.projmemocontent
+    Encoding(prvcontent) <- "UTF-8"
+    add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+    ## do.newline:do not add a \n (new line) at the beginning
+    ## push the previous content to the widget.
+    }
+}
+
+
+
+FileNameWidgetUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreasing = FALSE,FileId=NULL,...){
+  ##update file names list in the FileNamesWidget
+  wopt <- options(warn=-2)
+  on.exit(options(wopt))
+  source <- dbGetQuery(.rqda$qdacon, "select name, date, id from source where status=1")
+  if (nrow(source)==0){
+    fnames <- NULL
+  } else {
+    Encoding(source$name) <- "UTF-8"
+    if (!is.null(FileId)){
+      source <- source[source$id %in% FileId,]
+      fnames <- source$name ## when FileId is not in source$id, fnames is character(0), still works.
+      date <- source$date
+    } else{
+      fnames <- source$name
+      date <- source$date
+    }
+    if (sort){
+      fnames <- fnames[OrderByTime(date,decreasing=decreasing)]
+    }
+  }
+  tryCatch(FileNamesWidget[] <- fnames,error=function(e){})
+}
+
+GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c("all","coded","uncoded"))
+{
+  ## helper function
+  unconditionalFun <- function(type)
+    {
+      allfid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
+      if (type!="all"){
+        fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
+      }
+      if (type=="all") {
+        ans <- allfid
+      } else if (type=="coded"){
+        ans <- fid_coded
+      } else if (type=="uncoded"){
+        ans <- allfid[! (allfid %in% fid_coded)]
+      }
+      ans
+    }
+
+  FidOfCaseFun <- function(type){
+    Selected <- svalue(.rqda$.CasesNamesWidget)
+    if (length(Selected)==0){
+      ans <- NULL
+    } else {
+      caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",Selected))$id
+      fidofcase <- dbGetQuery(.rqda$qdacon,
+                              sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
+      allfid <-  unconditionalFun(type=type)
+      ans <- intersect(fidofcase,allfid)
+    }
+    ans
+  }
+
+  FidOfCatFun <- function(type){
+    Selected <- svalue(.rqda$.FileCatWidget)
+    if (length(Selected)==0){
+      ans <- NULL
+    } else {
+      catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",Selected))$catid
+      fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid==%i",catid))$fid
+      allfid <-  unconditionalFun(type=type)
+      ans <- intersect(fidofcat,allfid)
+    }
+    ans
+  }
+  
+  condition <- match.arg(condition)
+  type <- match.arg(type)
+  fid <- switch(condition,
+                unconditional=unconditionalFun(type=type),
+                case=FidOfCaseFun(type=type),
+                filecategory=FidOfCatFun(type=type)
+                )
+fid
 }
