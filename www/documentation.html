@@ -27,7 +27,10 @@ h1 {
 <hr>
 
 <h1><a id="user manual">User's Manual</a></h1>
-<p>Under construction (<b>contributions are more than welcome</b>).
+<p><b>Contributions are more than welcome</b>.
+
+<p><b>0. Design principle </b>
+<p>Reliability is the most important thing. In order to maximize the reliability, every change will write to the *.rqda file directly, so you don't have to manually save your project.
 
 <p><b>1. Project </b>
 <p>You can create a new project in by clicking the new project button in Project Tab. RQDA will create a *.rqda file, which is a  SQLite database. All the information (e.g. files, code list, all kinds of memo, coding, and relation between codes or between files etc.) is stored in that single file. Single *.rqda file makes backup or data migration much easier.
@@ -45,15 +48,26 @@ h1 {
 
 <p> You can delete files. First select one file you want to delete, then click delete button in Files Tab. Similarly, you can rename the selected file name (one file per time). You can select a file, and click open button to open the file, so you can read the content of it. You can open a file by double click as well.
 
+<p> You can calculate the total number of files in a project by using R command <i>length(GetFileId())</i>, the total number of uncoded file by command <i>length(GetFileId(type="uncoded"))</i>, and number of coded file by command <i>length(GetFileId(type="coded"))</i>.
+
 <p><b>3. Coding </b>
-<p>Basically, the essence of QDA is to apply a label to a text segment. The label is usually a meaning concept in the research, which is called <b>"code"</b> here. So you have to generate a code list. You can add a code to the list by clicking add button in Codes Tab, input a code in the input window, and click OK. You can add unlimited number of codes, but you should think hard on what codes are useful in the research so to avoid overwhelming of codes. You can rename and delete a code from the code list. The operation is similar to that of files.
+<p>Basically, the essence of QDA is to apply a label to a text segment. The label is usually a meaningful concept in the research, which is called <b>"code"</b> here. So you have to generate a code list. You can add a code to the list by clicking add button in Codes Tab, input a code in the input window, and click OK. You can add unlimited number of codes, but you should think hard on what codes are useful in the research so to avoid overwhelming of codes. You can rename and delete a code from the code list. The operation is similar to that of files.
 
 <p>When you have imported a list of files and generate a code list, then you can go on the process of coding. First, you should open a file. Then you read and think, if you think some words is relevant to a code, you can apply that code to the text segment: select a code, select that text segment, and click mark button in the Codes Tab. Then you can find that text segment is highlighted with color (by default, it is blue). We call this process <b>"coding"</b>. You can undo the coding as well: select the same text segment and click Unmark button in the Codes Tab. Now, the highlight is remove, which means that you have succesfully remove that coding. 
 
-<p>If you want to see what information has been attached to a code, you can  double click a code to retrieval all the related coding to that code. Of course, you can select a code, and then click retrieval button to conduct similar operation. This process is called <b>"coding retrieval"</b>.
+<p>If you want to see what information has been attached to a code, you can  double click a code to retrieval all the related coding to that code. This process is called <b>"coding retrieval"</b>. Of course, you can select a code, and then click retrieval button to conduct similar operation. The latter method has an advantage that you can go back to the original file content by clicking the back button within the retrieved coding (though this method takes a bit more time to retrieve the coding). This method can give you a closeness with the original content and avoid, to some extent, segmentation due to coding. To get a overall statistics of coding, you can use R function SummaryCoding() to inspect the "Number of codings for each code", "Average number of words assciated with each code", "Number of files associated with each code". You can get more by GetFileId function. For more information, please refer to the help page by <i>?GetFileId</i>.
+
 
 <p><b>4. Writing memo</b>
-<p>About memo buttons in the code tab: 1. C-memo is used to attach memo to a selected code. You can select a code then click C-memo button to view/add memo. 2. C2Memo is used to attach a memo to a coded segments. In the open file, you can see the coded segments (highlighted), select one segment, and click C2Memo, you can view/add memo to that coded-segment.
+<p> Writing what you think during reading and coding is an integral part of QDA. This is called "<b>Memo writing</b>", and what you write is "<b>Memo</b>". RQDA offers different kinds of memos. For ideas apply to the whole project, you should write a project memo (project memo button in Project Tab). You can write memo about a specific file by clicking F-Memo button in Files Tab, or by cliking "File Memo" via popup memu in Files Tab. In the Codes Tab, there are two kinds of memo, the "C-memo" button is used to attach memo to a selected code. You can select a code then click "C-memo" button to view/add memo. "C2Memo" is used to attach a memo to a coding (a coded text segments). In the open file, you can see the coded segments (highlighted), select one segment, and click "C2Memo" button, you can view/add memo to that coded-segment.
+
+<p><b>5. Settings</b>
+<p> "Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
+<p>Encoding of file is the encoding of the file you want to imported. If it is ASCII file, the default "unknown" is fine. If it is other encoding, you should set it accordingly. For example, you should set it to UTF-8 if the file is in UTF-8. Note that if you save a plain text with encoding UTF-8 with using MS notepad, the notepad will add BOM (Byte order Mark, it is a 3 bite mark) in the beginning of the file, for this case, you should set BOM to TRUE.
+<p> To change the setting is simple, you change the value of each setting and then click OK button. If you want to reset to the default setting, you can just click the default button.
+
+<p><b>Warranty</b>
+<p>As a open source and free project, there is no warranty that it is fit for any particular purpose, or that it will work at all. You use RQDA solely at your own risk, and no liability can be assumed for any damage or loss incurred by your use of the software. You can learn more from the <A HREF="License.html">license</A>.
 
 
 <h1><a id="tips">Tips<a></h1>

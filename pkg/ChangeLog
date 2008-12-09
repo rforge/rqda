@@ -1,3 +1,7 @@
+2008-12-09
+	* New functions to summary codings: SummaryCoding, GetCodingTable.
+	* Add documentation.
+	
 2008-12-08
 	* New function of OrderByTime() for computing time order explicitly.
 	* "Show Uncoded files only" popup menu will sort the uncoded file by imported time.

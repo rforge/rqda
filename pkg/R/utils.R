@@ -52,3 +52,61 @@ MemoWidget <- function(prefix,widget,dbTable){
       }
     }
   }
+
+## summary coding information
+GetCodingTable <- function(){
+  ## test when any table is empty
+  if ( isIdCurrent(.rqda$qdacon)) {
+    Codings <- dbGetQuery(.rqda$qdacon,"select freecode.name as codename, freecode.id as cid, 
+            coding.cid as cid2,coding.fid as fid,source.id as fid2, source.name as filename,
+            coding.selend - coding.selfirst as CodingLength,coding.selend, coding.selfirst
+            from coding, freecode, source 
+            where coding.status==1 and freecode.id=coding.cid and coding.fid=source.id")
+    if (nrow(Codings)!=0){
+      Encoding(Codings$codename) <- Encoding(Codings$filename) <- "UTF-8"
+    }
+    if (!all (all.equal(Codings$cid,Codings$cid2),all.equal(Codings$fid,Codings$fid2))){
+      stop("Errors!") ## check to make sure the sql is correct
+    }
+    Codings
+  } else cat("Open a project first.\n")
+}
+
+SummaryCoding <- function(byFile=FALSE,...){
+  if ( isIdCurrent(.rqda$qdacon)) {
+    Codings <- GetCodingTable()
+    if (nrow(Codings)>0){
+      NumOfCoding <- table(Codings$codename,...) ## how many coding for each code
+      AvgLength <- tapply(Codings$CodingLength,Codings$codename,FUN=mean,...) # Average of words for each code
+      NumOfFile <- tapply(Codings$fid1,Codings$codename,FUN=length,...) # Number of files for each code
+      if (byFile){
+        CodingOfFile <- tapply(Codings$codename,Codings$filename,FUN=table,...) # summary of codings for each file
+      } else CodingOfFile <- NULL
+      ans <- list(NumOfCoding=NumOfCoding,AvgLength=AvgLength,NumOfFile=NumOfFile,CodingOfFile=CodingOfFile)
+      class(ans) <- "SummaryCoding"
+      ans
+    } else {
+      cat("No coding.\n")
+    }
+  } else {
+    cat("Open a project first.\n")
+  }
+}
+
+print.SummaryCoding <- function(x,...){
+  class(x)
+  if (!is.null(x$CodingOfFile)){
+    cat("----------------\n")
+    cat("Number of codings for each file.\n")
+    print(x$CodingOfFile)
+  }
+  cat("----------------\n")
+  cat("Number of codings for each code.\n")
+  print(x$NumOfCoding)
+  cat("----------------\n")
+  cat("Average number of words assciated with each code.\n\n")
+  print(x$AvgLength)
+  cat("----------------\n")
+  cat("Number of files associated with each code.\n\n")
+  print(x$NumOfFile)
+}
