@@ -1,3 +1,10 @@
+2008-12-12
+	* Fix bugs of SortByTime(), now should work for R < 2.8.0.
+	* New function of RunOnSelected. Use it to replace select.list.
+	* Now popup menu of add to case/ category can add multiple files at a time (Files Tab). 
+	
+2008-12-10
+	* New functions of SearchFiles.
 2008-12-09
 	* New functions to summary codings: SummaryCoding, GetCodingTable.
 	* Add documentation.

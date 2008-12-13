@@ -155,14 +155,14 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
 
 ## pop-up menu of add to case and F-cat from Files Tab
 FileNamesWidgetMenu <- list()
-FileNamesWidgetMenu$"Add To Case"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Add To Case ..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       AddFileToCaselinkage()
       UpdateFileofCaseWidget()
     }
   }
 
-FileNamesWidgetMenu$"Add To Category"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       AddToFileCategory()
       UpdateFileofCatWidget()
@@ -177,6 +177,14 @@ FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
 FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
   ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
 }
+FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    pattern <- ginput("Please input a search pattern.",text="file like '%%'")
+    if (pattern!=""){
+    tryCatch(SearchFiles(pattern,Widget=.rqda$.fnames_rqda,is.UTF8=TRUE),error=function(e) gmessage("Error~~~."),con=TRUE)
+    }
+    }
+  }
 FileNamesWidgetMenu$"Show Uncoded Files Only (Sorted)"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)

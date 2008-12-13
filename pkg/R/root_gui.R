@@ -46,7 +46,7 @@ Version: 0.1.6 RC2\n",
 ###########################
   ".files_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Files")
   ".files_button" <- ggroup(container=.files_pan,horizontal=TRUE)
-  ".fnames_rqda" <- gtable("Click Here to see the File list.",container=.files_pan)
+  ".fnames_rqda" <- gtable("Click Here to see the File list.",container=.files_pan,multiple=TRUE)
   .fnames_rqda[] <-NULL # get around of the text argument.
   names(.fnames_rqda) <- "Files"
   ImportFileButton("Import",con=.files_button)
@@ -57,7 +57,7 @@ Version: 0.1.6 RC2\n",
   File_RenameButton(label="Rename", container=.files_button,FileWidget=.fnames_rqda)
   ## rename a selected file.
 
-   
+ 
 ########################### GUI for CODES
 ###########################
   ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes")
@@ -124,6 +124,16 @@ Version: 0.1.6 RC2\n",
    .filecat_buttons[1,4] <- FileCatAddToButton("AddTo")
    .filecat_buttons[1,5] <- FileCatDropFromButton("DropFrom")
 
+
+########################### GUI for Search 
+###########################
+##   ".fsearch_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Search")
+##  ".fsearch_rqda" <- glabel("Use SearchFiles function to search files.\nSee ?SearchFiles for more.",container=.fsearch_pan)
+##  ".fsearch_rqda" <- gtable("Click Here to see the File list.",container=.fsearch_pan,multiple=TRUE,expand=TRUE)
+##  .fsearch_rqda[] <-NULL # get around of the text argument.
+##  names(.fsearch_rqda) <- "Files Search"
+
+ 
 ######################### GUI  for settings
 #########################
    ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings")
@@ -140,6 +150,7 @@ assign(".root_rqdagui",.root_rqdagui,env=.rqda)
 assign(".files_button",.files_button,env=.rqda)
 assign(".codes_rqda",.codes_rqda,env=.rqda)
 assign(".fnames_rqda",.fnames_rqda,env=.rqda)
+##assign(".fsearch_rqda",.fsearch_rqda,env=.rqda)
 assign(".CasesNamesWidget",.CasesNamesWidget,env=.rqda)
 assign(".FileofCase",.FileofCase,env=.rqda)
 assign(".CodeCatWidget",.CodeCatWidget,env=.rqda)

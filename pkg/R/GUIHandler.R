@@ -34,7 +34,7 @@ Handler <- function(){
   ## right click to add file to a case category
 
   addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))
-                       
+                      
 ##   addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...)
 ##   ##function copied from ViewFileButton handler
 ##   {
@@ -63,6 +63,8 @@ Handler <- function(){
 ##   }##end of function  copied from ViewFileButton handler
 ##                         )
 
+
+  ## addhandlerdoubleclick(.rqda$.fsearch_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fsearch_rqda))
 
   ## handler for .codes_rqda
 

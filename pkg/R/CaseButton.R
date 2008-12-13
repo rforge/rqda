@@ -229,18 +229,23 @@ CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
       fileoutofcase <- subset(freefile,!(id %in% fileofcase$fid))
       } else  fileoutofcase <- freefile
     if (length(fileoutofcase[['name']])==0) gmessage("All files are linked with this case.", cont=TRUE) else {
-      Selected <- select.list(fileoutofcase[['name']],multiple=TRUE)
+      ##Selected <- select.list(fileoutofcase[['name']],multiple=TRUE)    
+    CurrentFrame <- sys.frame(sys.nframe())
+    ## sys.frame(): get the frame of n
+    ## nframe(): get n of current frame
+    ## The value of them depends on where they evaluated, should not placed inside RunOnSelected()
+    RunOnSelected(fileoutofcase[['name']],multiple=TRUE,enclos=CurrentFrame,expr={
       if (length(Selected)> 0) {
-          Selected <- iconv(Selected,to="UTF-8")
-          fid <- fileoutofcase[fileoutofcase$name %in% Selected,"id"]
-          selend <- nchar(fileoutofcase[fileoutofcase$name %in% Selected,"file"])
-          Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend,status=1,owner=.rqda$owner,date=date(),memo="")
-          dbWriteTable(.rqda$qdacon,"caselinkage",Dat,row.names=FALSE,append=TRUE)
-          UpdateFileofCaseWidget()
-        }
-    }
+        Selected <- iconv(Selected,to="UTF-8")
+        fid <- fileoutofcase[fileoutofcase$name %in% Selected,"id"]
+        selend <- nchar(fileoutofcase[fileoutofcase$name %in% Selected,"file"])
+        Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend,status=1,owner=.rqda$owner,date=date(),memo="")
+        dbWriteTable(.rqda$qdacon,"caselinkage",Dat,row.names=FALSE,append=TRUE)
+        UpdateFileofCaseWidget()
+      }})
   }
   }
+}
 CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     MemoWidget("Case",.rqda$.CasesNamesWidget,"cases")

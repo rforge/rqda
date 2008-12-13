@@ -132,20 +132,25 @@ CodeCatAddToButton <- function(label="AddTo",Widget=.rqda$.CodeCatWidget,...)
     ## compute those not in the category, then push them to select.list()
     codeoutofcat <- subset(freecode,!(id %in% codeofcat$cid))
     } else  codeoutofcat <- freecode
-    Selected <- select.list(codeoutofcat[['name']],multiple=TRUE)
-    if (length(Selected)!=0){
-    Selected <- iconv(Selected,to="UTF-8")
-    cid <- codeoutofcat[codeoutofcat$name %in% Selected,"id"]
-    Dat <- data.frame(cid=cid,catid=catid,date=date(),dateM=date(),memo="",status=1)
-    ## Push selected codeList to table treecode
-    dbWriteTable(.rqda$qdacon,"treecode",Dat,row.names=FALSE,append=TRUE)
-    ## update .CodeofCat Widget
-    UpdateCodeofCatWidget()
+##    Selected <- select.list(codeoutofcat[['name']],multiple=TRUE)
+    CurrentFrame <- sys.frame(sys.nframe())
+    RunOnSelected(codeoutofcat[['name']],multiple=TRUE,enclos=CurrentFrame,expr={
+      if (length(Selected)!=0){
+        Selected <- iconv(Selected,to="UTF-8")
+        cid <- codeoutofcat[codeoutofcat$name %in% Selected,"id"]
+        Dat <- data.frame(cid=cid,catid=catid,date=date(),dateM=date(),memo="",status=1)
+        ## Push selected codeList to table treecode
+        dbWriteTable(.rqda$qdacon,"treecode",Dat,row.names=FALSE,append=TRUE)
+        ## update .CodeofCat Widget
+        UpdateCodeofCatWidget()
+      }
+    }
+                  )
   }
-}
           )
 }
-## update .rqda$.CodeofCat[] by click handler on .rqda$.CodeCatWidget
+        
+  ## update .rqda$.CodeofCat[] by click handler on .rqda$.CodeCatWidget
 
 CodeCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.CodeofCat,...)
 {

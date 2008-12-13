@@ -40,7 +40,8 @@ AddFileToCaselinkage <- function(){
   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
   filename <- svalue(.rqda$.fnames_rqda)
   Encoding(filename) <- "unknown"
-  query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name = '%s' and status=1",filename))
+  query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in (%s) and status=1",
+  paste("'",filename,"'",sep="",collapse=",")))
   fid <- query$id
   Encoding(query$file) <- "UTF-8"
   selend <- nchar(query$file)
@@ -49,22 +50,28 @@ AddFileToCaselinkage <- function(){
   cases <- dbGetQuery(.rqda$qdacon,"select id, name from cases where status=1")
   if (nrow(cases)!=0){
     Encoding(cases$name) <- "UTF-8"
-    ans <- select.list(cases$name,multiple=FALSE)
-    if (ans!=""){
-    ans <- iconv(ans,to="UTF-8")
-    caseid <- cases$id[cases$name %in% ans]
+##    ans <- select.list(cases$name,multiple=FALSE)
+    CurrentFrame <- sys.frame(sys.nframe())
     
-    exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and fid=%i and caseid=%i",fid,caseid))
-    if (nrow(exist)==0){
-    ## write only when the selected file associated with specific case is not in the caselinkage table
-    DAT <- data.frame(caseid=caseid, fid=fid, selfirst=0, selend=selend, status=1,owner=.rqda$owner,data=date(),memo='')
-    success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
-    ## write to caselinkage table
-    if (!success) gmessage("Fail to write to database.")
-   }
+    RunOnSelected(cases$name,multiple=FALSE,enclos=CurrentFrame,expr={
+      if (Selected!=""){
+        Selected <- iconv(Selected,to="UTF-8")
+        caseid <- cases$id[cases$name %in% Selected]
+        
+        exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and fid in (%s) and caseid=%i",paste("'",fid,"'",sep="",collapse=","),caseid))
+        if (nrow(exist)!=length(fid)){
+          ## write only when the selected file associated with specific case is not in the caselinkage table
+          DAT <- data.frame(caseid=caseid, fid=fid[!fid %in% exist$fid], selfirst=0, selend=selend, status=1,owner=.rqda$owner,data=date(),memo='')
+          success <- dbWriteTable(.rqda$qdacon,"caselinkage",DAT,row.name=FALSE,append=TRUE)
+          ## write to caselinkage table
+          if (!success) gmessage("Fail to write to database.")
+        }
+      }
+    }
+                  )
   }
 }
-}
+
 
 
 UpdateFileofCaseWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCase){
