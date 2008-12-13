@@ -69,6 +69,7 @@ Version: 0.1.6 RC2\n",
   .codes_button[1,3] <- FreeCode_RenameButton(label="Rename",CodeNamesWidget=.codes_rqda)
   .codes_button[1,4] <- CodeMemoButton(label="C-Memo")
   .codes_button[1,5]<- CodingMemoButton(label="C2Memo")
+  .codes_button[2,1]<- CodingInfoButton()
   .codes_button[2,2]<- HL_ALLButton()
  # .codes_button[2,2]<- RetrievalButton("Retrieval")
   .codes_button[2,3]<- ExtendButton("Retrieval")

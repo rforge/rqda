@@ -132,8 +132,9 @@ sindex <- function(widget){
 
 
 
-retrieval <- function(){
-  currentCode <- svalue(.rqda$.codes_rqda)
+retrieval <- function(CodeNameWidget){
+##CodeNameWidget=.rqda$.codes_rqda
+  currentCode <- svalue(CodeNameWidget)
   if (length(currentCode)!=0){
   Encoding(currentCode) <- "UTF-8"
   currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]

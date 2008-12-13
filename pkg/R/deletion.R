@@ -124,7 +124,7 @@ pdelete <- function(type=c("file","code","case","codecategory","filecategory","c
         print("Nothing to clear.")
       } else {
         if (ask){
-          del <- select.list(del[,1],multiple=TRUE)
+          del <- select(del[,1],multiple=TRUE)$selected ##select.list(del[,1],multiple=TRUE)
         } else {
         del <- del[,1]
       }
@@ -228,7 +228,7 @@ undelete <- function(type=c("file","code","case","codecategory","filecategory"),
       print("Nothing to clear.")
     } else {
       if (ask){
-        del <- select.list(del[,1],multiple=TRUE)
+        del <- select(del[,1],multiple=TRUE)$selected ##select.list(del[,1],multiple=TRUE)
       } else {
         del <- del[,1]
       }

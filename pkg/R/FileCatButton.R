@@ -146,36 +146,37 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
 
 
 
-AddToFileCategory<- function(){
-  ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
-  filename <- svalue(.rqda$.fnames_rqda)
-  Encoding(filename) <- "unknown"
-  query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in(%s) and status=1",paste("'",filename,"'",sep="",collapse=","))) ## multiple fid
-  fid <- query$id
-  Encoding(query$file) <- "UTF-8"
+## AddToFileCategory<- function(){
+## moved to FilesFun.R
+##   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
+##   filename <- svalue(.rqda$.fnames_rqda)
+##   Encoding(filename) <- "unknown"
+##   query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in(%s) and status=1",paste("'",filename,"'",sep="",collapse=","))) ## multiple fid
+##   fid <- query$id
+##   Encoding(query$file) <- "UTF-8"
   
-  ## select a F-cat name -> F-cat id
-  Fcat <- dbGetQuery(.rqda$qdacon,"select catid, name from filecat where status=1")
-  if (nrow(Fcat)!=0){
-    Encoding(Fcat$name) <- "UTF-8"
-    ##ans <- select.list(Fcat$name,multiple=FALSE)
-    CurrentFrame <- sys.frame(sys.nframe())
-    RunOnSelected(Fcat$name,multiple=TRUE,enclos=CurrentFrame,expr={
-    if (Selected!=""){ ## must use Selected to represent the value of selected items. see RunOnSelected() for info.
-      Selected <- iconv(Selected,to="UTF-8")
-      Fcatid <- Fcat$catid[Fcat$name %in% Selected]
-      exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and fid in (%s) and catid=%i",paste("'",fid,"'",sep="",collapse=","),Fcatid))
-    if (nrow(exist)!=length(fid)){
-    ## write only when the selected file associated with specific f-cat is not there
-      DAT <- data.frame(fid=fid[!fid %in% exist$fid], catid=Fcatid, date=date(),dateM=date(),memo='',status=1)
-      ## should pay attention to the var order of DAT, must be the same as that of treefile table
-      success <- dbWriteTable(.rqda$qdacon,"treefile",DAT,row.name=FALSE,append=TRUE)
-      ## write to caselinkage table
-      if (success) {
-      UpdateFileofCatWidget()
-      }
-      if (!success) gmessage("Fail to write to database.")
-    }}})}}
+##   ## select a F-cat name -> F-cat id
+##   Fcat <- dbGetQuery(.rqda$qdacon,"select catid, name from filecat where status=1")
+##   if (nrow(Fcat)==0){gmessage("Add File Categroy first.",con=TRUE)} else{
+##     Encoding(Fcat$name) <- "UTF-8"
+##     ##ans <- select.list(Fcat$name,multiple=FALSE)
+##     CurrentFrame <- sys.frame(sys.nframe())
+##     RunOnSelected(Fcat$name,multiple=TRUE,enclos=CurrentFrame,expr={
+##     if (Selected!=""){ ## must use Selected to represent the value of selected items. see RunOnSelected() for info.
+##       Selected <- iconv(Selected,to="UTF-8")
+##       Fcatid <- Fcat$catid[Fcat$name %in% Selected]
+##       exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and fid in (%s) and catid=%i",paste("'",fid,"'",sep="",collapse=","),Fcatid))
+##     if (nrow(exist)!=length(fid)){
+##     ## write only when the selected file associated with specific f-cat is not there
+##       DAT <- data.frame(fid=fid[!fid %in% exist$fid], catid=Fcatid, date=date(),dateM=date(),memo='',status=1)
+##       ## should pay attention to the var order of DAT, must be the same as that of treefile table
+##       success <- dbWriteTable(.rqda$qdacon,"treefile",DAT,row.name=FALSE,append=TRUE)
+##       ## write to caselinkage table
+##       if (success) {
+##       UpdateFileofCatWidget()
+##       }
+##       if (!success) gmessage("Fail to write to database.")
+##     }}})}}
 
 
 
