@@ -180,3 +180,24 @@ RunOnSelected <- function(x,multiple=TRUE,expr,enclos,title=NULL,...){
 }
 
 
+gselect.list <- function(x,multiple=TRUE,title=NULL,...){
+  ## gtk version of select.list()
+  ## Thanks go to John Verzani for his help.
+  title <- ifelse(multiple,"Select one or more","Select one")
+  
+  helper <- function(){
+    ans<-new.env()
+    x1<-ggroup(horizontal=FALSE) # no parent container here
+    x2<-gtable(x,multiple=multiple,con=x1,expand=TRUE)
+    ret <- gbasicdialog(title=title,widget=x1,handler=function(h,...){
+      value <- svalue(x2)
+      assign("selected",value,env=h$action$env)
+      dispose(x1)
+    },action=list(env=ans))
+    ans
+  }## end helper function
+  items <- helper()$selected
+  if (is.null(items)) items <- ""
+  items
+}
+

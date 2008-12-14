@@ -16,7 +16,14 @@ write.FileList(FileList, encoding = .rqda$encoding, con = .rqda$qdacon, ...)
   \item{con}{ Don't change this argument.}
   \item{\dots}{ \code{\dots} is not used.}
 }
-
+\details{
+The file content will converted to UTF-8 character before write to 
+*.rqda. The original content can be in any suitable encoding, so you 
+can inspect the content correctly; In other words,the better 
+practices is to used the corresponding encoding (you can get a hint by 
+\code{localeToCharset} function) to save the imported 
+files.
+}
 \value{
  This function is used for the side-effects. No value is return.
 }

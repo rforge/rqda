@@ -1,5 +1,5 @@
 ## "back.col" "BOM"      "encoding" "fore.col" "owner"
-addSettingGUI <- function(container){
+addSettingGUI <- function(container,width=12){
 Setting <- list(type = "ggroup",
               horizontal = FALSE,
               children = list(
@@ -11,27 +11,27 @@ Setting <- list(type = "ggroup",
                      children = list(
                        list(name = "owner",
                             label = "Name of Coder",
-                            type = "gedit",
+                            type = "gedit",width=width,
                             text = .rqda$owner
                             ),
                        list(name = "encoding",
                             label = "File Encoding",
-                            type = "gedit",
+                            type = "gedit",width=width,
                             text = .rqda$encoding
                             ),
                        list(name = "BOM",
                             label = "BOM",
-                            type = "gcombobox",
+                            type = "gcombobox",width=width,
                             items = c(FALSE, TRUE)
                             ),
                        list(name = "fore.col",
                             label = "Color for Coding",
-                            type = "gedit",
+                            type = "gedit",width=width,
                             text = .rqda$fore.col
                             ),
                        list(name = "back.col",
                             label = "Color for Case",
-                            type = "gedit",
+                            type = "gedit",width=width,
                             text = .rqda$back.col
                             )
                        )
@@ -44,7 +44,7 @@ Setting <- list(type = "ggroup",
 
 SettingFL <- gformlayout(Setting, cont = container, expand=TRUE)
 
-ButtonContainer <- ggroup(cont = container)
+ButtonContainer <- ggroup(cont = container) ##, width=100) ## not necessary to set width here
 addSpring(ButtonContainer)
 resetButton <- gbutton("Default", cont = ButtonContainer)
 okButton <- gbutton("OK", cont = ButtonContainer)

@@ -89,7 +89,6 @@
 \alias{UncodedFileNamesUpdate}
 \alias{ProjectMemoWidget}
 \alias{FileNameWidgetUpdate}
-\alias{GetFileId}
 \alias{OrderByTime}
 %% add related alias functions here.
 

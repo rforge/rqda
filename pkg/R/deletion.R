@@ -124,7 +124,7 @@ pdelete <- function(type=c("file","code","case","codecategory","filecategory","c
         print("Nothing to clear.")
       } else {
         if (ask){
-          del <- select(del[,1],multiple=TRUE)$selected ##select.list(del[,1],multiple=TRUE)
+          del <- gselect.list(del[,1],multiple=TRUE) ##select.list(del[,1],multiple=TRUE)
         } else {
         del <- del[,1]
       }
@@ -152,7 +152,7 @@ CleanProject <- function(ask=FALSE){
 
 
 
-undelete <- function(type=c("file","code","case","codecategory","filecategory"),ask=FALSE){
+undelete <- function(type=c("file","code","case","codecategory","filecategory"),ask=TRUE){
   ## set the status  back to 1
 
   ## beginning of helper functions
@@ -228,11 +228,12 @@ undelete <- function(type=c("file","code","case","codecategory","filecategory"),
       print("Nothing to clear.")
     } else {
       if (ask){
-        del <- select(del[,1],multiple=TRUE)$selected ##select.list(del[,1],multiple=TRUE)
+        del <- gselect.list(del[,1],multiple=TRUE) ##select.list(del[,1],multiple=TRUE)
       } else {
         del <- del[,1]
       }
-      switch(type,
+      if (del!=""){
+        switch(type,
              ## use switch to run Fun
              file=fileFun(del=del),
              code=codeFun(del=del),
@@ -240,6 +241,7 @@ undelete <- function(type=c("file","code","case","codecategory","filecategory"),
              codecategory=CcatFun(del=del),
              filecategory=FcatFun(del=del)
              )
+     }
     }
   }
 }
