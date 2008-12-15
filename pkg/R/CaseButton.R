@@ -273,14 +273,14 @@ CaseNamesWidgetMenu$"Web Search"$Yahoo$handler <- function(h,...){
 CaseNamesWidgetMenu$"Web Search"$Baidu$handler <- function(h,...){
   KeyWord <- svalue(.rqda$.CasesNamesWidget)
   if (length(KeyWord)!=0){
-    KeyWord <- iconv(KeyWord, from="UTF-8")
+    KeyWord <- iconv(KeyWord, from="UTF-8",to="CP936") ## should be in CP936 to work properly.
     browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
   }
 }
 CaseNamesWidgetMenu$"Web Search"$Sogou$handler <- function(h,...){
   KeyWord <- svalue(.rqda$.CasesNamesWidget)
   if (length(KeyWord)!=0){
-    KeyWord <- iconv(KeyWord, from="UTF-8")
+    KeyWord <- iconv(KeyWord, from="UTF-8",to="CP936")## should be in CP936 to work properly.
     browseURL(sprintf("http://www.sogou.com/sohu?query=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
   }
 }

@@ -141,17 +141,17 @@ invisible(ans)
   } else cat("Open a project first.\n")
 }
 
-select <- function(x,multiple=TRUE,title=NULL,...){
-## select a method for selecting items conditional on the OS, to maxizied the chance of GUI-style of selection.
-## use as replacement of  select.list.
-  if (.Platform$OS.type == "unix" && capabilities("tcltk") && capabilities("X11"))
-    {
-      ans <- tcltk::tk_select.list(x,multiple=multiple,title=title,...)
-    } else {
-      ans <- select.list(x,multiple=multiple,title=title,...)
-    }
-  return(list(selected=ans))
-}
+## select <- function(x,multiple=TRUE,title=NULL,...){
+## ## select a method for selecting items conditional on the OS, to maxizied the chance of GUI-style of selection.
+## ## use as replacement of  select.list.
+##   if (.Platform$OS.type == "unix" && capabilities("tcltk") && capabilities("X11"))
+##     {
+##       ans <- tcltk::tk_select.list(x,multiple=multiple,title=title,...)
+##     } else {
+##       ans <- select.list(x,multiple=multiple,title=title,...)
+##     }
+##   return(list(selected=ans))
+## }
 
 
 RunOnSelected <- function(x,multiple=TRUE,expr,enclos,title=NULL,...){

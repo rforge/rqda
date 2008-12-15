@@ -90,6 +90,11 @@
 \alias{ProjectMemoWidget}
 \alias{FileNameWidgetUpdate}
 \alias{OrderByTime}
+\alias{AutoCoding}
+\alias{c2InfoFun}
+\alias{CodingInfoButton}
+\alias{gselect.list}
+\alias{RunOnSelected}
 %% add related alias functions here.
 
 \title{Internal Functions}

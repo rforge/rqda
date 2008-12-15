@@ -1,5 +1,5 @@
 AutoCoding <- function(KeyWord,expansion=6){
-  Files <- SearchFiles(paste("%",KeyWordm,"%",collapse=""),content=TRUE)
+  Files <- SearchFiles(paste("%",KeyWord,"%",collapse=""),content=TRUE)
   AnsIndex <- gregexpr(KeyWord,Files$file)
   AnsIndex2 <- lapply(AnsIndex, FUN=function(x) {
     begin <- x-expansion
