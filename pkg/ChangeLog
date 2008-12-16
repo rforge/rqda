@@ -1,6 +1,7 @@
 2008-12-15
 	* Add help of GetCodingTable.
 	* Fix bugs of "Web Search-Baidu" and "Web Search-Sohu" of the case popup menu (now works for UTF-8 locale).
+	* Fix bugs of "Add to case/file category" of the fils popup menu.
 
 2008-12-14
 	* Add help of SearchFiles and GetFileId.

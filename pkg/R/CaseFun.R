@@ -55,9 +55,9 @@ AddFileToCaselinkage <- function(){
     
     RunOnSelected(cases$name,multiple=FALSE,enclos=CurrentFrame,expr={
       if (Selected!=""){
-        Selected <- iconv(Selected,to="UTF-8")
-        caseid <- cases$id[cases$name %in% Selected]
-        
+        ##Selected <- iconv(Selected,to="UTF-8")
+        Encoding(Selected) <- "UTF-8"
+        caseid <- cases$id[cases$name %in% Selected]       
         exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and fid in (%s) and caseid=%i",paste("'",fid,"'",sep="",collapse=","),caseid))
         if (nrow(exist)!=length(fid)){
           ## write only when the selected file associated with specific case is not in the caselinkage table

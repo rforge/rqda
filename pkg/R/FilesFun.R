@@ -304,7 +304,8 @@ AddToFileCategory<- function(){
     CurrentFrame <- sys.frame(sys.nframe())
     RunOnSelected(Fcat$name,multiple=TRUE,enclos=CurrentFrame,expr={
     if (Selected!=""){ ## must use Selected to represent the value of selected items. see RunOnSelected() for info.
-      Selected <- iconv(Selected,to="UTF-8")
+      ##Selected <- iconv(Selected,to="UTF-8")
+      Encoding(Selected) <- "UTF-8"
       Fcatid <- Fcat$catid[Fcat$name %in% Selected]
       exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and fid in (%s) and catid=%i",paste("'",fid,"'",sep="",collapse=","),Fcatid))
     if (nrow(exist)!=length(fid)){
