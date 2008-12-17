@@ -18,6 +18,8 @@ A data frame:
   \item{codename }{Code name, in accordance with cid}
   \item{filename }{File name, in accordance with fid}
   \item{CodingLength }{The number of characters in the coding}
+  \item{index1}{beginning index of a coding}
+  \item{index2}{end index of a coding}
 }
 \author{ HUANG Ronggui}
 %\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }

@@ -117,15 +117,19 @@ MarkCodeFun <- function(){
           Relations <- apply(Exist,1,FUN=function(x) relation(x[c("selfirst","selend")],c(ans$start,ans$end)))
           Exist$Relation <- sapply(Relations,FUN=function(x)x$Relation)
           if (!any(Exist$Relation=="exact")){
+            ## if they are axact, do nothing; -> if they are not exact, do something.
             Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
             Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
             Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
             if (all(Exist$Relation=="proximity")){
               success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
               if (!success) gmessage("Fail to write to database.")
+              ## if there are no overlap in any kind, just write to database; otherwise, pass to else{}.
             } else {
-              del1 <- Exist$WhichMin==2 & Exist$Relation =="inclusion"; del1[is.na(del1)] <- FALSE
-              del2 <- Exist$Relation =="overlap"; del2[is.na(del2)] <- FALSE
+              del1 <- (Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
+              ## if overlap or inclusion  old nested in new]
+              ## then the original coding should be deleted; then write the new coding to table
+              del2 <- Exist$Relation =="overlap"
               del <- (del1 | del2)
               if (any(del)){
                 Sel <- c(min(Exist$Start[del]), max(Exist$End[del]))

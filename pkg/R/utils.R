@@ -65,6 +65,7 @@ GetCodingTable <- function(){
    ##         from coding, freecode, source 
    ##         where coding.status==1 and freecode.id=coding.cid and coding.fid=source.id")
    Codings <- dbGetQuery(.rqda$qdacon,"select coding.cid, coding.fid, freecode.name as codename, source.name as filename,
+                                       coding.selfirst as index1, coding.selend as index2,
                                        coding.selend - coding.selfirst as CodingLength
                                       from coding left join freecode on (coding.cid=freecode.id)
                                                   left join source on (coding.fid=source.id) 
