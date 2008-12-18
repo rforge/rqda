@@ -56,7 +56,7 @@ relation <- function(index1,index2){
   }
 }
 
-CrossTable <- function(cid1, cid2,data,relation=c("overlap","inclusion","exact","proximity")) 
+CrossTwo <- function(cid1, cid2,data,relation=c("overlap","inclusion","exact","proximity"),...) 
 {
   ## cid1 and cid2 is length-1 numeric, represents the id of codes
   ## data is return by GetCodingTable.
@@ -83,10 +83,27 @@ CrossTable <- function(cid1, cid2,data,relation=c("overlap","inclusion","exact",
   ans
 }
 
-#Cross <- function(data=GetCodingTable(),type){
-#cidList <- as.numeric(names(table(data$cid)))
-#ans <- matrix(nrow=length(cidList), ncol=length(cidList),dimnames=list(cidList,cidList))
-#for (
-#CrossTable(1,4,dat)
-#}
+CrossCode <- function(relation=c("overlap","inclusion","exact","proximity"),codeList=NULL,data=GetCodingTable(),print=TRUE,...){
+## codeList is character vector of codes.
+  if (nrow(data)==0) {
+    stop("No coding in this project.")
+  } else{
+    Cid_Name <- unique(data[,c("cid","codename")])
+    if (is.null(codeList)) codeList <- gselect.list(Cid_Name$codename,multiple=TRUE)
+    if (length(codeList)<2) {
+      stop("The codeList should be a vector of length 2 or abvoe.")
+    } else {
+      cidList <- Cid_Name$cid[which(Cid_Name$codename %in% codeList)]
+      relation <- match.arg(relation)
+      ans <- matrix(nrow=length(codeList), ncol=length(codeList),dimnames=list(codeList,cidList))
+      for (i in 1:length(codeList)){
+        for (j in i:length(codeList)){
+          ans[i,j] <- CrossTwo(cidList[i],cidList[j],data=data,relation=relation)
+        }
+      }
+      if (print) {print(ans,na.print="")}
+      invisible(ans)
+    }
+  }
+}
 

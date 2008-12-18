@@ -21,7 +21,7 @@ Setting <- list(type = "ggroup",
                             ),
                        list(name = "BOM",
                             label = "BOM",
-                            type = "gcombobox",width=width,
+                            type = "gcombobox",## width=width,
                             items = c(FALSE, TRUE)
                             ),
                        list(name = "fore.col",

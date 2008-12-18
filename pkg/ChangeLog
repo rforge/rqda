@@ -1,3 +1,7 @@
+2008-12-17 (as version 0.1.6RC3)
+	* Rename CrossTable to CrossTwo
+	* New function of CrossCode
+
 2008-12-17
 	* Improve the relation function and revise MarkCodeFun accordingly.
 	* New function of CrossTable for inter-relationship between codes (The name of it may change in the future).

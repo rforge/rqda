@@ -1,3 +1,24 @@
+2008-12-17 (as version 0.1.6RC3)
+	* Rename CrossTable to CrossTwo
+	* New function of CrossCode
+
+2008-12-17
+	* Improve the relation function and revise MarkCodeFun accordingly.
+	* New function of CrossTable for inter-relationship between codes (The name of it may change in the future).
+
+2008-12-15
+	* Add help of GetCodingTable.
+	* Fix bugs of "Web Search-Baidu" and "Web Search-Sohu" of the case popup menu (now works for UTF-8 locale).
+	* Fix bugs of "Add to case/file category" of the fils popup menu.
+
+2008-12-14
+	* Add help of SearchFiles and GetFileId.
+	* Change the default of ask argument of undelete to TRUE.
+
+2008-12-13
+	* New function of gselect.list, gtk version of select.list (Thanks John).
+	* Add help of SummaryCoding, improve help of write.FileList.
+
 2008-12-12
 	* Fix bugs of SortByTime(), now should work for R < 2.8.0. Fix bug of GetCodingTable and SummaryCoding.
 	* New function of RunOnSelected. Use it to replace select.list.
