@@ -15,7 +15,7 @@ CrossTwo(cid1, cid2,data,relation=c("overlap","inclusion","exact","proximity"),.
  \item{relation}{The relation between codes}
  \item{codeList}{A character vector, the codes list on which the inter-code relationship is based}
  \item{data}{Data frame return by \code{GetCodingTable},may be subset of the full coding table}
- \itme{print}{When TRUE, print the results automatically}
+ \item{print}{When TRUE, print the results automatically}
  \item{cid1}{Length-1 code id. It is numeric.}
  \item{cid2}{Length-1 code id. It is numeric.}
  \item{\dots}{ \code{\dots} is not used yet.}
@@ -37,11 +37,12 @@ CrossTwo(cid1, cid2,data,relation=c("overlap","inclusion","exact","proximity"),.
 For \code{CrossCode}, it is a matrix. The upper matrix contains the
 number of codings fitting the relation between the respective two
 codes. the lower matrix is all NA. rownames of the matrix is the name of
-the codes , and the colnames of the matrix is the corresponding id of codes.
-
+the codes , and the colnames of the matrix is the corresponding id of
+codes.
 
 For \code{CrossCodes}, it is a numeric vector.
 }
+\seealso{\code{\link{relation}}}
 \examples{
 \dontrun{
 CrossCodes()
