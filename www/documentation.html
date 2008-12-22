@@ -29,9 +29,10 @@ h1 {
 <h1><a id="user manual">User's Manual</a></h1>
 <p><b>Contributions are more than welcome</b>.
 
-<p><b>0. Design principle </b>
+<p><b>0. Design principles </b>
 <p>Reliability: This is the most important thing. In order to maximize the reliability, every change will write to the *.rqda file directly, so you don't have to manually save your project.
 <p>Capacity of file management: This package is written for my own research, aiming at analyzing newspaper reports. In this case, there are lots of files, and I have put much effect on the management and organization of files (Sorting, Show coded files only, Show uncoded files only, Show those fit the searching criterion only etc.).
+<p>Mixed methods study: RQDA aims at mixed methods study. One example is the Cases Tab, which offers possibility of Qualitative Comaraptive Study (see <A target="_blank" HREF=http://cran.r-project.org/web/packages/QCA/index.html>QCA</a> for more).
 
 <p><b>1. Project </b>
 <p>You can create a new project in by clicking the new project button in Project Tab. RQDA will create a *.rqda file, which is a  SQLite database. All the information (e.g. files, code list, all kinds of memo, coding, and relation between codes or between files etc.) is stored in that single file. Single *.rqda file makes backup or data migration much easier.
@@ -79,7 +80,10 @@ h1 {
 <p>Encoding of file is the encoding of the file you want to imported. If it is ASCII file, the default "unknown" is fine. If it is other encoding, you should set it accordingly. For example, you should set it to UTF-8 if the file is in UTF-8. Note that if you save a plain text with encoding UTF-8 with using MS notepad, the notepad will add BOM (Byte order Mark, it is a 3 bite mark) in the beginning of the file, for this case, you should set BOM to TRUE.
 <p> To change the setting is simple, you change the value of each setting and then click OK button. If you want to reset to the default setting, you can just click the default button.
 
-<p><b>Warranty</b>
+<p><b>7. Implementation History</b>
+<p>When I started my PhD research project, I planned to conduct some content analysis of newspaper reports. I need a QDA software. I hope it is available to me, has basic functionalits of QDA software, runs both under Windows and Linux/FreeBSD. Last but not least, I should have full control of it. I can't find one, so I decided to write one by myself. I had this idea in 2007, but not until late 2008 do I implemented most parts of this package.
+
+<p><b>8. Warranty</b>
 <p>As a open source and free project, there is no warranty that it is fit for any particular purpose, or that it will work at all. You use RQDA solely at your own risk, and no liability can be assumed for any damage or loss incurred by your use of the software. You can learn more from the <A HREF="License.html">license</A>.
 
 
