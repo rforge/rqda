@@ -364,6 +364,7 @@ c2InfoFun <- function(){
                                        ] ## determine which codes correspond to the selection
           cid <- codings_index$cid[codings_index$rowid %in% rowid]
           Codes <- CodeTable$name[CodeTable$id %in% cid]
+          Encoding(Codes) <- "UTF-8"
           ## should not use data frame as x, otherwise, svalue(c2infoWidget) is a factor rather than a character
           if (length(Codes)!=0){
           tryCatch(dispose(.rqda$.c2info),error=function(e){})

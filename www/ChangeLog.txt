@@ -1,3 +1,8 @@
+2008-12-21
+	* Fix latex related issue in SearchFiles.rd.
+	* Fix bug of C2Info: encoding issue.
+	* Add new content to documentation.html.
+	
 2008-12-18 (as version 0.1.6RC3)
 	* Rename CrossTable to CrossTwo
 	* New function of CrossCode

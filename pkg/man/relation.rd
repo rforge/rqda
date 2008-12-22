@@ -11,9 +11,9 @@ relation(index1, index2)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{index1}{ The first coding index, it is length-2 integer vector
-    with the first element less than the second element.}
+    with the first element (index1[1]) less than the second element (index1[2]).}
   \item{index2}{ The second coding index, it is length-2 integer vector
-    with the first element less than the second element.}
+    with the first element (index2[1]) less than the second element (index2[2]).}
 }
 \details{
 The relation between two codings can be any of inclusion, overlap, exact

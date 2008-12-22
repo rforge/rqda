@@ -22,7 +22,8 @@ URL: \tab \url{http://rqda.r-forge.r-project.org/} \cr
 %% description of the package
 %% main functions.
 The workhorse function for end-user is the RQDA(), you can use RQDA() to
-start the GUI after library(QRDA). Please Refer to the documentation section of the project homepage for the usage of RQDA.}
+start the GUI after library(QRDA). Please Refer to the documentation
+section of the project homepage for the usage of RQDA.}
 \author{
   Huang Ronggui
   
