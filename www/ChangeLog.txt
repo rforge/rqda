@@ -1,3 +1,7 @@
+2008-12-24
+	* Fix minor bugs of "Unmark", "AddTo", and "HL_ALL" buttons.
+	* add new content to documentation.html.
+	
 2008-12-21
 	* Fix latex related issue in SearchFiles.rd.
 	* Fix bug of C2Info: encoding issue.
