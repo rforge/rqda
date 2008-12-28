@@ -1,3 +1,6 @@
+2008-12-28
+	* RQDA needs gWidgets (>= 0.0-31), gWidgetsRGtk2 (>= 0.0-36). Add it to DESCRIPTION file.
+	
 2008-12-24
 	* Fix minor bugs of "Unmark", "AddTo", and "HL_ALL" buttons.
 	* add new content to documentation.html.
