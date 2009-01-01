@@ -7,6 +7,6 @@ Author: HUANG Ronggui
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
 Depends: R (>= 2.5.0), DBI, RSQLite, RGtk2, gWidgets (>= 0.0-31), gWidgetsRGtk2 (>= 0.0-36)
 Description: R package for Qualitative Data Analysis. Current version only supports plain text.
-License: New Style BSD License
+License: BSD
 LazyLoad: yes
 URL: http://rqda.r-forge.r-project.org/
