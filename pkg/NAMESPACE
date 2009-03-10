@@ -1,3 +1,5 @@
-export(CleanProject,CrossCode,CrossTwo,GetCodingTable,GetFileId,list.deleted,pdelete,relation,RQDA,SearchFiles,SummaryCoding)
+export(CleanProject,CrossCode,CrossTwo,GetCodingTable,GetFileId,
+       list.deleted,pdelete,relation,RQDA,
+       SearchFiles,SummaryCoding,write.FileList)
 S3method(print,SummaryCoding)
 import(RGtk2)

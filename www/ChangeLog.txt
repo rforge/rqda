@@ -1,3 +1,9 @@
+2009-03-11
+      * New function of AddNewFileFun, add to popup menu of file Tab.
+
+2009-01-14
+	* Add citation file.
+	
 2009-01-09
 	* Add namespace
 	* RQDA-internal.rd is no loner needed (can be found in rev 57 or version 0.1-6)

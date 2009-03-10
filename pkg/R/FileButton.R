@@ -152,16 +152,51 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
 }
 
 
+AddNewFileFun <- function(){
+  if (is_projOpen(env=.rqda,"qdacon")) {
+    tryCatch(eval(parse(text="dispose(.rqda$.AddNewFileWidget")),error=function(e) {}) ## close the widget if open
+    assign(".AddNewFileWidget",gwindow(title="Add New File.",parent=c(395,10),width=600,height=400),env=.rqda)
+    assign(".AddNewFileWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewFileWidget",env=.rqda)),env=.rqda)
+    gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){
+      ## require a title for the file
+      Ftitle <- ginput("Enter the title", icon="info")
+      if (Ftitle!="") {Encoding(Ftitle) <- "UTF-8"}
+      if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from source where name=='%s'",Ftitle)))!=0) {
+        Ftitle <- paste("New",Ftitle)
+      }## Make sure it is unique
+      content <- svalue(textW)
+      content <- enc(content) ## take care of double quote.
+      maxid <- dbGetQuery(.rqda$qdacon,"select max(id) from source")[[1]] ## the current one
+      nextid <- ifelse(is.na(maxid),0+1, maxid+1) ## the new one/ for the new file
+      ans <- dbGetQuery(.rqda$qdacon,sprintf("insert into source (name, file, id, status,date,owner )
+                             values ('%s', '%s',%i, %i, '%s', '%s')",
+                             Ftitle,content, nextid, 1,date(),.rqda$owner))
+      ## write to the data-base ## what is ans?
+      ## rm(.AddNewFileWidget,.AddNewFileWidget2,env=.rqda)
+      ## delete .rqda$.AddNewFileWidget and .rqda$.AddNewFileWidget2
+        gmessage("Succeed.",con=T)
+        FileNamesUpdate()
+    }
+            )## end of save button
+    assign(".AddNewFileWidgetW",gtext(container=get(".AddNewFileWidget2",env=.rqda),font.attr=c(sizes="large")),env=.rqda)
+    textW <- get(".AddNewFileWidgetW",env=.rqda)
+  }
+}
+
 
 ## pop-up menu of add to case and F-cat from Files Tab
 FileNamesWidgetMenu <- list()
+FileNamesWidgetMenu$"Add New File ..."$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    AddNewFileFun()
+    }
+  }
 FileNamesWidgetMenu$"Add To Case ..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       AddFileToCaselinkage()
       UpdateFileofCaseWidget()
     }
   }
-
 FileNamesWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       AddToFileCategory()
@@ -203,3 +238,5 @@ FileNamesWidgetMenu$"Sort All By Imported Time"$handler <- function(h, ...) {
      FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="all"))
     }
   }
+
+

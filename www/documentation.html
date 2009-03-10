@@ -33,7 +33,7 @@ h1 {
 <p><b>0. Design principles </b>
 <p>Reliability: This is the most important thing. In order to maximize the reliability, every change will write to the *.rqda file directly, so you don't have to manually save your project.
 <p>Capacity of file management: This package is written for my own research, aiming at analyzing newspaper reports. In this case, there are lots of files, and I have put much effect on the management and organization of files (Sorting, Show coded files only, Show uncoded files only, Show those fit the searching criterion only etc.).
-<p>Mixed methods study: RQDA aims at mixed methods study. One example is the Cases Tab, which offers possibility of Qualitative Comparative Study (see <A target="_blank" HREF=http://code.google.com/p/asrr/>ASRR</a> or <A target="_blank" HREF=http://cran.r-project.org/web/packages/QCA/index.html>QCA</a> for more).
+<p>Mixed methods study: RQDA aims at mixed methods study. One example is the Cases Tab, which offers possibility of Qualitative Comparative Study (see <A target="_blank" HREF=http://asrr.r-forge.r-project.org/>ASRR</a> or <A target="_blank" HREF=http://cran.r-project.org/web/packages/QCA/index.html>QCA</a> for more).
 
 <p><b>1. Project </b>
 <p>You can create a new project in by clicking the new project button in Project Tab. RQDA will create a *.rqda file, which is a  SQLite database. All the information (e.g. files, code list, all kinds of memo, coding, and relation between codes or between files etc.) is stored in that single file. Single *.rqda file makes backup or data migration much easier.
@@ -110,5 +110,6 @@ h1 {
 <br>A: Depends on the method of coding. For factual coding, you can do statisitcal analysis. If the documents are representative, you can do referential analysis; otherwise, you can only conduct descriptive analysis.
 <br><B>Q:</B>Why should I use computer-aided QDA? Is it more efficient?
 <br>A: CAQDA is time-consuming, but it makes the data analysis process more systematic, more tractable, and more transparent. It "forces" you to think hard about your data and the connection with theory (once you know the idea behind the CAQDA). Depending on the methodological paradigms, you may conduct Qualitative Comparative Analysis or examine some hypotheses (Not in the sense of statistical test of hypotheses) (See Kelle 1995 for details).
-
+<br><B>Q:</B> My Vista is English, but the *.rqda include Chinese, and it can not display correctly.
+<br>A: One possible reason is the font issue. You can uninstall GTK+. Launch R, set the locale to CHS by command Sys.setlocale(,"CHS"), load RGtk2 by command library(RGtk2), then R will ask if you want to install GTK+, install it. Then you can launch RQDA. It should work.
 </Body>
