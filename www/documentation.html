@@ -47,7 +47,7 @@ h1 {
 <p><b>2. Files</b>
 <p> After open a project, you can import files by click import button in the Files Tab. By default, the file should be a plain text with encoding of ASCII, otherwise, you should set the File encoding in Settings Tab before you import files.
 
-<p> If you want to import a lots of files, you can use R function write.FileList() to import them. For more information about its usage, please consult to ?write.FileList. 
+<p> If you want to import a lots of files, you can use R function write.FileList() to import them. For more information about its usage, please consult to ?write.FileList. In addition, from the pop-up menu in file Tabm you can add new file directly by typing or pasting content: right-click - Add new file... - type new content or paste content - click "save to project" - input the file title and click ok. After that, you can close the "add new file" widget.
 
 <p> You can delete files. First select one file you want to delete, then click delete button in Files Tab. Similarly, you can rename the selected file name (one file per time). You can select a file, and click open button to open the file, so you can read the content of it. You can open a file by double click as well.
 
@@ -102,6 +102,7 @@ h1 {
 <br>1. Under Linux/FreeBSD, you should set the locale of R to UTF-8 to get a better support of non-English documents. In my FreeBSD box, I set the locale of R by this R command: <i>Sys.setlocale(locale = "zh_CN.UTF-8")</i>.
 <br>2. When RDQA is launched, it is better to minimize the main window of R (e.g. Rgui, Rterm, terminal from which R is launched).
 <br>3. Besides the C-Cat and F-Cat, you can use a trick to help organize files, codes list,and cases by using specific name rules. For example, if you name a group of codes with 1 as prefix and another group of codes with 2 as prefix, then you can click the triangle symbol in ther right-upper corners of the Codes List table, then the codes are sorted according to their prefix. Similar trick applies to others.
+<br>4. If a file is large, and you want to quit RQDA without finish coding, you can write a file memo, say "unfinished". Afterwards, you can use "Search File..." of the file pop-up menu to locate the file by "memo like '%unfinished%'".
 
 <h1><a id="faq">FAQ<a></h1>
 <br><B>Q:</B>How can I get help?

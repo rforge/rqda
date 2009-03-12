@@ -1,5 +1,11 @@
+2009-03-12
+	* Fix minor bug of "Search File..." of popup menu in File Tab.
+
 2009-03-11
-      * New function of AddNewFileFun, add to popup menu of file Tab.
+	* New function of AddNewFileFun, Add new file from popup menu of file Tab.
+	* Fix minor bug of enc().
+	* Show files with/without memo only (from popup menu of file tab).
+	* Show codes with/without memo only (from popup menu of code tab).
 
 2009-01-14
 	* Add citation file.
@@ -8,7 +14,7 @@
 	* Add namespace
 	* RQDA-internal.rd is no loner needed (can be found in rev 57 or version 0.1-6)
 	
-2008-12-28
+2008-12-28 (as 0.1.6, submitted to CRAN)
 	* RQDA needs gWidgets (>= 0.0-31), gWidgetsRGtk2 (>= 0.0-36). Add it to DESCRIPTION file.
 	
 2008-12-24

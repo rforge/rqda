@@ -337,11 +337,29 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
     }
   }
-CodesNamesWidgetMenu$"Sort by created time"$handler <- function(h, ...) {
+CodesNamesWidgetMenu$"Sort by created time (all codes)"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
      CodeNamesUpdate()
     }
   }
+CodesNamesWidgetMenu$"Show Codes With Memo"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is not null")
+    if (nrow(cid)!=0) {
+    cid <- cid[[1]]
+    CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid)
+  } else gmessage("No Code with memo.",con=TRUE)
+  }
+}
+CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is null")
+    if (nrow(cid)!=0) {
+      cid <- cid[[1]]
+      CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid)
+    } else gmessage("No Code with memo.",con=TRUE)
+  }
+}
 
 
 CodingInfoButton <- function(label="C2Info")

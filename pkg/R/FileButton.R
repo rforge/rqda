@@ -164,7 +164,7 @@ AddNewFileFun <- function(){
       if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from source where name=='%s'",Ftitle)))!=0) {
         Ftitle <- paste("New",Ftitle)
       }## Make sure it is unique
-      content <- svalue(textW)
+      content <- svalue(textW); Encoding(content) <- "UTF-8" ## should set encoding, otherwise, may error in enc()
       content <- enc(content) ## take care of double quote.
       maxid <- dbGetQuery(.rqda$qdacon,"select max(id) from source")[[1]] ## the current one
       nextid <- ifelse(is.na(maxid),0+1, maxid+1) ## the new one/ for the new file
@@ -215,7 +215,7 @@ FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
 FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     pattern <- ginput("Please input a search pattern.",text="file like '%%'")
-    if (pattern!=""){
+    if (!is.na(pattern)){
     tryCatch(SearchFiles(pattern,Widget=.rqda$.fnames_rqda,is.UTF8=TRUE),error=function(e) gmessage("Error~~~."),con=TRUE)
     }
     }
@@ -232,11 +232,27 @@ FileNamesWidgetMenu$"Show Coded Files Only (Sorted)"$handler <- function(h,...){
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="coded"))
   }
 }
-FileNamesWidgetMenu$"Sort All By Imported Time"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show All Sorted By Imported Time"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
      ##FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
      FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="all"))
     }
   }
-
-
+FileNamesWidgetMenu$"Show Files With Memo"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is not null")
+    if (nrow(fileid)!=0) {
+    fileid <- fileid[[1]]
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
+    } else gmessage("No file with memo.",con=TRUE)
+    }
+  }
+FileNamesWidgetMenu$"Show Files Without Memo"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is null")
+    if (nrow(fileid)!=0) {
+    fileid <- fileid[[1]]
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
+    } else gmessage("No file is found.",con=TRUE)
+    }
+  }

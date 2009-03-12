@@ -83,7 +83,11 @@ FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreas
 ##   .rqda$encoding <- encoding
 ## }
 
-enc <- function(x) gsub("'", "''", x)
+enc <- function(x,encoding="UTF-8") {
+## encoding is the encoding of x (character vector).
+Encoding(x) <- encoding
+gsub("'", "''", x)
+}
 ## replace " with two '. to make insert smoothly.
 
 ViewFileFun <- function(FileNameWidget){

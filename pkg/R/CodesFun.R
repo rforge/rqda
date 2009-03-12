@@ -35,6 +35,23 @@ CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sort=TRUE,decreasi
   } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
 }
 
+CodeNamesWidgetUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sort=TRUE,decreasing = FALSE,CodeId=NULL,...)
+  ## CodeNamesWidgetUpdate is the alternative function of CodeNamesUpdate, should be used afterwards
+{
+  if (isIdCurrent(.rqda$qdacon)){
+    freecode <- dbGetQuery(.rqda$qdacon, "select name, id,date from freecode where status=1")
+    if (nrow(freecode)!=0) {
+      if (!is.null(CodeId)) {freecode <- freecode[freecode$id %in% CodeId,]}
+      codeName <- freecode$name
+      Encoding(codeName) <- "UTF-8"
+      if (sort){
+        codeName <- codeName[OrderByTime(freecode$date,decreasing=decreasing)]
+      }
+    }
+    tryCatch(CodeNamesWidget[] <- codeName, error=function(e){})
+  } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
+}
+
 
 mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL){
   ## modified so can change fore.col and back.col easily
