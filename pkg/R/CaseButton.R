@@ -254,6 +254,12 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
     ## see CodeCatButton.R  for definition of MemoWidget
   }
 }
+CaseNamesWidgetMenu$"Add Variables..."$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    ## get existingItems first
+    AddVarWidget()
+  }
+}
 CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){
 CaseNamesUpdate(.rqda$.CasesNamesWidget)
 }
@@ -334,4 +340,5 @@ if (is_projOpen(env=.rqda,conName="qdacon")) {
    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCase,FileId=fid)
  }
 }
+
 
