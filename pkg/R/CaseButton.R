@@ -2,7 +2,7 @@ AddCaseButton <- function(label="ADD"){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       CaseName <- ginput("Enter new Case Name. ", icon="info")
-      if (CaseName!="") {
+      if (!is.na(CaseName)) {
         Encoding(CaseName) <- "UTF-8"
         AddCase(CaseName)
         CaseNamesUpdate()

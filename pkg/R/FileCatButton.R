@@ -3,7 +3,7 @@ AddFileCatButton <- function(label="ADD"){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       item <- ginput("Enter new File Category. ", icon="info")
-      if (item != ""){
+      if (!is.na(item)){
         Encoding(item) <- "UTF-8"
         AddTodbTable(item,"filecat",Id="catid") ## FILE CATegory
         UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")

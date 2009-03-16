@@ -11,12 +11,12 @@ gbutton("New Project",container=container,handler=function(h,...){
 
 OpenProjectButton <- function(container){
 gbutton("Open Project",container=container,handler=function(h,...){
-    path <- gfile(type="open",filter=list("rqda"=list(patterns = c("*.rqda")),
+    path <- gfile(text = "Select a *.rqda file and click OK.",type="open",filter=list("rqda"=list(patterns = c("*.rqda")),
                                           "All files" = list(patterns = c("*"))))
     if (path!=""){
       Encoding(path) <- "UTF-8"
       open_proj(path,assignenv=.rqda)
-      tryCatch(CodeNamesUpdate(),error=function(e){})
+      tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})
       tryCatch(FileNamesUpdate(),error=function(e){})
       tryCatch(CaseNamesUpdate(),error=function(e){})
       tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})

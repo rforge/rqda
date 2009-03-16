@@ -3,10 +3,10 @@ AddCodeButton <- function(label="Add"){
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               codename <- ginput("Enter new code. ", icon="info")
-              if (codename!=""){
+              if (!is.na(codename)){
                 Encoding(codename) <- "UTF-8"
                 addcode(codename)
-                CodeNamesUpdate()
+                CodeNamesUpdate(sortByTime=FALSE)
               }
             }
           }
@@ -30,7 +30,7 @@ DeleteCodeButton <- function(label="Delete"){
                 ## set status in table freecode to 0
                 dbGetQuery(.rqda$qdacon,sprintf("update coding set status=0 where cid==%i",cid))
                 ## set status in table coding to 0
-                CodeNamesUpdate()
+                CodeNamesUpdate(sortByTime=FALSE)
               }
                                  }
           }
@@ -322,7 +322,7 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
           ## update the name in source table by a function
           rename(selectedCodeName,NewCodeName,"freecode")
           ## (name is the only field should be modifed, as other table use ID rather than name)
-          CodeNamesUpdate()
+          CodeNamesUpdate(sortByTime=FALSE)
         }
       }
     }
@@ -339,7 +339,7 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
   }
 CodesNamesWidgetMenu$"Sort by created time (all codes)"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-     CodeNamesUpdate()
+     CodeNamesUpdate(sortByTime=TRUE)
     }
   }
 CodesNamesWidgetMenu$"Show Codes With Memo"$handler <- function(h, ...) {
@@ -347,7 +347,7 @@ CodesNamesWidgetMenu$"Show Codes With Memo"$handler <- function(h, ...) {
     cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is not null")
     if (nrow(cid)!=0) {
     cid <- cid[[1]]
-    CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid)
+    CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid,sortByTime=FALSE)
   } else gmessage("No Code with memo.",con=TRUE)
   }
 }
@@ -356,7 +356,7 @@ CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
     cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is null")
     if (nrow(cid)!=0) {
       cid <- cid[[1]]
-      CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid)
+      CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid,sortByTime=FALSE)
     } else gmessage("No Code with memo.",con=TRUE)
   }
 }

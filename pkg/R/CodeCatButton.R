@@ -37,7 +37,7 @@ AddCodeCatButton <- function(label="ADD"){
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       item <- ginput("Enter new Code Category. ", icon="info")
-      if (item!=""){
+      if (!is.na(item)){
         Encoding(item) <- "UTF-8"
         AddTodbTable(item,"codecat",Id="catid") ## CODE CATegory
         UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat")
