@@ -14,7 +14,7 @@ AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL){
       ## add item from ExistingItems
       ## needs modification
       if (!is.null(ExistingItems)){
-        articles <<- c(articles,unlist(apply(aa,1,function(x) list(list(Variable=x[1],Value=x[2],editable=TRUE))),FALSE))
+        articles <<- c(articles,unlist(apply(ExistingItems,1,function(x) list(list(Variable=x[1],Value=x[2],editable=TRUE))),FALSE))
         for (i in 1:length(articles))
           {
             iter <- model$append()$iter
@@ -109,6 +109,7 @@ AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL){
      ans <- cbind(ans,ID)
      dbGetQuery(.rqda$qdacon,sprintf("delete from caseAttr where caseid='%s'",ID))
      dbWriteTable(.rqda$qdacon, "caseAttr", ans, append = TRUE,row.names=FALSE)
+     window$Destroy()## close
    }
   
   ## create window, etc
@@ -145,6 +146,3 @@ AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL){
   window$showAll()
   invisible(window)
 }
-
-##var <- AddVarWidget()
-## var$Destroy() ## close
