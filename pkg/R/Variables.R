@@ -1,4 +1,4 @@
-## create a table with caseName, varName, value
+## create a table
 ## query the table
 ## reshape it to wide format
 ## reshape(DF,v.name="value",idvar="caseName",direction="wide",timevar="varName")

@@ -256,8 +256,15 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
 }
 CaseNamesWidgetMenu$"Add Variables..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
+    if (!dbExistsTable(.rqda$qdacon,"caseAttr")) { ## create a table
+      dbGetQuery(.rqda$qdacon,"create table caseAttr (variable text, value text, caseID integer)")
+    }
+    SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+    caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
     ## get existingItems first
-    AddVarWidget()
+    existingItems <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseid='%s'",caseid))
+    if (nrow(existingItems) == 0) existingItems <- NULL
+    AddVarWidget(ExistingItems=existingItems,title=SelectedCase,ID=caseid)
   }
 }
 CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){

@@ -1,10 +1,10 @@
-AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,...){
+AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL){
   ## modified from RGtk2 package
-  ## ExistingItems: existing data set for a case/file etc.
+  ## ExistingItems: existing data set for a case/file etc. It is data frame of 2 columns, the first is Variable
   ## container: similar to that of gWidget package.
   COLUMN <- c(Variable = 0, Value = 1,  editable = 2)
   articles <- NULL
-  
+
   create.model <- function()
     {
       ## create the array of data
@@ -14,6 +14,7 @@ AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,...){
       ## add item from ExistingItems
       ## needs modification
       if (!is.null(ExistingItems)){
+        articles <<- c(articles,unlist(apply(aa,1,function(x) list(list(Variable=x[1],Value=x[2],editable=TRUE))),FALSE))
         for (i in 1:length(articles))
           {
             iter <- model$append()$iter
@@ -90,10 +91,25 @@ AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,...){
       treeview$insertColumnWithAttributes(-1, "Value", renderer, text = COLUMN[["Value"]],editable = COLUMN[["editable"]])
     }
   
-  save.project <- function(button){
+  save.project <- function(button,data){
     ## push dataset into project file.
-    cat("testing.\n")
-  }
+     IterFirst <- data$getIterFirst()
+     cond <- IterFirst[[1]]
+     iter <- IterFirst$iter
+     ans <- c()
+     while(cond) {
+       dat <- unlist(data$get(iter, 0, 1))
+       ans <- c(ans,dat)
+       cond <- data$iterNext(iter)
+     }
+     n <- length(ans)
+     idx1 <- seq(1,to=n,by=2)
+     idx2 <- seq(2,to=n,by=2)
+     ans <- data.frame(Variable=ans[idx1],Value=ans[idx2])
+     ans <- cbind(ans,ID)
+     dbGetQuery(.rqda$qdacon,sprintf("delete from caseAttr where caseid='%s'",ID))
+     dbWriteTable(.rqda$qdacon, "caseAttr", ans, append = TRUE,row.names=FALSE)
+   }
   
   ## create window, etc
   window <- gtkWindowNew("toplevel", show = F)
@@ -123,7 +139,7 @@ AddVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,...){
   gSignalConnect(button, "clicked", remove.item, treeview)
   hbox$packStart(button, TRUE, TRUE, 0)
   button <- gtkButtonNewWithLabel("Save")
-  gSignalConnect(button, "clicked",save.project)
+  gSignalConnect(button, "clicked",save.project,model)
   hbox$packStart(button, TRUE, TRUE, 0)
   window$setDefaultSize(150, 350)
   window$showAll()
