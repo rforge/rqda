@@ -16,6 +16,7 @@ gbutton("Open Project",container=container,handler=function(h,...){
     if (path!=""){
       Encoding(path) <- "UTF-8"
       open_proj(path,assignenv=.rqda)
+      UpgradeTables()
       tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})
       tryCatch(FileNamesUpdate(),error=function(e){})
       tryCatch(CaseNamesUpdate(),error=function(e){})

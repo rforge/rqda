@@ -1,13 +1,16 @@
-CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,decreasing=FALSE,...)
+CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,sortByTime=FALSE,decreasing=FALSE,...)
 {
   if (isIdCurrent(.rqda$qdacon)){
+##  CaseName <- dbGetQuery(.rqda$qdacon, "select name, id,date from cases where status=1 order by lower(name)")
   CaseName <- dbGetQuery(.rqda$qdacon, "select name, id,date from cases where status=1")
   if (nrow(CaseName)==0) {
     case <- NULL
   } else {
     case <- CaseName$name
     Encoding(case) <- "UTF-8"
+    if (!sortByTime) {case <- sort(case)} else {
     case <- case[OrderByTime(CaseName$date,decreasing=decreasing)]
+    }
   }
      tryCatch(CaseNamesWidget[] <- case, error=function(e){})
   }

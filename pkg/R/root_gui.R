@@ -95,6 +95,17 @@ Version: 0.1-6\n",
   ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
   
 
+########################### GUI for Attributes
+###########################
+  ".attr_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Attrs")
+  ".attr_buttons" <- glayout(container=.attr_pan)
+  ".attr_PW" <- ggroup(cont=.attr_pan,horizontal = FALSE)
+  ".AttrNamesWidget" <- gtable("Please click Update",container=.attr_PW,expand=TRUE,multiple=FALSE)
+  .AttrNamesWidget[] <- NULL ; names(.AttrNamesWidget) <- "Attributes"
+  .attr_buttons[1,1] <- AddAttrButton()
+  .attr_buttons[1,2] <- DeleteAttrButton()
+  .attr_buttons[1,3] <- RenameAttrButton()
+
 ######################### GUI  for C-cat
 #########################
   ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="C-Cat")
@@ -153,6 +164,7 @@ assign(".codes_rqda",.codes_rqda,env=.rqda)
 assign(".fnames_rqda",.fnames_rqda,env=.rqda)
 ##assign(".fsearch_rqda",.fsearch_rqda,env=.rqda)
 assign(".CasesNamesWidget",.CasesNamesWidget,env=.rqda)
+assign(".AttrNamesWidget",.AttrNamesWidget,env=.rqda)
 assign(".FileofCase",.FileofCase,env=.rqda)
 assign(".CodeCatWidget",.CodeCatWidget,env=.rqda)
 assign(".CodeofCat",.CodeofCat,env=.rqda)
@@ -165,6 +177,7 @@ svalue(.codes_pan) <- 0.13
 svalue(.codecat_pan)<-0.07
 svalue(.filecat_pan)<-0.07
 svalue(.case_pan)<-0.07
+svalue(.attr_pan)<-0.07
 
 ##########################
 Handler()

@@ -59,9 +59,9 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
                                             owner text, date text, memo text)")
       if (dbExistsTable(con,"project")) dbRemoveTable(con, "project")
       ## coding: information about the project
-      dbGetQuery(con,"create table project  (encoding text, detabaseversion text, date text,dateM text,
+      dbGetQuery(con,"create table project  (encoding text, databaseversion text, date text,dateM text,
                                              memo text,BOM integer)")
-      dbGetQuery(con,sprintf("insert into project (detabaseversion,date,memo) values ('0.1.5','%s','')",date()))
+      dbGetQuery(con,sprintf("insert into project (databaseversion,date,memo) values ('0.1.6','%s','')",date()))
       if (dbExistsTable(con,"cases")) dbRemoveTable(con, "cases")
       dbGetQuery(con,"create table cases  (name text, memo text,
                                            owner text,date text,dateM text,
@@ -70,6 +70,13 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       dbGetQuery(con,"create table caselinkage  (caseid integer, fid integer,
                                                 selfirst real, selend real, status integer,
                                             owner text, date text, memo text)")
+
+      if (dbExistsTable(con,"attributes")) dbRemoveTable(con, "attributes")
+      dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text)")
+      if (dbExistsTable(con,"caseAttr")) dbRemoveTable(con, "caseAttr")
+      dbGetQuery(.rqda$qdacon,"create table caseAttr (variable text, value text, caseID integer, date text, dateM text, owner text)")
+      if (dbExistsTable(con,"fileAttr")) dbRemoveTable(con, "fileAttr")
+      dbGetQuery(.rqda$qdacon,"create table fileAttr (variable text, value text, fileID integer, date text, dateM text, owner text)")
     }
   }
 }

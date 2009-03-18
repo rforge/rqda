@@ -42,12 +42,12 @@ Case_RenameButton <- function(label="Rename",CaseNamesWidget=.rqda$.CasesNamesWi
       ## if project is open, then continue
       selectedCaseName <- svalue(CaseNamesWidget)
       if (length(selectedCaseName)==0){
-        gmessage("Select a Case first.",text=selectedCaseName,icon="error",con=TRUE)
+        gmessage("Select a Case first.",icon="error",con=TRUE)
       }
       else {
         ## get the new file names
         NewName <- ginput("Enter new Case name. ", text=selectedCaseName, icon="info")
-        if (NewName != ""){
+        if (!is.na(NewName)){
           Encoding(NewName) <- "UTF-8"
           rename(selectedCaseName,NewName,"cases")
           CaseNamesUpdate()
@@ -98,7 +98,10 @@ CaseMemoButton <- function(label="Memo",...){
 
 CaseMark_Button<-function(){
   gbutton("Mark",
-          handler=function(h,...) {MarkCaseFun()}
+          handler=function(h,...) {
+           MarkCaseFun()
+           CaseNamesUpdate()
+          }
           )
 }
 
@@ -256,17 +259,15 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
 }
 CaseNamesWidgetMenu$"Add Variables..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
-    if (!dbExistsTable(.rqda$qdacon,"caseAttr")) { ## create a table
-      dbGetQuery(.rqda$qdacon,"create table caseAttr (variable text, value text, caseID integer)")
-    }
     SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+    if (length(SelectedCase!=0)){
     caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
     ## get existingItems first
     existingItems <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseid='%s'",caseid))
     if (nrow(existingItems) == 0) existingItems <- NULL
     AddVarWidget(ExistingItems=existingItems,title=SelectedCase,ID=caseid)
   }
-}
+}}
 CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){
 CaseNamesUpdate(.rqda$.CasesNamesWidget)
 }

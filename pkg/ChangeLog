@@ -1,5 +1,12 @@
+2009-03-18
+	* upgrade databaseversion to "0.1.6" (three tables are added for attributes by UpgradeTables()).
+	* Attrs Tab for case/file attributes.
+	* fix some minor bugs.
+
 2009-03-17
 	* Variable/Attributes of Case.
+	* Improvement of mark case button.
+	* The default order of case is alphabetical,that is sort(case).
 	
 2009-03-16
 	* The default order of codes is alphabetical.
