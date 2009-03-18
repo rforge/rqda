@@ -100,7 +100,7 @@ CaseMark_Button<-function(){
   gbutton("Mark",
           handler=function(h,...) {
            MarkCaseFun()
-           CaseNamesUpdate()
+           UpdateFileofCaseWidget()
           }
           )
 }
@@ -262,10 +262,7 @@ CaseNamesWidgetMenu$"Add Variables..."$handler <- function(h,...){
     SelectedCase <- svalue(.rqda$.CasesNamesWidget)
     if (length(SelectedCase!=0)){
     caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
-    ## get existingItems first
-    existingItems <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseid='%s'",caseid))
-    if (nrow(existingItems) == 0) existingItems <- NULL
-    AddVarWidget(ExistingItems=existingItems,title=SelectedCase,ID=caseid)
+    CaseAttrFun(caseId=caseid,title=SelectedCase)
   }
 }}
 CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){

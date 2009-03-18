@@ -317,7 +317,7 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
       else {
         ## get the new file names
         NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
-        if (NewCodeName != "") {
+        if (!is.na(NewCodeName)) {
           Encoding(NewCodeName) <- "UTF-8"
           ## update the name in source table by a function
           rename(selectedCodeName,NewCodeName,"freecode")
