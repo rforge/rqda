@@ -203,6 +203,14 @@ FileNamesWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
       UpdateFileofCatWidget()
     }
   }
+FileNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    Selected <- svalue(.rqda$.fnames_rqda)
+    if (length(Selected !=0 )){
+    fileId <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",Selected))[,1]
+    FileAttrFun(fileId=fileId,title=Selected)
+  }
+}}
 FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("File",.rqda$.fnames_rqda,"source")
@@ -256,3 +264,4 @@ FileNamesWidgetMenu$"Show Files Without Memo"$handler <- function(h, ...) {
     } else gmessage("No file is found.",con=TRUE)
     }
   }
+

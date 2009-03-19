@@ -230,19 +230,20 @@ EditVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL,s
   hbox <- gtkHBoxNew(TRUE, 4)
   vbox$packStart(hbox, FALSE, FALSE, 0)
   button <- gtkButtonNewWithLabel("Save and Close")
-  gSignalConnect(button, "clicked",saveFUN,list(model,window,list(...)))
+  gSignalConnect(button, "clicked",saveFUN,list(model,window,ExistingItems,list(...)))
   hbox$packStart(button, TRUE, TRUE, 0)
   window$setDefaultSize(200, 350)
   window$showAll()
   invisible(window)
 }
 
-saveAndClose <- function(button,data){
+saveFUN4CaseAttr <- function(button,data){
   ## the first arg must button, and data as second.
   ## push dataset into project file.
   model <- data[[1]]
   window <- data[[2]]
-  MoreArgs <- data[[3]]
+  ExistingItems <- data[[3]]
+  MoreArgs <- data[[4]]
   IterFirst <- model$getIterFirst()
   cond <- IterFirst[[1]]
   iter <- IterFirst$iter
@@ -256,27 +257,88 @@ saveAndClose <- function(button,data){
   if (n >= 2){
     idx1 <- seq(1,to=n,by=2)
     idx2 <- seq(2,to=n,by=2)
-    ans <- data.frame(Variable=ans[idx1],Value=ans[idx2])
-    ans <- cbind(ans,caseID=MoreArgs$caseId)
+    ans <- data.frame(Variable=ans[idx1],Value=ans[idx2],stringsAsFactors=FALSE)
     ## cal which variable is added and which is modified
+    change_idx <- ans$Value != ExistingItems$value
+    mod_idx <- change_idx & (ExistingItems$value!= "NA")
+    new_idx <- change_idx & (! mod_idx)   
+    if (any(mod_idx)) {
     ## alter the table for the modified variable
+    vars <- ans[mod_idx,]
+    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update caseAttr set value == '%s' where variable == '%s'",x[2],x[1])))
+    }
+    if (any(new_idx)){
     ## add the new variable to table
-    print(ans)
-    ## dbWriteTable(.rqda$qdacon, "caseAttr", ans, append = TRUE,row.names=FALSE)
+    vars <- data.frame(variable=ans[new_idx,1],value=ans[new_idx,2],caseID=MoreArgs$caseId,date=date(),dateM=NA,owner=.rqda$owner)
+    dbWriteTable(.rqda$qdacon, "caseAttr", vars, append = TRUE,row.names=FALSE)
+    }
   }
   window$Destroy()## close
 }
 
 CaseAttrFun <- function(caseId,title=NULL){
-  attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")[[1]]
-  if (length(attrs)==0) gmessage("add attribute in Attrs Tabe first.",con=T) else{
-    attrs2 <- data.frame(variable=attrs,value=NA)
+  attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")$name
+  if (is.null(attrs)) gmessage("add attribute in Attrs Tabe first.",con=T) else{
+    attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
     variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseID==%i",caseId))
     if (nrow(variables)!=0){
       idx <- attrs2[[1]] %in% variables[[1]]
       attrs2[idx,] <- variables
     }
-    EditVarWidget(ExistingItems=attrs2,saveFUN="saveAndClose",title=title,caseId=caseId)
+    EditVarWidget(ExistingItems=attrs2,saveFUN="saveFUN4CaseAttr",title=title,caseId=caseId)
+    ## get attrs list and turn it to a data frame, pass it to ExistingItems, then call EditVarWidget
+  }
+}
+
+saveFUN4FileAttr <- function(button,data){
+  ## the first arg must button, and data as second.
+  ## push dataset into project file.
+  model <- data[[1]]
+  window <- data[[2]]
+  ExistingItems <- data[[3]]
+  MoreArgs <- data[[4]]
+  IterFirst <- model$getIterFirst()
+  cond <- IterFirst[[1]]
+  iter <- IterFirst$iter
+  ans <- c()
+  while(cond) {
+    dat <- unlist(model$get(iter, 0, 1))
+    ans <- c(ans,dat)
+    cond <- model$iterNext(iter)
+  }
+  n <- length(ans)
+  if (n >= 2){
+    idx1 <- seq(1,to=n,by=2)
+    idx2 <- seq(2,to=n,by=2)
+    ans <- data.frame(Variable=ans[idx1],Value=ans[idx2],stringsAsFactors=FALSE)
+    ## cal which variable is added and which is modified
+    change_idx <- ans$Value != ExistingItems$value
+    mod_idx <- change_idx & (ExistingItems$value!= "NA")
+    new_idx <- change_idx & (! mod_idx)   
+    if (any(mod_idx)) {
+    ## alter the table for the modified variable
+    vars <- ans[mod_idx,]
+    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update fileAttr set value == '%s' where variable == '%s'",x[2],x[1])))
+    }
+    if (any(new_idx)){
+    ## add the new variable to table
+    vars <- data.frame(variable=ans[new_idx,1],value=ans[new_idx,2],fileID=MoreArgs$fileId,date=date(),dateM=NA,owner=.rqda$owner)
+    dbWriteTable(.rqda$qdacon, "fileAttr", vars, append = TRUE,row.names=FALSE)
+    }
+  }
+  window$Destroy()## close
+}
+
+FileAttrFun <- function(fileId,title=NULL){
+  attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")$name
+  if (is.null(attrs)) gmessage("add attribute in Attrs Tabe first.",con=T) else{
+    attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
+    variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from fileAttr where fileID==%i",fileId))
+    if (nrow(variables)!=0){
+      idx <- attrs2[[1]] %in% variables[[1]]
+      attrs2[idx,] <- variables
+    }
+    EditVarWidget(ExistingItems=attrs2,saveFUN="saveFUN4FileAttr",title=title,fileId=fileId)
     ## get attrs list and turn it to a data frame, pass it to ExistingItems, then call EditVarWidget
   }
 }

@@ -1,3 +1,6 @@
+2009-03-19
+	* Add/modify File/Case attributes from popup menu.
+	
 2009-03-18
 	* upgrade databaseversion to "0.1.6" (three tables are added for attributes by UpgradeTables()).
 	* Attrs Tab for case/file attributes.

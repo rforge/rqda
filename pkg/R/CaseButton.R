@@ -257,7 +257,7 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
     ## see CodeCatButton.R  for definition of MemoWidget
   }
 }
-CaseNamesWidgetMenu$"Add Variables..."$handler <- function(h,...){
+CaseNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     SelectedCase <- svalue(.rqda$.CasesNamesWidget)
     if (length(SelectedCase!=0)){
