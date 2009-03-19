@@ -78,6 +78,8 @@ DeleteAttrButton <- function(label="Delete"){
               Selected <- svalue(.rqda$.AttrNamesWidget)
               Encoding(Selected) <- "UTF-8"
               dbGetQuery(.rqda$qdacon,sprintf("update attributes set status=0 where name=='%s'",Selected))
+              dbGetQuery(.rqda$qdacon,sprintf("delete from caseAttr where variable=='%s'",Selected))
+              dbGetQuery(.rqda$qdacon,sprintf("update from fileAttr where variable=='%s'",Selected))
               AttrNamesUpdate()
             }
           }
@@ -98,6 +100,8 @@ RenameAttrButton <- function(label="Rename"){
         if (!is.na(NewName)){
           Encoding(NewName) <- "UTF-8"
           dbGetQuery(.rqda$qdacon, sprintf("update attributes set name = '%s' where name == '%s' ",NewName,selected))
+          dbGetQuery(.rqda$qdacon, sprintf("update caseAttr set variable = '%s' where variable == '%s' ",NewName,selected))
+          dbGetQuery(.rqda$qdacon, sprintf("update fileAttr set variable = '%s' where variable == '%s' ",NewName,selected))
           AttrNamesUpdate()
         }
       }
