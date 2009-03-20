@@ -264,4 +264,17 @@ FileNamesWidgetMenu$"Show Files Without Memo"$handler <- function(h, ...) {
     } else gmessage("No file is found.",con=TRUE)
     }
   }
-
+FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    content <- tryCatch(svalue(RQDA:::.rqda$.openfile_gui),error=function(e){NULL})
+    if (!is.null(content)) {
+      word <- ginput("Type the word you intend to find.",con=TRUE)
+      Encoding(content) <- Encoding(word) <- "UTF-8"
+      idx1 <- gregexpr(word,content)[[1]] -1
+      idx2 <- idx1 + attr(idx1,"match.length")
+      idx <- data.frame(idx1,idx2)
+      ClearMark(.rqda$.openfile_gui,0,nchar(content),FALSE,TRUE)
+      HL(.rqda$.openfile_gui,idx,NULL,"yellow")
+    }
+  }
+}
