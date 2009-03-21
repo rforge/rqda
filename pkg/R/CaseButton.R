@@ -241,10 +241,10 @@ CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
     ## The value of them depends on where they evaluated, should not placed inside RunOnSelected()
     RunOnSelected(fileoutofcase[['name']],multiple=TRUE,enclos=CurrentFrame,expr={
       if (length(Selected)> 0) {
-        Selected <- iconv(Selected,to="UTF-8")
+        Encoding(Selected) <- "UTF-8"
         fid <- fileoutofcase[fileoutofcase$name %in% Selected,"id"]
         selend <- nchar(fileoutofcase[fileoutofcase$name %in% Selected,"file"])
-        Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend,status=1,owner=.rqda$owner,date=date(),memo="")
+        Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend,status=1,owner=.rqda$owner,date=date(),memo=NA)
         dbWriteTable(.rqda$qdacon,"caselinkage",Dat,row.names=FALSE,append=TRUE)
         UpdateFileofCaseWidget()
       }})
@@ -265,6 +265,11 @@ CaseNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
     CaseAttrFun(caseId=caseid,title=SelectedCase)
   }
 }}
+CaseNamesWidgetMenu$"View Variables"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+   viewCaseAttr()
+  }
+}
 CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){
 CaseNamesUpdate(.rqda$.CasesNamesWidget)
 }

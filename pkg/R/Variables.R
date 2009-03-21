@@ -1,11 +1,3 @@
-## create a table
-## query the table
-## reshape it to wide format
-## reshape(DF,v.name="value",idvar="caseName",direction="wide",timevar="varName")
-## use AddVarWidget to add/change values
-## use gdf to view and change the value
-
-
 UpgradeTables <- function(){
   Fields <- dbListFields(.rqda$qdacon,"project")
   if (!"databaseversion" %in% Fields) {
@@ -108,4 +100,30 @@ RenameAttrButton <- function(label="Rename"){
     }
   }
           )
+}
+
+viewCaseAttr <- function(){
+DF <- dbGetQuery(.rqda$qdacon,"select variable,value, caseId from caseAttr")
+DF <- reshape(DF,v.name="value",idvar="caseID",direction="wide",timevar="variable")
+names(DF) <- gsub("^value.","",names(DF))
+caseName <- dbGetQuery(.rqda$qdacon,"select name,id from cases where status==1")
+if (nrow(caseName)!=0){
+names(caseName) <- c("case","caseID")
+Encoding(caseName$case) <- "UTF-8"
+DF <- merge(caseName,DF)
+gtable(DF,con=TRUE)
+}
+}
+
+viewFileAttr <- function(){
+DF <- dbGetQuery(RQDA:::.rqda$qdacon,"select variable,value, fileId from fileAttr")
+DF <- reshape(DF,v.name="value",idvar="fileID",direction="wide",timevar="variable")
+names(DF) <- gsub("^value.","",names(DF))
+fileName <- dbGetQuery(.rqda$qdacon,"select name,id from source where status==1")
+if (nrow(fileName)!=0){
+names(fileName) <- c("file","fileID")
+Encoding(fileName$case) <- "UTF-8"
+DF <- merge(fileName,DF)
+gtable(DF,con=TRUE)
+}
 }

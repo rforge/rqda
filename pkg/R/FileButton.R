@@ -160,7 +160,7 @@ AddNewFileFun <- function(){
     gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){
       ## require a title for the file
       Ftitle <- ginput("Enter the title", icon="info")
-      if (Ftitle!="") {Encoding(Ftitle) <- "UTF-8"}
+      if (!is.na(Ftitle)) {Encoding(Ftitle) <- "UTF-8"}
       if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from source where name=='%s'",Ftitle)))!=0) {
         Ftitle <- paste("New",Ftitle)
       }## Make sure it is unique
@@ -211,6 +211,11 @@ FileNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
     FileAttrFun(fileId=fileId,title=Selected)
   }
 }}
+FileNamesWidgetMenu$"View Variables"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+   viewFileAttr()
+  }
+}
 FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("File",.rqda$.fnames_rqda,"source")

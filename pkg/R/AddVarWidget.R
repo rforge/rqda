@@ -265,7 +265,7 @@ saveFUN4CaseAttr <- function(button,data){
     if (any(mod_idx)) {
     ## alter the table for the modified variable
     vars <- ans[mod_idx,]
-    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update caseAttr set value == '%s' where variable == '%s'",x[2],x[1])))
+    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update caseAttr set value == '%s' where variable == '%s' and caseID=='%s'",x[2],x[1],MoreArgs$caseId)))
     }
     if (any(new_idx)){
     ## add the new variable to table
@@ -282,7 +282,7 @@ CaseAttrFun <- function(caseId,title=NULL){
     attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
     variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseID==%i",caseId))
     if (nrow(variables)!=0){
-      idx <- attrs2[[1]] %in% variables[[1]]
+      idx <- match(variables[[1]],attrs2[[1]])
       attrs2[idx,] <- variables
     }
     EditVarWidget(ExistingItems=attrs2,saveFUN="saveFUN4CaseAttr",title=title,caseId=caseId)
@@ -318,7 +318,7 @@ saveFUN4FileAttr <- function(button,data){
     if (any(mod_idx)) {
     ## alter the table for the modified variable
     vars <- ans[mod_idx,]
-    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update fileAttr set value == '%s' where variable == '%s'",x[2],x[1])))
+    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update fileAttr set value == '%s' where variable == '%s' and fileID=='%s'",x[2],x[1],MoreArgs$fileId)))
     }
     if (any(new_idx)){
     ## add the new variable to table
@@ -335,7 +335,7 @@ FileAttrFun <- function(fileId,title=NULL){
     attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
     variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from fileAttr where fileID==%i",fileId))
     if (nrow(variables)!=0){
-      idx <- attrs2[[1]] %in% variables[[1]]
+      idx <- match(variables[[1]],attrs2[[1]])
       attrs2[idx,] <- variables
     }
     EditVarWidget(ExistingItems=attrs2,saveFUN="saveFUN4FileAttr",title=title,fileId=fileId)

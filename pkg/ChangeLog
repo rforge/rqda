@@ -1,5 +1,12 @@
+2009-03-21
+	* Another critical bugfix of CaseAttrFun() and FileAttrFun().
+	* View variables of case/file.
+	* change version number to 0.1-7.
+	
 2009-03-20
 	* Find a word and highlight it in the open file (via popup menu in File Tab).
+	* critical bugfix of CaseAttrFun() and FileAttrFun().
+	* fix bug of "add files..." to case popup menu.
 
 2009-03-19
 	* Add/modify File/Case attributes from popup menu.
