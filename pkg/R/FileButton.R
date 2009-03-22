@@ -136,7 +136,7 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
       else {
         ## get the new file names
         NewFileName <- ginput("Enter new file name. ",text=selectedFN, icon="info")
-        if (NewFileName != "") {
+        if (!is.na(NewFileName)) {
           Encoding(NewFileName) <- "UTF-8"
           ## otherwise, R transform it into local Encoding rather than keep it as UTF-8
           ## Newfilename <- iconv(codename,from="UTF-8") ## now use UTF-8 for SQLite data set.

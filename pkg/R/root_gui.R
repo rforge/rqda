@@ -105,6 +105,7 @@ Version: 0.1-7\n",
   .attr_buttons[1,1] <- AddAttrButton()
   .attr_buttons[1,2] <- DeleteAttrButton()
   .attr_buttons[1,3] <- RenameAttrButton()
+  .attr_buttons[1,4] <- AttrMemoButton()
 
 ######################### GUI  for C-cat
 #########################

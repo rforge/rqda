@@ -11,7 +11,7 @@ UpgradeTables <- function(){
     ## caseAttr table
     dbGetQuery(.rqda$qdacon,"create table fileAttr (variable text, value text, fileID integer, date text, dateM text, owner text)")
     ## fileAttr table
-    dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text)")
+    dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text, memo text)")
     ## attributes table
     dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.6'")
     ## reset the version.
@@ -98,6 +98,15 @@ RenameAttrButton <- function(label="Rename"){
         }
       }
     }
+  }
+          )
+}
+
+AttrMemoButton <- function(label="Memo"){
+  gbutton(label,handler=function(h,...) {
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+    MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes")
+ }
   }
           )
 }

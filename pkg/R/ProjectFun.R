@@ -72,7 +72,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
                                             owner text, date text, memo text)")
 
       if (dbExistsTable(con,"attributes")) dbRemoveTable(con, "attributes")
-      dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text)")
+      dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text,memo text)")
       if (dbExistsTable(con,"caseAttr")) dbRemoveTable(con, "caseAttr")
       dbGetQuery(.rqda$qdacon,"create table caseAttr (variable text, value text, caseID integer, date text, dateM text, owner text)")
       if (dbExistsTable(con,"fileAttr")) dbRemoveTable(con, "fileAttr")

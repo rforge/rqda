@@ -1,3 +1,6 @@
+2009-03-22
+	* add memo of attributes table.
+
 2009-03-21
 	* Another critical bugfix of CaseAttrFun() and FileAttrFun().
 	* View variables of case/file.
