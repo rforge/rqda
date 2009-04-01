@@ -216,6 +216,20 @@ FileNamesWidgetMenu$"View Variables"$handler <- function(h,...){
    viewFileAttr()
   }
 }
+FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    content <- tryCatch(svalue(RQDA:::.rqda$.openfile_gui),error=function(e){NULL})
+    if (!is.null(content)) {
+      word <- ginput("Type the word you intend to find.",con=TRUE)
+      Encoding(content) <- Encoding(word) <- "UTF-8"
+      idx1 <- gregexpr(word,content)[[1]] -1
+      idx2 <- idx1 + attr(idx1,"match.length")
+      idx <- data.frame(idx1,idx2)
+      ClearMark(.rqda$.openfile_gui,0,nchar(content),FALSE,TRUE)
+      HL(.rqda$.openfile_gui,idx,NULL,"yellow")
+    }
+  }
+}
 FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("File",.rqda$.fnames_rqda,"source")
@@ -233,25 +247,25 @@ FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
     }
     }
   }
-FileNamesWidgetMenu$"Show Uncoded Files Only (Sorted)"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)
       FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="uncoded"))
       ## By default, the file names in the widget will be sorted.
     }
   }
-FileNamesWidgetMenu$"Show Coded Files Only (Sorted)"$handler <- function(h,...){
+FileNamesWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="coded"))
   }
 }
-FileNamesWidgetMenu$"Show All Sorted By Imported Time"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show ..."$"Show All Sorted By Imported Time"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
      ##FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
      FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="all"))
     }
   }
-FileNamesWidgetMenu$"Show Files With Memo"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show ..."$"Show Files With Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is not null")
     if (nrow(fileid)!=0) {
@@ -260,7 +274,7 @@ FileNamesWidgetMenu$"Show Files With Memo"$handler <- function(h, ...) {
     } else gmessage("No file with memo.",con=TRUE)
     }
   }
-FileNamesWidgetMenu$"Show Files Without Memo"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show ..."$"Show Files Without Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is null")
     if (nrow(fileid)!=0) {
@@ -269,17 +283,4 @@ FileNamesWidgetMenu$"Show Files Without Memo"$handler <- function(h, ...) {
     } else gmessage("No file is found.",con=TRUE)
     }
   }
-FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
-  if (is_projOpen(env=.rqda,conName="qdacon")) {
-    content <- tryCatch(svalue(RQDA:::.rqda$.openfile_gui),error=function(e){NULL})
-    if (!is.null(content)) {
-      word <- ginput("Type the word you intend to find.",con=TRUE)
-      Encoding(content) <- Encoding(word) <- "UTF-8"
-      idx1 <- gregexpr(word,content)[[1]] -1
-      idx2 <- idx1 + attr(idx1,"match.length")
-      idx <- data.frame(idx1,idx2)
-      ClearMark(.rqda$.openfile_gui,0,nchar(content),FALSE,TRUE)
-      HL(.rqda$.openfile_gui,idx,NULL,"yellow")
-    }
-  }
-}
+

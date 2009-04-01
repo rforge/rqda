@@ -115,7 +115,7 @@ ViewFileFun <- function(FileNameWidget){
                 Encoding(content) <- "UTF-8"
                 W <- get(".openfile_gui", .rqda)
                 add(W, content, font.attr = c(sizes = "large"))
-                slot(W, "widget")@widget$SetEditable(FALSE)
+                tryCatch(slot(W, "widget")@widget$SetEditable(FALSE),error=function(e){})
                 mark_index <-
                   dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend from coding where fid=%i and status=1",IDandContent$id))
                 if (nrow(mark_index)!=0){

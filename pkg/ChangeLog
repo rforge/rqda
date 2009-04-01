@@ -1,3 +1,6 @@
+2009-04-01
+	* gselect.list has two new argument: width and height.
+
 2009-03-28
 	* new function of RQDA2tm (contributed by J-P Mueller).
 	
