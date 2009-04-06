@@ -134,7 +134,7 @@ write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...
   WriteToTable <- function(Fname,content){
     ## helper function
     FnameUTF8 <- iconv(Fname,to="UTF-8")
-    content <- enc(content)
+    content <- enc(content,encoding=encoding) ## adjust encoding argument.
     if (Encoding(content)!="UTF-8"){
       content <- iconv(content,to="UTF-8") ## UTF-8 file content
     }

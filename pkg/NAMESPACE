@@ -1,4 +1,4 @@
-export(CleanProject,CrossCode,CrossTwo,GetCodingTable,GetFileId,
+export(CleanProject,CrossCode,CrossTwo,gselect.list,GetCodingTable,GetFileId,
        list.deleted,pdelete,relation,RQDA,RQDA2tm,
        SearchFiles,SummaryCoding,undelete,write.FileList)
 S3method(print,SummaryCoding)

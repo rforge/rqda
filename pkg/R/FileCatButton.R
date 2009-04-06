@@ -90,33 +90,34 @@ FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
     if (length(SelectedFileCat)==0) {gmessage("Select a file category first.",con=TRUE)} else{
     catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",SelectedFileCat))[,1]
     freefile <-  dbGetQuery(.rqda$qdacon,"select name, id from source where status=1")
+    if (nrow(freefile) == 0){gmessage("No files Yet.",cont=.rqda$.FileCatWidget)} else {
     Encoding(SelectedFileCat) <- Encoding(freefile[['name']]) <- "UTF-8"
     fileofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and catid=%i",catid))
     if (nrow(fileofcat)!=0){
     fileoutofcat <- subset(freefile,!(id %in% fileofcat$fid))
   } else  fileoutofcat <- freefile
-##    Selected <- select.list(fileoutofcat[['name']],multiple=TRUE)
-##     if (length(Selected)!=0){
-##       Selected <- iconv(Selected,to="UTF-8")
-##       fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
-##       Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo="",status=1)
-##       dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
-##       UpdateFileofCatWidget()
-##     }
-    CurrentFrame <- sys.frame(sys.nframe())
+    Selected <- gselect.list(fileoutofcat[['name']],multiple=TRUE)
+    if (Selected != ""){
+      ## Selected <- iconv(Selected,to="UTF-8") ## already Encoded as UTF-8.
+      fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
+      Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo=NA,status=1)
+      dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
+      UpdateFileofCatWidget()
+    }
+   ## CurrentFrame <- sys.frame(sys.nframe())
     ## sys.frame(): get the frame of n
     ## nframe(): get n of current frame
     ## The value of them depends on where they evaluated, should not placed inside RunOnSelected()
-    RunOnSelected(fileoutofcat[['name']],multiple=TRUE,expr={
-    if (length(Selected)!=0){
-      Selected <- iconv(Selected,to="UTF-8")
-      fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
-      Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo="",status=1)
-      dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
-      UpdateFileofCatWidget()
-    }},enclos=CurrentFrame)
-    
-}
+    ##RunOnSelected(fileoutofcat[['name']],multiple=TRUE,expr={
+    ##if (length(Selected)!=0){
+    ## Selected <- iconv(Selected,to="UTF-8")
+    ## fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
+    ##Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo="",status=1)
+    ##dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
+    ##UpdateFileofCatWidget()
+    ##}},enclos=CurrentFrame)
+  }
+  }
   }
           )
 }

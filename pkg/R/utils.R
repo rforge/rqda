@@ -181,7 +181,7 @@ RunOnSelected <- function(x,multiple=TRUE,expr,enclos,title=NULL,...){
 }
 
 
-gselect.list <- function(x,multiple=TRUE,title=NULL,width=100, height=500,...){
+gselect.list <- function(list,multiple=TRUE,title=NULL,width=150, height=500,...){
   ## gtk version of select.list()
   ## Thanks go to John Verzani for his help.
   title <- ifelse(multiple,"Select one or more","Select one")
@@ -189,7 +189,7 @@ gselect.list <- function(x,multiple=TRUE,title=NULL,width=100, height=500,...){
   helper <- function(){
     ans<-new.env()
     x1<-ggroup(horizontal=FALSE) # no parent container here
-    x2<-gtable(x,multiple=multiple,con=x1,expand=TRUE)
+    x2<-gtable(list,multiple=multiple,con=x1,expand=TRUE)
     gtkWidgetSetSizeRequest(x1@widget@widget, width=width, height=height)
     ret <- gbasicdialog(title=title,widget=x1,handler=function(h,...){
       value <- svalue(x2)
