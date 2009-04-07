@@ -15,6 +15,16 @@ gbutton("Open Project",container=container,handler=function(h,...){
                                           "All files" = list(patterns = c("*"))))
     if (path!=""){
       Encoding(path) <- "UTF-8"
+      tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.CodeCatWidget[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.CodeofCat[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.FileCatWidget[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.FileofCat[]<-NULL,error=function(e){})
+      tryCatch(AttrNamesUpdate(),error=function(e){})
+      tryCatch(close_proj(assignenv=.rqda),error=function(e){})
+      ## close currect project before open a new one.
       open_proj(path,assignenv=.rqda)
       UpgradeTables()
       tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})

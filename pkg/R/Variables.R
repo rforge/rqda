@@ -135,6 +135,7 @@ GetAttr <- function(type=c("case","file")){
       names(caseName) <- c("case","caseID")
       Encoding(caseName$case) <- "UTF-8"
       DF <- merge(caseName,DF)
+      class(DF) <- c("CaseAttr","data.frame")
     }}
   } else if (type=="file"){
     DF <- dbGetQuery(RQDA:::.rqda$qdacon,"select variable,value, fileId from fileAttr")
@@ -146,8 +147,14 @@ GetAttr <- function(type=c("case","file")){
       names(fileName) <- c("file","fileID")
       Encoding(fileName$case) <- "UTF-8"
       DF <- merge(fileName,DF)
+      class(DF) <- c("FileAttr","data.frame")
     }}
   }
   DF
 }}
     
+
+PushBack <- function(x){
+ if (inherits(x,"CaseAttr")) tryCatch(.rqda$.CasesNamesWidget[] <- x$case, error = function(e) {})
+ if (inherits(x,"FileAttr")) tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
+}

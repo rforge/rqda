@@ -83,17 +83,17 @@ FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreas
 ##   .rqda$encoding <- encoding
 ## }
 
-enc <- function(x,encoding="UTF-8") {
-  ## replace " with two '. to make insert smoothly.
-  ## encoding is the encoding of x (character vector).
-  ## moved to utils.R
-  Encoding(x) <- encoding
-  x <- gsub("'", "''", x)
-  if (Encoding(x)!="UTF-8") {
-    x <- iconv(x,to="UTF-8")
-  }
-  x
-}
+## enc <- function(x,encoding="UTF-8") {
+##   ## replace " with two '. to make insert smoothly.
+##   ## encoding is the encoding of x (character vector).
+##   ## moved to utils.R
+##   Encoding(x) <- encoding
+##   x <- gsub("'", "''", x)
+##   if (Encoding(x)!="UTF-8") {
+##     x <- iconv(x,to="UTF-8")
+##   }
+##   x
+## }
 
 
 ViewFileFun <- function(FileNameWidget){
@@ -212,7 +212,8 @@ ProjectMemoWidget <- function(){
     }
     W <- .rqda$.projmemocontent
     Encoding(prvcontent) <- "UTF-8"
-    add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+    ## add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+    add(W,prvcontent,do.newline=FALSE)
     ## do.newline:do not add a \n (new line) at the beginning
     ## push the previous content to the widget.
     }

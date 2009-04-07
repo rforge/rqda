@@ -1,7 +1,8 @@
 2009-04-07
 	* Modify MemoWidget() to set the default fontsize as 11pt.
 	* Fix all bugs caused by change of enc(): encoding issue.
-	
+	* new function of PushBack().
+
 2009-04-06
 	* Minor bugfix of write.FileList() which is caused by change of enc().
 	* Minor bugfixes of AddTo buttons in C-cat and F-cat Tabs.
