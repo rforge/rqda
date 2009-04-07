@@ -1,3 +1,14 @@
+enc <- function(x,encoding="UTF-8") {
+  ## replace " with two '. to make insert smoothly.
+  ## encoding is the encoding of x (character vector).
+  Encoding(x) <- encoding
+  x <- gsub("'", "''", x)
+  if (Encoding(x)!="UTF-8") {
+    x <- iconv(x,to="UTF-8")
+  }
+  x
+}
+
 OrderByTime <- function(date,decreasing = FALSE)
 {
   ## return tbe permutation of the date which is get by sql "select date from ..."

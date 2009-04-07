@@ -9,7 +9,7 @@ ImportFile <- function(path,encoding=.rqda$encoding,con=.rqda$qdacon,...){
     content <- readLines(file_con,warn=FALSE,encoding=encoding)
     close(file_con)
     content <- paste(content,collapse="\n")
-    content <- enc(content,encoding=.rqda$encoding) ## may be wrong
+    content <- enc(content,encoding=Encoding(content))
     if (Encoding(content)!="UTF-8"){
       content <- iconv(content,to="UTF-8") ## UTF-8 file content
     }
@@ -84,11 +84,17 @@ FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreas
 ## }
 
 enc <- function(x,encoding="UTF-8") {
-## encoding is the encoding of x (character vector).
-Encoding(x) <- encoding
-gsub("'", "''", x)
+  ## replace " with two '. to make insert smoothly.
+  ## encoding is the encoding of x (character vector).
+  ## moved to utils.R
+  Encoding(x) <- encoding
+  x <- gsub("'", "''", x)
+  if (Encoding(x)!="UTF-8") {
+    x <- iconv(x,to="UTF-8")
+  }
+  x
 }
-## replace " with two '. to make insert smoothly.
+
 
 ViewFileFun <- function(FileNameWidget){
 ## FileNameWidget=.rqda$.fnames_rqda in Files Tab

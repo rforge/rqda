@@ -1,24 +1,3 @@
-UpgradeTables <- function(){
-  Fields <- dbListFields(.rqda$qdacon,"project")
-  if (!"databaseversion" %in% Fields) {
-    dbGetQuery(.rqda$qdacon,"alter table project add column databaseversion text")
-    dbGetQuery(.rqda$qdacon,"update project set databaseversion=='0.1.5'")
-  }
-  currentVersion <- dbGetQuery(.rqda$qdacon,"select databaseversion from project")[[1]]
-  if (currentVersion=="0.1.5") {
-    ##from="0.1.5"
-    dbGetQuery(.rqda$qdacon,"create table caseAttr (variable text, value text, caseID integer, date text, dateM text, owner text)")
-    ## caseAttr table
-    dbGetQuery(.rqda$qdacon,"create table fileAttr (variable text, value text, fileID integer, date text, dateM text, owner text)")
-    ## fileAttr table
-    dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text, memo text)")
-    ## attributes table
-    dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.6'")
-    ## reset the version.
-  }
-}
-
-
 AttrNamesUpdate <- function(Widget=.rqda$.AttrNamesWidget,sortByTime=FALSE,decreasing=FALSE,...)
 {
   if (isIdCurrent(.rqda$qdacon)){
