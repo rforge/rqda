@@ -37,19 +37,22 @@ MemoWidget <- function(prefix,widget,dbTable){
                env=.rqda)
         gbutton("Save Memo",con=get(sprintf(".%smemo2",prefix),env=.rqda),handler=function(h,...){
           newcontent <- svalue(W)
-          Encoding(newcontent) <- "UTF-8"
-          newcontent <- enc(newcontent) ## take care of double quote.
+          ## Encoding(newcontent) <- "UTF-8"
+          newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
           Encoding(Selected) <- "UTF-8"
           dbGetQuery(.rqda$qdacon,sprintf("update %s set memo='%s' where name='%s'",dbTable,newcontent,Selected))
         }
                 )## end of save memo button
-        assign(sprintf(".%smemoW",prefix),gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda),
-                                              font.attr=c(sizes="large")),env=.rqda)
+        tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
+        font <- pangoFontDescriptionFromString("Sans 11")
+        gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
+        assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
         prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable,Selected))[1,1]
         if (is.na(prvcontent)) prvcontent <- ""
         Encoding(prvcontent) <- "UTF-8"
         W <- get(sprintf(".%smemoW",prefix),env=.rqda)
-        add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+        ## add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+        add(W,prvcontent,do.newline=FALSE)
       }
     }
   }

@@ -77,8 +77,8 @@ CaseMemoButton <- function(label="Memo",...){
         .casememo2 <- gpanedgroup(horizontal = FALSE, con=.casememo)
         gbutton("Save Case Memo",con=.casememo2,handler=function(h,...){
           newcontent <- svalue(W)
-          Encoding(newcontent) <- "UTF-8"
-          newcontent <- enc(newcontent) ## take care of double quote.
+          ## Encoding(newcontent) <- "UTF-8"
+          newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
           Encoding(currentCase) <- "UTF-8"
           dbGetQuery(.rqda$qdacon,sprintf("update cases set memo='%s' where name='%s'",newcontent,currentCase))
         }
@@ -257,7 +257,7 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
     ## see CodeCatButton.R  for definition of MemoWidget
   }
 }
-CaseNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
+CaseNamesWidgetMenu$"Add/modify Attributes..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     SelectedCase <- svalue(.rqda$.CasesNamesWidget)
     if (length(SelectedCase!=0)){
@@ -265,7 +265,7 @@ CaseNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
     CaseAttrFun(caseId=caseid,title=SelectedCase)
   }
 }}
-CaseNamesWidgetMenu$"View Variables"$handler <- function(h,...){
+CaseNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
    viewCaseAttr()
   }

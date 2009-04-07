@@ -164,8 +164,8 @@ AddNewFileFun <- function(){
       if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from source where name=='%s'",Ftitle)))!=0) {
         Ftitle <- paste("New",Ftitle)
       }## Make sure it is unique
-      content <- svalue(textW); Encoding(content) <- "UTF-8" ## should set encoding, otherwise, may error in enc()
-      content <- enc(content) ## take care of double quote.
+      content <- svalue(textW)
+      content <- enc(content,encoding="UTF-8") ## take care of double quote.
       maxid <- dbGetQuery(.rqda$qdacon,"select max(id) from source")[[1]] ## the current one
       nextid <- ifelse(is.na(maxid),0+1, maxid+1) ## the new one/ for the new file
       ans <- dbGetQuery(.rqda$qdacon,sprintf("insert into source (name, file, id, status,date,owner )
@@ -203,7 +203,7 @@ FileNamesWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
       UpdateFileofCatWidget()
     }
   }
-FileNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
+FileNamesWidgetMenu$"Add/modify Attributes..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     Selected <- svalue(.rqda$.fnames_rqda)
     if (length(Selected !=0 )){
@@ -211,7 +211,7 @@ FileNamesWidgetMenu$"Add/modify Variables..."$handler <- function(h,...){
     FileAttrFun(fileId=fileId,title=Selected)
   }
 }}
-FileNamesWidgetMenu$"View Variables"$handler <- function(h,...){
+FileNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
    viewFileAttr()
   }

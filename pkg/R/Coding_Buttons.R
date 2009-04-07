@@ -283,8 +283,8 @@ CodingMemoButton <- function(label="C2Memo")
             .codingmemo2 <- gpanedgroup(horizontal = FALSE, con=.codingmemo)
             gbutton("Save Coding Memo",con=.codingmemo2,handler=function(h,...){
               newcontent <- svalue(W)
-              Encoding(newcontent) <- "UTF-8"
-              newcontent <- enc(newcontent) ## take care of double quote.
+              ## Encoding(newcontent) <- "UTF-8"
+              newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
               dbGetQuery(con,sprintf("update coding set memo='%s' where rowid=%i",newcontent,rowid))
             }
                     )## end of save memo button

@@ -91,10 +91,15 @@ RenameAttrButton <- function(label="Rename"){
         NewName <- ginput("Enter new attribute name. ", text=selected, icon="info")
         if (!is.na(NewName)){
           Encoding(NewName) <- "UTF-8"
+          exists <- dbGetQuery(.rqda$qdacon, sprintf("select * from attributes where name == '%s' ",NewName))
+          if (nrow(exists) > 0 ){
+          gmessage("Name duplicated. Please use anaother name.",cont=TRUE)
+          } else {
           dbGetQuery(.rqda$qdacon, sprintf("update attributes set name = '%s' where name == '%s' ",NewName,selected))
           dbGetQuery(.rqda$qdacon, sprintf("update caseAttr set variable = '%s' where variable == '%s' ",NewName,selected))
           dbGetQuery(.rqda$qdacon, sprintf("update fileAttr set variable = '%s' where variable == '%s' ",NewName,selected))
           AttrNamesUpdate()
+         }
         }
       }
     }
@@ -112,27 +117,58 @@ AttrMemoButton <- function(label="Memo"){
 }
 
 viewCaseAttr <- function(){
-DF <- dbGetQuery(.rqda$qdacon,"select variable,value, caseId from caseAttr")
-DF <- reshape(DF,v.name="value",idvar="caseID",direction="wide",timevar="variable")
-names(DF) <- gsub("^value.","",names(DF))
-caseName <- dbGetQuery(.rqda$qdacon,"select name,id from cases where status==1")
-if (nrow(caseName)!=0){
-names(caseName) <- c("case","caseID")
-Encoding(caseName$case) <- "UTF-8"
-DF <- merge(caseName,DF)
-gtable(DF,con=TRUE)
-}
+  DF <- dbGetQuery(.rqda$qdacon,"select variable,value, caseId from caseAttr")
+  DF <- reshape(DF,v.name="value",idvar="caseID",direction="wide",timevar="variable")
+  names(DF) <- gsub("^value.","",names(DF))
+  caseName <- dbGetQuery(.rqda$qdacon,"select name,id from cases where status==1")
+  if (nrow(caseName)!=0){
+    names(caseName) <- c("case","caseID")
+    Encoding(caseName$case) <- "UTF-8"
+    DF <- merge(caseName,DF)
+    gtable(DF,con=TRUE)
+  }
 }
 
 viewFileAttr <- function(){
-DF <- dbGetQuery(RQDA:::.rqda$qdacon,"select variable,value, fileId from fileAttr")
-DF <- reshape(DF,v.name="value",idvar="fileID",direction="wide",timevar="variable")
-names(DF) <- gsub("^value.","",names(DF))
-fileName <- dbGetQuery(.rqda$qdacon,"select name,id from source where status==1")
-if (nrow(fileName)!=0){
-names(fileName) <- c("file","fileID")
-Encoding(fileName$case) <- "UTF-8"
-DF <- merge(fileName,DF)
-gtable(DF,con=TRUE)
+  DF <- dbGetQuery(RQDA:::.rqda$qdacon,"select variable,value, fileId from fileAttr")
+  DF <- reshape(DF,v.name="value",idvar="fileID",direction="wide",timevar="variable")
+  names(DF) <- gsub("^value.","",names(DF))
+  fileName <- dbGetQuery(.rqda$qdacon,"select name,id from source where status==1")
+  if (nrow(fileName)!=0){
+    names(fileName) <- c("file","fileID")
+    Encoding(fileName$case) <- "UTF-8"
+    DF <- merge(fileName,DF)
+    gtable(DF,con=TRUE)
+  }
 }
-}
+
+
+GetAttr <- function(type=c("case","file")){
+  if (isIdCurrent(.rqda$qdacon)){
+  type <-  match.arg(type)
+  if (type == "case"){
+    DF <- dbGetQuery(.rqda$qdacon,"select variable,value, caseId from caseAttr")
+    if (nrow(DF) > 0 ){
+    DF <- reshape(DF,v.name="value",idvar="caseID",direction="wide",timevar="variable")
+    names(DF) <- gsub("^value.","",names(DF))
+    caseName <- dbGetQuery(.rqda$qdacon,"select name,id from cases where status==1")
+    if (nrow(caseName)!=0){
+      names(caseName) <- c("case","caseID")
+      Encoding(caseName$case) <- "UTF-8"
+      DF <- merge(caseName,DF)
+    }}
+  } else if (type=="file"){
+    DF <- dbGetQuery(RQDA:::.rqda$qdacon,"select variable,value, fileId from fileAttr")
+    if (nrow(DF) > 0 ){
+    DF <- reshape(DF,v.name="value",idvar="fileID",direction="wide",timevar="variable")
+    names(DF) <- gsub("^value.","",names(DF))
+    fileName <- dbGetQuery(.rqda$qdacon,"select name,id from source where status==1")
+    if (nrow(fileName)!=0){
+      names(fileName) <- c("file","fileID")
+      Encoding(fileName$case) <- "UTF-8"
+      DF <- merge(fileName,DF)
+    }}
+  }
+  DF
+}}
+    

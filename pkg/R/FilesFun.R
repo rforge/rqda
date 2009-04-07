@@ -9,7 +9,7 @@ ImportFile <- function(path,encoding=.rqda$encoding,con=.rqda$qdacon,...){
     content <- readLines(file_con,warn=FALSE,encoding=encoding)
     close(file_con)
     content <- paste(content,collapse="\n")
-    content <- enc(content)
+    content <- enc(content,encoding=.rqda$encoding) ## may be wrong
     if (Encoding(content)!="UTF-8"){
       content <- iconv(content,to="UTF-8") ## UTF-8 file content
     }
@@ -185,15 +185,18 @@ ProjectMemoWidget <- function(){
     gbutton("Save memo",con=.projmemo2,handler=function(h,...){
       ## send the new content of memo back to database
       newcontent <- svalue(W)
-      Encoding(newcontent) <- "UTF-8"
-      newcontent <- enc(newcontent) ## take care of double quote.
+      ## Encoding(newcontent) <- "UTF-8"
+      newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
       dbGetQuery(.rqda$qdacon,sprintf("update project set memo='%s' where rowid==1", ## only one row is needed
                                       newcontent)
                  ## have to quote the character in the sql expression
                  )
     }
             )## end of save memo button
-    assign(".projmemocontent",gtext(container=.projmemo2,font.attr=c(sizes="large")),env=.rqda)
+    tmp <- gtext(container=.projmemo2,font.attr=c(sizes="large"))
+    font <- pangoFontDescriptionFromString("Sans 11")
+    gtkWidgetModifyFont(tmp@widget@widget,font)
+    assign(".projmemocontent",tmp,env=.rqda)
     prvcontent <- dbGetQuery(.rqda$qdacon, "select memo from project")[1,1]
     ## [1,1]turn data.frame to 1-length character. Existing content of memo
     if (length(prvcontent)==0) {
