@@ -78,7 +78,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       if (dbExistsTable(con,"fileAttr")) dbRemoveTable(con, "fileAttr")
       dbGetQuery(.rqda$qdacon,"create table fileAttr (variable text, value text, fileID integer, date text, dateM text, owner text)")
       if (dbExistsTable(con,"journal")) dbRemoveTable(con, "journal")
-      dbGetQuery(.rqda$qdacon,"create table journal (journal text, date text, dateM text, owner text)")
+      dbGetQuery(.rqda$qdacon,"create table journal (name text, journal text, date text, dateM text, owner text,status integer)")
     }
   }
 }
@@ -98,7 +98,7 @@ UpgradeTables <- function(){
     ## fileAttr table
     dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text, memo text)")
     ## attributes table
-    dbGetQuery(.rqda$qdacon,"create table journal (journal text, date text, dateM text, owner text)")
+    dbGetQuery(.rqda$qdacon,"create table journal (name text, journal text, date text, dateM text, owner text,status integer)")
     ## journal table
     dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.6'")
     ## reset the version.

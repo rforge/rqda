@@ -155,6 +155,8 @@ Version: 0.1-7\n",
   .JournalNamesWidget[] <- NULL ; names(.JournalNamesWidget) <- "Journal"
   .journal_buttons[1,1] <- AddJournalButton()
   .journal_buttons[1,2] <- DeleteJournalButton()
+  .journal_buttons[1,3] <-  OpenJournalButton()
+  .journal_buttons[1,4] <-  RenameJournalButton()
  
 ######################### GUI  for settings
 #########################

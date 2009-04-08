@@ -1,3 +1,6 @@
+2009-04-08
+	* Add journal Tab (rename button is not implemented yet).
+	
 2009-04-07
 	* Modify MemoWidget() to set the default fontsize as 11pt.
 	* Fix all bugs caused by change of enc(): encoding issue.
