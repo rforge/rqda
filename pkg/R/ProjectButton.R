@@ -22,7 +22,7 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.CodeofCat[]<-NULL,error=function(e){})
       tryCatch(.rqda$.FileCatWidget[]<-NULL,error=function(e){})
       tryCatch(.rqda$.FileofCat[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.AttrNamesWidget <- NULL,error=function(e){})
+      tryCatch(.rqda$.AttrNamesWidget[] <- NULL,error=function(e){})
       tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
       tryCatch(close_proj(assignenv=.rqda),error=function(e){})
       ## close currect project before open a new one.
@@ -52,7 +52,7 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.CodeofCat[]<-NULL,error=function(e){})
       tryCatch(.rqda$.FileCatWidget[]<-NULL,error=function(e){})
       tryCatch(.rqda$.FileofCat[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.AttrNamesWidget <- NULL,error=function(e){})
+      tryCatch(.rqda$.AttrNamesWidget[] <- NULL,error=function(e){})
       tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
       close_proj(assignenv=.rqda)
       }

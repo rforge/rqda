@@ -20,8 +20,8 @@ AddAttrNames <- function(name,...) {
     con <- .rqda$qdacon
     dup <- dbGetQuery(con,sprintf("select name from attributes where name=='%s'",name))
     if (nrow(dup)==0) {
-      dbGetQuery(con,sprintf("insert into attributes (name,status,date,owner,memo) values ('%s', %i,%s, %s,%s)",
-                             name,1, shQuote(date()),shQuote(.rqda$owner,NA)))
+      dbGetQuery(con,sprintf("insert into attributes (name,status,date,owner) values ('%s', %i,%s, %s)",
+                             name,1, shQuote(date()),shQuote(.rqda$owner)))
     }
   }
 }
