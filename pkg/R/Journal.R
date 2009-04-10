@@ -27,7 +27,17 @@ RenameJournalButton <- function(label="Rename")
 {
   gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
-##?????
+      selected <- svalue(.rqda$.JournalNamesWidget)
+      if (length(selected)==0){
+        gmessage("Select one first.",icon="error",con=TRUE)
+      }
+      else {
+        NewName <- ginput("Enter new journal name. ",text=selected, icon="info")
+        if (!is.na(NewName)) {
+          NewName <- enc(NewName,"UTF-8")
+          rename(from=selected,to=NewName,"journal")
+          JournalNamesUpdate()
+        }
     }
   })
 }

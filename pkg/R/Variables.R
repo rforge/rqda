@@ -154,7 +154,8 @@ GetAttr <- function(type=c("case","file")){
 }}
     
 
-PushBack <- function(x){
+ShowSubset <- function(x){
+## change name from PushBack to ShowSubset()
  if (inherits(x,"CaseAttr")) tryCatch(.rqda$.CasesNamesWidget[] <- x$case, error = function(e) {})
  if (inherits(x,"FileAttr")) tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
 }

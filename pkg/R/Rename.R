@@ -1,4 +1,4 @@
-rename <- function(from,to,table=c("source","freecode","cases","codecat","filecat")){
+rename <- function(from,to,table=c("source","freecode","cases","codecat","filecat","journal")){
   ## rename name field in table source and freecode (other tables can be added futher)
   ## source is the file name, freecode is the free code name
   table <- match.arg(table)
