@@ -152,6 +152,8 @@ Handler <- function(){
     UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
 })
 
+ addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes"))
+
  addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))
  add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
 
@@ -170,7 +172,6 @@ addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("
 
 add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
 
-
 addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
 
 add3rdmousepopupmenu(.rqda$.FileofCat,FileofCatWidgetMenu)
@@ -187,6 +188,8 @@ ViewFileFun(FileNameWidget=.rqda$.FileofCase)
 HL_Case()
 }
 )
+
+addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) ViewJournalWidget())
 
 }
 

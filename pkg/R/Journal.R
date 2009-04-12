@@ -39,7 +39,9 @@ RenameJournalButton <- function(label="Rename")
           JournalNamesUpdate()
         }
     }
-  })
+  }
+  }
+          )
 }
 
 

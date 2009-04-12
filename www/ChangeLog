@@ -1,3 +1,45 @@
+2009-04-12
+	* Double-click handler of Attrs and Journal Tabs.
+
+2009-04-10
+	* rename button of journal Tab
+	* bugfixes of Attrs Tab.
+	* change the name of PushBack() to ShowSubset(): avoid the confusion of base:::pushBack().
+
+2009-04-08
+	* Add journal Tab (rename button is not implemented yet).
+	
+2009-04-07
+	* Modify MemoWidget() to set the default fontsize as 11pt.
+	* Fix all bugs caused by change of enc(): encoding issue.
+	* new function of PushBack().
+
+2009-04-06
+	* Minor bugfix of write.FileList() which is caused by change of enc().
+	* Minor bugfixes of AddTo buttons in C-cat and F-cat Tabs.
+	* gselect.list() is documented and exported.
+	* new function of GetAttr().
+	* Minor bugfix of rename() and RenameAttrButton(): handling the duplicated name correctly now.
+	
+2009-04-01
+	* gselect.list has two new argument: width and height.
+
+2009-03-28
+	* new function of RQDA2tm (contributed by J-P Mueller).
+	
+2009-03-22
+	* add memo of attributes table.
+
+2009-03-21
+	* Another critical bugfix of CaseAttrFun() and FileAttrFun().
+	* View variables of case/file.
+	* change version number to 0.1-7.
+	
+2009-03-20
+	* Find a word and highlight it in the open file (via popup menu in File Tab).
+	* critical bugfix of CaseAttrFun() and FileAttrFun().
+	* fix bug of "add files..." to case popup menu.
+
 2009-03-19
 	* Add/modify File/Case attributes from popup menu.
 	
