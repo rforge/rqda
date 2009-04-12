@@ -76,7 +76,7 @@ Handler <- function(){
 ##                         )
 
   addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
-            if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval(.rqda$.codes_rqda)
+            if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval(.rqda$.codes_rqda,type=.rqda$TOR)
           }
                         )
   add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)

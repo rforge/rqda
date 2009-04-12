@@ -149,14 +149,19 @@ sindex <- function(widget){
 
 
 
-retrieval <- function(CodeNameWidget){
+retrieval <- function(CodeNameWidget=.rqda$.codes_rqda,type= c("unconditional", "case", "filecategory")){
 ##CodeNameWidget=.rqda$.codes_rqda
   currentCode <- svalue(CodeNameWidget)
   if (length(currentCode)!=0){
   Encoding(currentCode) <- "UTF-8"
   currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
-  ## reliable is more important                       
-  retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
+  ## reliable is more important
+  type=match.arg(type)
+  if (type=="unconditional"){
+    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
+  } else {
+    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(GetFileId(condition=type),collapse=",")))
+  }
   if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
   retrieval <-  retrieval[order( retrieval$fid),]
   fid <- unique(retrieval$fid)
@@ -182,15 +187,20 @@ retrieval <- function(CodeNameWidget){
   }
 }
 
-retrieval2 <- function(CodeNameWidget){
+retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecategory")){
 ## CodeNameWidget=.rqda$.codes_rqda for Codes Tab
 ## CodeNameWidget=.rqda$.CodeofCat for C-Cat Tab
   currentCode <- svalue(CodeNameWidget)
   if (length(currentCode)!=0){
     Encoding(currentCode) <- "UTF-8"
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
-    ## reliable is more important                       
+    ## reliable is more important
+  type=match.arg(type)
+  if (type=="unconditional"){
     retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i order by fid",currentCid))
+   } else {
+    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(GetFileId(condition=type),collapse=",")))
+   }
     if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
       ## retrieval <-  retrieval[order( retrieval$fid),]
       ## use sql to order the fid

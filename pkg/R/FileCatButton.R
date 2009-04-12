@@ -232,3 +232,15 @@ FileofCatWidgetMenu$"Sort All By Created Time"$handler <- function(h,...)
    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
  }
 }
+FileofCatWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)
+      FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="uncoded"))
+      ## By default, the file names in the widget will be sorted.
+    }
+  }
+FileofCatWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="coded"))
+  }
+}

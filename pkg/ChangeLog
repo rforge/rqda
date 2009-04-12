@@ -1,5 +1,7 @@
 2009-04-12
 	* Double-click handler of Attrs and Journal Tabs.
+	* "Show coded/uncoded files only" popup menu for File Category.
+	* conditional retrieval.
 
 2009-04-10
 	* rename button of journal Tab

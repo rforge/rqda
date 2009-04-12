@@ -41,7 +41,7 @@ RetrievalButton <- function(label){
   gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
-              retrieval()
+              retrieval(type=.rqda$TOR)
             }
           }
           )
