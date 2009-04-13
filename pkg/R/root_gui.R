@@ -71,8 +71,8 @@ Version: 0.1-7\n",
   .codes_button[1,5]<- CodingMemoButton(label="C2Memo")
   .codes_button[2,1]<- CodingInfoButton()
   .codes_button[2,2]<- HL_ALLButton()
- # .codes_button[2,2]<- RetrievalButton("Retrieval")
-  .codes_button[2,3]<- ExtendButton("Retrieval")
+  .codes_button[2,3]<- RetrievalButton("Retrieval")
+ ## .codes_button[2,3]<- ExtendButton("Retrieval")
   .codes_button[2,4]<- Unmark_Button()
   .codes_button[2,5]<- Mark_Button()
 

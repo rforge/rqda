@@ -41,21 +41,21 @@ RetrievalButton <- function(label){
   gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
-              retrieval(type=.rqda$TOR)
+              retrieval2(CodeNameWidget=.rqda$.codes_rqda,type=.rqda$TOR)
             }
           }
           )
 }
 
-ExtendButton <- function(label){
-  gbutton(label,
-          handler=function(h,...) {
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              retrieval2(CodeNameWidget=.rqda$.codes_rqda)
-            }
-          }
-          )
-}
+##ExtendButton <- function(label){
+##  gbutton(label,
+##          handler=function(h,...) {
+##            if (is_projOpen(env=.rqda,conName="qdacon")) {
+##              retrieval2(CodeNameWidget=.rqda$.codes_rqda,type=.rqda$TOR)
+##            }
+##          }
+##          )
+##}
 
 
 HL_ALLButton <- function(){

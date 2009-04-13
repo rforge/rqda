@@ -206,7 +206,7 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
       ## use sql to order the fid
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
-      .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(395,10),width=600,height=600)
+      .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),parent=c(395,10),width=600,height=600)
       .retreivalgui <- gtext(con=.gw)
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
@@ -268,10 +268,10 @@ create.tags(buffer)
         buffer$insert(iter, "\n\n")
       }
             )
+   buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter)
     }
   }
 }
-
 
 
 
