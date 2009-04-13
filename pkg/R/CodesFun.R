@@ -220,7 +220,7 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
           CallBackFUN <- function(button){  
             tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
-            root <- gwindow(title=FileName, parent=c(395,40),width=580,height=300)
+            root <- gwindow(title=FileName, parent=c(395,40),width=580,height=580)
             ## use the same names as the of ViewFile, so can do coding when back to the original file.
             assign(".root_edit",root,env=.rqda)
             displayFile <- gtext(container=.rqda$.root_edit,font.attr=c(sizes="large"))
@@ -275,4 +275,65 @@ create.tags(buffer)
 
 
 
+ClickHandlerFun <- function(CodeNameWidget=.rqda$.codes_rqda){
+  if (is_projOpen(env=.rqda,conName="qdacon")){
+    ## CodeNamesUpdate(CodeNamesWidget=.rqda$.codes_rqda)
+    con <- .rqda$qdacon
+    SelectedCode <- currentCode <- svalue(CodeNameWidget)
+if (length(SelectedCode)!=0) {
+Encoding(SelectedCode) <- Encoding(currentCode) <- "UTF-8"
+currentCid <- dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+SelectedFile <- tryCatch(svalue(.rqda$.root_edit)  ## use root_edit is more reliable
+                         ,error=function(e){})
+if (!is.null(SelectedFile)) {
+  Encoding(SelectedFile) <- "UTF-8"
+  currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+  ## following code: Only mark the text chuck according to the current code.
+  tryCatch({
+    ## widget <- get(h$action$marktxtwidget,.rqda)
+    widget <- .rqda$.openfile_gui
+    ## if widget is not open, then error;which means no need to highlight anything.
+    sel_index <-  dbGetQuery(con,sprintf("select selfirst, selend from coding where
+                                                   cid==%i and fid==%i and status==1",currentCid, currentFid))
+    Maxindex <- dbGetQuery(con, sprintf("select max(selend) from coding where fid==%i", currentFid))[1,1]
+    ClearMark(widget,min=0,max=Maxindex,clear.fore.col = TRUE, clear.back.col =FALSE)
+    if (nrow(sel_index)>0){
+      HL(widget,index=sel_index,fore.col=.rqda$fore.col,back.col=NULL)}
+  },error=function(e){}) # end of mark text chuck
+}
+}
+}
+}
+
+
+c2InfoFun <- function(){
+    con <- .rqda$qdacon
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+      W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
+      ## get the widget for file display. If it does not exist, then return NULL.
+      sel_index <- tryCatch(sindex(W),error=function(e) {})
+      ## if the not file is open, it doesn't work.
+      if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
+      else {
+          CodeTable <-  dbGetQuery(con,"select id,name from freecode where status==1")
+          SelectedFile <- svalue(.rqda$.root_edit); Encoding(SelectedFile) <- "UTF-8" ##file title
+          currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+          codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, selend from coding where fid==%i ", currentFid))
+          ## should only work with those related to current code and current file.
+          rowid <- codings_index$rowid[(codings_index$selfirst  >= sel_index$startN) &
+                                       (codings_index$selend  <= sel_index$endN)
+                                       ] ## determine which codes correspond to the selection
+          cid <- codings_index$cid[codings_index$rowid %in% rowid]
+          Codes <- CodeTable$name[CodeTable$id %in% cid]
+          ## should not use data frame as x, otherwise, svalue(c2infoWidget) is a factor rather than a character
+          if (length(Codes)!=0){
+            Encoding(Codes) <- "UTF-8"
+            tryCatch(dispose(.rqda$.c2info),error=function(e){})
+            gw <- gwindow(title="Associted code-list.",heigh=min(33*length(Codes),600),parent=.rqda$.openfile_gui)
+            c2infoWidget <- gtable(Codes,con=gw)
+            assign(".c2info",gw,env=.rqda)
+            addhandlerdoubleclick(c2infoWidget,handler=function(h,...) retrieval(CodeNameWidget=c2infoWidget))
+            addHandlerClicked(c2infoWidget,handler <- function(h,...){ClickHandlerFun(CodeNameWidget=c2infoWidget)})
+          }
+        }}}
 

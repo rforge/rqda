@@ -1,5 +1,6 @@
 2009-04-12
 	* improve retrieval2() to place cursor at the beginning of the retrieved coding widget.
+	* Add cliked handler to C2Info widget.
 
 2009-04-12
 	* Double-click handler of Attrs and Journal Tabs.

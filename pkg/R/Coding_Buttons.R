@@ -367,32 +367,4 @@ CodingInfoButton <- function(label="C2Info")
   gbutton(label,handler= function(h,...) c2InfoFun())
 }
 
-c2InfoFun <- function(){
-    con <- .rqda$qdacon
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
-      ## get the widget for file display. If it does not exist, then return NULL.
-      sel_index <- tryCatch(sindex(W),error=function(e) {})
-      ## if the not file is open, it doesn't work.
-      if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
-      else {
-          CodeTable <-  dbGetQuery(con,"select id,name from freecode where status==1")
-          SelectedFile <- svalue(.rqda$.root_edit); Encoding(SelectedFile) <- "UTF-8" ##file title
-          currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-          codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, selend from coding where fid==%i ", currentFid))
-          ## should only work with those related to current code and current file.
-          rowid <- codings_index$rowid[(codings_index$selfirst  >= sel_index$startN) &
-                                       (codings_index$selend  <= sel_index$endN)
-                                       ] ## determine which codes correspond to the selection
-          cid <- codings_index$cid[codings_index$rowid %in% rowid]
-          Codes <- CodeTable$name[CodeTable$id %in% cid]
-          ## should not use data frame as x, otherwise, svalue(c2infoWidget) is a factor rather than a character
-          if (length(Codes)!=0){
-            Encoding(Codes) <- "UTF-8"
-            tryCatch(dispose(.rqda$.c2info),error=function(e){})
-            gw <- gwindow(title="Associted code-list.",heigh=min(33*length(Codes),600),parent=.rqda$.openfile_gui)
-            c2infoWidget <- gtable(Codes,con=gw)
-            assign(".c2info",gw,env=.rqda)
-            addhandlerdoubleclick(c2infoWidget,handler=function(h,...) retrieval(CodeNameWidget=c2infoWidget))
-          }
-        }}}
+## c2InfoFun() moved to CodesFun.R

@@ -42,7 +42,7 @@ MemoWidget <- function(prefix,widget,dbTable){
       else {
         tryCatch(eval(parse(text=sprintf("dispose(.rqda$.%smemo)",prefix))),error=function(e) {})
         assign(sprintf(".%smemo",prefix),gwindow(title=sprintf("%s Memo:%s",prefix,Selected),
-                                   parent=c(395,10),width=600,height=400),env=.rqda)
+                                   parent=c(395,10),width=600,height=600),env=.rqda)
         assign(sprintf(".%smemo2",prefix),
                gpanedgroup(horizontal = FALSE, con=get(sprintf(".%smemo",prefix),env=.rqda)),
                env=.rqda)
