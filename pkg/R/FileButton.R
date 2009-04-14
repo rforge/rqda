@@ -22,15 +22,17 @@ DeleteFileButton <- function(label="Delete", container,...){
               ## if the project open and a file is selected, then continue the action
               del <- gconfirm("Really delete the file?",icon="question")
               if (isTRUE(del)) {
-                con <- .rqda$qdacon
+               ## con <- .rqda$qdacon
                 SelectedFile <- svalue(.rqda$.fnames_rqda)
                 Encoding(SelectedFile) <- "UTF-8"
-                fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",SelectedFile))$id
-                dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",SelectedFile))
+                for (i in SelectedFile){
+                fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",i))$id
+                dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
                 ## set the status of the selected file to 0
                 dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))
                 dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid=%i",fid))
                 ## set the status of the related case/f-cat to 0
+                }
                 FileNamesUpdate()
               }
             }

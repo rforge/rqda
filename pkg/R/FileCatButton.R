@@ -244,3 +244,18 @@ FileofCatWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handle
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="coded"))
   }
 }
+FileofCatWidgetMenu$"Delete selected File$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+                SelectedFile <- svalue(.rqda$.FileofCat)
+                Encoding(SelectedFile) <- "UTF-8"
+                for (i in SelectedFile){
+                fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",i))$id
+                dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
+                dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))
+                dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid=%i",fid))
+                }
+                UpdateFileofCatWidget()
+   }
+}
+
+ 
