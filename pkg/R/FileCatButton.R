@@ -244,7 +244,7 @@ FileofCatWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handle
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="coded"))
   }
 }
-FileofCatWidgetMenu$"Delete selected File$handler <- function(h,...){
+FileofCatWidgetMenu$"Delete selected File"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
                 SelectedFile <- svalue(.rqda$.FileofCat)
                 Encoding(SelectedFile) <- "UTF-8"
@@ -257,5 +257,18 @@ FileofCatWidgetMenu$"Delete selected File$handler <- function(h,...){
                 UpdateFileofCatWidget()
    }
 }
+FileofCatWidgetMenu$"Rename selected File"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    selectedFN <- svalue(.rqda$.FileofCat)
+    if (length(selectedFN)==0){
+      gmessage("Select a file first.",icon="error",con=TRUE)
+    }
+    else {
+      NewFileName <- ginput("Enter new file name. ",text=selectedFN, icon="info")
+      if (!is.na(NewFileName)) {
+        Encoding(NewFileName) <- "UTF-8"
+        rename(selectedFN,NewFileName,"source")
+        FileNamesUpdate()
+      }
+    }}}
 
- 

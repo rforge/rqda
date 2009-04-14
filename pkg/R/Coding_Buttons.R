@@ -111,7 +111,7 @@ MarkCodeFun <- function(){
         currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
         Exist <-  dbGetQuery(con,sprintf("select rowid, selfirst, selend from coding where cid==%i and fid=%i and status=1",currentCid,currentFid))
         DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,selfirst=ans$start,selend=ans$end,status=1,
-                          owner=.rqda$owner,date=date(),memo="")
+                          owner=.rqda$owner,date=date(),memo=NA)
         if (nrow(Exist)==0){
           success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
           if (!success) gmessage("Fail to write to database.")
@@ -330,6 +330,14 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
           )
 }
 
+
+CodingInfoButton <- function(label="C2Info")
+{
+  gbutton(label,handler= function(h,...) c2InfoFun())
+}
+
+## c2InfoFun() moved to CodesFun.R
+
 ## popup-menu
 CodesNamesWidgetMenu <- list()
 CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
@@ -360,11 +368,15 @@ CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
     } else gmessage("No Code with memo.",con=TRUE)
   }
 }
-
-
-CodingInfoButton <- function(label="C2Info")
-{
-  gbutton(label,handler= function(h,...) c2InfoFun())
+CodesNamesWidgetMenu$"Merge Selected with...(Dun use it.)"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    Selected1 <- svalue(.rqda$.codes_rqda)
+    cid1 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected1))[1,1]
+    Selected2 <- gselect.list(as.character(.rqda$.codes_rqda[]))
+    if (Selected2!="" && Selected1!=Selected2) cid2 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected2))[1,1]
+    mergeCodes(cid1,cid2)
+    CodeNamesWidgetUpdate()
+  }
 }
 
-## c2InfoFun() moved to CodesFun.R
+
