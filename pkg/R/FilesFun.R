@@ -302,9 +302,9 @@ fid
 }
 
 
-AddToFileCategory<- function(){
+AddToFileCategory<- function(Widget=.rqda$.fnames_rqda){
   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
-  filename <- svalue(.rqda$.fnames_rqda)
+  filename <- svalue(Widget)
   Encoding(filename) <- "unknown"
   query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in(%s) and status=1",paste("'",filename,"'",sep="",collapse=","))) ## multiple fid
   fid <- query$id

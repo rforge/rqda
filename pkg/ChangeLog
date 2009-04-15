@@ -1,8 +1,13 @@
-2009-04-13
+2009-04-15
+	* "Add To ..." popup menu of files.of.category Widget.
+	* bugfixes of codes Tab: now can handle code containing "'" correctly.
+	* reorganization of files: rename.r is merged to utils.R; Variables.R is renamed to Atrributes.R; AddVarWidget.R is renamed to AttributesWidget.R (rev 87).
+	
+2009-04-14
 	* Delete multiple files at a time now.
 	* "Delete selected file" and "rename selected file" popup menu of files.of.category Widget.
 
-2009-04-12
+2009-04-13
 	* improve retrieval2() to place cursor at the beginning of the retrieved coding widget.
 	* Add cliked handler to C2Info widget.
 

@@ -205,10 +205,18 @@ FileNamesWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
       UpdateFileofCatWidget()
     }
   }
-FileNamesWidgetMenu$"Add/modify Attributes..."$handler <- function(h,...){
+FileNamesWidgetMenu$"Add/modify Attributes of Selected File..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     Selected <- svalue(.rqda$.fnames_rqda)
     if (length(Selected !=0 )){
+    fileId <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",Selected))[,1]
+    FileAttrFun(fileId=fileId,title=Selected)
+  }
+}}
+FileNamesWidgetMenu$"Add/modify Attributes of The Open File..."$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    Selected <- tryCatch(svalue(RQDA:::.rqda$.root_edit),error=function(e){NULL})
+    if (!is.null(Selected)){
     fileId <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",Selected))[,1]
     FileAttrFun(fileId=fileId,title=Selected)
   }

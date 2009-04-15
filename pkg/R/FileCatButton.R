@@ -199,6 +199,17 @@ FileCatWidgetMenu$"Sort by created time"$handler <- function(h,...)
 
 ## popup menu for files of this category
 FileofCatWidgetMenu <- list()
+FileofCatWidgetMenu$"Add To Case ..."$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      AddFileToCaselinkage(Widget=.rqda$.FileofCat)
+      UpdateFileofCaseWidget()
+    }
+  }
+FileofCatWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      AddToFileCategory(Widget=.rqda$.FileofCat)
+    }
+  }
 FileofCatWidgetMenu$"File Memo"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("File",.rqda$.FileofCat,"source")
@@ -206,43 +217,6 @@ FileofCatWidgetMenu$"File Memo"$handler <- function(h,...){
 }
 FileofCatWidgetMenu$"Open Selected File"$handler <- function(h,...){
 ViewFileFun(FileNameWidget=.rqda$.FileofCat)
-}
-FileofCatWidgetMenu$"Show Uncoded Files Only (Sorted)"$handler <- function(h,...){
- if (is_projOpen(env=.rqda,conName="qdacon")) {
-   fid <- GetFileId(condition="filecategory",type="uncoded")
-   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
- }
-}
-FileofCatWidgetMenu$"Show Coded Files Only (Sorted)"$handler <- function(h,...){
-  if (is_projOpen(env=.rqda,conName="qdacon")) {
-    fid <- GetFileId(condition="filecategory",type="coded")
-    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
-  }
-}
-## FileofCatWidgetMenu$"Sort All By Created Time"$handler <- function(h,...)
-## {
-##  if (is_projOpen(env=.rqda,conName="qdacon")) {
-##       UpdateFileofCatWidget()
-##  }
-## }
-FileofCatWidgetMenu$"Sort All By Created Time"$handler <- function(h,...)
-{
- if (is_projOpen(env=.rqda,conName="qdacon")) {
-   fid <- GetFileId(condition="filecategory",type="all")
-   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
- }
-}
-FileofCatWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-      ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)
-      FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="uncoded"))
-      ## By default, the file names in the widget will be sorted.
-    }
-  }
-FileofCatWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handler <- function(h,...){
-  if (is_projOpen(env=.rqda,conName="qdacon")) {
-    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="coded"))
-  }
 }
 FileofCatWidgetMenu$"Delete selected File"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -268,7 +242,38 @@ FileofCatWidgetMenu$"Rename selected File"$handler <- function(h,...){
       if (!is.na(NewFileName)) {
         Encoding(NewFileName) <- "UTF-8"
         rename(selectedFN,NewFileName,"source")
-        FileNamesUpdate()
+        UpdateFileofCatWidget()
       }
     }}}
+## FileofCatWidgetMenu$"Show ..."$"Show Uncoded Files Only Sorted By Imported Time"$handler <- function(h,...){
+##  if (is_projOpen(env=.rqda,conName="qdacon")) {
+##    fid <- GetFileId(condition="filecategory",type="uncoded")
+##    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
+##  }
+## }
+## FileofCatWidgetMenu$"Show ..."$"Show Coded Files Only Sorted By Imported Time"$handler <- function(h,...){
+##   if (is_projOpen(env=.rqda,conName="qdacon")) {
+##     fid <- GetFileId(condition="filecategory",type="coded")
+##     FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
+##   }
+## }
+FileofCatWidgetMenu$"Show ..."$"Show All By Imported Time"$handler <- function(h,...)
+{
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+   fid <- GetFileId(condition="filecategory",type="all")
+   FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=fid)
+ }
+}
+FileofCatWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="coded"))
+  }
+}
+FileofCatWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+      ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)
+      FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCat,FileId=GetFileId(condition="filecat",type="uncoded"))
+      ## By default, the file names in the widget will be sorted.
+    }
+  }
 

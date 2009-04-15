@@ -1,3 +1,5 @@
+## change the name of Variables.R to Attributes.R
+
 AttrNamesUpdate <- function(Widget=.rqda$.AttrNamesWidget,sortByTime=FALSE,decreasing=FALSE,...)
 {
   if (isIdCurrent(.rqda$qdacon)){
@@ -31,7 +33,8 @@ AddAttrButton <- function(label="ADD"){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       AttrName <- ginput("Enter new Attr Name. ", icon="info")
       if (!is.na(AttrName)) {
-        Encoding(AttrName) <- "UTF-8"
+        AttrName <- enc(AttrName,encoding="UTF-8")
+        ## Encoding(AttrName) <- "UTF-8"
         AddAttrNames(AttrName)
         AttrNamesUpdate()
       }
@@ -67,6 +70,7 @@ RenameAttrButton <- function(label="Rename"){
       }
       else {
         ## get the new file names
+        selected <- enc(selected,encoding="UTF-8")
         NewName <- ginput("Enter new attribute name. ", text=selected, icon="info")
         if (!is.na(NewName)){
           Encoding(NewName) <- "UTF-8"

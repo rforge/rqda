@@ -152,7 +152,7 @@ Version: 0.1-7\n",
   ".journal_buttons" <- glayout(container=.journal_pan)
   ".journal_PW" <- ggroup(cont=.journal_pan,horizontal = FALSE)
   ".JournalNamesWidget" <- gtable("Please click Update",container=.journal_PW,expand=TRUE,multiple=FALSE)
-  .JournalNamesWidget[] <- NULL ; names(.JournalNamesWidget) <- "Journal"
+  .JournalNamesWidget[] <- NULL ; names(.JournalNamesWidget) <- "Journals"
   .journal_buttons[1,1] <- AddJournalButton()
   .journal_buttons[1,2] <- DeleteJournalButton()
   .journal_buttons[1,3] <-  OpenJournalButton()
