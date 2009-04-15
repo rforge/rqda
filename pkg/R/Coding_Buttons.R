@@ -323,6 +323,7 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
         gmessage("Select a code first.",icon="error",con=TRUE)
       }
       else {
+        selectedCodeName <- enc(selectedCodeName,encoding="UTF-8")
         ## get the new file names
         NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
         if (!is.na(NewCodeName)) {
@@ -354,7 +355,7 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
     }
   }
-CodesNamesWidgetMenu$"Sort by created time (all codes)"$handler <- function(h, ...) {
+CodesNamesWidgetMenu$"Show All By Created Time"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
      CodeNamesUpdate(sortByTime=TRUE)
     }

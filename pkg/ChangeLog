@@ -1,7 +1,8 @@
 2009-04-15
 	* "Add To ..." popup menu of files.of.category Widget.
-	* bugfixes of codes Tab: now can handle code containing "'" correctly.
+	* bugfixes of codes Tab and Attrs Tab: now can handle code containing "'" correctly.
 	* reorganization of files: rename.r is merged to utils.R; Variables.R is renamed to Atrributes.R; AddVarWidget.R is renamed to AttributesWidget.R (rev 87).
+	* retrieval() is exported for conditional coding-retrieval.
 	
 2009-04-14
 	* Delete multiple files at a time now.

@@ -70,7 +70,8 @@ MemoWidget <- function(prefix,widget,dbTable){
           newcontent <- svalue(W)
           ## Encoding(newcontent) <- "UTF-8"
           newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
-          Encoding(Selected) <- "UTF-8"
+          ## Encoding(Selected) <- "UTF-8"
+          Selected <- enc(Selected,encoding="UTF-8")
           dbGetQuery(.rqda$qdacon,sprintf("update %s set memo='%s' where name='%s'",dbTable,newcontent,Selected))
         }
                 )## end of save memo button

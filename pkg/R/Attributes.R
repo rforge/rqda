@@ -50,7 +50,8 @@ DeleteAttrButton <- function(label="Delete"){
             del <- gconfirm("Really delete the Attribute?",icon="question")
             if (isTRUE(del)){
               Selected <- svalue(.rqda$.AttrNamesWidget)
-              Encoding(Selected) <- "UTF-8"
+              ## Encoding(Selected) <- "UTF-8"
+              Selected <- enc(Selected,"UTF-8")
               dbGetQuery(.rqda$qdacon,sprintf("update attributes set status=0 where name=='%s'",Selected))
               dbGetQuery(.rqda$qdacon,sprintf("delete from caseAttr where variable=='%s'",Selected))
               dbGetQuery(.rqda$qdacon,sprintf("update from fileAttr where variable=='%s'",Selected))
@@ -70,10 +71,11 @@ RenameAttrButton <- function(label="Rename"){
       }
       else {
         ## get the new file names
-        selected <- enc(selected,encoding="UTF-8")
         NewName <- ginput("Enter new attribute name. ", text=selected, icon="info")
         if (!is.na(NewName)){
-          Encoding(NewName) <- "UTF-8"
+          ## Encoding(NewName) <- "UTF-8"
+          selected <- enc(selected,encoding="UTF-8")
+          NewName<- enc(NewName,encoding="UTF-8")
           exists <- dbGetQuery(.rqda$qdacon, sprintf("select * from attributes where name == '%s' ",NewName))
           if (nrow(exists) > 0 ){
           gmessage("Name duplicated. Please use anaother name.",cont=TRUE)

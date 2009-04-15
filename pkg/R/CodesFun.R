@@ -149,41 +149,125 @@ sindex <- function(widget){
 
 
 
-retrieval <- function(CodeNameWidget=.rqda$.codes_rqda,type= c("unconditional", "case", "filecategory")){
-##CodeNameWidget=.rqda$.codes_rqda
+## retrieval <- function(CodeNameWidget=.rqda$.codes_rqda,type= c("unconditional", "case", "filecategory")){
+## ##CodeNameWidget=.rqda$.codes_rqda
+##   currentCode <- svalue(CodeNameWidget)
+##   if (length(currentCode)!=0){
+##   Encoding(currentCode) <- "UTF-8"
+##   currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
+##   ## reliable is more important
+##   type=match.arg(type)
+##   if (type=="unconditional"){
+##     retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
+##   } else {
+##     retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(GetFileId(condition=type),collapse=",")))
+##   }
+##   if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
+##   retrieval <-  retrieval[order( retrieval$fid),]
+##   fid <- unique(retrieval$fid)
+##   retrieval$fname <-""
+##   .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(395,10),width=600,height=600)
+##   .retreivalgui <- gtext(con=.gw)
+##   for (i in fid){
+##     FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
+##     tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
+##     ##fname <- paste("Source: ", FileNames, sep="")
+##     retrieval$fname[retrieval$fid==i] <- FileName
+##   }
+##   Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
+  
+##   apply(retrieval,1, function(x){
+##      metaData <- sprintf("%s [%s:%s]\n",x[['fname']],x[['selfirst']],x[['selend']])
+##      add(.retreivalgui,metaData,font.attr=c(foreground="red",size="x-large"),do.newline=FALSE)
+##      add(.retreivalgui,x[['seltext']],font.attr=c(style="normal",size="large"),do.newline=FALSE)
+##      add(.retreivalgui,"\n\n",font.attr=c(style="normal",size="large"),do.newline=FALSE)
+##    }
+##         )
+## }
+##   }
+## }
+
+retrieval <- function(Fid=NULL,CodeNameWidget=.rqda$.codes_rqda){
   currentCode <- svalue(CodeNameWidget)
   if (length(currentCode)!=0){
-  Encoding(currentCode) <- "UTF-8"
-  currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
-  ## reliable is more important
-  type=match.arg(type)
-  if (type=="unconditional"){
-    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
+    ## Encoding(currentCode) <- "UTF-8"
+    currentCode <- enc(currentCode,"UTF-8")
+    currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
+    ## reliable is more important
+  if (is.null(Fid)){
+    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i order by fid",currentCid))
   } else {
-    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(GetFileId(condition=type),collapse=",")))
-  }
-  if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
-  retrieval <-  retrieval[order( retrieval$fid),]
-  fid <- unique(retrieval$fid)
-  retrieval$fname <-""
-  .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(395,10),width=600,height=600)
-  .retreivalgui <- gtext(con=.gw)
-  for (i in fid){
-    FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
-    tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
-    ##fname <- paste("Source: ", FileNames, sep="")
-    retrieval$fname[retrieval$fid==i] <- FileName
-  }
-  Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
-  
-  apply(retrieval,1, function(x){
-     metaData <- sprintf("%s [%s:%s]\n",x[['fname']],x[['selfirst']],x[['selend']])
-     add(.retreivalgui,metaData,font.attr=c(foreground="red",size="x-large"),do.newline=FALSE)
-     add(.retreivalgui,x[['seltext']],font.attr=c(style="normal",size="large"),do.newline=FALSE)
-     add(.retreivalgui,"\n\n",font.attr=c(style="normal",size="large"),do.newline=FALSE)
+    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(Fid,collapse=",")))
    }
-        )
+    if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
+      ## retrieval <-  retrieval[order( retrieval$fid),]
+      ## use sql to order the fid
+      fid <- unique(retrieval$fid)
+      retrieval$fname <-""
+      .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),parent=c(395,10),width=600,height=600)
+      .retreivalgui <- gtext(con=.gw)
+      for (i in fid){
+        FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
+        tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
+        ##fname <- paste("Source: ", FileNames, sep="")
+        retrieval$fname[retrieval$fid==i] <- FileName
+      }
+      Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
+
+      ## modification begins
+        ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
+          CallBackFUN <- function(button){  
+            tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
+            root <- gwindow(title=FileName, parent=c(395,40),width=580,height=580)
+            ## use the same names as the of ViewFile, so can do coding when back to the original file.
+            assign(".root_edit",root,env=.rqda)
+            displayFile <- gtext(container=.rqda$.root_edit,font.attr=c(sizes="large"))
+            assign(".openfile_gui",displayFile,env=.rqda)
+            content <- dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",FileName))[1,1]
+            Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
+            add(.rqda$.openfile_gui,content,font.attr=c(sizes="large"))
+            HL(.rqda$.openfile_gui,data.frame(begin=BeginPosition,end=EndPosition))
+            .rqda$.openfile_gui@widget@widget$SetEditable(FALSE)
+            MarkHere <- .rqda$.openfile_gui@widget@widget$GetBuffer()$CreateMark(mark.name = "MarkHere", where=.rqda$.openfile_gui@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter)
+            # create a mark -> more reliable to use ScrollToMark than ScrollToIter
+            #gtkTextViewScrollToIter(.rqda$.openfile_gui@widget@widget,
+            #                          .rqda$.openfile_gui@widget@widget$GetBuffer()$GetIterAtOffset(BeginPosition)$iter,
+            #                          0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
+            gtkTextViewScrollToMark(.rqda$.openfile_gui@widget@widget,
+                                      MarkHere,0,xal=0,yal=0.2,use.align=TRUE)
+            }    
+         CallBackFUN
+        }
+
+      buffer <- .retreivalgui@widget@widget$GetBuffer()
+      iter <- buffer$getIterAtOffset(0)$iter
+create.tags <- function(buffer)
+{
+buffer$createTag("big",size = 14 * PANGO_SCALE)
+buffer$createTag("x-large",scale = PANGO_SCALE_X_LARGE)
+buffer$createTag("large",scale = PANGO_SCALE_LARGE)
+buffer$createTag("red.foreground",foreground = "red")
 }
+create.tags(buffer)
+
+      apply(retrieval,1, function(x){
+        metaData <- sprintf("%s [%s:%s]",x[['fname']],x[['selfirst']],x[['selend']])
+        buffer$InsertWithTagsByName(iter, metaData,"x-large","red.foreground")
+        anchorcreated <- buffer$createChildAnchor(iter)
+        iter$BackwardChar()
+        anchor <- iter$getChildAnchor()  
+        widget <- gtkButtonNewWithLabel("Back")
+        gSignalConnect(widget, "clicked", ComputeCallbackFun(x[['selfirst']],x[['selend']],x[['fname']]))
+        .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
+        widget$showAll()
+        iter$ForwardChar()
+        buffer$insert(iter, "\n")
+        buffer$InsertWithTagsByName(iter, x[['seltext']],"large")
+        buffer$insert(iter, "\n\n")
+      }
+            )
+   buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter)
+    }
   }
 }
 
@@ -192,7 +276,8 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
 ## CodeNameWidget=.rqda$.CodeofCat for C-Cat Tab
   currentCode <- svalue(CodeNameWidget)
   if (length(currentCode)!=0){
-    Encoding(currentCode) <- "UTF-8"
+    ## Encoding(currentCode) <- "UTF-8"
+    currentCode <- enc(currentCode,"UTF-8")
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
     ## reliable is more important
   type=match.arg(type)
@@ -332,7 +417,7 @@ c2InfoFun <- function(){
             gw <- gwindow(title="Associted code-list.",heigh=min(33*length(Codes),600),parent=.rqda$.openfile_gui)
             c2infoWidget <- gtable(Codes,con=gw)
             assign(".c2info",gw,env=.rqda)
-            addhandlerdoubleclick(c2infoWidget,handler=function(h,...) retrieval(CodeNameWidget=c2infoWidget))
+            addhandlerdoubleclick(c2infoWidget,handler=function(h,...) retrieval2(CodeNameWidget=c2infoWidget))
             addHandlerClicked(c2infoWidget,handler <- function(h,...){ClickHandlerFun(CodeNameWidget=c2infoWidget)})
           }
         }}}

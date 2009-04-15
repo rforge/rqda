@@ -1,5 +1,5 @@
 export(CleanProject,CrossCode,CrossTwo,gselect.list,GetAttr,GetCodingTable,GetFileId,
-       list.deleted,pdelete,relation,RQDA,RQDA2tm,
+       list.deleted,pdelete,relation,retrieval,RQDA,RQDA2tm,
        SearchFiles,ShowSubset,SummaryCoding,undelete,write.FileList)
 S3method(print,SummaryCoding)
 import(RGtk2)

@@ -148,7 +148,7 @@ Version: 0.1-7\n",
 
 ########################### GUI for Journal
 ###########################
-  ".journal_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Journal")
+  ".journal_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Journals")
   ".journal_buttons" <- glayout(container=.journal_pan)
   ".journal_PW" <- ggroup(cont=.journal_pan,horizontal = FALSE)
   ".JournalNamesWidget" <- gtable("Please click Update",container=.journal_PW,expand=TRUE,multiple=FALSE)
