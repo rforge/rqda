@@ -245,11 +245,18 @@ FileNameWidgetUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,de
   tryCatch(FileNamesWidget[] <- fnames,error=function(e){})
 }
 
-GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c("all","coded","uncoded"))
+GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c("all","coded","uncoded","selected"))
 {
   ## helper function
   unconditionalFun <- function(type)
     {
+      if (type=="selected"){
+        selected <- svalue(.rqda$.fnames_rqda)
+        ans <- dbGetQuery(.rqda$qdacon,
+                          sprintf("select id from source where status==1 and name in (%s)",
+                                  paste(paste("'",selected,"'",sep=""),collapse=",")
+                                  ))$id
+      } else {
       allfid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
       if (type!="all"){
         fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
@@ -261,36 +268,53 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
       } else if (type=="uncoded"){
         ans <- allfid[! (allfid %in% fid_coded)]
       }
+    }
       ans
     }
 
   FidOfCaseFun <- function(type){
-    Selected <- svalue(.rqda$.CasesNamesWidget)
-    if (length(Selected)==0){
-      ans <- NULL
+    if (type=="selected"){
+      selected <- svalue(.rqda$.FileofCase)
+      ans <- dbGetQuery(.rqda$qdacon,
+                        sprintf("select id from source where status==1 and name in (%s)",
+                                paste(paste("'",selected,"'",sep=""),collapse=",")
+                                ))$id
     } else {
-      caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",Selected))$id
-      fidofcase <- dbGetQuery(.rqda$qdacon,
-                              sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
-      allfid <-  unconditionalFun(type=type)
-      ans <- intersect(fidofcase,allfid)
+      Selected <- svalue(.rqda$.CasesNamesWidget)
+      if (length(Selected)==0){
+        ans <- NULL
+      } else {
+        caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",Selected))$id
+        fidofcase <- dbGetQuery(.rqda$qdacon,
+                                sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
+        allfid <-  unconditionalFun(type=type)
+        ans <- intersect(fidofcase,allfid)
+      }
     }
     ans
   }
 
   FidOfCatFun <- function(type){
-    Selected <- svalue(.rqda$.FileCatWidget)
-    if (length(Selected)==0){
-      ans <- NULL
+    if (type=="selected"){
+      selected <- svalue(.rqda$.FileofCat)
+      ans <- dbGetQuery(.rqda$qdacon,
+                  sprintf("select id from source where status==1 and name in (%s)",
+                          paste(paste("'",selected,"'",sep=""),collapse=",")
+                          ))$id
     } else {
-      catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",Selected))$catid
-      fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid==%i",catid))$fid
-      allfid <-  unconditionalFun(type=type)
-      ans <- intersect(fidofcat,allfid)
+      Selected <- svalue(.rqda$.FileCatWidget)
+      if (length(Selected)==0){
+        ans <- NULL
+      } else {
+        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",Selected))$catid
+        fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid==%i",catid))$fid
+        allfid <-  unconditionalFun(type=type)
+        ans <- intersect(fidofcat,allfid)
+      }
+      ans
     }
-    ans
   }
-  
+    
   condition <- match.arg(condition)
   type <- match.arg(type)
   fid <- switch(condition,
@@ -333,4 +357,4 @@ AddToFileCategory<- function(Widget=.rqda$.fnames_rqda){
       }
       if (!success) gmessage("Fail to write to database.")
     }}})}}
-
+  

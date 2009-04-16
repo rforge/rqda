@@ -162,25 +162,29 @@ AddNewFileFun <- function(){
     gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){
       ## require a title for the file
       Ftitle <- ginput("Enter the title", icon="info")
-      if (!is.na(Ftitle)) {Encoding(Ftitle) <- "UTF-8"}
-      if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from source where name=='%s'",Ftitle)))!=0) {
-        Ftitle <- paste("New",Ftitle)
-      }## Make sure it is unique
-      content <- svalue(textW)
-      content <- enc(content,encoding="UTF-8") ## take care of double quote.
-      maxid <- dbGetQuery(.rqda$qdacon,"select max(id) from source")[[1]] ## the current one
-      nextid <- ifelse(is.na(maxid),0+1, maxid+1) ## the new one/ for the new file
-      ans <- dbGetQuery(.rqda$qdacon,sprintf("insert into source (name, file, id, status,date,owner )
+      if (!is.na(Ftitle)) {
+        Ftitle <- enc(Ftitle,"UTF-8")
+        if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from source where name=='%s'",Ftitle)))!=0) {
+          Ftitle <- paste("New",Ftitle)
+        }## Make sure it is unique
+        content <- svalue(textW)
+        content <- enc(content,encoding="UTF-8") ## take care of double quote.
+        maxid <- dbGetQuery(.rqda$qdacon,"select max(id) from source")[[1]] ## the current one
+        nextid <- ifelse(is.na(maxid),0+1, maxid+1) ## the new one/ for the new file
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("insert into source (name, file, id, status,date,owner )
                              values ('%s', '%s',%i, %i, '%s', '%s')",
-                             Ftitle,content, nextid, 1,date(),.rqda$owner))
-      ## write to the data-base ## what is ans?
-      ## rm(.AddNewFileWidget,.AddNewFileWidget2,env=.rqda)
-      ## delete .rqda$.AddNewFileWidget and .rqda$.AddNewFileWidget2
+                                               Ftitle,content, nextid, 1,date(),.rqda$owner))
+        ## write to the data-base ## what is ans?
+        ## rm(.AddNewFileWidget,.AddNewFileWidget2,env=.rqda)
+        ## delete .rqda$.AddNewFileWidget and .rqda$.AddNewFileWidget2
         gmessage("Succeed.",con=T)
         FileNamesUpdate()
-    }
+      }}
             )## end of save button
-    assign(".AddNewFileWidgetW",gtext(container=get(".AddNewFileWidget2",env=.rqda),font.attr=c(sizes="large")),env=.rqda)
+    tmp <- gtext(container=get(".AddNewFileWidget2",env=.rqda))
+    font <- pangoFontDescriptionFromString("Sans 10")
+    gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
+    assign(".AddNewFileWidgetW",tmp,env=.rqda)
     textW <- get(".AddNewFileWidgetW",env=.rqda)
   }
 }

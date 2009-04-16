@@ -1,3 +1,6 @@
+2009-04-16
+	* GetFileId() can return fid of selected files now.
+	
 2009-04-15
 	* "Add To ..." popup menu of files.of.category Widget.
 	* bugfixes of codes Tab and Attrs Tab: now can handle code containing "'" correctly.
