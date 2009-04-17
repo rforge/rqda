@@ -127,7 +127,7 @@ Version: 0.1-7\n",
   ".filecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Cat")
   ".filecat_buttons" <- glayout(container=.filecat_pan)
   ".Fcat_PW" <- ggroup(cont=.filecat_pan,horizontal = FALSE)## parent Widget of F-cat
-  ".FileCatWidget" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE)
+  ".FileCatWidget" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE,multiple=TRUE)
    .FileCatWidget[] <- NULL; names(.FileCatWidget)<-"File Category"
    ".FileofCat" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE,multiple=TRUE)
    .FileofCat[] <- NULL;names(.FileofCat)<-"Files of This Category"

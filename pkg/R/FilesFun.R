@@ -284,9 +284,10 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
       if (length(Selected)==0){
         ans <- NULL
       } else {
-        caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",Selected))$id
-        fidofcase <- dbGetQuery(.rqda$qdacon,
-                                sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
+        caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name in (%s)",
+                                                 paste(paste("'",Selected,"'",sep=""),collapse=",")))$id
+        fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (%s)",
+                                                    paste(paste("'",caseid,"'",sep=""),collapse=",")))$fid
         allfid <-  unconditionalFun(type=type)
         ans <- intersect(fidofcase,allfid)
       }
@@ -306,8 +307,10 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
       if (length(Selected)==0){
         ans <- NULL
       } else {
-        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",Selected))$catid
-        fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid==%i",catid))$fid
+        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name in (%s)",
+                                                 paste(paste("'",Selected,"'",sep=""),collapse=",")))$catid
+        fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid in (%s)",
+                                                    paste(paste("'",catid,"'",sep=""),collapse=",")))$fid
         allfid <-  unconditionalFun(type=type)
         ans <- intersect(fidofcat,allfid)
       }

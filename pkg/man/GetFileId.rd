@@ -21,7 +21,10 @@ GetFileId(condition = c("unconditional", "case", "filecategory"), type = c("all"
   Given that files meet the \code{condition}, the \code{type} argument
   "all" means all files, "coded" means the coded files, "uncoded" means
   the uncoded files and "selected" means the selected files (can be
-  multiple files).
+  multiple unconditional files, multiple cases or multiple
+  filecategories. Note the relationship between  multiple cases or multiple
+  filecategories is 'or' NOT 'and', which means that the fid can be from
+  either case/filecategory).
   
   \code{GetFileId} returns the id of files which fit the combined
   criterion of \code{condition} and \code{type}.

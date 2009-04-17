@@ -11,7 +11,7 @@ ShowSubset(x)
 }
 \arguments{
   \item{type}{Type of attributes.}
-  \item{x} {an object from \code{GetAttr}}
+  \item{x}{an object from \code{GetAttr}}
 }
 \details{
 You can add and modify the attributes of cases or files. \code{GetAttr}
