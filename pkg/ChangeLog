@@ -1,3 +1,7 @@
+2009-04-18
+	* Minor bugfix related to naming with "'".
+	* Add "Clean Project" button.
+	
 2009-04-17
 	* Add documents of RQDA2tm.Rd,retrieval.Rd and GetAttr.Rd.
 	* Conditional retrieval can be conditional on multiple cases/filecategories now: The codings can be from either case/filecategory.

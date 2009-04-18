@@ -31,8 +31,9 @@ RQDA <- function() {
   ## project memo button
   ProjectInforButton(container=.proj_gui)
   BackupProjectButton(container=.proj_gui)
+  CleanProjButton(container=.proj_gui)
   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
-
+  
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: BSD License\n
@@ -81,7 +82,7 @@ Version: 0.1-7\n",
   ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Cases")
   ".case_buttons" <- glayout(container=.case_pan)
   ".case_PW" <- ggroup(cont=.case_pan,horizontal = FALSE)
-  ".CasesNamesWidget" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=FALSE)
+  ".CasesNamesWidget" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=TRUE)
   .CasesNamesWidget[] <- NULL ; names(.CasesNamesWidget) <- "Cases"
   ".FileofCase" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=TRUE)
   .FileofCase[] <- NULL;names(.FileofCase)<-"Files of This Case"

@@ -238,3 +238,12 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=150, height=500,...
   items
 }
 
+intersect2 <- function(x) {
+  if ((n<-length(x))>1) {
+    x[[n-1]] <- intersect(x[[n]],x[[n-1]])
+    x[n] <- NULL
+    Recall(x)
+  } else { x[[1]] }
+}
+##x<-list(1:3,3:5,6:3)
+##intersect2(x)

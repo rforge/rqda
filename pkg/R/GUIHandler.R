@@ -97,29 +97,31 @@ Handler <- function(){
     con <- .rqda$qdacon
     SelectedCase <- currentCase <- svalue(.rqda$.CasesNamesWidget)
     if (length(SelectedCase)!=0) {
-    Encoding(SelectedCase) <- Encoding(currentCase) <- "UTF-8"
-    currentCid <- dbGetQuery(con,sprintf("select id from cases where name=='%s'",SelectedCase))[,1]
-    SelectedFile <- tryCatch(svalue(.rqda$.root_edit)  ## use root_edit is more reliable
-                             ,error=function(e){})
-    if (!is.null(SelectedFile)) {
-      Encoding(SelectedFile) <- "UTF-8"
-      currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-      ## following code: Only mark the text chuck according to the current code.
-      tryCatch({
-        widget <- get(h$action$marktxtwidget,.rqda)
-        ## if widget is not open, then error;which means no need to highlight anything.
-        sel_index <-  dbGetQuery(con,sprintf("select selfirst, selend from caselinkage where
+      ## Encoding(SelectedCase) <- Encoding(currentCase) <- "UTF-8"
+      currentCase <- SelectedCase <- enc(SelectedCase,encoding="UTF-8")
+      currentCid <- dbGetQuery(con,sprintf("select id from cases where name=='%s'",SelectedCase))[,1]
+      SelectedFile <- tryCatch(svalue(.rqda$.root_edit)  ## use root_edit is more reliable
+                               ,error=function(e){})
+      if (!is.null(SelectedFile)) {
+        ## Encoding(SelectedFile) <- "UTF-8"
+        SelectedFile <- enc(SelectedFile,encoding="UTF-8")
+        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+        ## following code: Only mark the text chuck according to the current code.
+        tryCatch({
+          widget <- get(h$action$marktxtwidget,.rqda)
+          ## if widget is not open, then error;which means no need to highlight anything.
+          sel_index <-  dbGetQuery(con,sprintf("select selfirst, selend from caselinkage where
                                                    caseid==%i and fid==%i and status==1",currentCid, currentFid))
-        Maxindex <- dbGetQuery(con, sprintf("select max(selend) from caselinkage where fid==%i", currentFid))[1,1]
-        ClearMark(widget,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
-        if (nrow(sel_index)>0){
-          HL(widget,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)}
-      },error=function(e){}) # end of mark text chuck
+          Maxindex <- dbGetQuery(con, sprintf("select max(selend) from caselinkage where fid==%i", currentFid))[1,1]
+          ClearMark(widget,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
+          if (nrow(sel_index)>0){
+            HL(widget,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)}
+        },error=function(e){}) # end of mark text chuck
+      }
     }
-  }
   },action=list(marktxtwidget=".openfile_gui")
                     )
-
+  
   addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
     UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
 })

@@ -19,13 +19,16 @@ DeleteFileButton <- function(label="Delete", container,...){
   gbutton(label,contain=container,handler=function(h,...)
           {
             if (is_projOpen(env=.rqda,conName="qdacon") & length(svalue(.rqda$.fnames_rqda))!=0) {
+              SelectedFile <- svalue(.rqda$.fnames_rqda)
+              Encoding(SelectedFile) <- "UTF-8"
               ## if the project open and a file is selected, then continue the action
-              del <- gconfirm("Really delete the file?",icon="question")
+              del <- gconfirm(ngettext(length(SelectedFile),
+                                       "Really delete the file?",
+                                       "Really delete the files?")
+                                       ,icon="question")
               if (isTRUE(del)) {
-               ## con <- .rqda$qdacon
-                SelectedFile <- svalue(.rqda$.fnames_rqda)
-                Encoding(SelectedFile) <- "UTF-8"
-                for (i in SelectedFile){
+                ## con <- .rqda$qdacon
+                  for (i in SelectedFile){
                 fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",i))$id
                 dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
                 ## set the status of the selected file to 0

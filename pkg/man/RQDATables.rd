@@ -13,8 +13,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
   \item{owner}{creator the the file.}
   \item{date}{the date of the file-import.}
   \item{dataM}{not used now.}
-  \item{status}{status of the file, 1 for standard status and 0 for
-    temporarily deleted file.}
+  \item{status}{status of the file, 1 for standard status and 0 for temporarily deleted file.}
 
   The filecat table contains information on the file categorization.
   \item{name}{name of the file category.}

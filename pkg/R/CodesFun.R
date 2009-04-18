@@ -366,12 +366,14 @@ ClickHandlerFun <- function(CodeNameWidget=.rqda$.codes_rqda){
     con <- .rqda$qdacon
     SelectedCode <- currentCode <- svalue(CodeNameWidget)
 if (length(SelectedCode)!=0) {
-Encoding(SelectedCode) <- Encoding(currentCode) <- "UTF-8"
+##Encoding(SelectedCode) <- Encoding(currentCode) <- "UTF-8"
+SelectedCode <- currentCode <- enc(currentCode,encoding="UTF-8")
 currentCid <- dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
 SelectedFile <- tryCatch(svalue(.rqda$.root_edit)  ## use root_edit is more reliable
                          ,error=function(e){})
 if (!is.null(SelectedFile)) {
-  Encoding(SelectedFile) <- "UTF-8"
+  ## Encoding(SelectedFile) <- "UTF-8"
+  SelectedFile <- enc(SelectedFile,encoding="UTF-8")
   currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
   ## following code: Only mark the text chuck according to the current code.
   tryCatch({

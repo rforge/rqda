@@ -35,9 +35,10 @@ AddAttrButton <- function(label="ADD"){
       if (!is.na(AttrName)) {
         AttrName <- enc(AttrName,encoding="UTF-8")
         ## Encoding(AttrName) <- "UTF-8"
+        if (AttrName %in% c("fileID","caseID")) gmessage("This is a reserved keyword.",con=TRUE) else{
         AddAttrNames(AttrName)
         AttrNamesUpdate()
-      }
+      }}
     }
   }
           )
