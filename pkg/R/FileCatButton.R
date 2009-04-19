@@ -140,7 +140,8 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
       dbGetQuery(.rqda$qdacon,sprintf("update treefile set status==0 where catid==%i and fid==%i",catid,fid))
     }
         ## update .CodeofCat Widget
-        UpdateFileofCatWidget()
+        .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],FileOfCat)
+        ## UpdateFileofCatWidget()
       }
     }
   }
@@ -228,7 +229,8 @@ FileofCatWidgetMenu$"Delete selected File"$handler <- function(h,...){
                 dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))
                 dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid=%i",fid))
                 }
-                UpdateFileofCatWidget()
+                ## UpdateFileofCatWidget()
+               .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],SelectedFile)
    }
 }
 FileofCatWidgetMenu$"Rename selected File"$handler <- function(h,...){

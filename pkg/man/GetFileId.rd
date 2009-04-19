@@ -30,7 +30,7 @@ GetFileId(condition = c("unconditional", "case", "filecategory"), type = c("all"
 Normally, it is a numeric vector of file id. If condition is "case" or "filecategory" but no case or file category is selected, it retuns NULL.
 }
 \author{ HUANG Ronggui}
-\seealso{ \code{\link{retrieval}},  \code{\link{GetFileIdSets}}}
+\seealso{ \code{\link{retrieval}}, \code{\link{GetFileIdSets}}}
 \examples{
 \dontrun{
 GetFileId() ## Id of all files
