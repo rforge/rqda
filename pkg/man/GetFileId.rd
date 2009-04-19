@@ -20,11 +20,8 @@ GetFileId(condition = c("unconditional", "case", "filecategory"), type = c("all"
 
   Given that files meet the \code{condition}, the \code{type} argument
   "all" means all files, "coded" means the coded files, "uncoded" means
-  the uncoded files and "selected" means the selected files (can be
-  multiple unconditional files, multiple cases or multiple
-  filecategories. Note the relationship between  multiple cases or multiple
-  filecategories is 'or' NOT 'and', which means that the fid can be from
-  either case/filecategory).
+  the uncoded files and "selected" means the selected files; in "files"
+  widget, "files of case" widget and "files of category" widget respectively.
   
   \code{GetFileId} returns the id of files which fit the combined
   criterion of \code{condition} and \code{type}.
@@ -33,7 +30,7 @@ GetFileId(condition = c("unconditional", "case", "filecategory"), type = c("all"
 Normally, it is a numeric vector of file id. If condition is "case" or "filecategory" but no case or file category is selected, it retuns NULL.
 }
 \author{ HUANG Ronggui}
-\seealso{ \code{\link{retrieval}}}
+\seealso{ \code{\link{retrieval}},  \code{\link{GetFileIdSets}}}
 \examples{
 \dontrun{
 GetFileId() ## Id of all files

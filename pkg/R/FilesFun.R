@@ -245,6 +245,7 @@ FileNameWidgetUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,de
   tryCatch(FileNamesWidget[] <- fnames,error=function(e){})
 }
 
+
 GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c("all","coded","uncoded","selected"))
 {
   ## helper function
@@ -284,10 +285,16 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
       if (length(Selected)==0){
         ans <- NULL
       } else {
-        caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name in (%s)",
-                                                 paste(paste("'",Selected,"'",sep=""),collapse=",")))$id
-        fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (%s)",
-                                                    paste(paste("'",caseid,"'",sep=""),collapse=",")))$fid
+        if (length(Selected)>1) {gmessage("select one file category only.",con=TRUE)
+                                  stop("more than one file categories are selected")
+                                }
+        caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",Selected))$id
+        fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
+##         caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name in (%s)",
+##                                                  paste(paste("'",Selected,"'",sep=""),collapse=",")))$id
+##         fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (%s)",
+##                                                     paste(paste("'",caseid,"'",sep=""),collapse=",")))$fid
+## roll back to rev 90
         allfid <-  unconditionalFun(type=type)
         ans <- intersect(fidofcase,allfid)
       }
@@ -307,10 +314,16 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
       if (length(Selected)==0){
         ans <- NULL
       } else {
-        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name in (%s)",
-                                                 paste(paste("'",Selected,"'",sep=""),collapse=",")))$catid
-        fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid in (%s)",
-                                                    paste(paste("'",catid,"'",sep=""),collapse=",")))$fid
+        if (length(Selected)>1) {gmessage("select one case only.",con=TRUE)
+                                 stop("more than one cases are selected")
+                               }
+        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",Selected))$catid
+        fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid==%i",catid))$fid
+        ## roll back to rev 90
+##         catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name in (%s)",
+##                                                  paste(paste("'",Selected,"'",sep=""),collapse=",")))$catid
+##         fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid in (%s)",
+##                                                     paste(paste("'",catid,"'",sep=""),collapse=",")))$fid
         allfid <-  unconditionalFun(type=type)
         ans <- intersect(fidofcat,allfid)
       }
@@ -328,6 +341,39 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
 fid
 }
 
+
+
+GetFileIdSets <- function(set=c("case","filecategory"),relation=c("union","intersect")){
+  set <- match.arg(set)
+  relation <- match.arg(relation)
+  if (set=="case") {
+    Selected <- svalue(.rqda$.CasesNamesWidget)
+    if (length(Selected)==0){
+      ans <- NULL
+    } else {
+      Selected <- gsub("'", "''", Selected)
+      if (relation=="union"){
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (select id from cases where status=1 and name in (%s)) group by fid", paste(paste("'",Selected,"'",sep=""),collapse=",")))$fid
+      } else if (relation=="intersect"){
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid, count(fid) as n from caselinkage where status==1 and caseid in (select id from cases where status=1 and name in (%s)) group by fid having n= %i", paste(paste("'",Selected,"'",sep=""),collapse=","),length(Selected)))$fid
+      }
+    }
+  }## end of set=="case"
+  if (set=="filecategory"){
+    Selected <- svalue(.rqda$.FileCatWidget)
+    if (length(Selected)==0){
+      ans <- NULL
+    } else {
+      Selected <- gsub("'", "''", Selected)
+      if (relation=="union"){
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid in (select catid from filecat where status=1 and name in (%s)) group by fid", paste(paste("'",Selected,"'",sep=""),collapse=",")))$fid
+      } else if (relation=="intersect"){
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid, count(fid) as n from treefile where status==1 and catid in (select catid from filecat where status=1 and name in (%s)) group by fid having n= %i", paste(paste("'",Selected,"'",sep=""),collapse=","),length(Selected)))$fid
+      }
+    }
+  } ## end of set=="filecategory"
+  ans
+}
 
 AddToFileCategory<- function(Widget=.rqda$.fnames_rqda){
   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
