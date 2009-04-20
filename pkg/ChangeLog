@@ -1,3 +1,6 @@
+2009-04-20
+	* New function of GetCaseId(): the name may be changed in the future.
+	
 2009-04-19
 	* New function of GetFileIdSets, can be used to do more complex conditional retrieval.
 	

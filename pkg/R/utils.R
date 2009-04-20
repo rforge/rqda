@@ -247,3 +247,12 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=150, height=500,...
 ## }
 ##x<-list(1:3,3:5,6:3)
 ##intersect2(x)
+
+GetCaseId <- function(fid=GetFileId(),caseName=TRUE){
+  if (caseName){
+    ans <-  dbGetQuery(.rqda$qdacon,sprintf(" select name,id from cases where status=1 and id in (select caseid, count(caseid) as n from caselinkage where status=1 and fid in (%s) group by caseid )",paste(shQuote(fid),collapse=",")))
+  } else {
+    ans <- dbGetQuery(.rqda$qdacon,sprintf("select caseid, count(caseid) as n from caselinkage where status=1 and fid in (%s) group by caseid",paste(shQuote(fid),collapse=",")))
+  }
+  ans
+}
