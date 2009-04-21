@@ -248,12 +248,42 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=150, height=500,...
 ##x<-list(1:3,3:5,6:3)
 ##intersect2(x)
 
-GetCaseId <- function(fid=GetFileId(),caseName=TRUE){
-  if (caseName){
-    ans <-  dbGetQuery(.rqda$qdacon,sprintf(" select name,id from cases where status=1 and id in (select caseid from caselinkage where status=1 and fid in (%s) group by caseid )",paste(shQuote(fid),collapse=",")))
-    if (nrow(ans)>0) Encoding(ans$name) <- "UTF-8"
+GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
+  ## if (caseName){
+  if (nFiles) {
+    ## ans <-  dbGetQuery(.rqda$qdacon,sprintf(" select name,id from cases where status=1 and id in (select caseid from caselinkage where status=1 and fid in (%s) group by caseid )",paste(shQuote(fid),collapse=",")))
+    ## if (nrow(ans)>0) Encoding(ans$name) <- "UTF-8"
+    ans <- dbGetQuery(.rqda$qdacon,sprintf("select caseid, count(caseid) as nFiles from caselinkage where status=1 and fid in (%s) group by caseid",paste(shQuote(fid),collapse=",")))
   } else {
-    ans <- dbGetQuery(.rqda$qdacon,sprintf("select caseid from caselinkage where status=1 and fid in (%s) group by caseid",paste(shQuote(fid),collapse=",")))
+    ans <- dbGetQuery(.rqda$qdacon,sprintf("select caseid from caselinkage where status=1 and fid in (%s) group by caseid",paste(shQuote(fid),collapse=",")))$caseid
   }
+  ## attr(ans,"caseName") <- caseName
+  ## class(ans) <- c("data.frame","CaseId")
   ans
+}
+
+GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
+  ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from cases where status=1 and id in (%s)",paste(shQuote(caseId),collapse=",")))$name
+  if (length(ans)>0) Encoding(ans) <- "UTF-8"
+  ans
+}
+
+RQDAQuery <- function(sql){
+  ans <- dbGetQuery(.rqda$qdacon,sql)
+  ans
+}
+
+## ShowSubset <- function(name=NULL,widget=NULL,...){
+##   UseMethod("ShowSubset")
+## }
+## ShowSubset.default <- function(name=NULL,widget=NULL,...){
+##   widget[] <- name
+## }
+
+
+ShowSubset <- function(x){
+## change name from PushBack to ShowSubset()
+ if (inherits(x,"CaseAttr")) tryCatch(.rqda$.CasesNamesWidget[] <- x$case, error = function(e) {})
+ if (inherits(x,"FileAttr")) tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
+ if (inherits(x,"CaseId") && isTRUE(attr(x,"caseName"))) tryCatch(.rqda$.CasesNamesWidget[] <- x$name, error = function(e) {})
 }

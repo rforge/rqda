@@ -1,3 +1,7 @@
+2009-04-21
+	* Split GetCaseId to GetCaseId and GetCaseName.
+	* New function of RQDAQuery to wrap a call to dbGetQuery.
+	
 2009-04-20
 	* New function of GetCaseId(): the name may be changed in the future.
 	
