@@ -216,7 +216,7 @@ RunOnSelected <- function(x,multiple=TRUE,expr,enclos,title=NULL,...){
 }
 
 
-gselect.list <- function(list,multiple=TRUE,title=NULL,width=150, height=500,...){
+gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,...){
   ## gtk version of select.list()
   ## Thanks go to John Verzani for his help.
   title <- ifelse(multiple,"Select one or more","Select one")

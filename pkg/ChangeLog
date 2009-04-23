@@ -1,3 +1,6 @@
+2009-04-24
+	* Add more to the popup menu of F-cat Tab (e.g. "move selected files to  F-cat...").
+	
 2009-04-21
 	* Split GetCaseId to GetCaseId and GetCaseName.
 	* New function of RQDAQuery to wrap a call to dbGetQuery.

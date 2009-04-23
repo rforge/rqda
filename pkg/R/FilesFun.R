@@ -375,7 +375,7 @@ GetFileIdSets <- function(set=c("case","filecategory"),relation=c("union","inter
   ans
 }
 
-AddToFileCategory<- function(Widget=.rqda$.fnames_rqda){
+AddToFileCategory<- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
   filename <- svalue(Widget)
   Encoding(filename) <- "unknown"
@@ -387,23 +387,26 @@ AddToFileCategory<- function(Widget=.rqda$.fnames_rqda){
   Fcat <- dbGetQuery(.rqda$qdacon,"select catid, name from filecat where status=1")
   if (nrow(Fcat)==0){gmessage("Add File Categroy first.",con=TRUE)} else{
     Encoding(Fcat$name) <- "UTF-8"
-    ##ans <- select.list(Fcat$name,multiple=FALSE)
-    CurrentFrame <- sys.frame(sys.nframe())
-    RunOnSelected(Fcat$name,multiple=TRUE,enclos=CurrentFrame,expr={
+    Selected <- gselect.list(Fcat$name,multiple=FALSE)
+    ## CurrentFrame <- sys.frame(sys.nframe())
+    ## RunOnSelected(Fcat$name,multiple=TRUE,enclos=CurrentFrame,expr={
     if (Selected!=""){ ## must use Selected to represent the value of selected items. see RunOnSelected() for info.
       ##Selected <- iconv(Selected,to="UTF-8")
       Encoding(Selected) <- "UTF-8"
       Fcatid <- Fcat$catid[Fcat$name %in% Selected]
       exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and fid in (%s) and catid=%i",paste("'",fid,"'",sep="",collapse=","),Fcatid))
     if (nrow(exist)!=length(fid)){
-    ## write only when the selected file associated with specific f-cat is not there
+      ## write only when the selected file associated with specific f-cat is not there
       DAT <- data.frame(fid=fid[!fid %in% exist$fid], catid=Fcatid, date=date(),dateM=date(),memo='',status=1)
       ## should pay attention to the var order of DAT, must be the same as that of treefile table
       success <- dbWriteTable(.rqda$qdacon,"treefile",DAT,row.name=FALSE,append=TRUE)
       ## write to caselinkage table
-      if (success) {
-      UpdateFileofCatWidget()
+      if (success && updateWidget) {
+        UpdateFileofCatWidget()
       }
       if (!success) gmessage("Fail to write to database.")
-    }}})}}
+    }
+    }
+  }
+}
   
