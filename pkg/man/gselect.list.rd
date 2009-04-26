@@ -6,7 +6,7 @@
   Select item(s) from a character vector.
 }
 \usage{
-gselect.list(list, multiple = TRUE, title = NULL, width = 150, height = 500, ...)
+gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

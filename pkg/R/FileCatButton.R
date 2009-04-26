@@ -314,3 +314,15 @@ FileofCatWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$hand
     ## By default, the file names in the widget will be sorted.
   }
 }
+FileofCatWidgetMenu$"Show Selected File Property"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    Fid <- GetFileId("file","selected")
+    Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
+    Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
+    if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
+    if (!is.null(Case)) Encoding(Case) <- "UTF-8"
+    glabel(sprintf(" File ID is %i \n File Category is %s\n Case is %s",
+                   Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", ")),cont=TRUE)
+  }
+}
+

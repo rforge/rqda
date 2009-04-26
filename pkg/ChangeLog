@@ -1,3 +1,7 @@
+2009-04-26
+	* "Show selected file property" popup menu.
+	* Rd file of GetCaseId, GetCaseName and RQDAQuery.
+	
 2009-04-24
 	* Add more to the popup menu of F-cat Tab (e.g. "move selected files to  F-cat...").
 	

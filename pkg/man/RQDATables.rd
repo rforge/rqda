@@ -5,19 +5,20 @@
 The internal data table structures in rqda file, which is a SQLite data base.
 }
 \details{
-  Table "attributes" contatins information about ...
+  Table "attributes" contatins information about the name list of attributes.
   \tabular{ll}{
-    name:\tab . \cr 
-    status:\tab . \cr 
+    name:\tab name of attributes. \cr 
+    status:\tab .\cr 
     date:\tab . \cr 
     dateM:\tab . \cr 
     owner:\tab . \cr 
     memo:\tab . \cr 
   }
   
-  Table "caseAttr" contatins information about ...
+  Table "caseAttr" contatins information about attributes of cases.
   \tabular{ll}{
-    variable:\tab . \cr 
+    variable:\tab name of case attributes, coresponding to name in
+  attributes table. \cr
     value:\tab . \cr 
     caseID:\tab . \cr 
     date:\tab . \cr 
@@ -25,7 +26,8 @@ The internal data table structures in rqda file, which is a SQLite data base.
     owner:\tab . \cr 
   }
   
-  Table "caselinkage" contatins information about ...
+  Table "caselinkage" contatins information about the relationship
+  between case and files of case.
   \tabular{ll}{
     caseid:\tab . \cr 
     fid:\tab . \cr 
@@ -37,7 +39,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     memo:\tab . \cr 
   }
   
-  Table "cases" contatins information about ...
+  Table "cases" contatins information about case list.
   \tabular{ll}{
     name:\tab . \cr 
     memo:\tab . \cr 
@@ -47,7 +49,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     id:\tab . \cr 
     status:\tab . \cr }
   
-  Table "codecat" contatins information about ...
+  Table "codecat" contatins information about upper-level of code list.
   \tabular{ll}{
     name:\tab . \cr 
     cid:\tab . \cr 
@@ -59,7 +61,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     status:\tab . \cr 
   }
   
-  The "coding" table contains information on codings.
+  Table "coding" contains information on codings.
   \tabular{ll}{
     cid :\tab \cr 
     fid :\tab \cr 
@@ -72,7 +74,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     memo :\tab \cr 
   }
 
-  Table "fileAttr" contatins information about ...
+  Table "fileAttr" contatins information about attributes of files.
   \tabular{ll}{
     variable:\tab . \cr 
     value:\tab . \cr 
@@ -82,10 +84,10 @@ The internal data table structures in rqda file, which is a SQLite data base.
     owner:\tab . \cr 
   }
   
-  The "filecat" table contains information on the file categorization.
+  Table "filecat" contains information on the file categorization.
   \tabular{ll}{
     name:\tab name of the file category.\cr
-    fid:\tab file id.\cr
+    fid:\tab Not used.\cr
     catid:\tab if of file category.\cr
     owner:\tab creator of file-category.\cr
     date:\tab \cr
@@ -94,7 +96,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     status:\tab \cr
   }
 
-  The "freecode" table contains information on the codes list.
+  Table "freecode" contains information on the codes list.
   \tabular{ll}{
     name :\tab \cr 
     memo :\tab \cr 
@@ -105,7 +107,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     status :\tab \cr
   }
   
-  Table "journal" contatins information about ...
+  Table "journal" contatins information about field work journal.
   \tabular{ll}{
     name:\tab . \cr 
     journal:\tab . \cr 
@@ -115,7 +117,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     status:\tab . \cr 
   }
   
-  Table "project" contatins information about ...
+  Table "project" contatins information about the project and *.rqda file.
   \tabular{ll}{
     encoding:\tab . \cr 
     databaseversion:\tab . \cr 
@@ -125,7 +127,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
     BOM:\tab . \cr 
   }
   
-  The "source" table contains the content of files.
+  Table "source" contains the content of files.
   \tabular{ll}{
     name:\tab name of the file.\cr
     id:\tab id of the file.\cr
@@ -137,7 +139,8 @@ The internal data table structures in rqda file, which is a SQLite data base.
     status:\tab 1 for standard status and 0 for temporarily deleted file.\cr
   }
   
-  The "treecode" table contains information on the codes category.
+  The "treecode" table contains information on the codes categorization
+  (relationship between codes and the codecat).
   \tabular{ll}{
     cid:\tab . \cr 
     catid:\tab . \cr 
@@ -147,7 +150,8 @@ The internal data table structures in rqda file, which is a SQLite data base.
     status:\tab . \cr 
   }
 
-  Table "treefile" contatins information about ...
+  Table "treefile" contatins information about file categorization
+  (relation between source files and filecat).
   \tabular{ll}{
     fid:\tab . \cr 
     catid:\tab . \cr 
