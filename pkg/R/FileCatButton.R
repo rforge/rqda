@@ -195,7 +195,10 @@ FileCatWidgetMenu$"Delete all files of selected category"$handler <- function(h,
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     fid <- GetFileId("file")
     if (length(fid)>0){
-      dbGetQuery(.rqda$qdacon,sprintf("update source set status=0 where id in (%s)",paste(shQuote(fid),collapse=",")))
+      dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where id in (%s)",paste(shQuote(fid),collapse=",")))
+      dbGetQuery(.rqda$qdacon, sprintf("update coding set status=0 where fid in (%s)",paste(shQuote(fid),collapse=",")))
+      dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid in (%s)",paste(shQuote(fid),collapse=",")))
+      dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid in (%s)",paste(shQuote(fid),collapse=",")))
     }
   }
 }
@@ -249,6 +252,7 @@ FileofCatWidgetMenu$"Delete selected File"$handler <- function(h,...){
       dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
       dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))
       dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid=%i",fid))
+      dbGetQuery(.rqda$qdacon, sprintf("update coding set status=0 where fid=%i",fid))
     }
     ## UpdateFileofCatWidget()
     .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],SelectedFile)

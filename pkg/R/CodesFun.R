@@ -208,9 +208,13 @@ retrieval <- function(Fid=NULL,CodeNameWidget=.rqda$.codes_rqda){
       .retreivalgui <- gtext(con=.gw)
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
-        tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
-        ##fname <- paste("Source: ", FileNames, sep="")
-        retrieval$fname[retrieval$fid==i] <- FileName
+        if (!is.null(FileName)){
+          Encoding(FileName) <- "UTF-8"
+          retrieval$fname[retrieval$fid==i] <- FileName
+        } else {
+          retrieval <- retrieval[retrieval$fid!=i,]
+          RQDAQuery(sprintf("update coding set status=0 where fid=%i",i))
+        }
       }
       Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
 
@@ -290,14 +294,19 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
       ## retrieval <-  retrieval[order( retrieval$fid),]
       ## use sql to order the fid
       fid <- unique(retrieval$fid)
-      retrieval$fname <-""
+      retrieval$fname <-"" ## no fname in table "coding".
       .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),parent=c(395,10),width=600,height=600)
       .retreivalgui <- gtext(con=.gw)
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
-        tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
-        ##fname <- paste("Source: ", FileNames, sep="")
-        retrieval$fname[retrieval$fid==i] <- FileName
+        if (!is.null(FileName)) {
+          ## FileName maybe NULL due to the deletion of file.
+          Encoding(FileName) <- "UTF-8"
+          retrieval$fname[retrieval$fid==i] <- FileName
+        } else {## can take the if test and else branch away after a long period of time; same as retrieval()
+          retrieval <- retrieval[retrieval$fid!=i,]
+          RQDAQuery(sprintf("update coding set status=0 where fid=%i",i))
+        }
       }
       Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
 

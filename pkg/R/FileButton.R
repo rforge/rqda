@@ -34,6 +34,7 @@ DeleteFileButton <- function(label="Delete", container,...){
                 ## set the status of the selected file to 0
                 dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))
                 dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid=%i",fid))
+                dbGetQuery(.rqda$qdacon, sprintf("update coding set status=0 where fid=%i",fid))
                 ## set the status of the related case/f-cat to 0
                 }
                 FileNamesUpdate()
