@@ -48,19 +48,19 @@ AddFileToCaselinkage <- function(Widget=.rqda$.fnames_rqda){
   fid <- query$id
   Encoding(query$file) <- "UTF-8"
   selend <- nchar(query$file)
-  
+
   ## select a case name -> caseid
   cases <- dbGetQuery(.rqda$qdacon,"select id, name from cases where status=1")
   if (nrow(cases)!=0){
     Encoding(cases$name) <- "UTF-8"
 ##    ans <- select.list(cases$name,multiple=FALSE)
     CurrentFrame <- sys.frame(sys.nframe())
-    
+
     RunOnSelected(cases$name,multiple=FALSE,enclos=CurrentFrame,expr={
       if (Selected!=""){
         ##Selected <- iconv(Selected,to="UTF-8")
         Encoding(Selected) <- "UTF-8"
-        caseid <- cases$id[cases$name %in% Selected]       
+        caseid <- cases$id[cases$name %in% Selected]
         exist <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and fid in (%s) and caseid=%i",paste("'",fid,"'",sep="",collapse=","),caseid))
         if (nrow(exist)!=length(fid)){
           ## write only when the selected file associated with specific case is not in the caselinkage table
@@ -96,21 +96,23 @@ UpdateFileofCaseWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCase){
 }
 
 HL_Case <- function(){
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              con <- .rqda$qdacon
-              SelectedFile <- svalue(.rqda$.root_edit)
-              ## Encoding(SelectedFile) <- "UTF-8"
-              currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-              W <- .rqda$.openfile_gui
-              if (length(currentFid)!=0) {
-                mark_index <-
-                  dbGetQuery(con,sprintf("select selfirst,selend from caselinkage where fid=%i and status==1",currentFid))
-                if (nrow(mark_index)!=0){
-                  ClearMark(W ,0 , max(mark_index$selend),clear.fore.col = FALSE, clear.back.col = TRUE)
-                  HL(W,index=mark_index,fore.col=NULL,back.col=.rqda$back.col)
-                }
-              }
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        con <- .rqda$qdacon
+        SelectedFile <- svalue(.rqda$.root_edit)
+        ## Encoding(SelectedFile) <- "UTF-8"
+        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+        W <- .rqda$.openfile_gui
+        if (length(currentFid)!=0) {
+            caseName <- svalue(.rqda$.CasesNamesWidget)
+            caseid <- dbGetQuery(con,sprintf("select id from cases where name=='%s'",caseName))[,1]
+            mark_index <-
+                dbGetQuery(con,sprintf("select selfirst,selend from caselinkage where fid=%i and status==1 and caseid=%i",currentFid,caseid))
+            if (nrow(mark_index)!=0){
+                ClearMark(W ,0 , max(mark_index$selend),clear.fore.col = FALSE, clear.back.col = TRUE)
+                HL(W,index=mark_index,fore.col=NULL,back.col=.rqda$back.col)
             }
-          }
+        }
+    }
+}
 
 

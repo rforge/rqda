@@ -83,10 +83,10 @@ AddNewJournalFun <- function(){
       ans <- dbGetQuery(.rqda$qdacon,sprintf("insert into journal (name, journal,date,owner, status)
                              values ('%s', '%s', '%s', '%s', %i)",
                              title, content, date(),.rqda$owner,1))
-      if (is.null(ans)) {
-        dispose(.rqda$.AddNewJournalWidget)
-        ##gmessage("Succeed.",con=T)
-      }
+      ##if (is.null(ans)) {
+      ## dispose(.rqda$.AddNewJournalWidget)
+      ##gmessage("Succeed.",con=T)
+      ##}
       ## must put here rather than in AddJournalButton()
       JournalNamesUpdate()
 

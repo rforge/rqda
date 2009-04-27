@@ -55,7 +55,7 @@ DeleteAttrButton <- function(label="Delete"){
               Selected <- enc(Selected,"UTF-8")
               dbGetQuery(.rqda$qdacon,sprintf("update attributes set status=0 where name=='%s'",Selected))
               dbGetQuery(.rqda$qdacon,sprintf("delete from caseAttr where variable=='%s'",Selected))
-              dbGetQuery(.rqda$qdacon,sprintf("update from fileAttr where variable=='%s'",Selected))
+              dbGetQuery(.rqda$qdacon,sprintf("delete from fileAttr where variable=='%s'",Selected))
               AttrNamesUpdate()
             }
           }
@@ -159,6 +159,6 @@ GetAttr <- function(type=c("case","file")){
   }
   DF
 }}
-    
+
 
 

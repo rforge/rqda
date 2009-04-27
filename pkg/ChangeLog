@@ -1,3 +1,6 @@
+2009-04-27
+	* Bugfixes of HL_Case() and delete arributes button.
+	
 2009-04-26
 	* "Show selected file property" popup menu.
 	* Rd file of GetCaseId, GetCaseName and RQDAQuery.
