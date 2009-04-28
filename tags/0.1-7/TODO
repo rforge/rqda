@@ -1,0 +1,10 @@
+*Todo
+
+Merge *rqda from different coders
+
+inter-coder reliability 
+
+export C-Cat to mm format http://freemind.sourceforge.net/wiki/index.php/File_format
+or just use igraph package to plot a relationship plot
+
+Add new column to attributes to record the class of attributes, so to make approriate conversion when getAttr().
