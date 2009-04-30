@@ -132,7 +132,7 @@ MarkCodeFun <- function(){
               ## if there are no overlap in any kind, just write to database; otherwise, pass to else{}.
             } else {
               del1 <- (Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
-              ## if overlap or inclusion  old nested in new]
+              ## if overlap or inclusion [old nested in new]
               ## then the original coding should be deleted; then write the new coding to table
               del2 <- Exist$Relation =="overlap"
               del <- (del1 | del2)
@@ -378,7 +378,7 @@ CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
     } else gmessage("No Code with memo.",con=TRUE)
   }
 }
-CodesNamesWidgetMenu$"Merge Selected with...(Dun use it.)"$handler <- function(h, ...) {
+CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     Selected1 <- svalue(.rqda$.codes_rqda)
     cid1 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected1))[1,1]
