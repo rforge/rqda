@@ -163,7 +163,6 @@ HL_Case()
 }
 )
 
-addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) ViewJournalWidget())
+## addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) ViewJournalWidget())
 
-}
-
+}## end of GUIHandler()

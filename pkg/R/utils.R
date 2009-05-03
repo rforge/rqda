@@ -85,6 +85,18 @@ MemoWidget <- function(prefix,widget,dbTable){
         W <- get(sprintf(".%smemoW",prefix),env=.rqda)
         ## add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
         add(W,prvcontent,do.newline=FALSE)
+        ### add handler to make sure the change is not lost when closed
+        addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...){ 
+          withinWidget <- svalue(get(sprintf(".%smemoW",prefix),env=.rqda))
+          currentCode <- Selected
+          InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable, currentCode))[1, 1]
+          if (isTRUE(all.equal(withinWidget,InRQDA))) {
+            return(FALSE) } else {
+              val <- gconfirm("The memo has bee change, Close anyway?",con=TRUE)
+              return(!val)
+            }
+        }
+                            )
       }
     }
   }
@@ -172,7 +184,10 @@ ans <- dbGetQuery(.rqda$qdacon,sprintf("select id, name from source where status
 }
 if (nrow(ans)>0) Encoding(ans$name) <- "UTF-8"
 if (!is.null(ans$file)) Encoding(ans$file) <- "UTF-8"
-if (!is.null(Widget)) eval(substitute(widget[] <- ans$name,list(widget=quote(Widget))))
+if (!is.null(Widget))  {
+  eval(parse(text=sprintf(".rqda$%s[] <- ans$name",Widget)))
+  ## eval(substitute(widget[] <- ans$name,list(widget=quote(Widget))))
+}
 invisible(ans)
   } else cat("Open a project first.\n")
 }
