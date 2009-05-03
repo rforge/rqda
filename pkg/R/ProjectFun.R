@@ -198,6 +198,16 @@ ProjectMemoWidget <- function(){
     add(W,prvcontent,do.newline=FALSE)
     ## do.newline:do not add a \n (new line) at the beginning
     ## push the previous content to the widget.
+    addHandlerUnrealize(get(".projmemo",env=.rqda),handler <- function(h,...){ 
+      withinWidget <- svalue(get(".projmemocontent",env=.rqda))
+      InRQDA <- dbGetQuery(.rqda$qdacon, "select memo from project where rowid=1")[1, 1]
+      if (isTRUE(all.equal(withinWidget,InRQDA))) {
+        return(FALSE) } else {
+          val <- gconfirm("The memo has bee change, Close anyway?",con=TRUE)
+          return(!val)
+        }
+    }
+                        )
     }
 }
 

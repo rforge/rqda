@@ -37,7 +37,8 @@ DeleteFileButton <- function(label="Delete", container,...){
                 dbGetQuery(.rqda$qdacon, sprintf("update coding set status=0 where fid=%i",fid))
                 ## set the status of the related case/f-cat to 0
                 }
-                FileNamesUpdate()
+                  ##FileNamesUpdate()
+                  UpdateWidget(".fnames_rqda",from=SelectedFile,to=NULL)
               }
             }
           },
@@ -148,7 +149,8 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
           ## Newfilename <- iconv(codename,from="UTF-8") ## now use UTF-8 for SQLite data set.
           ## update the name in source table by a function
           rename(selectedFN,NewFileName,"source")
-          FileNamesUpdate()
+          ## FileNamesUpdate()
+          UpdateWidget(".fnames_rqda",from=selectedFN,to=NewFileName) ## speed it up by bypassing access the database.
           ## (name is the only field should be modifed, as other table use fid rather than name)
         }
       }

@@ -1,6 +1,7 @@
 2009-05-03
 	* MemoWidget() will issue a dialogue if the memo is changed but not saved.
 	* Improvement of SearchFiles().
+	* GetFileName() and UpdateWidget(). UpdateWidget() updates the widget without accessing the database.
 	
 2009-05-01
 	* mergeCodes() to merge the codings of two code, and add to popup menu of coding Tab.

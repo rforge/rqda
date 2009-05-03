@@ -278,8 +278,8 @@ CaseNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
    viewCaseAttr()
   }
 }
-CaseNamesWidgetMenu$"Sort by created time"$handler <- function(h,...){
-CaseNamesUpdate(.rqda$.CasesNamesWidget)
+CaseNamesWidgetMenu$"Sort All by Created Time"$handler <- function(h,...){
+  CaseNamesUpdate(.rqda$.CasesNamesWidget,sortByTime = TRUE)
 }
 CaseNamesWidgetMenu$"Web Search"$Google$handler <- function(h,...){
   KeyWord <- svalue(.rqda$.CasesNamesWidget)

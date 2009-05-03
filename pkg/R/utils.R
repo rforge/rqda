@@ -18,6 +18,21 @@ rename <- function(from,to,table=c("source","freecode","cases","codecat","fileca
   }
 }
 
+UpdateWidget <- function(widget,from,to=NULL){
+  ## widget is character of length 1.
+  items <- eval(parse(text=sprintf(".rqda$%s[]",widget)))
+  if (length(items)!= 0){
+    Encoding(items) <- "UTF-8"
+    if (is.null(to)) {
+      items <- items[! items %in% from]
+    } else {
+      if (length(from) == length(to))
+        items[items %in% from] <- to
+    }
+    eval(parse(text=sprintf(".rqda$%s[] <- items",widget)))
+  }
+}
+
 enc <- function(x,encoding="UTF-8") {
   ## replace " with two '. to make insert smoothly.
   ## encoding is the encoding of x (character vector).
@@ -263,6 +278,13 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,...
 ##x<-list(1:3,3:5,6:3)
 ##intersect2(x)
 
+GetFileName <- function(fid=GetFileId()){
+  ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from source where status=1 and id in (%s)",paste(shQuote(fid),collapse=",")))$name
+  if (length(ans)>0) Encoding(ans) <- "UTF-8"
+  ans
+}
+
+
 GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
   ## if (caseName){
   if (nFiles) {
@@ -277,6 +299,7 @@ GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
   ans
 }
 
+
 GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
   ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from cases where status=1 and id in (%s)",paste(shQuote(caseId),collapse=",")))$name
   if (length(ans)>0) Encoding(ans) <- "UTF-8"
@@ -288,10 +311,10 @@ RQDAQuery <- function(sql){
   ans
 }
 
-## ShowSubset <- function(name=NULL,widget=NULL,...){
+## ShowSubset <- function(x,widget=NULL,...){
 ##   UseMethod("ShowSubset")
 ## }
-## ShowSubset.default <- function(name=NULL,widget=NULL,...){
+## ShowSubset.default <- function(x,widget=NULL,...){
 ##   widget[] <- name
 ## }
 
