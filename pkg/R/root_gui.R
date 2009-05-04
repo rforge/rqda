@@ -1,14 +1,14 @@
 RQDA <- function() {
 ########################### aux functions
-########################### 
+###########################
   NI <- function(...){
     gmessage("Not Implemented Yet.",con=TRUE)
   }
 
 
-  
+
 ########################### GUI FOR ROOT
-########################### 
+###########################
   ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis.",parent=c(2,10),
                              width=300,height=600,visible=FALSE,handler=function(h,...){
                                tryCatch(dispose(.rqda$.root_edit),error=function(e){})
@@ -16,13 +16,13 @@ RQDA <- function() {
                              }
                              )
 
-  
+
   ".nb_rqdagui" <- gnotebook(4,container=.root_rqdagui,closebuttons=FALSE)
-  
-  
-  
+
+
+
 ########################### GUI FOR PROJECT
-########################### 
+###########################
   ".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project")
   NewProjectButton(container=.proj_gui)
   OpenProjectButton(container=.proj_gui)
@@ -33,17 +33,17 @@ RQDA <- function() {
   BackupProjectButton(container=.proj_gui)
   CleanProjButton(container=.proj_gui)
   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
-  
+
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: BSD License\n
-Version: 0.1-7\n",
+Version: 0.1-8 dev\n",
          container=.proj_gui
         )
 
 
 
-########################### GUI for FILES 
+########################### GUI for FILES
 ###########################
   ".files_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Files")
   ".files_button" <- ggroup(container=.files_pan,horizontal=TRUE)
@@ -58,7 +58,7 @@ Version: 0.1-7\n",
   File_RenameButton(label="Rename", container=.files_button,FileWidget=.fnames_rqda)
   ## rename a selected file.
 
- 
+
 ########################### GUI for CODES
 ###########################
   ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes")
@@ -94,7 +94,7 @@ Version: 0.1-7\n",
   .case_buttons[1,4] <- CaseUnMark_Button()
   .case_buttons[1,5] <- CaseMark_Button()
   ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
-  
+
 
 ########################### GUI for Attributes
 ###########################
@@ -107,6 +107,7 @@ Version: 0.1-7\n",
   .attr_buttons[1,2] <- DeleteAttrButton()
   .attr_buttons[1,3] <- RenameAttrButton()
   .attr_buttons[1,4] <- AttrMemoButton()
+  .attr_buttons[1,5] <- SetAttrClsButton()
 
 ######################### GUI  for C-cat
 #########################
@@ -139,7 +140,7 @@ Version: 0.1-7\n",
    .filecat_buttons[1,5] <- FileCatDropFromButton("DropFrom")
 
 
-########################### GUI for Search 
+########################### GUI for Search
 ###########################
 ##   ".fsearch_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Search")
 ##  ".fsearch_rqda" <- glabel("Use SearchFiles function to search files.\nSee ?SearchFiles for more.",container=.fsearch_pan)
@@ -158,12 +159,12 @@ Version: 0.1-7\n",
   .journal_buttons[1,2] <- DeleteJournalButton()
   .journal_buttons[1,3] <-  OpenJournalButton()
   .journal_buttons[1,4] <-  RenameJournalButton()
- 
+
 ######################### GUI  for settings
 #########################
    ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings")
    addSettingGUI(cont=.settings_gui)
-  
+
 ######################### Put them together
 #########################
   visible(.root_rqdagui) <- TRUE

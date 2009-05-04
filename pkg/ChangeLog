@@ -1,3 +1,7 @@
+2009-05-04
+	* Project memo and journal editor will issue a dialogue if the 	memo is changed but not saved.
+	* Class button to set class of attributes.
+	
 2009-05-03
 	* MemoWidget() will issue a dialogue if the memo is changed but not saved.
 	* Improvement of SearchFiles().

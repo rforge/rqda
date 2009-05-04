@@ -160,5 +160,30 @@ GetAttr <- function(type=c("case","file")){
   DF
 }}
 
+SetAttrClsButton <- function(label="Class"){
+    gbutton(label,handler=function(h,...) {
+        if (is_projOpen(env=.rqda,conName="qdacon")) {
+            setAttrType()
+        }
+    })}
 
 
+setAttrType <- function() {
+    Selected <- enc(svalue(.rqda$.AttrNamesWidget),encoding="UTF-8")
+    oldCls <- dbGetQuery(.rqda$qdacon,sprintf("select class from attributes where name='%s'",Selected))[,1]
+    if (is.null(oldCls)||is.na(oldCls)) {
+        items <- c("unspecified","numeric","character")
+        idx <- 1
+    } else {
+        items <- c("numeric","character")
+        idx <- which (items %in%  oldCls)
+    }
+    w <- gwindow("Type of attributes",heigh=30,width=150)
+    gp <- ggroup(horizontal=FALSE,container=w)
+    rb <- gradio(items,idx,horizontal=TRUE, cont=gp)
+    gbutton("OK",con=gp,handler=function(h,...){
+        if ((newCls <- svalue(rb))!= "unspecified"){
+            dbGetQuery(.rqda$qdacon,sprintf("update attributes set class='%s' where name='%s'",newCls,Selected))
+        }
+        dispose(w)
+    })}

@@ -12,3 +12,7 @@ Add new column to attributes to record the class of attributes, so to make appro
 Add argument to retrieval to sort the codings.
 
 Export codings to html.
+
+improve UpdateWidget to scroll to position.
+
+sort the f-cat and c-cat in the widget.
