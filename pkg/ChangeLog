@@ -1,3 +1,6 @@
+2009-05-06
+	* add new argument to retrieval().
+	
 2009-05-04
 	* Project memo and journal editor will issue a dialogue if the 	memo is changed but not saved.
 	* Class button to set class of attributes.

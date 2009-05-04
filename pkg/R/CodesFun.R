@@ -187,18 +187,33 @@ sindex <- function(widget){
 ##   }
 ## }
 
-retrieval <- function(Fid=NULL,CodeNameWidget=.rqda$.codes_rqda){
+retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.rqda$.codes_rqda){
   currentCode <- svalue(CodeNameWidget)
   if (length(currentCode)!=0){
     ## Encoding(currentCode) <- "UTF-8"
     currentCode <- enc(currentCode,"UTF-8")
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
     ## reliable is more important
+    order <- match.arg(order)
+    order <- switch(order,
+           fname="order by source.name",
+           ftime="order by source.id",
+           ctime="")
   if (is.null(Fid)){
-    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i order by fid",currentCid))
+    retrieval <- dbGetQuery(.rqda$qdacon, sprintf("select coding.cid,coding.fid, coding.selfirst, coding.selend,
+                                                  coding.seltext, source.name,source.id from coding,source
+                                                  where coding.status==1 and coding.cid=%i and source.id=coding.fid %s",
+                                                  currentCid,order))
+
+    ## retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i order by fid",currentCid))
   } else {
-    retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(Fid,collapse=",")))
-   }
+    retrieval <- dbGetQuery(.rqda$qdacon, sprintf("select coding.cid,coding.fid, coding.selfirst, coding.selend,
+                                                  coding.seltext, source.name,source.id from coding,source
+                                                  where coding.status==1 and coding.cid=%i and source.id=coding.fid
+                                                  and coding.fid in (%s) %s",
+                                                  currentCid, paste(Fid,collapse=","), order))
+    ## retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(Fid,collapse=",")))
+  }
     if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
       ## retrieval <-  retrieval[order( retrieval$fid),]
       ## use sql to order the fid

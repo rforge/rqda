@@ -7,8 +7,6 @@ inter-coder reliability
 export C-Cat to mm format http://freemind.sourceforge.net/wiki/index.php/File_format
 or just use igraph package to plot a relationship plot
 
-Add argument to retrieval to sort the codings.
-
 Export codings to html.
 
 improve UpdateWidget to scroll to position.
