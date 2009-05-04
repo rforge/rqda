@@ -157,6 +157,10 @@ GetAttr <- function(type=c("case","file")){
       class(DF) <- c("FileAttr","data.frame")
     }}
   }
+  tt <- RQDAQuery("select name, class from attributes")
+  attrs <- tt[tt$class=="numeric","name"]
+  idx <- which(names(DF) %in% attrs)
+  DF[,idx]<-as.data.frame(apply(DF[,idx,drop=FALSE],2,as.numeric))
   DF
 }}
 
@@ -170,20 +174,24 @@ SetAttrClsButton <- function(label="Class"){
 
 setAttrType <- function() {
     Selected <- enc(svalue(.rqda$.AttrNamesWidget),encoding="UTF-8")
-    oldCls <- dbGetQuery(.rqda$qdacon,sprintf("select class from attributes where name='%s'",Selected))[,1]
+    oldCls <- tryCatch(dbGetQuery(.rqda$qdacon,sprintf("select class from attributes where name='%s'",Selected))[1,1],
+                       error=function(e){
+                         dbGetQuery(RQDA:::.rqda$qdacon, "alter table attributes add column class text")
+                         dbGetQuery(.rqda$qdacon,sprintf("select class from attributes where name='%s'",Selected))[1,1]
+                       })
     if (is.null(oldCls)||is.na(oldCls)) {
-        items <- c("unspecified","numeric","character")
-        idx <- 1
+      items <- c("unspecified","numeric","character")
+      idx <- 1
     } else {
-        items <- c("numeric","character")
-        idx <- which (items %in%  oldCls)
+      items <- c("numeric","character")
+      idx <- which (items %in%  oldCls)
     }
     w <- gwindow("Type of attributes",heigh=30,width=150)
     gp <- ggroup(horizontal=FALSE,container=w)
     rb <- gradio(items,idx,horizontal=TRUE, cont=gp)
     gbutton("OK",con=gp,handler=function(h,...){
-        if ((newCls <- svalue(rb))!= "unspecified"){
-            dbGetQuery(.rqda$qdacon,sprintf("update attributes set class='%s' where name='%s'",newCls,Selected))
-        }
-        dispose(w)
+      if ((newCls <- svalue(rb))!= "unspecified"){
+        dbGetQuery(.rqda$qdacon,sprintf("update attributes set class='%s' where name='%s'",newCls,Selected))
+      }
+      dispose(w)
     })}
