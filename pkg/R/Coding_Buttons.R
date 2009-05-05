@@ -30,7 +30,8 @@ DeleteCodeButton <- function(label="Delete"){
                 ## set status in table freecode to 0
                 dbGetQuery(.rqda$qdacon,sprintf("update coding set status=0 where cid==%i",cid))
                 ## set status in table coding to 0
-                CodeNamesUpdate(sortByTime=FALSE)
+                ## CodeNamesUpdate(sortByTime=FALSE)
+                UpdateWidget(".codes_rqda",from=SelectedCode,to=NULL)
               }
                                  }
           }
@@ -332,7 +333,8 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
           ## update the name in source table by a function
           rename(selectedCodeName,NewCodeName,"freecode")
           ## (name is the only field should be modifed, as other table use ID rather than name)
-          CodeNamesUpdate(sortByTime=FALSE)
+          ## CodeNamesUpdate(sortByTime=FALSE)
+          UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)
         }
       }
     }

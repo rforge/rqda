@@ -23,13 +23,19 @@ UpdateWidget <- function(widget,from,to=NULL){
   items <- eval(parse(text=sprintf(".rqda$%s[]",widget)))
   if (length(items)!= 0){
     Encoding(items) <- "UTF-8"
+    idx <- as.character(which(items %in%  from[1])) ## note the position, before manipulation of items
     if (is.null(to)) {
       items <- items[! items %in% from]
     } else {
       if (length(from) == length(to))
         items[items %in% from] <- to
     }
-    eval(parse(text=sprintf(".rqda$%s[] <- items",widget)))
+    ## eval(parse(text=sprintf(".rqda$%s[] <- items",widget)))
+    tryCatch(eval(parse(text = sprintf(".rqda$%s[] <- items", widget))),
+             error = function(e) cat("warning msg from the replacement.\n"))
+    path <-gtkTreePathNewFromString(idx)
+    gtkTreeViewScrollToCell(slot(slot(get(sprintf("%s[]",widget),env=.rqda),"widget"),"widget"),
+                            path,use.align=TRUE,row.align = 0.05)
   }
 }
 

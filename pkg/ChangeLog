@@ -1,5 +1,7 @@
 2009-05-06
 	* add new argument to retrieval().
+	* improvement of UpdateWidge to scroll the approriate position.
+	* Use UpdateWidge after del/rename files and codes.
 	
 2009-05-04
 	* Project memo and journal editor will issue a dialogue if the 	memo is changed but not saved.
