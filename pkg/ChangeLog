@@ -1,7 +1,10 @@
-2009-05-06
+2009-05-05
 	* add new argument to retrieval().
 	* improvement of UpdateWidge to scroll the approriate position.
 	* Use UpdateWidge after del/rename files and codes.
+	* Improvement of add case button: Scroll to the new added case.
+	* Show file property by click .fnames_rqda .FileofCat and .FileofCase.
+	* add double click handler of journal widget.
 	
 2009-05-04
 	* Project memo and journal editor will issue a dialogue if the 	memo is changed but not saved.

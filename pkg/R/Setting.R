@@ -24,6 +24,11 @@ Setting <- list(type = "ggroup",
                             type = "gcombobox",## width=width,
                             items = c(FALSE, TRUE)
                             ),
+                      list(name = "SFP",
+                           label = "ShowFileProperty",
+                           type = "gcombobox",## width=width,
+                           items = c(FALSE, TRUE)
+                           ),
                        list(name = "fore.col",
                             label = "Color for Coding",
                             type = "gedit",width=width,
@@ -62,12 +67,14 @@ addHandlerChanged(okButton, function(h,...) {
 
 addHandlerChanged(resetButton, function(h,...) {
   tryCatch(svalue(SettingFL[]$BOM) <- FALSE,error=function(e){})
+  tryCatch(svalue(SettingFL[]$SFP) <- FALSE,error=function(e){})
   tryCatch(svalue(SettingFL[]$encoding) <- "unknown",error=function(e){})
   tryCatch(svalue(SettingFL[]$owner) <- "default",error=function(e){})
-  tryCatch(svalue(SettingFL[]$back.col) <- "gray92",error=function(e){})
+  tryCatch(svalue(SettingFL[]$back.col) <- "gold",error=function(e){})
   tryCatch(svalue(SettingFL[]$fore.col) <- "blue",error=function(e){})
   tryCatch(svalue(SettingFL[]$TOR) <- "unconditional",error=function(e){})
   assign("BOM",FALSE,env=.rqda)
+  assign("SFP",FALSE,env=.rqda)
   assign("encoding","unknown",env=.rqda)
   assign("owner","default",env=.rqda)
   assign("back.col","gray92",env=.rqda)

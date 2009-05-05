@@ -7,7 +7,11 @@ AddCaseButton <- function(label="ADD"){
         CaseName <- enc(CaseName,encoding="UTF-8")
         AddCase(CaseName)
         CaseNamesUpdate()
-      }
+        idx <- as.character(which(.rqda$.CasesNamesWidget[] %in%  CaseName)) ## note the position, before manipulation of items
+        path <-gtkTreePathNewFromString(idx)
+        gtkTreeViewScrollToCell(slot(slot(.rqda$.CasesNamesWidget,"widget"),"widget"),
+                                path,use.align=TRUE,row.align = 0.05)
+    }
     }
   }
           )
@@ -115,7 +119,7 @@ MarkCaseFun <- function(){
     tryCatch({
       ans <- mark(get(".openfile_gui",env=.rqda),fore.col=NULL,back.col=.rqda$back.col)
       ## can change the color
-      if (ans$start != ans$end){ 
+      if (ans$start != ans$end){
         ## when selected no text, makes on sense to do anything.
         SelectedCase <- svalue(.rqda$.CasesNamesWidget)
         ## Encoding(SelectedCase) <- "UTF-8"
@@ -207,7 +211,7 @@ CaseUnMark_Button<-function(label="Unmark"){
             }},action=list(widget=".openfile_gui")
             )
         }
-  
+
 ##   AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
 ##     gbutton(label,handler=function(h,...) {
 ##       if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -227,7 +231,7 @@ CaseUnMark_Button<-function(label="Unmark"){
 ##     }
 ##             )
 ## }
-  
+
 CaseNamesWidgetMenu <- list()
 CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
@@ -241,7 +245,7 @@ CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
       fileoutofcase <- subset(freefile,!(id %in% fileofcase$fid))
       } else  fileoutofcase <- freefile
     if (length(fileoutofcase[['name']])==0) gmessage("All files are linked with this case.", cont=TRUE) else {
-      ##Selected <- select.list(fileoutofcase[['name']],multiple=TRUE)    
+      ##Selected <- select.list(fileoutofcase[['name']],multiple=TRUE)
     CurrentFrame <- sys.frame(sys.nframe())
     ## sys.frame(): get the frame of n
     ## nframe(): get n of current frame

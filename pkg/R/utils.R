@@ -34,7 +34,7 @@ UpdateWidget <- function(widget,from,to=NULL){
     tryCatch(eval(parse(text = sprintf(".rqda$%s[] <- items", widget))),
              error = function(e) cat("warning msg from the replacement.\n"))
     path <-gtkTreePathNewFromString(idx)
-    gtkTreeViewScrollToCell(slot(slot(get(sprintf("%s[]",widget),env=.rqda),"widget"),"widget"),
+    gtkTreeViewScrollToCell(slot(slot(get(widget,env=.rqda),"widget"),"widget"),
                             path,use.align=TRUE,row.align = 0.05)
   }
 }
@@ -74,7 +74,7 @@ OrderByTime <- function(date,decreasing = FALSE)
 MemoWidget <- function(prefix,widget,dbTable){
   ## prefix of window tile. E.g. "Code" ->  tile of gwindow becomes "Code Memo:"
   ## widget of the F-cat/C-cat list, such as widget=.rqda$.fnames_rqda
-  
+
   if (is_projOpen(env=.rqda,"qdacon")) {
       Selected <- svalue(widget)
       if (length(Selected)==0){
@@ -107,7 +107,7 @@ MemoWidget <- function(prefix,widget,dbTable){
         ## add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
         add(W,prvcontent,do.newline=FALSE)
         ### add handler to make sure the change is not lost when closed
-        addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...){ 
+        addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...){
           withinWidget <- svalue(get(sprintf(".%smemoW",prefix),env=.rqda))
           currentCode <- Selected
           InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable, currentCode))[1, 1]
@@ -127,16 +127,16 @@ GetCodingTable <- function(){
   ## test when any table is empty
   ## http://archives.postgresql.org/pgsql-sql/2004-01/msg00160.php
   if ( isIdCurrent(.rqda$qdacon)) {
-   ## Codings <- dbGetQuery(.rqda$qdacon,"select freecode.name as codename, freecode.id as cid, 
+   ## Codings <- dbGetQuery(.rqda$qdacon,"select freecode.name as codename, freecode.id as cid,
    ##         coding.cid as cid2,coding.fid as fid,source.id as fid2, source.name as filename,
    ##         coding.selend - coding.selfirst as CodingLength,coding.selend, coding.selfirst
-   ##         from coding, freecode, source 
+   ##         from coding, freecode, source
    ##         where coding.status==1 and freecode.id=coding.cid and coding.fid=source.id")
    Codings <- dbGetQuery(.rqda$qdacon,"select coding.cid, coding.fid, freecode.name as codename, source.name as filename,
                                        coding.selfirst as index1, coding.selend as index2,
                                        coding.selend - coding.selfirst as CodingLength
                                       from coding left join freecode on (coding.cid=freecode.id)
-                                                  left join source on (coding.fid=source.id) 
+                                                  left join source on (coding.fid=source.id)
                                       where coding.status==1 and source.status=1 and freecode.status=1")
 
     if (nrow(Codings)!=0){
@@ -256,7 +256,7 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,...
   ## gtk version of select.list()
   ## Thanks go to John Verzani for his help.
   title <- ifelse(multiple,"Select one or more","Select one")
-  
+
   helper <- function(){
     ans<-new.env()
     x1<-ggroup(horizontal=FALSE) # no parent container here
@@ -330,4 +330,21 @@ ShowSubset <- function(x){
  if (inherits(x,"CaseAttr")) tryCatch(.rqda$.CasesNamesWidget[] <- x$case, error = function(e) {})
  if (inherits(x,"FileAttr")) tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
  if (inherits(x,"CaseId") && isTRUE(attr(x,"caseName"))) tryCatch(.rqda$.CasesNamesWidget[] <- x$name, error = function(e) {})
+}
+
+ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        if (isTRUE(.rqda$SFP)){
+        Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
+        Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
+        if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
+        if (!is.null(Case)) Encoding(Case) <- "UTF-8"
+        val <- sprintf(" File ID is %i \n File Category is %s\n Case is %s",
+                              Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", "))
+        tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
+            gw <- gwindow("File Property",parent=c(395,10),width=600,height=50)
+            sfp <- glabel(val,cont=gw)
+            assign(".sfp",sfp,env=.rqda)
+        })
+    }}
 }
