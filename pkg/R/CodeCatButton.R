@@ -1,15 +1,16 @@
 ### UpdateTableWidget() and AddTodbTable() are generall version of the previous functions
-UpdateTableWidget <- function(Widget,FromdbTable,con=.rqda$qdacon,...)
+UpdateTableWidget <- function(Widget,FromdbTable,con=.rqda$qdacon,sortByTime=FALSE,decreasing=FALSE,...)
 {
   if (isIdCurrent(con)){
   items <- dbGetQuery(con, sprintf("select name,date from %s where status=1",FromdbTable))
   if (nrow(items)!=0) {
-    items <- items$name[OrderByTime(items$date)] ## sort according to date
-    Encoding(items) <- "UTF-8"
+    Encoding(items$name) <- "UTF-8"
+    if (!sortByTime) {items <- sort(items$name,decreasing=decreasing)} else {
+      items <- items$name[OrderByTime(items$date,decreasing=decreasing)]
+    }
   } else items <- NULL
-    tryCatch(eval(substitute(W[] <- items,list(W=quote(Widget)))), error=function(e){})
-  }
-}
+  tryCatch(eval(substitute(W[] <- items,list(W=quote(Widget)))), error=function(e){})
+}}
 
 
 AddTodbTable <- function(item,dbTable,Id="id",field="name",con=.rqda$qdacon,...) {

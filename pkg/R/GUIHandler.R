@@ -114,6 +114,7 @@ Handler <- function(){
                         HL(widget,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)}
                 },error=function(e){}) # end of mark text chuck
             }
+            UpdateFileofCaseWidget()
         }
     },action=list(marktxtwidget=".openfile_gui")
                       )
@@ -153,7 +154,7 @@ Handler <- function(){
     add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
     ## popup menu by right-click on CaseNamesWidget
 
-    addhandlerclicked(.rqda$.CasesNamesWidget, handler <- function(h,...) {UpdateFileofCaseWidget()})
+    ## addhandlerclicked(.rqda$.CasesNamesWidget, handler <- function(h,...) {UpdateFileofCaseWidget()})
 
     add3rdmousepopupmenu(.rqda$.FileofCase, FileofCaseWidgetMenu)
 

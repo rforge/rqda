@@ -334,7 +334,7 @@ ShowSubset <- function(x){
 
 ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-        if (isTRUE(.rqda$SFP)){
+        if (isTRUE(.rqda$SFP) && !is.null(Fid)){
         Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
         Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
         if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
