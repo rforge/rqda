@@ -236,6 +236,9 @@ FileNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
    viewFileAttr()
   }
 }
+FileNamesWidgetMenu$"Edit Seleted File"$handler <- function(h, ...) {
+  EditFileFun()
+}
 FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     content <- tryCatch(svalue(RQDA:::.rqda$.openfile_gui),error=function(e){NULL})

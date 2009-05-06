@@ -1,5 +1,6 @@
 2009-05-06
 	* add arguments to UpdateTableWidget() to sort the items according to name or time -> by default, f-cat and c-cat are sorted by name.
+	* Can edit a selected file (popup menu of Files Tab).
 	
 2009-05-05
 	* add new argument to retrieval().
