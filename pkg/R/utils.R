@@ -317,20 +317,20 @@ RQDAQuery <- function(sql){
   ans
 }
 
-## ShowSubset <- function(x,widget=NULL,...){
-##   UseMethod("ShowSubset")
-## }
-## ShowSubset.default <- function(x,widget=NULL,...){
-##   widget[] <- name
-## }
-
-
-ShowSubset <- function(x){
-## change name from PushBack to ShowSubset()
- if (inherits(x,"CaseAttr")) tryCatch(.rqda$.CasesNamesWidget[] <- x$case, error = function(e) {})
- if (inherits(x,"FileAttr")) tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
- if (inherits(x,"CaseId") && isTRUE(attr(x,"caseName"))) tryCatch(.rqda$.CasesNamesWidget[] <- x$name, error = function(e) {})
+ShowSubset <- function(x,...){
+  UseMethod("ShowSubset")
 }
+ShowSubset.default <- function(x,widget=".rqda$.fnames_rqda",...){
+  widget <- substitute(widget)
+  eval(parse(text=sprintf("%s[] <- x",widget)))
+}
+ShowSubset.CaseAttr <- function(x,...){
+  tryCatch(.rqda$.CasesNamesWidget[] <- x$case, error = function(e) {})
+}
+ShowSubset.FileAttr <- function(x,...){
+  tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
+}
+
 
 ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
@@ -342,7 +342,7 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
         val <- sprintf(" File ID is %i \n File Category is %s\n Case is %s",
                               Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", "))
         tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
-            gw <- gwindow("File Property",parent=c(395,10),width=600,height=50)
+            gw <- gwindow("File Property",parent=c(395,610),width=600,height=50)
             sfp <- glabel(val,cont=gw)
             assign(".sfp",sfp,env=.rqda)
         })

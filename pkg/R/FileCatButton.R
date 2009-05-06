@@ -243,6 +243,9 @@ FileofCatWidgetMenu$"File Memo"$handler <- function(h,...){
 FileofCatWidgetMenu$"Open Selected File"$handler <- function(h,...){
   ViewFileFun(FileNameWidget=.rqda$.FileofCat)
 }
+FileofCatWidgetMenu$"Edit Selected File"$handler <- function(h,...){
+  EditFileFun(FileNameWidget=.rqda$.FileofCat)
+}
 FileofCatWidgetMenu$"Delete selected File"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     SelectedFile <- svalue(.rqda$.FileofCat)

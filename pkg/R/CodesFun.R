@@ -65,18 +65,20 @@ mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL){
   endN <- index$endN
   if (startN != endN){
     buffer <- slot(widget,"widget")@widget$GetBuffer()
-    TagTable <- buffer$GetTagTable()
+    ##TagTable <- buffer$GetTagTable()
     if (!is.null(fore.col)){
-      if (is.null(TagTable$Lookup("MarkForeGround"))) {
-      TagTable$Add(buffer$createTag("MarkForeGround",foreground = fore.col))
-      }
-      buffer$ApplyTagByName("MarkForeGround",startI,endI)
+      ##if (is.null(TagTable$Lookup("MarkForeGround"))) {
+      ##TagTable$Add(buffer$createTag("MarkForeGround",foreground = fore.col))
+      ##}
+      ##buffer$ApplyTagByName("MarkForeGround",startI,endI)
+      buffer$ApplyTagByName(fore.col,startI,endI)## make use of property of gtext().
     }
     if (!is.null(back.col)){
-      if (is.null(TagTable$Lookup("MarkBackGround"))) {
-      TagTable$Add(buffer$createTag("MarkBackGround",background = back.col))
-      }
-      buffer$ApplyTagByName("MarkBackGround",startI,endI)
+      ## if (is.null(TagTable$Lookup("MarkBackGround"))) {
+      ##       TagTable$Add(buffer$createTag("MarkBackGround",background = back.col))
+      ##       }
+      ##       buffer$ApplyTagByName("MarkBackGround",startI,endI)
+      buffer$ApplyTagByName(sprinf("%s.background",back.col),startI,endI)
     }
     ## buffer$createTag("red.foreground",foreground = "red")
     ## buffer$ApplyTagByName("red.foreground",startI,endI)
@@ -94,39 +96,40 @@ ClearMark <- function(widget,min=0, max, clear.fore.col=TRUE,clear.back.col=FALS
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     startI <-gtkTextBufferGetIterAtOffset(buffer,min)$iter # translate number back to iter
     endI <-gtkTextBufferGetIterAtOffset(buffer,max)$iter
-    TagTable <- buffer$GetTagTable()
-    if (clear.fore.col && !is.null(TagTable$Lookup("MarkForeGround"))) gtkTextBufferRemoveTagByName(buffer,"MarkForeGround",startI,endI)
-    if (clear.back.col && !is.null(TagTable$Lookup("MarkBackGround"))) gtkTextBufferRemoveTagByName(buffer,"MarkBackGround",startI,endI)
+    ##     TagTable <- buffer$GetTagTable()
+    ##     if (clear.fore.col && !is.null(TagTable$Lookup("MarkForeGround"))) gtkTextBufferRemoveTagByName(buffer,"MarkForeGround",startI,endI)
+    ##     if (clear.back.col && !is.null(TagTable$Lookup("MarkBackGround"))) gtkTextBufferRemoveTagByName(buffer,"MarkBackGround",startI,endI)
+    if (clear.fore.col) gtkTextBufferRemoveTagByName(buffer,.rqda$fore.col,startI,endI)
+    if (clear.back.col) gtkTextBufferRemoveTagByName(buffer,sprintf("%s.background",.rqda$back.col),startI,endI)
   },
            error=function(e){})
 }
-
 
 HL <- function(W,index,fore.col=.rqda$fore.col,back.col=NULL){
   ## W is the gtext widget of the text.
   ## highlight text chuck according to index
   ## index is a data frame, each row == one text chuck.
   buffer <- slot(W,"widget")@widget$GetBuffer()
-  TagTable <- buffer$GetTagTable()
-  if (!is.null(fore.col)){
-    if (is.null(TagTable$Lookup("MarkForeGround"))) {
-      TagTable$Add(buffer$createTag("MarkForeGround",foreground = fore.col))
-    }
-  }
-  if (!is.null(back.col)){
-    if (is.null(TagTable$Lookup("MarkBackGround"))) {
-      TagTable$Add(buffer$createTag("MarkBackGround",background = back.col))
-    }
-  }
+  ##TagTable <- buffer$GetTagTable()
+  ## if (!is.null(fore.col)){
+    ##if (is.null(TagTable$Lookup("MarkForeGround"))) {
+    ##  TagTable$Add(buffer$createTag("MarkForeGround",foreground = fore.col))
+    ##}
+  ##}
+  ##if (!is.null(back.col)){
+  ##  if (is.null(TagTable$Lookup("MarkBackGround"))) {
+  ##    TagTable$Add(buffer$createTag("MarkBackGround",background = back.col))
+  ##  }
+  ##}
   tryCatch(
            apply(index,1, function(x){
              start <-gtkTextBufferGetIterAtOffset(buffer,x[1])$iter # translate number back to iter
              end <-gtkTextBufferGetIterAtOffset(buffer,x[2])$iter
              if (!is.null(fore.col)){
-               buffer$ApplyTagByName("MarkForeGround",start,end)
+               buffer$ApplyTagByName(fore.col,start,end)
              }
              if (!is.null(back.col)){
-               buffer$ApplyTagByName("MarkBackGround",start,end)
+               buffer$ApplyTagByName(sprintf("%s.background",back.col),start,end)
              }
            }
                  ),
