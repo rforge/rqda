@@ -35,9 +35,19 @@ UpdateWidget <- function(widget,from,to=NULL){
              error = function(e) cat("warning msg from the replacement.\n"))
     path <-gtkTreePathNewFromString(idx)
     gtkTreeViewScrollToCell(slot(slot(get(widget,env=.rqda),"widget"),"widget"),
-                            path,use.align=TRUE,row.align = 0.05)
+                            path,use.align=TRUE,row.align = 0.07)
   }
 }
+
+ScrollToItem <- function(widget,item=svalue(widget)){
+    items <- widget[]
+    if (length(items)!= 0){
+        Encoding(items) <- "UTF-8"
+        idx <- as.character(which(items %in% item))
+        if (length(idx)!=0){
+        path <-gtkTreePathNewFromString(idx)
+        gtkTreeViewScrollToCell(slot(slot(widget,"widget"),"widget"), path,use.align=TRUE,row.align = 0.07)
+    }}}
 
 enc <- function(x,encoding="UTF-8") {
   ## replace " with two '. to make insert smoothly.
@@ -345,7 +355,7 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
         val <- sprintf(" File ID is %i \n File Category is %s\n Case is %s",
                               Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", "))
         tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
-            gw <- gwindow("File Property",parent=c(395,615),width=600,height=50)
+            gw <- gwindow("File Property",parent=c(395,620),width=600,height=50)
             sfp <- glabel(val,cont=gw)
             assign(".sfp",sfp,env=.rqda)
         })

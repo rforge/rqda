@@ -121,8 +121,9 @@ Version: 0.1-8 dev\n",
    .codecat_buttons[1,1] <- AddCodeCatButton("Add")
    .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
    .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
-   .codecat_buttons[1,4] <- CodeCatAddToButton("AddTo")
-   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropFrom")
+   .codecat_buttons[2,1] <- CodeCatAddToButton("AddTo")
+   .codecat_buttons[2,2] <- CodeCatDropFromButton("DropFrom")
+   .codecat_buttons[2,3] <- CodeCatMemoButton()
 
 ######################### GUI  for F-cat
 #########################
@@ -136,9 +137,9 @@ Version: 0.1-8 dev\n",
    .filecat_buttons[1,1] <- AddFileCatButton("Add")
    .filecat_buttons[1,2] <- DeleteFileCatButton("Delete") ## should take care of treecode table
    .filecat_buttons[1,3] <- FileCat_RenameButton("Rename")
-   .filecat_buttons[1,4] <- FileCatMemoButton()
+   .filecat_buttons[2,3] <- FileCatMemoButton()
    .filecat_buttons[2,1] <- FileCatAddToButton("AddTo")
-   .filecat_buttons[2,1] <- FileCatDropFromButton("DropFrom")
+   .filecat_buttons[2,2] <- FileCatDropFromButton("DropFrom")
 
 
 ########################### GUI for Search
@@ -190,8 +191,8 @@ assign(".FileofCat",.FileofCat,env=.rqda)
 ##########################
 ### set the positions
 svalue(.codes_pan) <- 0.13
-svalue(.codecat_pan)<-0.07
-svalue(.filecat_pan)<-0.07
+svalue(.codecat_pan)<-0.13
+svalue(.filecat_pan)<-0.13
 svalue(.case_pan)<-0.07
 svalue(.attr_pan)<-0.07
 

@@ -64,10 +64,10 @@ DeleteCodeCatButton <- function(label="Delete"){
                   dbGetQuery(.rqda$qdacon,sprintf("update codecat set status=0 where name=='%s'",Selected))
                   ## set status in table freecode to 0
                   UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat")
-                  tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treecode set status=0 where catid=='%s'",catid)),error=function(e){}) 
+                  tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treecode set status=0 where catid=='%s'",catid)),error=function(e){})
                   ## should delete all the related codelists
                   UpdateCodeofCatWidget() ## update the code of cat widget
-                } else gmessage("The Category Name is not unique.",con=TRUE)            
+                } else gmessage("The Category Name is not unique.",con=TRUE)
               }
             }
           }
@@ -156,7 +156,7 @@ CodeCatAddToButton <- function(label="AddTo",Widget=.rqda$.CodeCatWidget,...)
   }
           )
 }
-        
+
   ## update .rqda$.CodeofCat[] by click handler on .rqda$.CodeCatWidget
 
 CodeCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.CodeofCat,...)
@@ -185,13 +185,17 @@ CodeCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.CodeofCat,...)
           )
 }
 
-
+CodeCatMemoButton <- function(label="Memo",...){
+    gbutton(label,handler=function(h,...) {
+        if (is_projOpen(env=.rqda,conName="qdacon")) {
+            MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
+        }})}
 
 ## MemoWidget <- function(prefix,widget,dbTable){
 ##   ##moved to utils.R
 ##   ## prefix of window tile. E.g. "Code" ->  tile of gwindow becomes "Code Memo:"
 ##   ## widget of the F-cat/C-cat list, such as widget=.rqda$.fnames_rqda
-  
+
 ##   if (is_projOpen(env=.rqda,"qdacon")) {
 ##       Selected <- svalue(widget)
 ##       if (length(Selected)==0){
