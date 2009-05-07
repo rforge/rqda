@@ -78,12 +78,12 @@ mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL){
       ##       TagTable$Add(buffer$createTag("MarkBackGround",background = back.col))
       ##       }
       ##       buffer$ApplyTagByName("MarkBackGround",startI,endI)
-      buffer$ApplyTagByName(sprinf("%s.background",back.col),startI,endI)
+      buffer$ApplyTagByName(sprintf("%s.background",back.col),startI,endI)
     }
     ## buffer$createTag("red.foreground",foreground = "red")
     ## buffer$ApplyTagByName("red.foreground",startI,endI)
     ## buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
-    ## buffer$ApplyTagByName("red.background",startI,endI); ## change colors   
+    ## buffer$ApplyTagByName("red.background",startI,endI); ## change colors
   }
   ## only when selected text chunk is not "", apply the color scheme.
   return(list(start=startN,end=endN,text=selected))
@@ -178,7 +178,7 @@ sindex <- function(widget){
 ##     retrieval$fname[retrieval$fid==i] <- FileName
 ##   }
 ##   Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
-  
+
 ##   apply(retrieval,1, function(x){
 ##      metaData <- sprintf("%s [%s:%s]\n",x[['fname']],x[['selfirst']],x[['selend']])
 ##      add(.retreivalgui,metaData,font.attr=c(foreground="red",size="x-large"),do.newline=FALSE)
@@ -238,7 +238,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
 
       ## modification begins
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
-          CallBackFUN <- function(button){  
+          CallBackFUN <- function(button){
             tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
             root <- gwindow(title=FileName, parent=c(395,40),width=580,height=580)
             ## use the same names as the of ViewFile, so can do coding when back to the original file.
@@ -257,7 +257,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
             #                          0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
             gtkTextViewScrollToMark(.rqda$.openfile_gui@widget@widget,
                                       MarkHere,0,xal=0,yal=0.2,use.align=TRUE)
-            }    
+            }
          CallBackFUN
         }
 
@@ -277,7 +277,7 @@ create.tags(buffer)
         buffer$InsertWithTagsByName(iter, metaData,"x-large","red.foreground")
         anchorcreated <- buffer$createChildAnchor(iter)
         iter$BackwardChar()
-        anchor <- iter$getChildAnchor()  
+        anchor <- iter$getChildAnchor()
         widget <- gtkButtonNewWithLabel("Back")
         gSignalConnect(widget, "clicked", ComputeCallbackFun(x[['selfirst']],x[['selend']],x[['fname']]))
         .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
@@ -330,7 +330,7 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
 
       ## modification begins
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
-          CallBackFUN <- function(button){  
+          CallBackFUN <- function(button){
             tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
             root <- gwindow(title=FileName, parent=c(395,40),width=580,height=580)
             ## use the same names as the of ViewFile, so can do coding when back to the original file.
@@ -349,7 +349,7 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
             #                          0.001,xal=0,yal=0,use.align=TRUE)## doesn't seem to work.
             gtkTextViewScrollToMark(.rqda$.openfile_gui@widget@widget,
                                       MarkHere,0,xal=0,yal=0.2,use.align=TRUE)
-            }    
+            }
          CallBackFUN
         }
 
@@ -369,7 +369,7 @@ create.tags(buffer)
         buffer$InsertWithTagsByName(iter, metaData,"x-large","red.foreground")
         anchorcreated <- buffer$createChildAnchor(iter)
         iter$BackwardChar()
-        anchor <- iter$getChildAnchor()  
+        anchor <- iter$getChildAnchor()
         widget <- gtkButtonNewWithLabel("Back")
         gSignalConnect(widget, "clicked", ComputeCallbackFun(x[['selfirst']],x[['selend']],x[['fname']]))
         .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)

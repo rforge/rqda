@@ -136,8 +136,9 @@ Version: 0.1-8 dev\n",
    .filecat_buttons[1,1] <- AddFileCatButton("Add")
    .filecat_buttons[1,2] <- DeleteFileCatButton("Delete") ## should take care of treecode table
    .filecat_buttons[1,3] <- FileCat_RenameButton("Rename")
-   .filecat_buttons[1,4] <- FileCatAddToButton("AddTo")
-   .filecat_buttons[1,5] <- FileCatDropFromButton("DropFrom")
+   .filecat_buttons[1,4] <- FileCatMemoButton()
+   .filecat_buttons[2,1] <- FileCatAddToButton("AddTo")
+   .filecat_buttons[2,1] <- FileCatDropFromButton("DropFrom")
 
 
 ########################### GUI for Search

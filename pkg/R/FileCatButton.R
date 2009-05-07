@@ -29,11 +29,11 @@ DeleteFileCatButton <- function(label="Delete"){
                   dbGetQuery(.rqda$qdacon,sprintf("update filecat set status=0 where name=='%s'",Selected))
                   ## set status in table freecode to 0
                   UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
-                  tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treefile set status=0 where catid=='%s'",catid)),error=function(e){}) 
+                  tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treefile set status=0 where catid=='%s'",catid)),error=function(e){})
                   ## should delete all the related codelists
                   UpdateFileofCatWidget() ## update the filecode of cat widget
                 } else gmessage("The Category Name is not unique.",con=TRUE)
-                
+
               }
             }
           }
@@ -82,6 +82,14 @@ UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat){
   } else items <- NULL
     tryCatch(Widget[] <- items,error=function(e){})
 }
+
+
+FileCatMemoButton <- function(label="Memo"){
+  gbutton(label,handler=function(h,...) {
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        MemoWidget("File",.rqda$.FileofCat,"source")
+      }})}
+
 
 FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
 {
@@ -158,7 +166,7 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
 ##   query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in(%s) and status=1",paste("'",filename,"'",sep="",collapse=","))) ## multiple fid
 ##   fid <- query$id
 ##   Encoding(query$file) <- "UTF-8"
-  
+
 ##   ## select a F-cat name -> F-cat id
 ##   Fcat <- dbGetQuery(.rqda$qdacon,"select catid, name from filecat where status=1")
 ##   if (nrow(Fcat)==0){gmessage("Add File Categroy first.",con=TRUE)} else{
@@ -245,6 +253,18 @@ FileofCatWidgetMenu$"Open Selected File"$handler <- function(h,...){
 }
 FileofCatWidgetMenu$"Edit Selected File"$handler <- function(h,...){
   EditFileFun(FileNameWidget=.rqda$.FileofCat)
+}
+FileofCatWidgetMenu$"Search Files Within Categroy"$handler <- function(h,...)
+{
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+      fid <- GetFileId(condition="filecategory",type="all")
+      pattern <- ginput("Please input a search pattern.",text="file like '%%'")
+      if (!is.na(pattern) && length(fid)!=0){
+          tryCatch(SearchFiles(sprintf("%s and id in (%s)",pattern,paste(shQuote(fid),collapse=",")),
+                               Widget=".fnames_rqda",is.UTF8=TRUE),
+                   error=function(e) gmessage("Error~~~."),con=TRUE)
+      }
+  }
 }
 FileofCatWidgetMenu$"Delete selected File"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
