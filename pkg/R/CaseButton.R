@@ -348,6 +348,15 @@ FileofCaseWidgetMenu$"File Memo"$handler <- function(h,...){
 FileofCaseWidgetMenu$"Edit Selected File"$handler <- function(h,...){
   EditFileFun(FileNameWidget=.rqda$.FileofCase)
 }
+FileofCaseWidgetMenu$"Search Files within Seleted Case"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        pattern <- ginput("Please input a search pattern.",text="file like '%%'")
+        if (!is.na(pattern)){
+            Fid <- GetFileId("case")
+            tryCatch(SearchFiles(pattern,Fid=Fid,Widget=".FileofCase",is.UTF8=TRUE),error=function(e) gmessage("Error~~~."),con=TRUE)
+        }
+    }
+}
 FileofCaseWidgetMenu$"Show Uncoded Files Only (sorted)"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     fid <- GetFileId(condition="case",type="uncoded")

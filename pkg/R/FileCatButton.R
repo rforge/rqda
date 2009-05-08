@@ -261,7 +261,7 @@ FileofCatWidgetMenu$"Search Files Within Categroy"$handler <- function(h,...)
       pattern <- ginput("Please input a search pattern.",text="file like '%%'")
       if (!is.na(pattern) && length(fid)!=0){
           tryCatch(SearchFiles(sprintf("(%s) and id in (%s)",pattern,paste(shQuote(fid),collapse=",")),
-                               Widget=".fnames_rqda",is.UTF8=TRUE),
+                               Widget=".FileofCat",is.UTF8=TRUE),
                    error=function(e) gmessage("Error~~~."),con=TRUE)
       }
   }

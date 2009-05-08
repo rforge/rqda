@@ -60,12 +60,13 @@ resetButton <- gbutton("Default", cont = ButtonContainer)
 okButton <- gbutton("OK", cont = ButtonContainer)
 
 addHandlerChanged(okButton, function(h,...) {
-  out <- svalue(SettingFL)
-  ##print(out)
-  for (i in names(out)) assign(i,out[[i]],env=.rqda)
+    out <- svalue(SettingFL)
+    tryCatch(ClearMark(.rqda$.root_edit,0,nchar(svalue(.rqda$.openfile_gui)),TRUE,TRUE),error=function(e){})
+    for (i in names(out)) assign(i,out[[i]],env=.rqda)
 })
 
 addHandlerChanged(resetButton, function(h,...) {
+  tryCatch(ClearMark(.rqda$.root_edit,0,nchar(svalue(.rqda$.openfile_gui)),TRUE,TRUE),error=function(e){})
   tryCatch(svalue(SettingFL[]$BOM) <- FALSE,error=function(e){})
   tryCatch(svalue(SettingFL[]$SFP) <- FALSE,error=function(e){})
   tryCatch(svalue(SettingFL[]$encoding) <- "unknown",error=function(e){})

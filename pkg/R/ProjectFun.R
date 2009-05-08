@@ -2,7 +2,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
   ## sucess <- file.create(tmpNamme <- tempfile(pattern = "file", tmpdir = dirname(path)))
   sucess <- (file.access(names=dirname(path),mode=2)==0)
   if (!sucess) {
-    gmessage("No write permission.",icon="error",container=TRUE) 
+    gmessage("No write permission.",icon="error",container=TRUE)
   }
   else{
     ## unlink(tmpNamme)
@@ -19,10 +19,10 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
     if (!fexist | override ){
       ## close con in assignmenv first.
       tryCatch(close_proj(conName=conName,assignenv=assignenv),error=function(e){})
-      
+
       assign(conName,dbConnect(drv=dbDriver("SQLite"),dbname=path),envir=assignenv)
       con <- get(conName,assignenv)
-      
+
       if (dbExistsTable(con,"source")) dbRemoveTable(con, "source")
       ## interview record
       dbGetQuery(con,"create table source (name text, id integer,
@@ -127,9 +127,11 @@ close_proj <- function(conName="qdacon",assignenv=.rqda,...){
   tryCatch({
     con <- get(conName,assignenv)
     if (isIdCurrent(con)) {
-      if (!dbDisconnect(con)) {
+        tryCatch(dispose(.rqda$.sfp),error=function(e){})
+        tryCatch(dispose(.rqda$.root_edit),error=function(e){})
+        if (!dbDisconnect(con)) {
         gmessage("Closing project failed.",icon="waring",con=TRUE)
-      } 
+      }
     }
   } ,error=function(e){})
 }
@@ -142,7 +144,7 @@ is_projOpen <- function(env=.rqda,conName="qdacon",message=TRUE){
   tryCatch({
     con <- get(conName,env)
     open <- open + isIdCurrent(con)
-  } ,error=function(e){}) 
+  } ,error=function(e){})
   if (!open & message) gmessage("No Project is Open.",icon="warning",con=TRUE)
   return(open)
 }
@@ -198,7 +200,7 @@ ProjectMemoWidget <- function(){
     add(W,prvcontent,do.newline=FALSE)
     ## do.newline:do not add a \n (new line) at the beginning
     ## push the previous content to the widget.
-    addHandlerUnrealize(get(".projmemo",env=.rqda),handler <- function(h,...){ 
+    addHandlerUnrealize(get(".projmemo",env=.rqda),handler <- function(h,...){
       withinWidget <- svalue(get(".projmemocontent",env=.rqda))
       InRQDA <- dbGetQuery(.rqda$qdacon, "select memo from project where rowid=1")[1, 1]
       if (isTRUE(all.equal(withinWidget,InRQDA))) {

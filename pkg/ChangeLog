@@ -1,3 +1,7 @@
+2009-05-08
+	* add Fid argument to SearchFiles().
+	* fix bugs in addSettings() related to change of mark() etc.
+	
 2009-05-07
 	* improve MemoWiget() to warning when close without saving.
 	* fix bug of EditFileFun.

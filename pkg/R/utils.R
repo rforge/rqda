@@ -202,28 +202,27 @@ print.SummaryCoding <- function(x,...){
 }
 
 
-SearchFiles <- function(pattern,content=FALSE,Widget=NULL,is.UTF8=FALSE){
+SearchFiles <- function(pattern,content=FALSE,Fid=NULL,Widget=NULL,is.UTF8=FALSE){
 ##SearchFiles("file like '%新民晚报%'")
 ##SearchFiles("name like '%物权法%'")
 ##SearchFiles("file like '%新民晚报%'",Widget=.rqda$.fnames_rqda)
-  if ( isIdCurrent(.rqda$qdacon)) {
-if(!is.UTF8){
-pattern <- iconv(pattern,to="UTF-8")
-}
-Encoding(pattern) <- "unknown"
-if (content){
-ans <- dbGetQuery(.rqda$qdacon,sprintf("select id, name,file from source where status==1 and %s",pattern))
-} else {
-ans <- dbGetQuery(.rqda$qdacon,sprintf("select id, name from source where status==1 and %s",pattern))
-}
-if (nrow(ans)>0) Encoding(ans$name) <- "UTF-8"
-if (!is.null(ans$file)) Encoding(ans$file) <- "UTF-8"
-if (!is.null(Widget))  {
-  eval(parse(text=sprintf(".rqda$%s[] <- ans$name",Widget)))
-  ## eval(substitute(widget[] <- ans$name,list(widget=quote(Widget))))
-}
-invisible(ans)
-  } else cat("Open a project first.\n")
+    if ( isIdCurrent(.rqda$qdacon)) {
+        if(!is.UTF8){ pattern <- iconv(pattern,to="UTF-8")}
+        Encoding(pattern) <- "unknown"
+        if (!is.null(Fid)) pattern <- sprintf("(%s) and id in (%s)",pattern,paste(shQuote(Fid),collapse=","))
+        if (content){
+            ans <- dbGetQuery(.rqda$qdacon,sprintf("select id, name,file from source where status==1 and %s",pattern))
+        } else {
+            ans <- dbGetQuery(.rqda$qdacon,sprintf("select id, name from source where status==1 and %s",pattern))
+        }
+        if (nrow(ans)>0) Encoding(ans$name) <- "UTF-8"
+        if (!is.null(ans$file)) Encoding(ans$file) <- "UTF-8"
+        if (!is.null(Widget))  {
+            eval(parse(text=sprintf(".rqda$%s[] <- ans$name",Widget)))
+            ## eval(substitute(widget[] <- ans$name,list(widget=quote(Widget))))
+        }
+        invisible(ans)
+    } else cat("Open a project first.\n")
 }
 
 ## select <- function(x,multiple=TRUE,title=NULL,...){

@@ -191,8 +191,8 @@ assign(".FileofCat",.FileofCat,env=.rqda)
 ##########################
 ### set the positions
 svalue(.codes_pan) <- 0.13
-svalue(.codecat_pan)<-0.13
-svalue(.filecat_pan)<-0.13
+svalue(.codecat_pan)<-0.1
+svalue(.filecat_pan)<-0.1
 svalue(.case_pan)<-0.07
 svalue(.attr_pan)<-0.07
 
