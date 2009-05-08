@@ -101,7 +101,7 @@ Version: 0.1-8 dev\n",
   ".attr_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Attrs")
   ".attr_buttons" <- glayout(container=.attr_pan)
   ".attr_PW" <- ggroup(cont=.attr_pan,horizontal = FALSE)
-  ".AttrNamesWidget" <- gtable("Please click Update",container=.attr_PW,expand=TRUE,multiple=FALSE)
+  ".AttrNamesWidget" <- gtable("Please click Update",container=.attr_PW,expand=TRUE,multiple=TRUE)
   .AttrNamesWidget[] <- NULL ; names(.AttrNamesWidget) <- "Attributes"
   .attr_buttons[1,1] <- AddAttrButton()
   .attr_buttons[1,2] <- DeleteAttrButton()

@@ -129,11 +129,13 @@ viewFileAttr <- function(){
 }
 
 
-GetAttr <- function(type=c("case","file")){
+GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget)){
   if (isIdCurrent(.rqda$qdacon)){
   type <-  match.arg(type)
+  if (length(attrs)==0) attrs <- NULL
+  inClause <- ifelse(is.null(attrs),"",sprintf("where variable in (%s)",paste(shQuote(attrs),collapse=",")))
   if (type == "case"){
-    DF <- dbGetQuery(.rqda$qdacon,"select variable,value, caseId from caseAttr")
+    DF <- dbGetQuery(.rqda$qdacon,sprintf("select variable,value, caseId from caseAttr %s",inClause))
     if (nrow(DF) > 0 ){
     DF <- reshape(DF,v.name="value",idvar="caseID",direction="wide",timevar="variable")
     names(DF) <- gsub("^value.","",names(DF))
@@ -145,7 +147,7 @@ GetAttr <- function(type=c("case","file")){
       class(DF) <- c("CaseAttr","data.frame")
     }}
   } else if (type=="file"){
-    DF <- dbGetQuery(RQDA:::.rqda$qdacon,"select variable,value, fileId from fileAttr")
+    DF <- dbGetQuery(RQDA:::.rqda$qdacon,sprintf("select variable,value, fileId from fileAttr %s",inClause))
     if (nrow(DF) > 0 ){
     DF <- reshape(DF,v.name="value",idvar="fileID",direction="wide",timevar="variable")
     names(DF) <- gsub("^value.","",names(DF))

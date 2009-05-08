@@ -5,6 +5,7 @@
 2009-05-07
 	* improve MemoWiget() to warning when close without saving.
 	* fix bug of EditFileFun.
+	* can handle subset of attributes only by selected subset of them.
 	
 2009-05-06
 	* add arguments to UpdateTableWidget() to sort the items according to name or time -> by default, f-cat and c-cat are sorted by name.

@@ -276,11 +276,11 @@ saveFUN4CaseAttr <- function(button,data){
   window$Destroy()## close
 }
 
-CaseAttrFun <- function(caseId,title=NULL){
-  attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")$name
+CaseAttrFun <- function(caseId,title=NULL,attrs=svalue(.rqda$.AttrNamesWidget)){
+  if (length(attrs)==0) attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")$name
   if (is.null(attrs)) gmessage("add attribute in Attrs Tabe first.",con=T) else{
     attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
-    variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseID==%i",caseId))
+    variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseID==%i and variable in (%s)", caseId,paste(shQuote(attrs),collapse=",")))
     if (nrow(variables)!=0){
       idx <- match(variables[[1]],attrs2[[1]])
       attrs2[idx,] <- variables
@@ -314,7 +314,7 @@ saveFUN4FileAttr <- function(button,data){
     ## cal which variable is added and which is modified
     change_idx <- ans$Value != ExistingItems$value
     mod_idx <- change_idx & (ExistingItems$value!= "NA")
-    new_idx <- change_idx & (! mod_idx)   
+    new_idx <- change_idx & (! mod_idx)
     if (any(mod_idx)) {
     ## alter the table for the modified variable
     vars <- ans[mod_idx,]
@@ -329,11 +329,11 @@ saveFUN4FileAttr <- function(button,data){
   window$Destroy()## close
 }
 
-FileAttrFun <- function(fileId,title=NULL){
-  attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")$name
+FileAttrFun <- function(fileId,title=NULL,attrs=svalue(.rqda$.AttrNamesWidget)){
+  if (length(attrs)==0) attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")$name
   if (is.null(attrs)) gmessage("add attribute in Attrs Tabe first.",con=T) else{
     attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
-    variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from fileAttr where fileID==%i",fileId))
+    variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from fileAttr where fileID==%i and variable in (%s)",fileId,paste(shQuote(attrs),collapse=",")))
     if (nrow(variables)!=0){
       idx <- match(variables[[1]],attrs2[[1]])
       attrs2[idx,] <- variables
