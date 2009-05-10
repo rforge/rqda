@@ -342,12 +342,42 @@ FileofCaseWidgetMenu$"Drop Selected File(s)"$handler <- function(h, ...) {
     }
   }
 }
+FileofCaseWidgetMenu$"Delete Selected File(s)"$handler <- function(h,...){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        SelectedFile <- svalue(.rqda$.FileofCase)
+        Encoding(SelectedFile) <- "UTF-8"
+        for (i in SelectedFile){
+            fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",i))$id
+            dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
+            dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))
+            dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid=%i",fid))
+            dbGetQuery(.rqda$qdacon, sprintf("update coding set status=0 where fid=%i",fid))
+        }
+        .rqda$.FileofCase[] <- setdiff(.rqda$.FileofCase[],SelectedFile)
+    }
+}
 FileofCaseWidgetMenu$"File Memo"$handler <- function(h,...){
   MemoWidget("File",.rqda$.FileofCase,"source")
 }
 FileofCaseWidgetMenu$"Edit Selected File"$handler <- function(h,...){
   EditFileFun(FileNameWidget=.rqda$.FileofCase)
 }
+FileofCaseWidgetMenu$"Rename selected File"$handler <- function(h,...){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        selectedFN <- svalue(.rqda$.FileofCase)
+        if (length(selectedFN)==0){
+            gmessage("Select a file first.",icon="error",con=TRUE)
+        }
+        else {
+            NewFileName <- ginput("Enter new file name. ",text=selectedFN, icon="info")
+            if (!is.na(NewFileName)) {
+                Encoding(NewFileName) <- "UTF-8"
+                rename(selectedFN,NewFileName,"source")
+                Fnames <- .rqda$.FileofCase[]
+                Fnames[Fnames==selectedFN] <- NewFileName
+                .rqda$.FileofCase[] <- Fnames
+            }
+        }}}
 FileofCaseWidgetMenu$"Search Files within Seleted Case"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
         pattern <- ginput("Please input a search pattern.",text="file like '%%'")

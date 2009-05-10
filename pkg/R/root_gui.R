@@ -121,9 +121,11 @@ Version: 0.1-8 dev\n",
    .codecat_buttons[1,1] <- AddCodeCatButton("Add")
    .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
    .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
-   .codecat_buttons[2,1] <- CodeCatAddToButton("AddTo")
-   .codecat_buttons[2,2] <- CodeCatDropFromButton("DropFrom")
+   .codecat_buttons[1,4] <- CodeCatAddToButton("AddTo")
+   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropFrom")
    .codecat_buttons[2,3] <- CodeCatMemoButton()
+   .codecat_buttons[2,4] <- Unmark_Button(label="UnMark", codeListWidget=".CodeofCat")
+   .codecat_buttons[2,5] <- Mark_Button(label="mark", codeListWidget=".CodeofCat")
 
 ######################### GUI  for F-cat
 #########################

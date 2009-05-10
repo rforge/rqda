@@ -266,7 +266,7 @@ FileofCatWidgetMenu$"Search Files Within Categroy"$handler <- function(h,...)
       }
   }
 }
-FileofCatWidgetMenu$"Delete selected File"$handler <- function(h,...){
+FileofCatWidgetMenu$"Delete selected File(s)"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     SelectedFile <- svalue(.rqda$.FileofCat)
     Encoding(SelectedFile) <- "UTF-8"
