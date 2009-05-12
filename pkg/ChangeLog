@@ -1,3 +1,10 @@
+2009-05-12
+	* improve UpdateFileofCaseWidget() to sort the items by time or	name.
+	
+2009-05-11
+	* Could do coding within the C-cat Tab.
+	* Improvement of popup menu of Case Tab.
+	
 2009-05-08
 	* add Fid argument to SearchFiles().
 	* fix bugs in addSettings() related to change of mark() etc.

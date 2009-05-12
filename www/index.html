@@ -61,19 +61,19 @@ h1 {
 <p>
 <h1>Installation</h1>
 
-<li>Because RGtk2 depends on GTK+, you may need to install GTK+ before install RGtk2. For windows user, <A HREF="http://downloads.sourceforge.net/gladewin32/gtk-2.10.11-win32-1.exe?modtime=1175123376&big_mirror=0">download</A> GTK+ and install it. For MacOS users, <A HREF="http://r.research.att.com/gtk2-runtime.dmg">download</A> GTK+ here and install it. For Debian-based Linux users, you may use <i>sudo apt-get install libgtk2.0-dev</i> to install GTK+ develop library. For other Linux users, you may have to manually install GTK+, <A HREF="http://www.gtk.org/download-linux.html"> download</A> the source tarball, and follow the <A HREF="http://library.gnome.org/devel/gtk/unstable/gtk-building.html">instructions</A> of installation.
+<li><B>Step one:</B> Because RGtk2 depends on GTK+, you may need to install GTK+ before install RGtk2. For windows user, <A HREF="http://downloads.sourceforge.net/gladewin32/gtk-2.10.11-win32-1.exe?modtime=1175123376&big_mirror=0">download</A> GTK+ and install it. For MacOS users, <A HREF="http://r.research.att.com/gtk2-runtime.dmg">download</A> GTK+ here and install it. For Debian-based Linux users, you may use <i>sudo apt-get install libgtk2.0-dev</i> to install GTK+ develop library. For other Linux users, you may have to manually install GTK+, <A HREF="http://www.gtk.org/download-linux.html"> download</A> the source tarball, and follow the <A HREF="http://library.gnome.org/devel/gtk/unstable/gtk-building.html">instructions</A> of installation.
 
-<p>RQDA is based on R, so you have to install R and relevant packages in order to use RQDA.
+<li><B>Step two:</B> Go to <A HREF="http://cran.r-project.org/">CRAN</A>, download R and install it. For Linux and BSD users, you can download binary version of R or the sources. For Windows users, you can download the binary version of R from the <A HREF="http://cran.r-project.org/bin/windows/base/">download page</A>. For MacOS users, download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download page</A>, More instruction about installing R is in the <A HREF="http://cran.r-project.org/doc/manuals/R-admin.html">R Installation and Administration</A> Manual.
 
-<li>Go to <A HREF="http://cran.r-project.org/">CRAN</A>, download R and install it. For Linux and BSD users, you can download binary version of R or the sources. For Windows users, you can download the binary version of R from the <A HREF="http://cran.r-project.org/bin/windows/base/">download page</A>. For MacOS users, download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download page</A>, More instruction about installing R is in the <A HREF="http://cran.r-project.org/doc/manuals/R-admin.html">R Installation and Administration</A> Manual.
+<li><B>Step three:</B> Launch R (as usual applications under Windows; or by command $R within shell terminal under Linux and FreeBSD). Then, you can see the prompt &ldquo;&gt;&rdquo;,which indicates that R is ready for further commands.
 
-<li>Launch R (as usual applications under Windows; or by command $R within shell terminal under Linux and FreeBSD). Then, you can see the prompt &ldquo;&gt;&rdquo;,which indicates that R is ready for further commands.
+<li><B>Step four:</B> Install relevant packages by R
+  command: <I>install.packages("RQDA",dependencies=c("Depends",
+    "Imports"))</I> . If you want to experience the developing version
+  of RQDA, you can use this command after you have installed RQDA by
+  the last command: <I>install.packages("RQDA",repos=" http://R-Forge.R-project.org")</I>.
 
-<li>Install relevant packages by R command: <I>install.packages(c("DBI","RSQLite","RGtk2","gWidgets","gWidgetsRGtk2"))</I> . 
-
-<li>Install RQDA package: use command to install stable version: <I>install.packages("RQDA")</I>. If you want to install the developing version, use command instead: <I>install.packages("RQDA",repos=" http://R-Forge.R-project.org")</I>.
-
-<li>Launch RQDA by command <I>library(RQDA)</I> from within R. Then you can see the RQDA GUI.
+<li><B>Step five:</B> Launch RQDA by command <I>library(RQDA)</I> from within R. Then you can see the RQDA GUI.
 
 <h1>Documentation</h1>
 <A HREF="documentation.html#manual" target="_blank">User Manual</A>

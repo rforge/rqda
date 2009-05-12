@@ -356,11 +356,11 @@ FileofCaseWidgetMenu$"Delete Selected File(s)"$handler <- function(h,...){
         .rqda$.FileofCase[] <- setdiff(.rqda$.FileofCase[],SelectedFile)
     }
 }
-FileofCaseWidgetMenu$"File Memo"$handler <- function(h,...){
-  MemoWidget("File",.rqda$.FileofCase,"source")
-}
 FileofCaseWidgetMenu$"Edit Selected File"$handler <- function(h,...){
   EditFileFun(FileNameWidget=.rqda$.FileofCase)
+}
+FileofCaseWidgetMenu$"File Memo"$handler <- function(h,...){
+  MemoWidget("File",.rqda$.FileofCase,"source")
 }
 FileofCaseWidgetMenu$"Rename selected File"$handler <- function(h,...){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -387,22 +387,22 @@ FileofCaseWidgetMenu$"Search Files within Seleted Case"$handler <- function(h, .
         }
     }
 }
-FileofCaseWidgetMenu$"Show Uncoded Files Only (sorted)"$handler <- function(h,...){
+FileofCaseWidgetMenu$"Show ..."$"Show All by Sorted by Imported Time"$handler <- function(h,...){
+  ## UpdateFileofCaseWidget()
   if (is_projOpen(env=.rqda,conName="qdacon")) {
-    fid <- GetFileId(condition="case",type="uncoded")
+    fid <- GetFileId(condition="case",type="all")
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCase,FileId=fid)
   }
 }
-FileofCaseWidgetMenu$"Show Coded Files Only (sorted)"$handler <- function(h,...){
+FileofCaseWidgetMenu$"Show ..."$"Show Coded Files Only (sorted)"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     fid <- GetFileId(condition="case",type="coded")
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCase,FileId=fid)
   }
 }
-FileofCaseWidgetMenu$"Sort by imported time"$handler <- function(h,...){
-  ## UpdateFileofCaseWidget()
+FileofCaseWidgetMenu$"Show ..."$"Show Uncoded Files Only (sorted)"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
-    fid <- GetFileId(condition="case",type="all")
+    fid <- GetFileId(condition="case",type="uncoded")
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.FileofCase,FileId=fid)
   }
 }

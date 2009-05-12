@@ -78,6 +78,7 @@ Handler <- function(){
     add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
 
     addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){ClickHandlerFun()})
+    addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){ClickHandlerFun(.rqda$.CodeofCat)})
 
     ##  addHandlerMouseMotion(.rqda$.CasesNamesWidget, handler <- function(h, ...) {
     ##    if (is_projOpen(env = .rqda, conName ="qdacon",message = FALSE)) {

@@ -77,7 +77,7 @@ AddFileToCaselinkage <- function(Widget=.rqda$.fnames_rqda){
 
 
 
-UpdateFileofCaseWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCase){
+UpdateFileofCaseWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCase,sortByTime=FALSE,...){
   Selected <- svalue(.rqda$.CasesNamesWidget)
   if (length(Selected)!=0){
     caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",Selected))[,1]
@@ -86,9 +86,15 @@ UpdateFileofCaseWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCase){
     if (nrow(Total_fid)!=0){
       items <- dbGetQuery(con,"select name,id,date from source where status==1")
       if (nrow(items)!=0) {
-        items <- items[items$id %in% Total_fid$fid,c("name","date")]
-        items <- items$name[OrderByTime(items$date)]
-        Encoding(items) <- "UTF-8"
+          if (sortByTime){
+              items <- items[items$id %in% Total_fid$fid,c("name","date")]
+              items <- items$name[OrderByTime(items$date)]
+              Encoding(items) <- "UTF-8"}
+          else{
+              items <- items[items$id %in% Total_fid$fid,c("name")]
+              Encoding(items) <- "UTF-8"
+              items <- sort(items)
+          }
       } else items <- NULL
     } else items <- NULL
   } else items <- NULL
