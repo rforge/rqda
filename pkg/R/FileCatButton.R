@@ -65,7 +65,7 @@ FileCat_RenameButton <- function(label="Rename",Widget=.rqda$.FileCatWidget,...)
           )
 }
 
-UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat){
+UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sortByTime=FALSE,...){
   SelectedFileCat <- svalue(.rqda$.FileCatWidget)
   if (length(SelectedFileCat)!=0){
     Encoding(SelectedFileCat) <- "UTF-8"
@@ -77,6 +77,7 @@ UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat){
         items <- items[items$id %in% Total_fid$fid,c("name","date")]
         items <- items$name[OrderByTime(items$date)] ## sort by date
         Encoding(items) <- "UTF-8"
+        if (!sortByTime) items <- sort(items)
       } else items <- NULL
     } else items <- NULL
   } else items <- NULL
@@ -148,7 +149,8 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
       dbGetQuery(.rqda$qdacon,sprintf("update treefile set status==0 where catid==%i and fid==%i",catid,fid))
     }
         ## update .CodeofCat Widget
-        .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],FileOfCat)
+        ## .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],FileOfCat)
+        UpdateWidget(".FileofCat",from=FileOfCat,to=NULL)
         ## UpdateFileofCatWidget()
       }
     }
@@ -278,21 +280,10 @@ FileofCatWidgetMenu$"Delete selected File(s)"$handler <- function(h,...){
       dbGetQuery(.rqda$qdacon, sprintf("update coding set status=0 where fid=%i",fid))
     }
     ## UpdateFileofCatWidget()
-    .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],SelectedFile)
+    ## .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],SelectedFile)
+    UpdateWidget(".FileofCat",from=SelectedFile,to=NULL)
   }
 }
-## FileofCatWidgetMenu$"Delete selected File Without Updating Widget"$handler <- function(h,...){
-##   if (is_projOpen(env=.rqda,conName="qdacon")) {
-##     SelectedFile <- svalue(.rqda$.FileofCat)
-##     Encoding(SelectedFile) <- "UTF-8"
-##     for (i in SelectedFile){
-##       fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",i))$id
-##       dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
-##       dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))
-##       dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid=%i",fid))
-##     }
-##   }
-## }
 FileofCatWidgetMenu$"Rename selected File"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     selectedFN <- svalue(.rqda$.FileofCat)
