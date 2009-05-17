@@ -20,12 +20,12 @@ Setting <- list(type = "ggroup",
                             text = .rqda$encoding
                             ),
                        list(name = "BOM",
-                            label = "BOM",
+                            label = "Byte Order Mark",
                             type = "gcombobox",## width=width,
                             items = c(FALSE, TRUE)
                             ),
                       list(name = "SFP",
-                           label = "ShowFileProperty",
+                           label = "Show File Property",
                            type = "gcombobox",## width=width,
                            items = c(FALSE, TRUE)
                            ),
@@ -41,7 +41,7 @@ Setting <- list(type = "ggroup",
                             ),
                       list(name = "TOR",
                            type="gcombobox",
-                           label = "Type of retrieval",
+                           label = "Type of Retrieval",
                            items = c(.rqda$TOR, "case", "filecategory")
                            )
                        )

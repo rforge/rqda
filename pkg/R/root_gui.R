@@ -9,8 +9,8 @@ RQDA <- function() {
 
 ########################### GUI FOR ROOT
 ###########################
-  ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis.",parent=c(2,10),
-                             width=300,height=600,visible=FALSE,handler=function(h,...){
+  ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis.",parent=c(2,2),
+                             width=300,height=700,visible=FALSE,handler=function(h,...){
                                tryCatch(dispose(.rqda$.root_edit),error=function(e){})
                                close_proj(assignenv=.rqda)
                              }
@@ -23,7 +23,7 @@ RQDA <- function() {
 
 ########################### GUI FOR PROJECT
 ###########################
-  ".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project")
+  ".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project\n")
   NewProjectButton(container=.proj_gui)
   OpenProjectButton(container=.proj_gui)
   CloseProjectButton(container=.proj_gui)
@@ -45,7 +45,7 @@ Version: 0.1-8 dev\n",
 
 ########################### GUI for FILES
 ###########################
-  ".files_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Files")
+  ".files_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Files\n")
   ".files_button" <- ggroup(container=.files_pan,horizontal=TRUE)
   ".fnames_rqda" <- gtable("Click Here to see the File list.",container=.files_pan,multiple=TRUE)
   .fnames_rqda[] <-NULL # get around of the text argument.
@@ -61,7 +61,7 @@ Version: 0.1-8 dev\n",
 
 ########################### GUI for CODES
 ###########################
-  ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes")
+  ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes\n")
   ".codes_button" <- glayout(container=.codes_pan)
   ".codes_rqda" <- gtable("Please click Update",container=.codes_pan)
   .codes_rqda[] <- NULL ;names(.codes_rqda) <- "Codes List"
@@ -79,7 +79,7 @@ Version: 0.1-8 dev\n",
 
 ######################### GUI  for cases
 #########################
-  ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Cases")
+  ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Cases\n")
   ".case_buttons" <- glayout(container=.case_pan)
   ".case_PW" <- ggroup(cont=.case_pan,horizontal = FALSE)
   ".CasesNamesWidget" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=TRUE)
@@ -98,7 +98,7 @@ Version: 0.1-8 dev\n",
 
 ########################### GUI for Attributes
 ###########################
-  ".attr_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Attrs")
+  ".attr_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Attributes\n")
   ".attr_buttons" <- glayout(container=.attr_pan)
   ".attr_PW" <- ggroup(cont=.attr_pan,horizontal = FALSE)
   ".AttrNamesWidget" <- gtable("Please click Update",container=.attr_PW,expand=TRUE,multiple=TRUE)
@@ -111,7 +111,7 @@ Version: 0.1-8 dev\n",
 
 ######################### GUI  for C-cat
 #########################
-  ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="C-Cat")
+  ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Code\nCategories")
   ".codecat_buttons" <- glayout(container=.codecat_pan)
   ".Ccat_PW" <- ggroup(cont=.codecat_pan,horizontal = FALSE)## parent Widget of C-cat
   ".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE)
@@ -121,15 +121,15 @@ Version: 0.1-8 dev\n",
    .codecat_buttons[1,1] <- AddCodeCatButton("Add")
    .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
    .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
-   .codecat_buttons[1,4] <- CodeCatAddToButton("AddTo")
-   .codecat_buttons[1,5] <- CodeCatDropFromButton("DropFrom")
+   .codecat_buttons[1,4] <- CodeCatAddToButton("Add To")
+   .codecat_buttons[1,5] <- CodeCatDropFromButton("Drop From")
    .codecat_buttons[2,3] <- CodeCatMemoButton()
    .codecat_buttons[2,4] <- Unmark_Button(label="UnMark", codeListWidget=".CodeofCat")
-   .codecat_buttons[2,5] <- Mark_Button(label="mark", codeListWidget=".CodeofCat")
+   .codecat_buttons[2,5] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat")
 
 ######################### GUI  for F-cat
 #########################
-  ".filecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Cat")
+  ".filecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="File\nCategories")
   ".filecat_buttons" <- glayout(container=.filecat_pan)
   ".Fcat_PW" <- ggroup(cont=.filecat_pan,horizontal = FALSE)## parent Widget of F-cat
   ".FileCatWidget" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE,multiple=TRUE)
@@ -140,8 +140,8 @@ Version: 0.1-8 dev\n",
    .filecat_buttons[1,2] <- DeleteFileCatButton("Delete") ## should take care of treecode table
    .filecat_buttons[1,3] <- FileCat_RenameButton("Rename")
    .filecat_buttons[2,3] <- FileCatMemoButton()
-   .filecat_buttons[2,1] <- FileCatAddToButton("AddTo")
-   .filecat_buttons[2,2] <- FileCatDropFromButton("DropFrom")
+   .filecat_buttons[2,1] <- FileCatAddToButton("Add To")
+   .filecat_buttons[2,2] <- FileCatDropFromButton("Drop From")
 
 
 ########################### GUI for Search
@@ -154,7 +154,7 @@ Version: 0.1-8 dev\n",
 
 ########################### GUI for Journal
 ###########################
-  ".journal_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Journals")
+  ".journal_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Journals\n")
   ".journal_buttons" <- glayout(container=.journal_pan)
   ".journal_PW" <- ggroup(cont=.journal_pan,horizontal = FALSE)
   ".JournalNamesWidget" <- gtable("Please click Update",container=.journal_PW,expand=TRUE,multiple=FALSE)
@@ -166,7 +166,7 @@ Version: 0.1-8 dev\n",
 
 ######################### GUI  for settings
 #########################
-   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings")
+   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings\n")
    addSettingGUI(cont=.settings_gui)
 
 ######################### Put them together
@@ -192,12 +192,13 @@ assign(".FileofCat",.FileofCat,env=.rqda)
 
 ##########################
 ### set the positions
-svalue(.codes_pan) <- 0.13
-svalue(.codecat_pan)<-0.1
-svalue(.filecat_pan)<-0.1
-svalue(.case_pan)<-0.07
-svalue(.attr_pan)<-0.07
-
+svalue(.codes_pan) <- 0.08
+svalue(.codecat_pan)<-0.08
+svalue(.filecat_pan)<-0.08
+svalue(.case_pan)<-0.04
+svalue(.attr_pan)<-0.04
+svalue(.journal_pan)<-0.04
+  
 ##########################
 Handler()
 }

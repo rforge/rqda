@@ -118,7 +118,7 @@ UpdateCodeofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.CodeofCat){
     tryCatch(Widget[] <- items,error=function(e){})
 }
 
-CodeCatAddToButton <- function(label="AddTo",Widget=.rqda$.CodeCatWidget,...)
+CodeCatAddToButton <- function(label="Add To",Widget=.rqda$.CodeCatWidget,...)
 {
   gbutton(label,handler=function(h,...) {
     ## SelectedCodeCat and its id (table codecat): svalue()-> Name; sql->catid
@@ -159,7 +159,7 @@ CodeCatAddToButton <- function(label="AddTo",Widget=.rqda$.CodeCatWidget,...)
 
   ## update .rqda$.CodeofCat[] by click handler on .rqda$.CodeCatWidget
 
-CodeCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.CodeofCat,...)
+CodeCatDropFromButton <- function(label="Drop From",Widget=.rqda$.CodeofCat,...)
 {
   gbutton(label,handler=function(h,...) {
     ## Get CodeList already in the category (table treecode): svalue()

@@ -95,7 +95,7 @@ Proj_MemoButton <- function(label="Porject Memo",container,...){
 }
 
 
-CleanProjButton <- function(label="Clean Porject",container,...){
+CleanProjButton <- function(label="Clean Project",container,...){
   gbutton(label, contain=container, handler=function(h,...) {
     CleanProject(ask=FALSE)
   }

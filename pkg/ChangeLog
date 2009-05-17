@@ -1,3 +1,6 @@
+2009-05-17
+	* Minor improvement of GUI according to Kevin Brubeck Unhammer (see the mail list for details).
+	
 2009-05-12
 	* improve UpdateFileofCaseWidget() to sort the items by time or	name.
 	
