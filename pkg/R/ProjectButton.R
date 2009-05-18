@@ -1,6 +1,6 @@
 NewProjectButton <- function(container){
 gbutton("New Project",container=container,handler=function(h,...){
-    path=gfile(type="save") 
+    path=gfile(type="save",text = "Type a name for the new project and click OK.") 
     if (path!=""){
       ## if path="", then click "cancel".
       Encoding(path) <- "UTF-8"

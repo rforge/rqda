@@ -354,7 +354,7 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
         val <- sprintf(" File ID is %i \n File Category is %s\n Case is %s",
                               Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", "))
         tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
-            gw <- gwindow("File Property",parent=c(395,620),width=600,height=50)
+            gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,630),width=600,height=50)
             sfp <- glabel(val,cont=gw)
             assign(".sfp",sfp,env=.rqda)
         })

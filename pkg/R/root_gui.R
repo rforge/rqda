@@ -190,6 +190,9 @@ assign(".CodeofCat",.CodeofCat,env=.rqda)
 assign(".FileCatWidget",.FileCatWidget,env=.rqda)
 assign(".FileofCat",.FileofCat,env=.rqda)
 
+  ## cordinate of ViewFunWidget
+  if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))
+  
 ##########################
 ### set the positions
 svalue(.codes_pan) <- 0.08

@@ -109,7 +109,7 @@ ViewFileFun <- function(FileNameWidget){
                 })
                 SelectedFileName <- svalue(FileNameWidget)
                 assign(".root_edit", gwindow(title = SelectedFileName,
-                  parent = c(395, 10), width = 600, height = 600),
+                  parent = getOption("widgetCoordinate"), width = 600, height = 600),
                   env = .rqda)
                 .root_edit <- get(".root_edit", .rqda)
                 assign(".openfile_gui", gtext(container = .root_edit,

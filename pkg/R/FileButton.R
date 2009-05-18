@@ -163,7 +163,8 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
 AddNewFileFun <- function(){
   if (is_projOpen(env=.rqda,"qdacon")) {
     tryCatch(eval(parse(text="dispose(.rqda$.AddNewFileWidget")),error=function(e) {}) ## close the widget if open
-    assign(".AddNewFileWidget",gwindow(title="Add New File.",parent=c(395,10),width=600,height=400),env=.rqda)
+    assign(".AddNewFileWidget",gwindow(title="Add New File.",parent=getOption("widgetCoordinate"),
+                                       width=600,height=400),env=.rqda)
     assign(".AddNewFileWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewFileWidget",env=.rqda)),env=.rqda)
     gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){
       ## require a title for the file
