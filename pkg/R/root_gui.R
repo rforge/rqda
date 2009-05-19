@@ -29,11 +29,16 @@ RQDA <- function() {
   CloseProjectButton(container=.proj_gui)
   Proj_MemoButton(label = "Project Memo", container = .proj_gui)
   ## project memo button
-  ProjectInforButton(container=.proj_gui)
+  ## ProjectInforButton(container=.proj_gui)
   BackupProjectButton(container=.proj_gui)
   CleanProjButton(container=.proj_gui)
   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
 
+  gseparator(con=.proj_gui)
+  glabel("Path of current Project:",con=.proj_gui)
+  ".currentProj" <- glabel("No project is open.",con=.proj_gui)
+
+  gseparator(con=.proj_gui)
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: BSD License\n
@@ -189,6 +194,7 @@ assign(".CodeCatWidget",.CodeCatWidget,env=.rqda)
 assign(".CodeofCat",.CodeofCat,env=.rqda)
 assign(".FileCatWidget",.FileCatWidget,env=.rqda)
 assign(".FileofCat",.FileofCat,env=.rqda)
+assign(".currentProj",.currentProj,env=.rqda)
 
   ## cordinate of ViewFunWidget
   if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))

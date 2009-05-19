@@ -318,6 +318,11 @@ CaseNamesWidgetMenu$"Web Search"$Sogou$handler <- function(h,...){
 
 ## pop-up menu of .rqda$.FileofCase
 FileofCaseWidgetMenu <- list() ## not used yet.
+FileofCaseWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    AddToFileCategory(Widget=.rqda$.FileofCase,updateWidget=FALSE)
+  }
+}
 FileofCaseWidgetMenu$"Drop Selected File(s)"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     FileOfCat <- svalue(.rqda$.FileofCase)

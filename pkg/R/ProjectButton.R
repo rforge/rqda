@@ -4,9 +4,13 @@ gbutton("New Project",container=container,handler=function(h,...){
     if (path!=""){
       ## if path="", then click "cancel".
       Encoding(path) <- "UTF-8"
-      new_proj(path,assignenv=.rqda)}
+      new_proj(path,assignenv=.rqda)
+      path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname,fixed=TRUE)
+      path <- gsub("/","/ ",path,fixed=TRUE)
+      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"),fixed=TRUE)
+    }
   }
-                            )
+        )
 }
 
 OpenProjectButton <- function(container){
@@ -27,6 +31,9 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(close_proj(assignenv=.rqda),error=function(e){})
       ## close currect project before open a new one.
       open_proj(path,assignenv=.rqda)
+      path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname,fixed=TRUE)
+      path <- gsub("/","/ ",path,fixed=TRUE)
+      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"),fixed=TRUE)
       UpgradeTables()
       tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})
       tryCatch(FileNamesUpdate(),error=function(e){})
@@ -55,23 +62,24 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.AttrNamesWidget[] <- NULL,error=function(e){})
       tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
       close_proj(assignenv=.rqda)
-      }
-                               )
-
-}
-
-ProjectInforButton <- function(container){
-gbutton("Current Project",container=container,handler=function(h,...){
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      con <- .rqda$qdacon
-      dbname <- dbGetInfo(.rqda$qdacon)$dbname
-      ##substr(dbname, nchar(dbname)-15,nchar(dbname))
-      gmessage(dbname,title="Info about current project.",con=TRUE)
+      svalue(.rqda$.currentProj) <- "No project is open."
     }
-  },
-                             action=list(env=.rqda,conName="qdacon")
-                             )
+        )
+
 }
+
+## ProjectInforButton <- function(container){
+## gbutton("Current Project",container=container,handler=function(h,...){
+##     if (is_projOpen(env=.rqda,conName="qdacon")) {
+##       con <- .rqda$qdacon
+##       dbname <- dbGetInfo(.rqda$qdacon)$dbname
+##       ##substr(dbname, nchar(dbname)-15,nchar(dbname))
+##       gmessage(dbname,title="Info about current project.",con=TRUE)
+##     }
+##   },
+##                              action=list(env=.rqda,conName="qdacon")
+##                              )
+## }
 
 BackupProjectButton <- function(container){
 gbutton("Backup Project",container=container,handler=function(h,...){

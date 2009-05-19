@@ -129,6 +129,8 @@ ViewFileFun <- function(FileNameWidget){
                   ClearMark(W ,0 , max(mark_index$selend))
                   HL(W,index=mark_index)
                 }
+                buffer <- W@widget@widget$GetBuffer() ## place cursor at the beginning
+                buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter)
             }
         }
     }
@@ -144,7 +146,8 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
     }
     else {
       tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
-      assign(".root_edit",gwindow(title=SelectedFileName,parent=c(395,10),width=600,height=600),env=.rqda)
+      assign(".root_edit",gwindow(title=SelectedFileName,parent=getOption("widgetCoordinate"),
+                                  width=600,height=600),env=.rqda)
       assign(".root_edit2",gpanedgroup(horizontal = FALSE, con=.rqda$.root_edit),env=.rqda)
       gbutton("Save File",con=.rqda$.root_edit2,handler=function(h,...){
         content <-  svalue(.rqda$.openfile_gui)

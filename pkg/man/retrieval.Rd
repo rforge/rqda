@@ -5,10 +5,12 @@
 To retrieve the codings of a selected code from specific set of files.
 }
 \usage{
-retrieval(Fid = NULL, CodeNameWidget = .rqda$.codes_rqda)
+retrieval(Fid = NULL, order = c("fname", "ftime", "ctime"),
+          CodeNameWidget = .rqda$.codes_rqda)
 }
 \arguments{
   \item{Fid}{Numeric vector, the file id.}
+  \item{order}{The method of sort of retrieved codings.}
   \item{CodeNameWidget}{The name of code list widget.}
 }
 \details{

@@ -71,7 +71,8 @@ JournalNamesUpdate <- function(Widget=.rqda$.JournalNamesWidget,decreasing=FALSE
 AddNewJournalFun <- function(){
     if (is_projOpen(env=.rqda,"qdacon")) {
         tryCatch(eval(parse(text="dispose(.rqda$.AddNewJournalWidget")),error=function(e) {}) ## close the widget if open
-        assign(".AddNewJournalWidget",gwindow(title="Add New Journal.",parent=c(395,10),width=600,height=400),env=.rqda)
+        assign(".AddNewJournalWidget",gwindow(title="Add New Journal.",parent=getOption("widgetCoordinate"),
+                                              width=600,height=400),env=.rqda)
         assign(".AddNewJournalWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewJournalWidget",env=.rqda)),env=.rqda)
         gbutton("Save Journal",con=get(".AddNewJournalWidget2",env=.rqda),handler=function(h,...){
             title <- Sys.time()
@@ -109,7 +110,7 @@ ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,
       else {
         tryCatch(eval(parse(text=sprintf("dispose(.rqda$.%smemo)",prefix))),error=function(e) {})
         assign(sprintf(".%smemo",prefix),gwindow(title=sprintf("%s:%s",prefix,Selected),
-                                   parent=c(395,10),width=600,height=400),env=.rqda)
+                                   parent=getOption("widgetCoordinate"),width=600,height=400),env=.rqda)
         assign(sprintf(".%smemo2",prefix),
                gpanedgroup(horizontal = FALSE, con=get(sprintf(".%smemo",prefix),env=.rqda)),
                env=.rqda)

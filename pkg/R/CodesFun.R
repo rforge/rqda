@@ -240,7 +240,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
           CallBackFUN <- function(button){
             tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
-            root <- gwindow(title=FileName, parent=c(395,40),width=580,height=580)
+            root <- gwindow(title=FileName, parent=getOption("widgetCoordinate"),width=580,height=580)
             ## use the same names as the of ViewFile, so can do coding when back to the original file.
             assign(".root_edit",root,env=.rqda)
             displayFile <- gtext(container=.rqda$.root_edit,font.attr=c(sizes="large"))
@@ -313,7 +313,8 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
       ## use sql to order the fid
       fid <- unique(retrieval$fid)
       retrieval$fname <-"" ## no fname in table "coding".
-      .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),parent=c(395,10),width=600,height=600)
+      .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),
+                     parent=getOption("widgetCoordinate"),width=600,height=600)
       .retreivalgui <- gtext(con=.gw)
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]

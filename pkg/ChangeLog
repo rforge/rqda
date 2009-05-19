@@ -1,3 +1,11 @@
+2009-05-19
+	* Use glabel to display current project rather than a button.
+	* Improve EditFileFun to place cursor at the beginning by default.
+	* new argument x and y of gselect.list, to specify the position of the dialog widget.
+	
+2009-05-18
+	* use options(widgetCoordinate=c(400,2)) to adjust the position of ViewFileFun widget etc.
+	
 2009-05-17
 	* Minor improvement of GUI according to Kevin Brubeck Unhammer (see the mail list for details).
 	

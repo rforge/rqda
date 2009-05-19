@@ -168,7 +168,7 @@ ProjectMemoWidget <- function(){
     tryCatch(dispose(.rqda$.projmemo),error=function(e) {})
     ## Close the open project memo first, then open a new one
     ## .projmemo is the container of .projmemocontent,widget for the content of memo
-    assign(".projmemo",gwindow(title="Project Memo", parent=c(395,10),width=600,height=400),env=.rqda)
+    assign(".projmemo",gwindow(title="Project Memo", parent=getOption("widgetCoordinate"),width=600,height=400),env=.rqda)
     .projmemo <- get(".projmemo",.rqda)
     .projmemo2 <- gpanedgroup(horizontal = FALSE, con=.projmemo)
     ## use .projmemo2, so can add a save button to it.
