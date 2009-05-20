@@ -52,6 +52,8 @@ Setting <- list(type = "ggroup",
 
 ##
 
+gbutton("Set Font",cont = container,handler=function(h,...) setFont(default=.rqda$font))## set font for widget
+
 SettingFL <- gformlayout(Setting, cont = container, expand=TRUE)
 
 ButtonContainer <- ggroup(cont = container) ##, width=100) ## not necessary to set width here
@@ -83,3 +85,15 @@ addHandlerChanged(resetButton, function(h,...) {
   assign("TOR","unconditional",env=.rqda)
 })}
 
+setFont <- function(default="Sans 11"){
+    font <- gtkFontButtonNew()
+    gtkFontButtonSetFontName(font,default)
+    g <-glayout(con=gwindow(wid=50,hei=30,parent=getOption("widgetCoordinate")),hom=T)
+    g[1,1:2] <- font
+    g[2,1] <- gbutton("Ok",handler=function(h,...){
+        ans <- font$GetFontName()
+        assign("font",ans,env=.rqda)
+        dispose(g)
+    })
+    g[2,2] <- gbutton("Cancle",handler=function(h,...) dispose(g))
+}

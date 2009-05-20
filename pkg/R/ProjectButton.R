@@ -1,6 +1,6 @@
 NewProjectButton <- function(container){
 gbutton("New Project",container=container,handler=function(h,...){
-    path=gfile(type="save",text = "Type a name for the new project and click OK.") 
+    path=gfile(type="save",text = "Type a name for the new project and click OK.")
     if (path!=""){
       ## if path="", then click "cancel".
       Encoding(path) <- "UTF-8"
@@ -31,9 +31,9 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(close_proj(assignenv=.rqda),error=function(e){})
       ## close currect project before open a new one.
       open_proj(path,assignenv=.rqda)
-      path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname,fixed=TRUE)
-      path <- gsub("/","/ ",path,fixed=TRUE)
-      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"),fixed=TRUE)
+      path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname)
+      path <- gsub("/","/ ",path)
+      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"))
       UpgradeTables()
       tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})
       tryCatch(FileNamesUpdate(),error=function(e){})

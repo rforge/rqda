@@ -123,7 +123,7 @@ MemoWidget <- function(prefix,widget,dbTable){
               }
                       )## end of save memo button
               tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
-              font <- pangoFontDescriptionFromString("Sans 10")
+              font <- pangoFontDescriptionFromString(.rqda$font)
               gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
               assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
               prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable,Selected))[1,1]

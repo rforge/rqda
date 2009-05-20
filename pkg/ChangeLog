@@ -1,3 +1,7 @@
+2009-05-20
+	* add some tooltips of buttons in Code Tab.
+	* font-setting for memo widget.
+	
 2009-05-19
 	* Use glabel to display current project rather than a button.
 	* Improve EditFileFun to place cursor at the beginning by default.

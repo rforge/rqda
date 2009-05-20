@@ -39,13 +39,15 @@ DeleteCodeButton <- function(label="Delete"){
 }
 
 RetrievalButton <- function(label){
-  gbutton(label,
+  ans <- gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               retrieval2(CodeNameWidget=.rqda$.codes_rqda,type=.rqda$TOR)
             }
           }
           )
+  gtkTooltips()$setTip(ans@widget@widget,"Retrieve codings of the selected code.")
+  return(ans)
 }
 
 ##ExtendButton <- function(label){
@@ -60,7 +62,7 @@ RetrievalButton <- function(label){
 
 
 HL_ALLButton <- function(){
-  gbutton("HL ALL",
+    ans <- gbutton("HL ALL",
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               con <- .rqda$qdacon
@@ -87,6 +89,8 @@ HL_ALLButton <- function(){
           },
           action=list(widget=".openfile_gui")
           )
+  gtkTooltips()$setTip(ans@widget@widget,"Highlight all codings of the open file.")
+  return(ans)
 }
 
 
@@ -203,10 +207,12 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
 
 
 CodeMemoButton <- function(label="C-Memo",...){
-  gbutton(label, handler=function(h,...){
+  codememobuton <- gbutton(label, handler=function(h,...){
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
   }
           )
+  gtkTooltips()$setTip(codememobuton@widget@widget,"This is Memo for selected code.")
+  return(codememobuton)
 }
 ##           {
 ##     ## code memo: such as meaning of code etc.
@@ -248,7 +254,7 @@ CodeMemoButton <- function(label="C-Memo",...){
 
 CodingMemoButton <- function(label="C2Memo")
 {
-  gbutton(label, handler= function(h,...){
+  c2memobutton <- gbutton(label, handler= function(h,...){
     con <- .rqda$qdacon
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
@@ -304,6 +310,8 @@ CodingMemoButton <- function(label="C2Memo")
     }
   }
           )
+  gtkTooltips()$setTip(c2memobutton@widget@widget,"This is Memo for Codings.")
+  return(c2memobutton)
 }
 
 
@@ -340,7 +348,9 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
 
 CodingInfoButton <- function(label="C2Info")
 {
-  gbutton(label,handler= function(h,...) c2InfoFun())
+    ans <- gbutton(label,handler= function(h,...) c2InfoFun())
+    gtkTooltips()$setTip(ans@widget@widget,"Code lists associated with the selected codings in the open file.")
+    return(ans)
 }
 
 ## c2InfoFun() moved to CodesFun.R

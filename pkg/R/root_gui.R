@@ -198,7 +198,8 @@ assign(".currentProj",.currentProj,env=.rqda)
 
   ## cordinate of ViewFunWidget
   if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))
-  
+  assign("font","Sans 11",env=.rqda)
+
 ##########################
 ### set the positions
 svalue(.codes_pan) <- 0.08
@@ -207,7 +208,7 @@ svalue(.filecat_pan)<-0.08
 svalue(.case_pan)<-0.04
 svalue(.attr_pan)<-0.04
 svalue(.journal_pan)<-0.04
-  
+
 ##########################
 Handler()
 }
