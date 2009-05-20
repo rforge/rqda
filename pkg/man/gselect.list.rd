@@ -22,7 +22,7 @@ gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500,x=42
 \details{
 GTK version of \code{\link[utils]{select.list}}.
 }
-\Note{
+\note{
 The license of this function is subject to interpretation of the orginal author.
 }
 \value{

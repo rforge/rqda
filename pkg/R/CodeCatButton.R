@@ -120,7 +120,7 @@ UpdateCodeofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.CodeofCat){
 
 CodeCatAddToButton <- function(label="Add To",Widget=.rqda$.CodeCatWidget,...)
 {
-  gbutton(label,handler=function(h,...) {
+  ans <- gbutton(label,handler=function(h,...) {
     ## SelectedCodeCat and its id (table codecat): svalue()-> Name; sql->catid
     SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
     if (length(SelectedCodeCat)==0) {gmessage("Select a code category first.",con=TRUE)} else{
@@ -155,13 +155,15 @@ CodeCatAddToButton <- function(label="Add To",Widget=.rqda$.CodeCatWidget,...)
   }
   }
           )
+  gtkTooltips()$setTip(ans@widget@widget,"Add code(s) to the selected code category.")
+  return(ans)
 }
 
   ## update .rqda$.CodeofCat[] by click handler on .rqda$.CodeCatWidget
 
 CodeCatDropFromButton <- function(label="Drop From",Widget=.rqda$.CodeofCat,...)
 {
-  gbutton(label,handler=function(h,...) {
+  ans <- gbutton(label,handler=function(h,...) {
     ## Get CodeList already in the category (table treecode): svalue()
     CodeOfCat <- svalue(Widget)
     if ((NumofSelected <- length(CodeOfCat)) ==0) {
@@ -183,6 +185,8 @@ CodeCatDropFromButton <- function(label="Drop From",Widget=.rqda$.CodeofCat,...)
 }}
   }
           )
+  gtkTooltips()$setTip(ans@widget@widget,"Drop selected code(s) from code category.")
+  return(ans)
 }
 
 CodeCatMemoButton <- function(label="Memo",...){

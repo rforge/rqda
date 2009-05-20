@@ -167,11 +167,14 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget)){
 }}
 
 SetAttrClsButton <- function(label="Set Class"){
-    gbutton(label,handler=function(h,...) {
+    ans <- gbutton(label,handler=function(h,...) {
         if (is_projOpen(env=.rqda,conName="qdacon")) {
             setAttrType()
         }
-    })}
+    })
+  gtkTooltips()$setTip(ans@widget@widget,"Set class of selected attribute.\nIt can be 'numeric' or 'character'.")
+  return(ans)
+}
 
 
 setAttrType <- function() {

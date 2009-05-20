@@ -112,15 +112,18 @@ ViewFileFun <- function(FileNameWidget){
                   parent = getOption("widgetCoordinate"), width = 600, height = 600),
                   env = .rqda)
                 .root_edit <- get(".root_edit", .rqda)
-                assign(".openfile_gui", gtext(container = .root_edit,
-                  font.attr = c(sizes = "large")), env = .rqda)
+                tmp <- gtext(container=.root_edit)
+                font <- pangoFontDescriptionFromString(.rqda$font)
+                gtkWidgetModifyFont(tmp@widget@widget,font)
+                assign(".openfile_gui", tmp, env = .rqda)
                 Encoding(SelectedFileName) <- "unknown"
                 IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",
                   SelectedFileName))
                 content <- IDandContent$file
                 Encoding(content) <- "UTF-8"
                 W <- get(".openfile_gui", .rqda)
-                add(W, content, font.attr = c(sizes = "large"))
+                ## add(W, content, font.attr = c(sizes = "large"))
+                add(W, content)
                 tryCatch(slot(W, "widget")@widget$SetEditable(FALSE),error=function(e){})
                 mark_index <-
                   dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend from coding where fid=%i and status=1",IDandContent$id))
@@ -188,13 +191,17 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
             })## end of apply
         }
     })## end of save memo button
-      assign(".openfile_gui", gtext(container = .rqda$.root_edit2, font.attr = c(sizes = "large")), env = .rqda)
+      tmp <- gtext(container=.rqda$.root_edit2)
+      font <- pangoFontDescriptionFromString(.rqda$font)
+      gtkWidgetModifyFont(tmp@widget@widget,font)
+      assign(".openfile_gui", tmp, env = .rqda)
       Encoding(SelectedFileName) <- "unknown"
       IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",SelectedFileName))
       content <- IDandContent$file
       Encoding(content) <- "UTF-8"
       W <- get(".openfile_gui", .rqda)
-      add(W, content, font.attr = c(sizes = "large"))
+      ## add(W, content, font.attr = c(sizes = "large"))
+      add(W, content)
       buffer <- slot(W, "widget")@widget$GetBuffer() ## get text buffer.
       mark_index <- dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend,rowid from coding where fid=%i and status=1",
                                                     IDandContent$id))
@@ -293,8 +300,8 @@ ProjectMemoWidget <- function(){
                  )
     }
             )## end of save memo button
-    tmp <- gtext(container=.projmemo2,font.attr=c(sizes="large"))
-    font <- pangoFontDescriptionFromString("Sans 11")
+    tmp <- gtext(container=.projmemo2)
+    font <- pangoFontDescriptionFromString(.rqda$font)
     gtkWidgetModifyFont(tmp@widget@widget,font)
     assign(".projmemocontent",tmp,env=.rqda)
     prvcontent <- dbGetQuery(.rqda$qdacon, "select memo from project")[1,1]

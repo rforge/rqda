@@ -189,7 +189,7 @@ AddNewFileFun <- function(){
       }}
             )## end of save button
     tmp <- gtext(container=get(".AddNewFileWidget2",env=.rqda))
-    font <- pangoFontDescriptionFromString("Sans 10")
+    font <- pangoFontDescriptionFromString(.rqda$font)
     gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
     assign(".AddNewFileWidgetW",tmp,env=.rqda)
     textW <- get(".AddNewFileWidgetW",env=.rqda)

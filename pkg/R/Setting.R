@@ -52,7 +52,8 @@ Setting <- list(type = "ggroup",
 
 ##
 
-gbutton("Set Font",cont = container,handler=function(h,...) setFont(default=.rqda$font))## set font for widget
+ans <- gbutton("Set Font",cont = container,handler=function(h,...) setFont(default=.rqda$font))## set font for widget
+gtkTooltips()$setTip(ans@widget@widget,"Set fonts for memo widgets.")
 
 SettingFL <- gformlayout(Setting, cont = container, expand=TRUE)
 
@@ -83,6 +84,7 @@ addHandlerChanged(resetButton, function(h,...) {
   assign("back.col","gray92",env=.rqda)
   assign("fore.col","blue",env=.rqda)
   assign("TOR","unconditional",env=.rqda)
+  assign("font","Sans 11",env=.rqda)
 })}
 
 setFont <- function(default="Sans 11"){

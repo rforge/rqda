@@ -94,7 +94,7 @@ FileCatMemoButton <- function(label="Memo"){
 
 FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
 {
-  gbutton(label,handler=function(h,...) {
+  ans <- gbutton(label,handler=function(h,...) {
     SelectedFileCat <- svalue(.rqda$.FileCatWidget)
     if (length(SelectedFileCat)==0) {gmessage("Select a file category first.",con=TRUE)} else{
     catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",SelectedFileCat))[,1]
@@ -129,11 +129,13 @@ FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
   }
   }
           )
+  gtkTooltips()$setTip(ans@widget@widget,"Add file(s) to the selected file category.")
+  return(ans)
 }
 
 FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
 {
-  gbutton(label,handler=function(h,...) {
+  ans <- gbutton(label,handler=function(h,...) {
     FileOfCat <- svalue(Widget)
     if ((NumofSelected <- length(FileOfCat)) ==0) {
       gmessage("Please select the Files you want to delete.",con=TRUE)} else
@@ -156,6 +158,8 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
     }
   }
           )
+  gtkTooltips()$setTip(ans@widget@widget,"Drop selected file(s) from file category.")
+  return(ans)
 }
 
 

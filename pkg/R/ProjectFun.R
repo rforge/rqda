@@ -184,7 +184,7 @@ ProjectMemoWidget <- function(){
     }
             )## end of save memo button
     tmp <- gtext(container=.projmemo2,font.attr=c(sizes="large"))
-    font <- pangoFontDescriptionFromString("Sans 10")
+    font <- pangoFontDescriptionFromString(.rqda$font)
     gtkWidgetModifyFont(tmp@widget@widget,font)
     assign(".projmemocontent",tmp,env=.rqda)
     prvcontent <- dbGetQuery(.rqda$qdacon, "select memo from project")[1,1]
