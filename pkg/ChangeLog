@@ -1,3 +1,6 @@
+2009-05-21
+	* improve "search file..." menu, to keep the last search pattern.
+	
 2009-05-20
 	* add some tooltips of buttons in Code Tab.
 	* font-setting for memo widget.

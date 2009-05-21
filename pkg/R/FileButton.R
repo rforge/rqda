@@ -265,9 +265,11 @@ FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
 }
 FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    pattern <- ginput("Please input a search pattern.",text="file like '%%'")
+    pattern <- ifelse(is.null(.rqda$lastsearch),"file like '%%'",.rqda$lastsearch) 
+    pattern <- ginput("Please input a search pattern.",text=pattern)
     if (!is.na(pattern)){
     tryCatch(SearchFiles(pattern,Widget=".fnames_rqda",is.UTF8=TRUE),error=function(e) gmessage("Error~~~."),con=TRUE)
+    assign("lastsearch",pattern,env=.rqda)
     }
     }
   }
