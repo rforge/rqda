@@ -119,7 +119,7 @@ Version: 0.1-8 dev\n",
   ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Code\nCategories")
   ".codecat_buttons" <- glayout(container=.codecat_pan)
   ".Ccat_PW" <- ggroup(cont=.codecat_pan,horizontal = FALSE)## parent Widget of C-cat
-  ".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE)
+  ".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
    .CodeCatWidget[] <- NULL; names(.CodeCatWidget)<-"Code Category"
    ".CodeofCat" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
    .CodeofCat[] <- NULL;names(.CodeofCat)<-"Codes of This Category"

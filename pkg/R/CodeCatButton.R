@@ -231,12 +231,28 @@ CodeCatMemoButton <- function(label="Memo",...){
 ##     }
 ##   }
 
+plotCodeCategory <-function(parent=NULL){
+    if (is.null(parent)) parent <- svalue(.rqda$.CodeCatWidget)
+    ans <- RQDAQuery(sprintf("select codecat.name as parent,freecode.name as child from treecode, codecat,freecode
+where treecode.status==1 and codecat.status==1 and freecode.status==1
+and treecode.catid==codecat.catid and freecode.id=treecode.cid and codecat.name in (%s)",paste(shQuote(parent),collapse=",")))
+    g <- graph.data.frame(ans)
+    tryCatch(tkplot(g,vertex.label=V(g)$name),error=function(e){
+        plot(g,vertex.label=V(g)$name)
+    })
+}
+
 
 CodeCatWidgetMenu <- list()
 CodeCatWidgetMenu$Memo$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
 }
+}
+CodeCatWidgetMenu$"Plot Selected Code Category"$handler <- function(h,...){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        plotCodeCategory()
+    }
 }
 CodeCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {

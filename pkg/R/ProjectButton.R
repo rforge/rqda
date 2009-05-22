@@ -31,9 +31,6 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(close_proj(assignenv=.rqda),error=function(e){})
       ## close currect project before open a new one.
       open_proj(path,assignenv=.rqda)
-      path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname)
-      path <- gsub("/","/ ",path)
-      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"))
       UpgradeTables()
       tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})
       tryCatch(FileNamesUpdate(),error=function(e){})
@@ -44,6 +41,9 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(UpdateFileofCatWidget(),error=function(e){})
       tryCatch(AttrNamesUpdate(),error=function(e){})
       tryCatch(JournalNamesUpdate(),error=function(e){})
+      path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname)
+      path <- gsub("/","/ ",path)
+      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"))
     }
   }
                               )
