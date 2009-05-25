@@ -81,6 +81,8 @@ HL_ALLButton <- function(){
                 mark_index <-
                   dbGetQuery(con,sprintf("select selfirst,selend,status from coding where fid=%i and status=1",currentFid))
                 ## only select thoses with the open_file and not deleted (status=1).
+                mark_index <-apply(mark_index,2,function(x) x + countAnchors(.rqda$.openfile_gui,from=0,to=x))
+                ## is a button is inserted, then should adjust the index
                 ClearMark(W ,0 , max(mark_index$selend))
                 HL(W,index=mark_index)
               }
@@ -104,10 +106,10 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
       con <- .rqda$qdacon
       tryCatch({
       W <- get(".openfile_gui",env=.rqda)
-      ans <- mark(W) ## can change the color
+      codeListWidget <- get(codeListWidget,env=.rqda)
+      ans <- mark(W,addButton=TRUE,buttonLabel=svalue(codeListWidget)) ## can change the color
       if (ans$start != ans$end){
         ## when selected no text, makes on sense to do anything.
-        codeListWidget <- get(codeListWidget,env=.rqda)
         SelectedCode <- svalue(codeListWidget)
         ## Encoding(SelectedCode) <- "UTF-8"
         SelectedCode <- enc(SelectedCode,encoding="UTF-8")
@@ -174,10 +176,11 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
         con <- .rqda$qdacon
         W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
         ## get the widget for file display. If it does not exist, then return NULL.
-        sel_index <- tryCatch(sindex(W),error=function(e) {})
+        sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
+        sel_index2 <- tryCatch(sindex(W,includeAnchor=TRUE),error=function(e) {})
         ## if the not file is open, unmark doesn't work.
         if (!is.null(sel_index)) {
-            codeListWidget <- get(codeListWidget,env=.rqda)
+            ## codeListWidget <- get(codeListWidget,env=.rqda)
             SelectedCode <- svalue(codeListWidget)
             if (length(SelectedCode)==0) {gmessage("Select a code first.",con=TRUE)} else{
                 SelectedCode <- enc(SelectedCode,"UTF-8") ## Encoding(SelectedCode) <- "UTF-8"
@@ -194,11 +197,13 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
                 rowid <- codings_index$rowid[(codings_index$selfirst  >= sel_index$startN) &
                                              (codings_index$selend  <= sel_index$endN)]
                 if (is.numeric(rowid)) for (j in rowid) {
-                    dbGetQuery(con,sprintf("update coding set status=-1 where rowid=%i", j))  }
+                    dbGetQuery(con,sprintf("update coding set status=-1 where rowid=%i", j))
+                }
                 ## better to get around the loop by sqlite condition expression.
                 ## status=-1 to differentiate the result of delete button
-                ClearMark(W,min=sel_index$startN,max=sel_index$endN)
+                ClearMark(W,min=sel_index2$startN,max=sel_index2$endN)
                 ## This clear all the marks in the gtext window,
+                DeleteButton(.rqda$.openfile_gui,label=svalue(codeListWidget),index=sel_index2$startN)
                 ## even for the non-current code. can improve.
             }
         }
@@ -259,7 +264,7 @@ CodingMemoButton <- function(label="C2Memo")
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
       ## get the widget for file display. If it does not exist, then return NULL.
-      sel_index <- tryCatch(sindex(W),error=function(e) {}) ## if the not file is open, it doesn't work.
+      sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {}) ## if the not file is open, it doesn't work.
       if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
       else {
         SelectedCode <- svalue(.rqda$.codes_rqda)## ; Encoding(SelectedCode) <- "UTF-8"

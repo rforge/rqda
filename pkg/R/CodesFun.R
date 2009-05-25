@@ -53,10 +53,10 @@ CodeNamesWidgetUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sortByTime=T
 }
 
 
-mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL){
+mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel=""){
   ## modified so can change fore.col and back.col easily
   ## when col is NULL, it is skipped
-  index <- sindex(widget)
+  index <- sindex(widget,includeAnchor=TRUE)
   startI <- index$startI ## start and end iter
   endI <- index$endI
   selected <- index$seltext
@@ -80,12 +80,15 @@ mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL){
       ##       buffer$ApplyTagByName("MarkBackGround",startI,endI)
       buffer$ApplyTagByName(sprintf("%s.background",back.col),startI,endI)
     }
+    if(addButton) InsertButton(widget,buttonLabel,index=startN) ## must after the applytag ops.
     ## buffer$createTag("red.foreground",foreground = "red")
     ## buffer$ApplyTagByName("red.foreground",startI,endI)
     ## buffer$createTag("red.background",list(foreground = "red")) ## better, it can mark space
     ## buffer$ApplyTagByName("red.background",startI,endI); ## change colors
   }
   ## only when selected text chunk is not "", apply the color scheme.
+  startN <-startN - countAnchors(.rqda$.openfile_gui,from=0,to=startN)
+  endN <- endN - countAnchors(.rqda$.openfile_gui,from=0,to=endN)
   return(list(start=startN,end=endN,text=selected))
 }
 
@@ -138,7 +141,7 @@ HL <- function(W,index,fore.col=.rqda$fore.col,back.col=NULL){
 
 
 
-sindex <- function(widget){
+sindex <- function(widget,includeAnchor=FALSE){
   buffer <- slot(widget,"widget")@widget$GetBuffer()
   bounds = buffer$GetSelectionBounds()
   startI = bounds$start ## start and end iter
@@ -146,49 +149,60 @@ sindex <- function(widget){
   selected <- buffer$GetText(startI,endI)
   startN <- gtkTextIterGetOffset(startI) # translate iter pointer to number
   endN <- gtkTextIterGetOffset(endI)
+  if (!includeAnchor) {
+      startN <- startN - countAnchors(widget,from=0,to=startN)
+      endN <- endN - countAnchors(widget,from=0,to=endN)
+  }
   return(list(startI=startI,endI=endI,
               startN=startN,endN=endN,seltext=selected))
 }
 
+InsertButton <-function(widget,label,index,handler=NULL,...){
+    button <-gtkButtonNewWithLabel(label)
+    buffer <- slot(widget,"widget")@widget$GetBuffer()
+    if (!is.null(handler)) gSignalConnect(button, "clicked", handler)
+    iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
+    anchorcreated <- buffer$createChildAnchor(iter)
+    iter$BackwardChar()
+    anchor <- iter$getChildAnchor()
+    anchor <- gtkTextIterGetChildAnchor(iter)
+    widget@widget@widget$addChildAtAnchor(button, anchor)
+}
 
+DeleteButton <- function(widget,label,index){
+    buffer <- slot(widget,"widget")@widget$GetBuffer()
+    iter <- gtkTextBufferGetIterAtOffset(buffer,index-1)$iter
+    stop <- FALSE
+    while (!stop) {
+        Anchor <- iter$getChildAnchor()
+        if (!is.null(Anchor)){
+            label2 <- Anchor$GetWidgets()[[1]]$GetLabel()
+            if (label2==label){
+                Anchor$GetWidgets()[[1]]$SetLabel("") ## BETTER TO DELETE THE ANCHOR.
+                ## gSignalConnect(Anchor$GetWidgets(), "clicked", function(widget,...){})
+                ## no need to reset the gsignal
+                stop <- TRUE
+            }
+            iter$BackwardChar()
+        } else {stop <- TRUE}
+    }}
 
-## retrieval <- function(CodeNameWidget=.rqda$.codes_rqda,type= c("unconditional", "case", "filecategory")){
-## ##CodeNameWidget=.rqda$.codes_rqda
-##   currentCode <- svalue(CodeNameWidget)
-##   if (length(currentCode)!=0){
-##   Encoding(currentCode) <- "UTF-8"
-##   currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
-##   ## reliable is more important
-##   type=match.arg(type)
-##   if (type=="unconditional"){
-##     retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",currentCid))
-##   } else {
-##     retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i and fid in (%s)",currentCid,paste(GetFileId(condition=type),collapse=",")))
-##   }
-##   if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
-##   retrieval <-  retrieval[order( retrieval$fid),]
-##   fid <- unique(retrieval$fid)
-##   retrieval$fname <-""
-##   .gw <- gwindow(title=sprintf("Retrieved text: %s",currentCode),parent=c(395,10),width=600,height=600)
-##   .retreivalgui <- gtext(con=.gw)
-##   for (i in fid){
-##     FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
-##     tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
-##     ##fname <- paste("Source: ", FileNames, sep="")
-##     retrieval$fname[retrieval$fid==i] <- FileName
-##   }
-##   Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
+countAnchors <- function(widget,from=0,to,...){
+    buffer <- slot(widget,"widget")@widget$GetBuffer()
+    iter <- gtkTextBufferGetIterAtOffset(buffer,from)$iter
+    ans <- 0
+    while(from<to){
+        hasAnchor <- iter$getChildAnchor()
+        ans <- ans + ifelse(is.null(hasAnchor),0,1)
+        gtkTextIterForwardChar(iter)
+        from <- gtkTextIterGetOffset(iter)
+    }
+    ans
+}
+## testing
+## g<-gtext("testing widget of text.",con=T)
+## InsertButton(g,"button",8)
 
-##   apply(retrieval,1, function(x){
-##      metaData <- sprintf("%s [%s:%s]\n",x[['fname']],x[['selfirst']],x[['selend']])
-##      add(.retreivalgui,metaData,font.attr=c(foreground="red",size="x-large"),do.newline=FALSE)
-##      add(.retreivalgui,x[['seltext']],font.attr=c(style="normal",size="large"),do.newline=FALSE)
-##      add(.retreivalgui,"\n\n",font.attr=c(style="normal",size="large"),do.newline=FALSE)
-##    }
-##         )
-## }
-##   }
-## }
 
 retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.rqda$.codes_rqda){
   currentCode <- svalue(CodeNameWidget)
@@ -426,7 +440,7 @@ c2InfoFun <- function(){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
       ## get the widget for file display. If it does not exist, then return NULL.
-      sel_index <- tryCatch(sindex(W),error=function(e) {})
+      sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
       ## if the not file is open, it doesn't work.
       if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
       else {

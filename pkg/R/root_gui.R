@@ -16,6 +16,8 @@ RQDA <- function() {
                              }
                              )
 
+   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+   .root_rqdagui@widget@widget$SetIconFromFile(mainIcon) ## set an icon for the main programme.
 
   ".nb_rqdagui" <- gnotebook(4,container=.root_rqdagui,closebuttons=FALSE)
 

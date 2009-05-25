@@ -30,6 +30,7 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
       tryCatch(close_proj(assignenv=.rqda),error=function(e){})
       ## close currect project before open a new one.
+      svalue(.rqda$.currentProj) <- "Opening ..."
       open_proj(path,assignenv=.rqda)
       UpgradeTables()
       tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})

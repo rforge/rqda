@@ -249,7 +249,7 @@ CodeCatWidgetMenu$Memo$handler <- function(h,...){
  MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
 }
 }
-CodeCatWidgetMenu$"Plot Selected Code Category"$handler <- function(h,...){
+CodeCatWidgetMenu$"Plot Selected Code Categories"$handler <- function(h,...){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
         plotCodeCategory()
     }
