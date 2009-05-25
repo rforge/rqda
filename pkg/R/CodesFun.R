@@ -178,7 +178,10 @@ DeleteButton <- function(widget,label,index){
         if (!is.null(Anchor)){
             label2 <- Anchor$GetWidgets()[[1]]$GetLabel()
             if (label2==label){
-                Anchor$GetWidgets()[[1]]$SetLabel("") ## BETTER TO DELETE THE ANCHOR.
+                iterEnd <- gtkTextIterGetOffset(iter)
+                iterEnd <- gtkTextBufferGetIterAtOffset(buffer,iterEnd+1)$iter
+                gtkTextBufferDelete(buffer,iter,iterEnd)
+                ## Anchor$GetWidgets()[[1]]$SetLabel("") ## BETTER TO DELETE THE ANCHOR.
                 ## gSignalConnect(Anchor$GetWidgets(), "clicked", function(widget,...){})
                 ## no need to reset the gsignal
                 stop <- TRUE
