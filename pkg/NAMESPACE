@@ -7,4 +7,5 @@ S3method(ShowSubset,default)
 S3method(ShowSubset,CaseAttr)
 S3method(ShowSubset,FileAttr)
 import(RGtk2)
+import(gWidgetsRGtk2)
 

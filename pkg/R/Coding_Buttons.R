@@ -107,7 +107,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
       tryCatch({
       W <- get(".openfile_gui",env=.rqda)
       codeListWidget <- get(codeListWidget,env=.rqda)
-      ans <- mark(W,addButton=TRUE,buttonLabel=svalue(codeListWidget)) ## can change the color
+      ans <- mark(W,addButton=TRUE,buttonLabel=svalue(codeListWidget))
       if (ans$start != ans$end){
         ## when selected no text, makes on sense to do anything.
         SelectedCode <- svalue(codeListWidget)
@@ -176,39 +176,47 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
         con <- .rqda$qdacon
         W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
         ## get the widget for file display. If it does not exist, then return NULL.
-        sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
-        sel_index2 <- tryCatch(sindex(W,includeAnchor=TRUE),error=function(e) {})
+        idx1 <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
+        idx2 <- tryCatch(sindex(W,includeAnchor=TRUE),error=function(e) {})
         ## if the not file is open, unmark doesn't work.
-        if (!is.null(sel_index)) {
-            ## codeListWidget <- get(codeListWidget,env=.rqda)
-            SelectedCode <- svalue(codeListWidget)
-            if (length(SelectedCode)==0) {gmessage("Select a code first.",con=TRUE)} else{
-                SelectedCode <- enc(SelectedCode,"UTF-8") ## Encoding(SelectedCode) <- "UTF-8"
-                currentCid <-  dbGetQuery(.rqda$qdacon,
-                                          sprintf("select id from freecode where name=='%s'",
-                                                  SelectedCode))[,1]
-                SelectedFile <- svalue(.rqda$.root_edit)
-                SelectedFile <- enc(SelectedFile,"UTF-8") ## Encoding(SelectedFile) <- "UTF-8"
-                currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
-                                                      SelectedFile))[,1]
-                codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, selend from coding where cid==%i and fid==%i",
+        if (!is.null(idx1)) {
+          ## codeListWidget <- get(codeListWidget,env=.rqda)
+          SelectedCode <- svalue(codeListWidget)
+          if (length(SelectedCode)==0) {gmessage("Select a code first.",con=TRUE)} else{
+            SelectedCode <- enc(SelectedCode,"UTF-8") ## Encoding(SelectedCode) <- "UTF-8"
+            currentCid <-  dbGetQuery(.rqda$qdacon,
+                                      sprintf("select id from freecode where name=='%s'",
+                                              SelectedCode))[,1]
+            SelectedFile <- svalue(.rqda$.root_edit)
+            SelectedFile <- enc(SelectedFile,"UTF-8") ## Encoding(SelectedFile) <- "UTF-8"
+            currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
+                                                  SelectedFile))[,1]
+            codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, selend from coding where cid==%i and fid==%i",
                                                          currentCid, currentFid))
                 ## should only work with those related to current code and current file.
-                rowid <- codings_index$rowid[(codings_index$selfirst  >= sel_index$startN) &
-                                             (codings_index$selend  <= sel_index$endN)]
-                if (is.numeric(rowid)) for (j in rowid) {
-                    dbGetQuery(con,sprintf("update coding set status=-1 where rowid=%i", j))
-                }
-                ## better to get around the loop by sqlite condition expression.
-                ## status=-1 to differentiate the result of delete button
-                ClearMark(W,min=sel_index2$startN,max=sel_index2$endN)
-                ## This clear all the marks in the gtext window,
-                DeleteButton(.rqda$.openfile_gui,label=svalue(codeListWidget),index=sel_index2$startN)
-                ## even for the non-current code. can improve.
+            rowid <- codings_index$rowid[(codings_index$selfirst  >= idx1$startN) &
+                                         (codings_index$selend  <= idx1$endN)]
+            if (is.numeric(rowid)) for (j in rowid) {
+              dbGetQuery(con,sprintf("update coding set status=-1 where rowid=%i", j))
             }
+            ## better to get around the loop by sqlite condition expression.
+            ## status=-1 to differentiate the result of delete button
+            ClearMark(W,min=idx2$startN,max=idx2$endN)
+            ## This clear all the marks in the gtext window
+            buffer <- slot(.rqda$.openfile_gui, "widget")@widget$GetBuffer()
+            startIter <- buffer$GetIterAtMark(idx2$startMark)$iter
+            startN <- startIter$GetOffset()
+            DeleteButton(.rqda$.openfile_gui,label=sprintf("%s<",svalue(codeListWidget)),
+                         index=startN,direction="backward")
+            endIter <- buffer$GetIterAtMark(idx2$endMark)$iter
+            endN <- endIter$GetOffset()
+            DeleteButton(.rqda$.openfile_gui,label=sprintf(">%s",svalue(codeListWidget)),
+                         index=endN,direction="forward")
+            ## even for the non-current code. can improve.
+          }
         }
-    }
-}
+      }
+  }
 
 
 CodeMemoButton <- function(label="C-Memo",...){

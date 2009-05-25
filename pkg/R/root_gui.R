@@ -76,13 +76,13 @@ Version: 0.1-8 dev\n",
   .codes_button[1,2]<- DeleteCodeButton()
   .codes_button[1,3] <- FreeCode_RenameButton(label="Rename",CodeNamesWidget=.codes_rqda)
   .codes_button[1,4] <- CodeMemoButton(label="C-Memo")
-  .codes_button[1,5]<- CodingMemoButton(label="C2Memo")
-  .codes_button[2,1]<- CodingInfoButton()
-  .codes_button[2,2]<- HL_ALLButton()
-  .codes_button[2,3]<- RetrievalButton("Retrieval")
- ## .codes_button[2,3]<- ExtendButton("Retrieval")
-  .codes_button[2,4]<- Unmark_Button()
-  .codes_button[2,5]<- Mark_Button()
+  .codes_button[2,1]<- CodingMemoButton(label="C2Memo")
+  ## .codes_button[2,1]<- CodingInfoButton()
+  ## .codes_button[2,2]<- HL_ALLButton()
+  .codes_button[2,2]<- RetrievalButton("Retrieval")
+  ## .codes_button[2,3]<- ExtendButton("Retrieval")
+  .codes_button[2,3]<- Unmark_Button()
+  .codes_button[2,4]<- Mark_Button()
 
 ######################### GUI  for cases
 #########################
@@ -93,7 +93,6 @@ Version: 0.1-8 dev\n",
   .CasesNamesWidget[] <- NULL ; names(.CasesNamesWidget) <- "Cases"
   ".FileofCase" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=TRUE)
   .FileofCase[] <- NULL;names(.FileofCase)<-"Files of This Case"
-
   .case_buttons[1,1] <- AddCaseButton()
   .case_buttons[1,2] <- DeleteCaseButton()
   .case_buttons[1,3] <- Case_RenameButton()
@@ -128,11 +127,11 @@ Version: 0.1-8 dev\n",
    .codecat_buttons[1,1] <- AddCodeCatButton("Add")
    .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
    .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
-   .codecat_buttons[1,4] <- CodeCatAddToButton("Add To")
-   .codecat_buttons[1,5] <- CodeCatDropFromButton("Drop From")
-   .codecat_buttons[2,3] <- CodeCatMemoButton()
-   .codecat_buttons[2,4] <- Unmark_Button(label="UnMark", codeListWidget=".CodeofCat")
-   .codecat_buttons[2,5] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat")
+   .codecat_buttons[2,1] <- CodeCatAddToButton("Add To")
+   .codecat_buttons[2,2] <- CodeCatDropFromButton("Drop From")
+   .codecat_buttons[1,4] <- CodeCatMemoButton()
+   .codecat_buttons[2,3] <- Unmark_Button(label="UnMark", codeListWidget=.rqda.CodeofCat)
+   .codecat_buttons[2,4] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat")
 
 ######################### GUI  for F-cat
 #########################
