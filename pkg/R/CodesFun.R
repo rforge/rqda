@@ -63,8 +63,8 @@ mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,bu
   if (selected != ""){## only when selected text chunk is not "", apply the color scheme.
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     if(addButton) {
-      InsertButton(widget,sprintf("%s<",buttonLabel),index=startN)
-      InsertButton(widget,sprintf(">%s",buttonLabel),index=endN + 1)
+      InsertAnchor(widget,sprintf("%s<",buttonLabel),index=startN,handler=TRUE)
+      InsertAnchor(widget,sprintf(">%s",buttonLabel),index=endN + 1)
     }
     startIter <- buffer$GetIterAtMark(index$startMark)$iter
     endIter <- buffer$GetIterAtMark(index$endMark)$iter
@@ -135,17 +135,53 @@ sindex <- function(widget,includeAnchor=TRUE){
 ##   Offset
 ## }
 
-InsertButton <-function(widget,label,index,handler=NULL,...){
-    button <-gtkButtonNewWithLabel(label)
+InsertAnchor2 <-function(widget,label,index ){
+    lab <- gtkLabelNew(label)
+    label <- gtkEventBoxNew()
+    label$Add(lab)
     buffer <- slot(widget,"widget")@widget$GetBuffer()
-    if (!is.null(handler)) gSignalConnect(button, "clicked", handler)
     iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
     anchorcreated <- buffer$createChildAnchor(iter)
     iter$BackwardChar()
     anchor <- iter$getChildAnchor()
     anchor <- gtkTextIterGetChildAnchor(iter)
-    widget@widget@widget$addChildAtAnchor(button, anchor)
-  }
+    widget@widget@widget$addChildAtAnchor(label, anchor)
+}
+
+InsertAnchor<-function(widget,label,index,handler=FALSE){
+    lab <- gtkLabelNew(label)
+    label <- gtkEventBoxNew()
+    label$Add(lab)
+    buffer <- slot(widget,"widget")@widget$GetBuffer()
+    if (isTRUE(handler)){
+    button_press <-function(widget,event,W,...){
+        Iter <- gtkTextBufferGetIterAtChildAnchor(buffer,anchor)$iter
+        Offset <- Iter$GetOffset()
+        label <- lab$GetLabel()
+        label <- gsub("<$","",label)
+        Succeed <- FALSE
+        while (!Succeed){
+            Iter$ForwardChar()
+            Anchor <- Iter$getChildAnchor()
+            if (!is.null(Anchor)){
+                lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()##Anchor is event box.
+                lab <- gsub("^>","",lab)
+                if (lab==label){
+                    Succeed <- TRUE
+                    Offset2 <- Iter$GetOffset()
+                    ## cat(sprintf("%s:%s\n",Offset,Offset2))
+                    HL(W=W$W, index=data.frame(Offset,Offset2))
+                }
+            }}}
+    gSignalConnect(label, "button-press-event",button_press,data=list(W=widget))}
+    iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
+    anchorcreated <- buffer$createChildAnchor(iter)
+    iter$BackwardChar()
+    anchor <- iter$getChildAnchor()
+    anchor <- gtkTextIterGetChildAnchor(iter)
+    widget@widget@widget$addChildAtAnchor(label, anchor)
+}
+
 
 DeleteButton <- function(widget,label,index,direction=c("backward","forward")){
   buffer <- slot(widget,"widget")@widget$GetBuffer()
@@ -156,7 +192,7 @@ DeleteButton <- function(widget,label,index,direction=c("backward","forward")){
   while (!stop) {
     Anchor <- iter$getChildAnchor()
     if (!is.null(Anchor)){
-      lab <- Anchor$GetWidgets()[[1]]$GetLabel()
+      lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()
       if (lab==label){
         iterEnd <- gtkTextIterGetOffset(iter)
         iterEnd <- gtkTextBufferGetIterAtOffset(buffer,iterEnd+1)$iter
@@ -183,7 +219,7 @@ countAnchors <- function(widget,to,from=0){
 }
 ## testing
 ## g<-gtext("testing widget of text.",con=T)
-## InsertButton(g,"button",8)
+## InsertAnchor(g,"button",8)
 
 
 retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.rqda$.codes_rqda){
@@ -234,7 +270,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
 
       ## modification begins
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
-          CallBackFUN <- function(button){
+          CallBackFUN <- function(widget,event,...){
             tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
             root <- gwindow(title=FileName, parent=getOption("widgetCoordinate"),width=580,height=580)
             ## use the same names as the of ViewFile, so can do coding when back to the original file.
@@ -274,8 +310,12 @@ create.tags(buffer)
         anchorcreated <- buffer$createChildAnchor(iter)
         iter$BackwardChar()
         anchor <- iter$getChildAnchor()
-        widget <- gtkButtonNewWithLabel("Back")
-        gSignalConnect(widget, "clicked", ComputeCallbackFun(x[['selfirst']],x[['selend']],x[['fname']]))
+        lab <- gtkLabelNew("Back")
+        widget <- gtkEventBoxNew()
+        widget$Add(lab)
+        gSignalConnect(widget, "button-press-event",
+                       ComputeCallbackFun(x[["selfirst"]], x[["selend"]],
+                                          x[["fname"]]))
         .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
         widget$showAll()
         iter$ForwardChar()
@@ -327,7 +367,7 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
 
       ## modification begins
         ComputeCallbackFun <- function(BeginPosition,EndPosition,FileName){
-          CallBackFUN <- function(button){
+          CallBackFUN <- function(widget,event,...){
             tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
             root <- gwindow(title=FileName, parent=c(395,40),width=580,height=580)
             ## use the same names as the of ViewFile, so can do coding when back to the original file.
@@ -367,8 +407,12 @@ create.tags(buffer)
         anchorcreated <- buffer$createChildAnchor(iter)
         iter$BackwardChar()
         anchor <- iter$getChildAnchor()
-        widget <- gtkButtonNewWithLabel("Back")
-        gSignalConnect(widget, "clicked", ComputeCallbackFun(x[['selfirst']],x[['selend']],x[['fname']]))
+        lab <- gtkLabelNew("Back")
+        widget <- gtkEventBoxNew()
+        widget$Add(lab)
+        gSignalConnect(widget, "button-press-event",
+                       ComputeCallbackFun(x[["selfirst"]], x[["selend"]],
+                                          x[["fname"]]))
         .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
         widget$showAll()
         iter$ForwardChar()

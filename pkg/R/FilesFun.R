@@ -125,28 +125,38 @@ ViewFileFun <- function(FileNameWidget){
       if (nrow(markidx)!=0){ ## make sense only when there is coding there
         ## ClearMark(W ,0 , max(mark_index$selend))
         ## HL(W,index=mark_index)
-        apply(markidx,1,function(x){
+        apply(markidx[,1:3],1,function(x){
           iter <- gtkTextBufferGetIterAtOffset(buffer, x["selfirst"]) ## index to iter
           buffer$CreateMark(sprintf("%s.1",x["rowid"]),where=iter$iter) ## insert marks
           iter <- gtkTextBufferGetIterAtOffset(buffer, x["selend"])
           buffer$CreateMark(sprintf("%s.2",x["rowid"]),where=iter$iter)
         }) ## create marks
-        sapply(markidx[,"rowid"],FUN = function(x) {
-          code <- enc(markidx[markidx$rowid==x,"name"],"UTF-8")
-          m1 <- buffer$GetMark(sprintf("%s.1",x))
-          iter1 <- buffer$GetIterAtMark(m1)
-          idx1 <- gtkTextIterGetOffset(iter1$iter)
-          InsertButton(.rqda$.openfile_gui,label=sprintf("%s<",code),index=idx1)
-          m2 <- buffer$GetMark(sprintf("%s.2",x))
-          iter2 <- buffer$GetIterAtMark(m2)
-          idx2 <- gtkTextIterGetOffset(iter2$iter)
-          InsertButton(.rqda$.openfile_gui,label=sprintf(">%s",code),index=idx2)
-        })## end of sapply -> insert code label
-      }
-      buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
+        sapply(markidx[, "rowid"], FUN = function(x) {
+            code <- enc(markidx[markidx$rowid == x, "name"],"UTF-8")
+            m1 <- buffer$GetMark(sprintf("%s.1", x))
+            iter1 <- buffer$GetIterAtMark(m1)
+            idx1 <- gtkTextIterGetOffset(iter1$iter)
+            InsertAnchor(.rqda$.openfile_gui, label = sprintf("%s<",code), index = idx1,handler=TRUE)
+            m2 <- buffer$GetMark(sprintf("%s.2", x))
+            iter2 <- buffer$GetIterAtMark(m2)
+            idx2 <- gtkTextIterGetOffset(iter2$iter)
+            InsertAnchor(.rqda$.openfile_gui, label = sprintf(">%s",code), index = idx2)
+        }) ## end of sapply -> insert code label
+        idx <- sapply(markidx[, "rowid"], FUN = function(x) {
+            m1 <- buffer$GetMark(sprintf("%s.1", x))
+            iter1 <- buffer$GetIterAtMark(m1)
+            idx1 <- gtkTextIterGetOffset(iter1$iter)
+            m2 <- buffer$GetMark(sprintf("%s.2", x))
+            iter2 <- buffer$GetIterAtMark(m2)
+            idx2 <- gtkTextIterGetOffset(iter2$iter)
+            return(c(idx1,idx2))
+        })## get offset for HL.
+        idx <- t(idx)
+        HL(W, idx, fore.col = .rqda$fore.col, back.col = NULL)
+        buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
     }
   }
-}
+}}
 
 EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
   ## FileNameWidget=.rqda$.fnames_rqda in Files Tab
