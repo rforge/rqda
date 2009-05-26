@@ -127,34 +127,14 @@ sindex <- function(widget,includeAnchor=TRUE){
               startMark=startMark,endMark=endMark,seltext=selected))
 }
 
-## Iter2Offset <- function(widget,iter,includeAnchor=FALSE){
-##   Offset <- iter$GetOffset()
-##   if (!includeAnchor){
-##     Offset <- Offset - countAnchors(widget,from=0,to=Offset)
-##   }
-##   Offset
-## }
-
-InsertAnchor2 <-function(widget,label,index ){
-    lab <- gtkLabelNew(label)
-    label <- gtkEventBoxNew()
-    label$Add(lab)
-    buffer <- slot(widget,"widget")@widget$GetBuffer()
-    iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
-    anchorcreated <- buffer$createChildAnchor(iter)
-    iter$BackwardChar()
-    anchor <- iter$getChildAnchor()
-    anchor <- gtkTextIterGetChildAnchor(iter)
-    widget@widget@widget$addChildAtAnchor(label, anchor)
-}
-
 InsertAnchor<-function(widget,label,index,handler=FALSE){
     lab <- gtkLabelNew(label)
     label <- gtkEventBoxNew()
+    if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(.rqda$back.col)$color)
     label$Add(lab)
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     if (isTRUE(handler)){
-    button_press <-function(widget,event,W,...){
+    button_press <-function(widget,event,W){
         Iter <- gtkTextBufferGetIterAtChildAnchor(buffer,anchor)$iter
         Offset <- Iter$GetOffset()
         label <- lab$GetLabel()
@@ -168,12 +148,13 @@ InsertAnchor<-function(widget,label,index,handler=FALSE){
                 lab <- gsub("^>","",lab)
                 if (lab==label){
                     Succeed <- TRUE
+                    maxidx <- buffer$GetBounds()$end$GetOffset()
+                    ClearMark(W,min=0,max=maxidx)
                     Offset2 <- Iter$GetOffset()
-                    ## cat(sprintf("%s:%s\n",Offset,Offset2))
-                    HL(W=W$W, index=data.frame(Offset,Offset2))
+                    HL(W=W, index=data.frame(Offset,Offset2))
                 }
             }}}
-    gSignalConnect(label, "button-press-event",button_press,data=list(W=widget))}
+    gSignalConnect(label, "button-press-event",button_press,data=widget)}
     iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
     anchorcreated <- buffer$createChildAnchor(iter)
     iter$BackwardChar()
@@ -255,6 +236,8 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
       .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),parent=c(395,10),width=600,height=600)
+      mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+      .gw@widget@widget$SetIconFromFile(mainIcon)
       .retreivalgui <- gtext(con=.gw)
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
@@ -351,6 +334,8 @@ retrieval2 <- function(CodeNameWidget,type= c("unconditional", "case", "filecate
       retrieval$fname <-"" ## no fname in table "coding".
       .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),
                      parent=getOption("widgetCoordinate"),width=600,height=600)
+      mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+      .gw@widget@widget$SetIconFromFile(mainIcon)
       .retreivalgui <- gtext(con=.gw)
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
@@ -447,7 +432,7 @@ if (!is.null(SelectedFile)) {
     idx1 <-  dbGetQuery(con,sprintf("select selfirst, selend from coding where
                                                    cid==%i and fid==%i and status==1",currentCid, currentFid))
     idx2 <- dbGetQuery(con, sprintf("select selfirst, selend from coding where fid==%i and status==1", currentFid))
-    ClearMark(widget,min=0,max=max(idx2$selend)+2*nrow(idx2),clear.fore.col = TRUE, clear.back.col =FALSE)
+    ClearMark(widget,min=0,max=max(as.numeric(idx2$selend))+2*nrow(idx2),clear.fore.col = TRUE, clear.back.col =FALSE)
     if (nrow(idx1)>0) {
       allidx <- unlist(idx2)
       addidx <-  data.frame(selfirst=apply(outer(allidx,idx1$selfirst,"<="),2,sum),
@@ -459,34 +444,34 @@ if (!is.null(SelectedFile)) {
 }}}}
 
 
-c2InfoFun <- function(){
-  con <- .rqda$qdacon
-  if (is_projOpen(env=.rqda,conName="qdacon")) {
-    W <- tryCatch(get(".openfile_gui",env=.rqda), error=function(e){})
-## get the widget for file display. If it does not exist, then return NULL.
-sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
-## if the not file is open, it doesn't work.
-if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
-else {
-CodeTable <-  dbGetQuery(con,"select id,name from freecode where status==1")
-SelectedFile <- svalue(.rqda$.root_edit); Encoding(SelectedFile) <- "UTF-8" ##file title
-currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-codings_index <-  RQDAQuery(sprintf("select rowid, cid, fid, selfirst, selend from coding where fid==%i ", currentFid))
-## should only work with those related to current code and current file.
-rowid <- codings_index$rowid[(codings_index$selfirst >= sel_index$startN) &
-                             (codings_index$selend  <= sel_index$endN)
-                             ] ## determine which codes correspond to the selection
-cid <- codings_index$cid[codings_index$rowid %in% rowid]
-Codes <- CodeTable$name[CodeTable$id %in% cid]
-## should not use data frame as x, otherwise, svalue(c2infoWidget) is a factor rather than a character
-if (length(Codes)!=0){
-  Encoding(Codes) <- "UTF-8"
-  tryCatch(dispose(.rqda$.c2info),error=function(e){})
-  gw <- gwindow(title="Associted code-list.",heigh=min(33*length(Codes),600),parent=.rqda$.openfile_gui)
-  c2infoWidget <- gtable(Codes,con=gw)
-  assign(".c2info",gw,env=.rqda)
-  addhandlerdoubleclick(c2infoWidget,handler=function(h,...) retrieval2(CodeNameWidget=c2infoWidget))
-  addHandlerClicked(c2infoWidget,handler <- function(h,...){ClickHandlerFun(CodeNameWidget=c2infoWidget)})
-}
-}}}
+## c2InfoFun <- function(){
+##   con <- .rqda$qdacon
+##   if (is_projOpen(env=.rqda,conName="qdacon")) {
+##     W <- tryCatch(get(".openfile_gui",env=.rqda), error=function(e){})
+## ## get the widget for file display. If it does not exist, then return NULL.
+## sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
+## ## if the not file is open, it doesn't work.
+## if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
+## else {
+## CodeTable <-  dbGetQuery(con,"select id,name from freecode where status==1")
+## SelectedFile <- svalue(.rqda$.root_edit); Encoding(SelectedFile) <- "UTF-8" ##file title
+## currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+## codings_index <-  RQDAQuery(sprintf("select rowid, cid, fid, selfirst, selend from coding where fid==%i ", currentFid))
+## ## should only work with those related to current code and current file.
+## rowid <- codings_index$rowid[(codings_index$selfirst >= sel_index$startN) &
+##                              (codings_index$selend  <= sel_index$endN)
+##                              ] ## determine which codes correspond to the selection
+## cid <- codings_index$cid[codings_index$rowid %in% rowid]
+## Codes <- CodeTable$name[CodeTable$id %in% cid]
+## ## should not use data frame as x, otherwise, svalue(c2infoWidget) is a factor rather than a character
+## if (length(Codes)!=0){
+##   Encoding(Codes) <- "UTF-8"
+##   tryCatch(dispose(.rqda$.c2info),error=function(e){})
+##   gw <- gwindow(title="Associted code-list.",heigh=min(33*length(Codes),600),parent=.rqda$.openfile_gui)
+##   c2infoWidget <- gtable(Codes,con=gw)
+##   assign(".c2info",gw,env=.rqda)
+##   addhandlerdoubleclick(c2infoWidget,handler=function(h,...) retrieval2(CodeNameWidget=c2infoWidget))
+##   addHandlerClicked(c2infoWidget,handler <- function(h,...){ClickHandlerFun(CodeNameWidget=c2infoWidget)})
+## }
+## }}}
 

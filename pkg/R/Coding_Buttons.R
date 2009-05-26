@@ -224,7 +224,7 @@ CodeMemoButton <- function(label="C-Memo",...){
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
   }
           )
-  gtkTooltips()$setTip(codememobuton@widget@widget,"This is Memo for selected code.")
+  gtkTooltips()$setTip(codememobuton@widget@widget,"Memo for selected code.")
   return(codememobuton)
 }
 ##           {

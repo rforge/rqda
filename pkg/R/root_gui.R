@@ -16,8 +16,8 @@ RQDA <- function() {
                              }
                              )
 
-   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-   .root_rqdagui@widget@widget$SetIconFromFile(mainIcon) ## set an icon for the main programme.
+  mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+  .root_rqdagui@widget@widget$SetIconFromFile(mainIcon) ## set an icon for the main programme.
 
   ".nb_rqdagui" <- gnotebook(4,container=.root_rqdagui,closebuttons=FALSE)
 
@@ -37,7 +37,7 @@ RQDA <- function() {
   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
 
   gseparator(con=.proj_gui)
-  glabel("Path of current Project:",con=.proj_gui)
+  glabel("Path of current project:",con=.proj_gui)
   ".currentProj" <- glabel("No project is open.",con=.proj_gui)
 
   gseparator(con=.proj_gui)
@@ -203,9 +203,9 @@ assign(".currentProj",.currentProj,env=.rqda)
 
 ##########################
 ### set the positions
-svalue(.codes_pan) <- 0.08
-svalue(.codecat_pan)<-0.08
-svalue(.filecat_pan)<-0.08
+svalue(.codes_pan) <- 0.09
+svalue(.codecat_pan)<-0.09
+svalue(.filecat_pan)<-0.09
 svalue(.case_pan)<-0.04
 svalue(.attr_pan)<-0.04
 svalue(.journal_pan)<-0.04

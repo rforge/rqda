@@ -44,7 +44,7 @@ gbutton("Open Project",container=container,handler=function(h,...){
       tryCatch(JournalNamesUpdate(),error=function(e){})
       path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname)
       path <- gsub("/","/ ",path)
-      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"))
+      svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,50),collapse="\n"))
     }
   }
                               )

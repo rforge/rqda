@@ -106,11 +106,15 @@ ViewFileFun <- function(FileNameWidget){
       tryCatch(dispose(.rqda$.root_edit), error = function(e) {})
       SelectedFileName <- svalue(FileNameWidget)
       gw <- gwindow(title = SelectedFileName,parent = getOption("widgetCoordinate"), width = 600, height = 600)
+      mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+      gw@widget@widget$SetIconFromFile(mainIcon)
       assign(".root_edit", gw, env = .rqda)
       .root_edit <- get(".root_edit", .rqda)
       tmp <- gtext(container=.root_edit)
       font <- pangoFontDescriptionFromString(.rqda$font)
       gtkWidgetModifyFont(tmp@widget@widget,font)
+      tmp@widget@widget$SetPixelsBelowLines(5) ## set the spacing
+      tmp@widget@widget$SetPixelsInsideWrap(5) ## so the text looks more confortable.
       assign(".openfile_gui", tmp, env = .rqda)
       Encoding(SelectedFileName) <- "unknown"
       IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",SelectedFileName))
@@ -231,10 +235,10 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
         apply(mark_index,1,function(x){
           iter <- gtkTextBufferGetIterAtOffset(buffer, x[1]) ## index to iter
           mark <- buffer$CreateMark(sprintf("%s.1",x[3]),where=iter$iter)         ## insert marks
-          gtkTextMarkSetVisible(mark,TRUE)                   ## set itvisible
+          ## gtkTextMarkSetVisible(mark,TRUE)                   ## set itvisible
           iter <- gtkTextBufferGetIterAtOffset(buffer, x[2]) ## index to iter
           mark <- buffer$CreateMark(sprintf("%s.2",x[3]),where=iter$iter)         ## insert marks
-          gtkTextMarkSetVisible(mark,TRUE)                   ## set itvisible
+          ## gtkTextMarkSetVisible(mark,TRUE)                   ## set itvisible
         }) ## end of apply
     }
       mark_idx_case<- dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend,rowid from caselinkage where fid=%i and status=1",

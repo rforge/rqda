@@ -136,11 +136,8 @@ CodeCatAddToButton <- function(label="Add To",Widget=.rqda$.CodeCatWidget,...)
     ## compute those not in the category, then push them to select.list()
     codeoutofcat <- subset(freecode,!(id %in% codeofcat$cid))
     } else  codeoutofcat <- freecode
-    Selected <- select.list(codeoutofcat[['name']],multiple=TRUE)
-    ##CurrentFrame <- sys.frame(sys.nframe())
-    ##RunOnSelected(codeoutofcat[['name']],multiple=TRUE,enclos=CurrentFrame,expr={
-    ##if (length(Selected)!=0){
-    if (Selected != ""){
+    Selected <- gselect.list(codeoutofcat[['name']],multiple=TRUE)
+    if (length(Selected) >1 || Selected != ""){
       ## Selected <- iconv(Selected,to="UTF-8")
       cid <- codeoutofcat[codeoutofcat$name %in% Selected,"id"]
       Dat <- data.frame(cid=cid,catid=catid,date=date(),dateM=date(),memo="",status=1)
@@ -149,12 +146,8 @@ CodeCatAddToButton <- function(label="Add To",Widget=.rqda$.CodeCatWidget,...)
       ## update .CodeofCat Widget
       UpdateCodeofCatWidget()
     }
-  }
-    ## }
-    ## )
-  }
-  }
-          )
+}}}
+                 )
   gtkTooltips()$setTip(ans@widget@widget,"Add code(s) to the selected code category.")
   return(ans)
 }
