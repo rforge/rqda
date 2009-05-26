@@ -1,3 +1,6 @@
+2009-05-27
+	* Rewrite retrieval() according to revision of 2009-05-26.
+
 2009-05-26
 	* Use Anchor to mark the codings in the File Widget.
 	* improvement of AddTo button in code categories Tab.

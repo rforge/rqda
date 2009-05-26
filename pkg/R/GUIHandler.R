@@ -72,9 +72,10 @@ Handler <- function(){
     ##                         )
 
     addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
-        if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval2(.rqda$.codes_rqda,type=.rqda$TOR)
+        if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
     }
                           )
+
     add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
 
     addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){ClickHandlerFun()})
@@ -131,7 +132,7 @@ Handler <- function(){
     add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
 
     addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
-        if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval2(CodeNameWidget=.rqda$.CodeofCat)
+        if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
     }
                           )
 
