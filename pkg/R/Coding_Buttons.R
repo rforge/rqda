@@ -70,7 +70,7 @@ HL_ALLButton <- function(){
                 mark_index <-
                   dbGetQuery(con,sprintf("select selfirst,selend,status from coding where fid=%i and status=1",currentFid))
                 ## only select thoses with the open_file and not deleted (status=1).
-                mark_index <-apply(mark_index,2,function(x) x + countAnchors(.rqda$.openfile_gui,from=0,to=x))
+                mark_index <-apply(mark_index,2,function(x) x +countAnchorsWithFileName(to=x))
                 ## is a button is inserted, then should adjust the index
                 ClearMark(W ,0 , max(mark_index$selend))
                 HL(W,index=mark_index)
@@ -92,25 +92,26 @@ Mark_Button<-function(label="Mark",codeListWidget=".codes_rqda"){
 MarkCodeFun <- function(codeListWidget=".codes_rqda"){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
       con <- .rqda$qdacon
-      tryCatch({
-      W <- get(".openfile_gui",env=.rqda)
-      codeListWidget <- get(codeListWidget,env=.rqda)
-      ans <- mark(W,addButton=TRUE,buttonLabel=svalue(codeListWidget))
-      if (ans$start != ans$end){
-        ## when selected no text, makes on sense to do anything.
-        SelectedCode <- svalue(codeListWidget)
-        ## Encoding(SelectedCode) <- "UTF-8"
-        SelectedCode <- enc(SelectedCode,encoding="UTF-8")
-        currentCid <-  dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
-        SelectedFile <- svalue(.rqda$.root_edit)
-        SelectedFile <- enc(SelectedFile,encoding="UTF-8")
-        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-        Exist <-  dbGetQuery(con,sprintf("select rowid, selfirst, selend from coding where cid==%i and fid=%i and status=1",currentCid,currentFid))
-        DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,selfirst=ans$start,selend=ans$end,status=1,
-                          owner=.rqda$owner,date=date(),memo=NA)
-        if (nrow(Exist)==0){
-          success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
-          if (!success) gmessage("Fail to write to database.")
+      currentFile <- tryCatch(svalue(.rqda$.root_edit),error=function(e){NULL})
+      if (is.null(currentFile)) gmessage("Open a file first.",con=TRUE) else{
+        W <- .rqda$.openfile_gui
+        codeListWidget <- get(codeListWidget,env=.rqda)
+        ans <- mark(W,addButton=TRUE,buttonLabel=svalue(codeListWidget))
+        if (ans$start != ans$end){
+          ## when selected no text, makes on sense to do anything.
+          SelectedCode <- svalue(codeListWidget)
+          ## Encoding(SelectedCode) <- "UTF-8"
+          SelectedCode <- enc(SelectedCode,encoding="UTF-8")
+          currentCid <-  dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+          SelectedFile <- svalue(.rqda$.root_edit)
+          SelectedFile <- enc(SelectedFile,encoding="UTF-8")
+          currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+          Exist <-  dbGetQuery(con,sprintf("select rowid, selfirst, selend from coding where cid==%i and fid=%i and status=1",currentCid,currentFid))
+          DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,selfirst=ans$start,selend=ans$end,status=1,
+                            owner=.rqda$owner,date=date(),memo=NA)
+          if (nrow(Exist)==0){
+            success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
+            if (!success) gmessage("Fail to write to database.")
         } else {
           Relations <- apply(Exist,1,FUN=function(x) relation(x[c("selfirst","selend")],c(ans$start,ans$end)))
           Exist$Relation <- sapply(Relations,FUN=function(x)x$Relation)
@@ -132,7 +133,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
               if (any(del)){
                 Sel <- c(min(Exist$Start[del]), max(Exist$End[del]))
                 memo <- dbGetQuery(.rqda$qdacon,sprintf("select memo from coding where rowid in (%s)",
-                                                paste(Exist$rowid[del],collapse=",",sep="")))$memo
+                                                        paste(Exist$rowid[del],collapse=",",sep="")))$memo
                 memo <- paste(memo,collapse="",sep="")
                 dbGetQuery(.rqda$qdacon,sprintf("delete from coding where rowid in (%s)",
                                                 paste(Exist$rowid[del],collapse=",",sep="")))
@@ -147,12 +148,8 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
               }
             }
           }
-        }
-      }
-    },error=function(e){}
-             )
-  }
-}
+        }}}}}
+
 
 Unmark_Button <- function(label="Unmark",codeListWidget=.rqda$.codes_rqda){
     gbutton("Unmark", handler=function(h,...) {UnMarkCodeFun(codeListWidget=codeListWidget)})
@@ -218,63 +215,87 @@ CodeMemoButton <- function(label="C-Memo",...){
 
 CodingMemoButton <- function(label="C2Memo")
 {
+
+InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]") 
+  {
+    widget=.rqda$.openfile_gui
+    lab <- gtkLabelNew(label)
+    label <- gtkEventBoxNew()
+    label$ModifyBg("normal", gdkColorParse("yellow")$color)
+    label$Add(lab)
+    buffer <- slot(widget, "widget")@widget$GetBuffer()
+    button_press <- function(widget,event,moreArgs) {
+      OpenCodingMemo(rowid=moreArgs$rowid)
+    }
+    gSignalConnect(label, "button-press-event", button_press,data =list(rowid=rowid))
+    iter <- gtkTextBufferGetIterAtOffset(buffer, index)$iter
+    anchorcreated <- buffer$createChildAnchor(iter)
+    iter$BackwardChar()
+    anchor <- iter$getChildAnchor()
+    anchor <- gtkTextIterGetChildAnchor(iter)
+    widget@widget@widget$addChildAtAnchor(label, anchor)
+    return(TRUE)
+  }
+
+  OpenCodingMemo <- function(rowid,AnchorPos=NULL){
+    ##  open a widget for memo, and take care of the save memo function
+    tryCatch(dispose(.rqda$.codingmemo),error=function(e) {})
+    ## Close the coding memo first, then open a new one
+    .codingmemo <- gwindow(title=paste("Coding Memo"),getOption("widgetCoordinate"),width=600,height=400)
+    assign(".codingmemo",.codingmemo, env=.rqda)
+    .codingmemo <- get(".codingmemo",env=.rqda)
+    .codingmemo2 <- gpanedgroup(horizontal = FALSE, con=.codingmemo)
+    gbutton("Save Coding Memo",con=.codingmemo2,handler=function(h,...){
+      newcontent <- svalue(.rqda$.cdmemocontent)
+      newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
+      RQDAQuery(sprintf("update coding set memo='%s' where rowid=%i",newcontent,rowid))
+      if (isTRUE(.rqda$NewCodingMemo)) {
+       ## if (InsertCodingMemoAnchor(index=AnchorPos,rowid=rowid)) assign("NewCodingMemo",FALSE,env=.rqda)
+      }
+    ## if newcontent is "", should delete the codingMemoAnchor
+    }
+            )## end of save memo button
+    assign(".cdmemocontent",gtext(container=.codingmemo2,font.attr=c(sizes="large")),env=.rqda)
+    prvcontent <- RQDAQuery(sprintf("select memo from coding where rowid=%i",rowid))[1,1]
+    if (is.na(prvcontent)) prvcontent <- ""
+    Encoding(prvcontent) <- "UTF-8"
+    if (prvcontent=="") assign("NewCodingMemo",TRUE,env=.rqda)
+    W <- get(".cdmemocontent",env=.rqda)
+    add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+  } ## end of OpenCodingMemo 
+  
   c2memobutton <- gbutton(label, handler= function(h,...){
     con <- .rqda$qdacon
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
       ## get the widget for file display. If it does not exist, then return NULL.
-      sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {}) ## if the not file is open, it doesn't work.
+      sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
+      AnchorPos <- tryCatch(sindex(W,includeAnchor=TRUE)$startN,error=function(e) {})
+      ## if the not file is open, it doesn't work.
       if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
       else {
-        SelectedCode <- svalue(.rqda$.codes_rqda)## ; Encoding(SelectedCode) <- "UTF-8"
+        SelectedCode <- svalue(.rqda$.codes_rqda)
         SelectedCode <- enc(SelectedCode,"UTF-8")
         if (length(SelectedCode)==0) gmessage("Select a code first!") else {
-          currentCid <-  dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
-          ## SelectedFile <- svalue(.rqda$.fnames_rqda); Encoding(SelectedFile) <- "UTF-8"
-          ## confused when selected file is not the open one
-          SelectedFile <- svalue(.rqda$.root_edit) ##; Encoding(SelectedFile) <- "UTF-8" ## more reliable
+          currentCid <-  RQDAQuery(sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+          SelectedFile <- svalue(.rqda$.root_edit) 
           SelectedFile <- enc(SelectedFile,encoding="UTF-8")
-          currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-          codings_index <-  dbGetQuery(con,sprintf("select rowid, cid, fid, selfirst, selend from coding where
-                                                   cid==%i and fid==%i ",currentCid, currentFid))
+          currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+          codings_index <-  RQDAQuery(sprintf("select rowid, cid, fid, selfirst, selend from coding where
+                                                   cid==%i and fid==%i and status==1 ",currentCid, currentFid))
           ## should only work with those related to current code and current file.
           rowid <- codings_index$rowid[(codings_index$selfirst  >= sel_index$startN) &
-                                       (codings_index$selfirst  <= sel_index$startN + 4) &
+                                       (codings_index$selfirst  <= sel_index$startN + 2) &
                                        (codings_index$selend  <= sel_index$endN)&
-                                       (codings_index$selend  >= sel_index$endN - 4)
+                                       (codings_index$selend  >= sel_index$endN - 2)
                                        ] ## determine which one is the current text chunk?
-          if (length(rowid)!= 1) {gmessage("Select the exact coding first!", con=TRUE)}
+          if (length(rowid)!= 1) {gmessage("Select the exact CODING AND the corresponding CODE first.", con=TRUE)}
           else {
-            ##  open a widget for memo, and take care of the save memo function
-            tryCatch(dispose(.rqda$.codingmemo),error=function(e) {})
-            ## Close the coding memo first, then open a new one
-            assign(".codingmemo",gwindow(title=paste("Coding Memo for",SelectedCode,sep=":"),
-                                         parent=c(395,10),width=600,height=400
-                                         ), env=.rqda
-                   )
-            .codingmemo <- get(".codingmemo",env=.rqda)
-            .codingmemo2 <- gpanedgroup(horizontal = FALSE, con=.codingmemo)
-            gbutton("Save Coding Memo",con=.codingmemo2,handler=function(h,...){
-              newcontent <- svalue(W)
-              ## Encoding(newcontent) <- "UTF-8"
-              newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
-              dbGetQuery(con,sprintf("update coding set memo='%s' where rowid=%i",newcontent,rowid))
-            }
-                    )## end of save memo button
-            assign(".cdmemocontent",gtext(container=.codingmemo2,font.attr=c(sizes="large")),env=.rqda)
-            prvcontent <- dbGetQuery(con, sprintf("select memo from coding where rowid=%i",rowid))[1,1]
-            if (is.na(prvcontent)) prvcontent <- ""
-            Encoding(prvcontent) <- "UTF-8"
-            ## prvcontent <- enc(prvcontent,"UTF-8")
-            W <- get(".cdmemocontent",env=.rqda)
-            add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+            OpenCodingMemo(rowid=rowid,AnchorPos=AnchorPos)
           }
         }
-      }
-    }
-  }
-          )
-  gtkTooltips()$setTip(c2memobutton@widget@widget,"This is Memo for Codings.")
+      }}})
+  gtkTooltips()$setTip(c2memobutton@widget@widget,"Memo for Codings.")
   return(c2memobutton)
 }
 
@@ -359,3 +380,4 @@ CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
     CodeNamesWidgetUpdate()
   }
 }
+CodesNamesWidgetMenu$"Highlight Codings with Memo"$handler <- function(h, ...) {HL_CodingWithMemo()}

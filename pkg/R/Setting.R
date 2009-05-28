@@ -19,16 +19,7 @@ Setting <- list(type = "ggroup",
                             type = "gedit",width=width,
                             text = .rqda$encoding
                             ),
-                       list(name = "BOM",
-                            label = "Byte Order Mark",
-                            type = "gcombobox",## width=width,
-                            items = c(FALSE, TRUE)
-                            ),
-                      list(name = "SFP",
-                           label = "Show File Property",
-                           type = "gcombobox",## width=width,
-                           items = c(FALSE, TRUE)
-                           ),
+                 
                        list(name = "fore.col",
                             label = "Color for Coding",
                             type = "gedit",width=width,
@@ -39,11 +30,26 @@ Setting <- list(type = "ggroup",
                             type = "gedit",width=width,
                             text = .rqda$back.col
                             ),
-                      list(name = "TOR",
-                           type="gcombobox",
-                           label = "Type of Retrieval",
-                           items = c(.rqda$TOR, "case", "filecategory")
-                           )
+                       list(name = "codeMark.col",
+                            label = "Color for Coding Marker",
+                            type = "gedit",width=width,
+                            text = .rqda$codeMark.col
+                            ),
+                       list(name = "BOM",
+                            label = "Byte Order Mark",
+                            type = "gcombobox",## width=width,
+                            items = c(FALSE, TRUE)
+                            ),
+                       list(name = "SFP",
+                            label = "Show File Property",
+                            type = "gcombobox",## width=width,
+                            items = c(FALSE, TRUE)
+                            ),
+                       list(name = "TOR",
+                            type="gcombobox",
+                            label = "Type of Retrieval",
+                            items = c(.rqda$TOR, "case", "filecategory")
+                            )
                        )
                      )
                 )
@@ -76,13 +82,15 @@ addHandlerChanged(resetButton, function(h,...) {
   tryCatch(svalue(SettingFL[]$owner) <- "default",error=function(e){})
   tryCatch(svalue(SettingFL[]$back.col) <- "gold",error=function(e){})
   tryCatch(svalue(SettingFL[]$fore.col) <- "blue",error=function(e){})
+  tryCatch(svalue(SettingFL[]$codeMark.col) <- "green",error=function(e){})
   tryCatch(svalue(SettingFL[]$TOR) <- "unconditional",error=function(e){})
   assign("BOM",FALSE,env=.rqda)
   assign("SFP",FALSE,env=.rqda)
   assign("encoding","unknown",env=.rqda)
   assign("owner","default",env=.rqda)
-  assign("back.col","gray92",env=.rqda)
+  assign("back.col","gold",env=.rqda)
   assign("fore.col","blue",env=.rqda)
+  assign("codeMark.col","green",env=.rqda)
   assign("TOR","unconditional",env=.rqda)
   assign("font","Sans 11",env=.rqda)
 })}

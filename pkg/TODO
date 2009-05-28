@@ -4,6 +4,11 @@ Merge *rqda from different coders
 
 inter-coder reliability 
 
-Export codings to html.
-
 support Image file.
+
+Improve mark button in code Tab.
+
+add status field into attributes table.
+
+pdelete function for journal table.
+

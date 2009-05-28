@@ -166,7 +166,7 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget)){
   DF
 }}
 
-SetAttrClsButton <- function(label="Set Class"){
+SetAttrClsButton <- function(label="Class"){
     ans <- gbutton(label,handler=function(h,...) {
         if (is_projOpen(env=.rqda,conName="qdacon")) {
             setAttrType()
