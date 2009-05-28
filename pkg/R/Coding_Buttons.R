@@ -216,32 +216,35 @@ CodeMemoButton <- function(label="C-Memo",...){
 CodingMemoButton <- function(label="C2Memo")
 {
 
-InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]") 
-  {
-    widget=.rqda$.openfile_gui
-    lab <- gtkLabelNew(label)
-    label <- gtkEventBoxNew()
-    label$ModifyBg("normal", gdkColorParse("yellow")$color)
-    label$Add(lab)
-    buffer <- slot(widget, "widget")@widget$GetBuffer()
-    button_press <- function(widget,event,moreArgs) {
-      OpenCodingMemo(rowid=moreArgs$rowid)
+  InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]",title) 
+    {
+      ## don't use this function.
+      ## use Annotation to add anno to a file.
+      widget=.rqda$.openfile_gui
+      lab <- gtkLabelNew(label)
+      label <- gtkEventBoxNew()
+      label$ModifyBg("normal", gdkColorParse("yellow")$color)
+      label$Add(lab)
+      buffer <- slot(widget, "widget")@widget$GetBuffer()
+      button_press <- function(widget,event,moreArgs) {
+        OpenCodingMemo(rowid=moreArgs$rowid,title=moreArgs$title)
+      }
+      gSignalConnect(label, "button-press-event", button_press,data =list(rowid=rowid,title=title))
+      iter <- gtkTextBufferGetIterAtOffset(buffer, index)$iter
+      anchorcreated <- buffer$createChildAnchor(iter)
+      iter$BackwardChar()
+      anchor <- iter$getChildAnchor()
+      anchor <- gtkTextIterGetChildAnchor(iter)
+      widget@widget@widget$addChildAtAnchor(label, anchor)
+      return(TRUE)
     }
-    gSignalConnect(label, "button-press-event", button_press,data =list(rowid=rowid))
-    iter <- gtkTextBufferGetIterAtOffset(buffer, index)$iter
-    anchorcreated <- buffer$createChildAnchor(iter)
-    iter$BackwardChar()
-    anchor <- iter$getChildAnchor()
-    anchor <- gtkTextIterGetChildAnchor(iter)
-    widget@widget@widget$addChildAtAnchor(label, anchor)
-    return(TRUE)
-  }
-
-  OpenCodingMemo <- function(rowid,AnchorPos=NULL){
+  
+  OpenCodingMemo <- function(rowid,AnchorPos=NULL,title=NULL){
     ##  open a widget for memo, and take care of the save memo function
     tryCatch(dispose(.rqda$.codingmemo),error=function(e) {})
     ## Close the coding memo first, then open a new one
-    .codingmemo <- gwindow(title=paste("Coding Memo"),getOption("widgetCoordinate"),width=600,height=400)
+    if (is.null(title)) title <- "Coding Memo"
+    .codingmemo <- gwindow(title=title,getOption("widgetCoordinate"),width=600,height=400)
     assign(".codingmemo",.codingmemo, env=.rqda)
     .codingmemo <- get(".codingmemo",env=.rqda)
     .codingmemo2 <- gpanedgroup(horizontal = FALSE, con=.codingmemo)
@@ -249,12 +252,11 @@ InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]")
       newcontent <- svalue(.rqda$.cdmemocontent)
       newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
       RQDAQuery(sprintf("update coding set memo='%s' where rowid=%i",newcontent,rowid))
-      if (isTRUE(.rqda$NewCodingMemo)) {
-       ## if (InsertCodingMemoAnchor(index=AnchorPos,rowid=rowid)) assign("NewCodingMemo",FALSE,env=.rqda)
-      }
-    ## if newcontent is "", should delete the codingMemoAnchor
-    }
-            )## end of save memo button
+      ## if (isTRUE(.rqda$NewCodingMemo)) {
+      ## if (InsertCodingMemoAnchor(index=AnchorPos,rowid=rowid,title=title)) assign("NewCodingMemo",FALSE,env=.rqda)
+      ## }
+      ## if newcontent is "", should delete the codingMemoAnchor (not add memoanchor here)
+    })## end of save memo button
     assign(".cdmemocontent",gtext(container=.codingmemo2,font.attr=c(sizes="large")),env=.rqda)
     prvcontent <- RQDAQuery(sprintf("select memo from coding where rowid=%i",rowid))[1,1]
     if (is.na(prvcontent)) prvcontent <- ""
@@ -275,8 +277,8 @@ InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]")
       if (is.null(sel_index)) {gmessage("Open a file first!",con=TRUE)}
       else {
         SelectedCode <- svalue(.rqda$.codes_rqda)
-        SelectedCode <- enc(SelectedCode,"UTF-8")
-        if (length(SelectedCode)==0) gmessage("Select a code first!") else {
+        if (length(SelectedCode)==0) gmessage("select a code first.",con=TRUE) else {
+          SelectedCode <- enc(SelectedCode,"UTF-8")
           currentCid <-  RQDAQuery(sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
           SelectedFile <- svalue(.rqda$.root_edit) 
           SelectedFile <- enc(SelectedFile,encoding="UTF-8")
@@ -291,11 +293,11 @@ InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]")
                                        ] ## determine which one is the current text chunk?
           if (length(rowid)!= 1) {gmessage("Select the exact CODING AND the corresponding CODE first.", con=TRUE)}
           else {
-            OpenCodingMemo(rowid=rowid,AnchorPos=AnchorPos)
+            OpenCodingMemo(rowid=rowid,AnchorPos=AnchorPos,title=sprintf("Coding Memo: %s",SelectedCode))
           }
         }
       }}})
-  gtkTooltips()$setTip(c2memobutton@widget@widget,"Memo for Codings.")
+  gtkTooltips()$setTip(c2memobutton@widget@widget,"Memo for a Coding.")
   return(c2memobutton)
 }
 

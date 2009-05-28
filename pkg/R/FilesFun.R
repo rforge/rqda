@@ -130,6 +130,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
   add(W, content)
   slot(W, "widget")@widget$SetEditable(FALSE)
   markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
+  anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
   buffer <- W@widget@widget$GetBuffer()
   if (nrow(markidx)!=0){ ## make sense only when there is coding there
     apply(markidx[,1:3],1,function(x){
@@ -137,7 +138,13 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
       buffer$CreateMark(sprintf("%s.1",x["rowid"]),where=iter$iter) ## insert marks
       iter <- gtkTextBufferGetIterAtOffset(buffer, x["selend"])
       buffer$CreateMark(sprintf("%s.2",x["rowid"]),where=iter$iter)
-    }) ## create marks
+    })} ## create marks
+  if (nrow(anno)!=0){
+    apply(anno,1,function(x){
+      iter <- gtkTextBufferGetIterAtOffset(buffer, x["position"]) ## index to iter
+      buffer$CreateMark(sprintf("%s.3",x["rowid"]),where=iter$iter) ## insert marks
+    })} ## creat marks for annotation
+  if (nrow(markidx)!=0){
     sapply(markidx[, "rowid"], FUN = function(x) {
       code <- enc(markidx[markidx$rowid == x, "name"],"UTF-8")
       m1 <- buffer$GetMark(sprintf("%s.1", x))
@@ -161,9 +168,16 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
       })## get offset for HL.
       idx <- t(idx)
       HL(W, idx, fore.col = .rqda$fore.col, back.col = NULL)
-    }
+    }}
+  if (nrow(anno)!=0){
+    apply(anno,1,function(x){
+      m <- buffer$GetMark(sprintf("%s.3", x["rowid"]))
+      iter <- buffer$GetIterAtMark(m)
+      idx <- gtkTextIterGetOffset(iter$iter)
+      InsertAnnotation(index=idx,fid=IDandContent$id, rowid=x["rowid"])
+    })}
     buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
-  }}
+}
 
 
 EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){

@@ -12,3 +12,4 @@ add status field into attributes table.
 
 pdelete function for journal table.
 
+HL_Case() need revision

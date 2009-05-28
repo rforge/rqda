@@ -76,6 +76,7 @@ Version: 0.1-8 dev\n",
   .codes_button[1,2]<- DeleteCodeButton()
   .codes_button[1,3] <- FreeCode_RenameButton(label="Rename",CodeNamesWidget=.codes_rqda)
   .codes_button[1,4] <- CodeMemoButton(label="C-Memo")
+  .codes_button[1,5] <-  AnnotationButton("Add Anno")
   .codes_button[2,1]<- CodingMemoButton(label="C2Memo")
   ## .codes_button[2,1]<- CodingInfoButton()
   ## .codes_button[2,2]<- HL_ALLButton()

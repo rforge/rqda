@@ -211,6 +211,9 @@ countAnchorsWithFileName <- function(to,fileName=enc(svalue(.rqda$.root_edit),en
   ## the same purpose as countAnchors, but faster.
   fid <- RQDAQuery(sprintf("select id from source where status==1 and name=='%s'",fileName))$id
   idx <- RQDAQuery(sprintf("select selfirst,selend from coding where status==1 and fid==%s",fid))
+  ## anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",fid))$position
+  ## allidx <- c(unlist(idx),anno)
+  ## if (!is.null(allidx)){
   if (nrow(idx)!=0){
     allidx <- unlist(idx)
     allidx <- allidx + rank(idx) ## 
@@ -245,7 +248,8 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
     if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
-      .gw <- gwindow(title=sprintf("Retrieved coding(s): %s",currentCode),parent=getOption("widgetCoordinate"),width=600,height=600)
+      title <- sprintf(ngettext(nrow(retrieval),"Retrieved coding: ","Retrieved codings: %s"),currentCode)
+      .gw <- gwindow(title=title, parent=getOption("widgetCoordinate"),width=600,height=600)
       mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
       .gw@widget@widget$SetIconFromFile(mainIcon)
       .retreivalgui <- gtext(container=.gw)

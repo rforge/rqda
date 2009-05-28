@@ -1,3 +1,6 @@
+2009-05-29
+	* new function of Annotation() and "Add Ann" button.
+	
 2009-05-28
 	* new function of countAnchorsWithFileName(), different way to do things as countAnchors(), faster.
 
