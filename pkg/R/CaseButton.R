@@ -117,12 +117,10 @@ MarkCaseFun <- function(){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     con <- .rqda$qdacon
     tryCatch({
-      ans <- mark(get(".openfile_gui",env=.rqda),fore.col=NULL,back.col=.rqda$back.col)
-      ## can change the color
+      ans <- mark(get(".openfile_gui",env=.rqda),fore.col=NULL,back.col=.rqda$back.col,addButton=FALSE)
       if (ans$start != ans$end){
         ## when selected no text, makes on sense to do anything.
         SelectedCase <- svalue(.rqda$.CasesNamesWidget)
-        ## Encoding(SelectedCase) <- "UTF-8"
         SelectedCase <- enc(SelectedCase,encoding="UTF-8")
         currentCid <-  dbGetQuery(con,sprintf("select id from cases where name=='%s'",
                                               SelectedCase))[,1]
@@ -184,9 +182,9 @@ CaseUnMark_Button<-function(label="Unmark"){
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               con <- .rqda$qdacon
-              W <- tryCatch(get(h$action$widget,env=.rqda),error=function(e){})
+              W <- .rqda$.openfile_gui
               ## get the widget for file display. If it does not exist, then return NULL.
-              sel_index <- tryCatch(sindex(W),error=function(e) {})
+              sel_index <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
               ## if the not file is open, unmark doesn't work.
               if (!is.null(sel_index)) {
                 SelectedCase <- svalue(.rqda$.CasesNamesWidget)
@@ -203,34 +201,21 @@ CaseUnMark_Button<-function(label="Unmark"){
                 if (is.numeric(rowid)) for (j in rowid) {
                   dbGetQuery(con,sprintf("update caselinkage set status=0 where rowid=%i", j))
                 }
+                coding.idx <- RQDAQuery(sprintf("select selfirst,selend from coding where fid=%i and status==1",currentFid))
+                anno.idx <- RQDAQuery(sprintf("select position from annotation where fid=%i and status==1",currentFid))$position
+                allidx <- unlist(coding.idx,anno.idx)
+                if (!is.null(allidx)){
+                  startN<- sel_index$startN +  sum(allidx <= sel_index$startN)
+                  endN <- sel_index$endN +  sum(allidx <= sel_index$endN)
+                }
                 ## better to get around the loop by sqlite condition expression.
-                ClearMark(W,min=sel_index$startN,max=sel_index$endN,clear.fore.col = FALSE, clear.back.col = TRUE)
+                ClearMark(W,min=startN,max=endN,clear.fore.col = FALSE, clear.back.col = TRUE)
                 ## even for the non-current code. can improve.
               }
               }
-            }},action=list(widget=".openfile_gui")
+            }}
             )
         }
-
-##   AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
-##     gbutton(label,handler=function(h,...) {
-##       if (is_projOpen(env=.rqda,conName="qdacon")) {
-##         KeyWord <- svalue(CaseNamesWidget)
-##         engine <- select.list(c("Baidu","Google","Yahoo"))
-##         if (engine=="Baidu") {
-##           KeyWord <- iconv(KeyWord, from="UTF-8")
-##           browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
-##         }
-##         if (engine=="Yahoo") {
-##           KeyWord <- iconv(KeyWord, from="UTF-8")
-##           browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
-##                             ,KeyWord))
-##         }
-##     if (engine=="Google")browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
-##       }
-##     }
-##             )
-## }
 
 CaseNamesWidgetMenu <- list()
 CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
@@ -423,3 +408,22 @@ FileofCaseWidgetMenu$"Show Selected File Property"$handler <- function(h, ...) {
   }
 }
 
+##   AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){
+##     gbutton(label,handler=function(h,...) {
+##       if (is_projOpen(env=.rqda,conName="qdacon")) {
+##         KeyWord <- svalue(CaseNamesWidget)
+##         engine <- select.list(c("Baidu","Google","Yahoo"))
+##         if (engine=="Baidu") {
+##           KeyWord <- iconv(KeyWord, from="UTF-8")
+##           browseURL(sprintf("http://www.baidu.com/s?wd=%s",paste("%",paste(charToRaw(KeyWord),sep="",collapse="%"),sep="",collapse="")))
+##         }
+##         if (engine=="Yahoo") {
+##           KeyWord <- iconv(KeyWord, from="UTF-8")
+##           browseURL(sprintf("http://search.yahoo.com/search;_ylt=A0oGkmFV.CZJNssAOK.l87UF?p=%s&ei=UTF-8&iscqry=&fr=sfp&fr2=sfp"
+##                             ,KeyWord))
+##         }
+##     if (engine=="Google")browseURL(sprintf("http://www.google.com/search?q=%s",KeyWord))
+##       }
+##     }
+##             )
+## }

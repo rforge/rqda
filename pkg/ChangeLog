@@ -1,5 +1,10 @@
 2009-05-29
 	* new function of Annotation() and "Add Ann" button.
+	* "Hightlight all codings" moved to popup menu.
+	* "Highlight codings with memo" popup menu.
+	* Merge AttributesWidget.R with Attributes.R, annotation.R with CodesFun.R,GUIHandler.R with root_gui.R
+	* Revise HL_Case(),Mark case and Unmark case buttons accordingly.
+	* Revise MarkCodeFun() accodingly, so insert code label as mark after data is written to database and delete unused code label too (when new and old code are overlapped).
 	
 2009-05-28
 	* new function of countAnchorsWithFileName(), different way to do things as countAnchors(), faster.

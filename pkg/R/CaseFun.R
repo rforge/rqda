@@ -102,23 +102,26 @@ UpdateFileofCaseWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCase,sor
 }
 
 HL_Case <- function(){
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-        con <- .rqda$qdacon
-        SelectedFile <- svalue(.rqda$.root_edit)
-        ## Encoding(SelectedFile) <- "UTF-8"
-        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-        W <- .rqda$.openfile_gui
-        if (length(currentFid)!=0) {
-            caseName <- svalue(.rqda$.CasesNamesWidget)
-            caseid <- dbGetQuery(con,sprintf("select id from cases where name=='%s'",caseName))[,1]
-            mark_index <-
-                dbGetQuery(con,sprintf("select selfirst,selend from caselinkage where fid=%i and status==1 and caseid=%i",currentFid,caseid))
-            if (nrow(mark_index)!=0){
-                ClearMark(W ,0 , max(mark_index$selend),clear.fore.col = FALSE, clear.back.col = TRUE)
-                HL(W,index=mark_index,fore.col=NULL,back.col=.rqda$back.col)
-            }
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+    SelectedFile <- svalue(.rqda$.root_edit)
+    currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+    if (length(currentFid)!=0) {
+      caseName <- svalue(.rqda$.CasesNamesWidget)
+      caseid <- RQDAQuery(sprintf("select id from cases where name=='%s'",caseName))[,1]
+      idx <- RQDAQuery(sprintf("select selfirst,selend from caselinkage where fid=%i and status==1 and caseid=%i",currentFid,caseid))
+      coding.idx <- RQDAQuery(sprintf("select selfirst,selend from coding where fid=%i and status==1",currentFid))
+      anno.idx <- RQDAQuery(sprintf("select position from annotation where fid=%i and status==1",currentFid))$position
+      allidx <- unlist(coding.idx,anno.idx)
+      if (nrow(idx)!=0){
+        if (!is.null(allidx)){
+          idx[,"selfirst"] <- sapply(idx[,"selfirst"],FUN=function(x) x + sum(allidx <= x))
+          idx[,"selend"] <- sapply(idx[,"selend"],FUN=function(x) x + sum(allidx <= x))
         }
+        ClearMark(.rqda$.openfile_gui ,0 , max(idx$selend),clear.fore.col = FALSE, clear.back.col = TRUE)
+        HL(.rqda$.openfile_gui,index=idx,fore.col=NULL,back.col=.rqda$back.col)
+      }
     }
+  }
 }
 
 

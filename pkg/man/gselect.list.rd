@@ -6,7 +6,7 @@
   Select item(s) from a character vector.
 }
 \usage{
-gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500,x=420,y=2 ...)
+gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500,x=420,y=2, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,7 +23,7 @@ gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500,x=42
 GTK version of \code{\link[utils]{select.list}}.
 }
 \note{
-The license of this function is subject to interpretation of the orginal author.
+The license of this function is subject to interpretation of the first author.
 }
 \value{
   A character vector of selected items with encoding of UTF-8. If no item was selected (or

@@ -54,48 +54,6 @@ FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreas
 
 
 
-## UncodedFileNamesUpdate <- function(FileNamesWidget = .rqda$.fnames_rqda, sort=TRUE, decreasing = FALSE){
-## replaced by the general function of FileNameWigetUpdate() and GetFileId()
-## ## only show the uncoded file names in the .rqda$.fnames_rqda
-## ## The fnames will be sort if sort=TRUE
-##   fid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
-##   if (!is.null(fid)){
-##     fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
-##     fid_uncoded <- fid[! (fid %in% fid_coded)]
-##     source <- dbGetQuery(.rqda$qdacon,
-##                          sprintf("select name,date, id from source where status=1 and id in (%s)",
-##                                  paste(fid_uncoded,sep="",collapse=",")))
-##     if (nrow(source) != 0){
-##       fnames <- source$name
-##       Encoding(fnames) <- "UTF-8"
-##       if (sort){
-##       fnames <- fnames[OrderByTime(source$date,decreasing=decreasing)]
-##       }
-##     }
-##     tryCatch(FileNamesWidget[] <- fnames, error = function(e) {})
-##   }
-## }
-
-
-## setEncoding <- function(encoding="unknown"){
-  ## moved to utils.R
-##   ## specify what encoding is used in the imported files.
-##   .rqda$encoding <- encoding
-## }
-
-## enc <- function(x,encoding="UTF-8") {
-##   ## replace " with two '. to make insert smoothly.
-##   ## encoding is the encoding of x (character vector).
-##   ## moved to utils.R
-##   Encoding(x) <- encoding
-##   x <- gsub("'", "''", x)
-##   if (Encoding(x)!="UTF-8") {
-##     x <- iconv(x,to="UTF-8")
-##   }
-##   x
-## }
-
-
 ViewFileFun <- function(FileNameWidget,hightlight=TRUE){
 ## FileNameWidget=.rqda$.fnames_rqda in Files Tab
 ## FileNameWidget=.rqda$.FileofCat in F-CAT Tab
@@ -552,3 +510,44 @@ AddToFileCategory<- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
   }
 }
 
+
+## UncodedFileNamesUpdate <- function(FileNamesWidget = .rqda$.fnames_rqda, sort=TRUE, decreasing = FALSE){
+## replaced by the general function of FileNameWigetUpdate() and GetFileId()
+## ## only show the uncoded file names in the .rqda$.fnames_rqda
+## ## The fnames will be sort if sort=TRUE
+##   fid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
+##   if (!is.null(fid)){
+##     fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
+##     fid_uncoded <- fid[! (fid %in% fid_coded)]
+##     source <- dbGetQuery(.rqda$qdacon,
+##                          sprintf("select name,date, id from source where status=1 and id in (%s)",
+##                                  paste(fid_uncoded,sep="",collapse=",")))
+##     if (nrow(source) != 0){
+##       fnames <- source$name
+##       Encoding(fnames) <- "UTF-8"
+##       if (sort){
+##       fnames <- fnames[OrderByTime(source$date,decreasing=decreasing)]
+##       }
+##     }
+##     tryCatch(FileNamesWidget[] <- fnames, error = function(e) {})
+##   }
+## }
+
+
+## setEncoding <- function(encoding="unknown"){
+  ## moved to utils.R
+##   ## specify what encoding is used in the imported files.
+##   .rqda$encoding <- encoding
+## }
+
+## enc <- function(x,encoding="UTF-8") {
+##   ## replace " with two '. to make insert smoothly.
+##   ## encoding is the encoding of x (character vector).
+##   ## moved to utils.R
+##   Encoding(x) <- encoding
+##   x <- gsub("'", "''", x)
+##   if (Encoding(x)!="UTF-8") {
+##     x <- iconv(x,to="UTF-8")
+##   }
+##   x
+## }
