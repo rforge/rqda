@@ -281,10 +281,13 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
     if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
-      title <- sprintf(ngettext(nrow(retrieval),"Retrieved %i coding: %s","Retrieved %i codings: %s"),nrow(retrieval),currentCode)
+      title <- sprintf(ngettext(nrow(retrieval),"%i Retrieved coding: %s","%i Retrieved codings: %s"),nrow(retrieval),currentCode)
+      ## tryCatch(dispose(get(sprintf("codingsOf%s",currentCid),env=.rqda)),error=function(e){})
+       tryCatch(eval(parse(text=sprintf("dispose(.rqda$.codingsOf%s)",currentCid))),error=function(e){})
       .gw <- gwindow(title=title, parent=getOption("widgetCoordinate"),width=600,height=600)
       mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
       .gw@widget@widget$SetIconFromFile(mainIcon)
+      assign(sprintf(".codingsOf%s",currentCid),.gw,env=.rqda)
       .retreivalgui <- gtext(container=.gw)
       font <- pangoFontDescriptionFromString(.rqda$font)
       gtkWidgetModifyFont(.retreivalgui@widget@widget,font)
@@ -348,9 +351,10 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
   }
 }
 
-ExportCoding <- function(file,Fid=NULL,order=c("fname","ftime","ctime"),append=TRUE,CodeNameWidget=.rqda$.codes_rqda)
+ExportCoding <- function(file,Fid=NULL,order=c("fname","ftime","ctime"),append=TRUE)
 {
-  currentCode <- svalue(CodeNameWidget)
+  
+ExportCodingOfOneCode <- function(file,currentCode,Fid=NULL,order=c("fname","ftime","ctime"),append=TRUE){
   if (length(currentCode)!=0){
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
     order <- match.arg(order)
@@ -363,7 +367,7 @@ ExportCoding <- function(file,Fid=NULL,order=c("fname","ftime","ctime"),append=T
     } else {
       retrieval <- RQDAQuery(sprintf("select coding.cid,coding.fid, coding.selfirst, coding.selend, coding.seltext, coding.rowid,source.name,source.id from coding,source where coding.status==1 and coding.cid=%i and source.id=coding.fid and coding.fid in (%s) %s",currentCid, paste(Fid,collapse=","), order))
     }
-    if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
+    if (nrow(retrieval)==0) gmessage(sprintf("No Coding associated with the '%s'.",currentCode),con=TRUE) else {
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
       for (i in fid){
@@ -375,16 +379,32 @@ ExportCoding <- function(file,Fid=NULL,order=c("fname","ftime","ctime"),append=T
           RQDAQuery(sprintf("update coding set status=0 where fid=%i",i))
         }
       }
-      cat(sprintf("<hr><li>Code: %s<hr>",currentCode),file=file,append=append)
+     if (nrow(retrieval)!=1) {
+       cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Coding of <a id='%s'>%s</a></b></font><hr><p align='left'>",nrow(retrieval),currentCode,currentCode),file=file,append=append)
+    } else {
+      cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Codings of <a id='%s'>%s</a></b></font><hr><p align='left'>",nrow(retrieval),currentCode,currentCode),file=file,append=append)
+}
       apply(retrieval,1, function(x){
-        metaData <- sprintf("<b> %s [%s:%s] </b><br><br>",x[['fname']],x[['selfirst']],x[['selend']])
+        metaData <- sprintf("<b><font color='red'> %s [%s:%s] </font></b><br><br>",x[['fname']],x[['selfirst']],x[['selend']])
         cat(metaData,file=file,append=TRUE)
         cat(x[['seltext']],file=file,append=TRUE)
         cat("<br><br>",file=file,append=TRUE)
       }
             )## end of apply
+    }}}## end of export helper function
+allcodes <- RQDAQuery("select name from freecode where status==1")$name
+if (!is.null(allcodes)){
+  allcodes <- enc(allcodes,"UTF-8")
+  CodeList <- gselect.list(allcodes, multiple = TRUE, title = "Select one or more codes.")
+  if (length(CodeList)>1 || CodeList!="") {
+    if (! append){
+    cat("<HEAD><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
     }
-  }}
+    cat(paste("<a href='#",CodeList,"'>",CodeList,"<a>",sep="",collapse="<br>\n"),"<hr><br>",file=file,append=TRUE)
+    for (i in seq_along(CodeList)){
+      ## append <- ifelse(i==1,append,TRUE)
+    ExportCodingOfOneCode(file=file,currentCode=CodeList[i],order=order,append=TRUE)
+}}}}
 
 
 ClickHandlerFun <- function(CodeNameWidget){

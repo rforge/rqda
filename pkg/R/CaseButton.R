@@ -398,14 +398,8 @@ FileofCaseWidgetMenu$"Show ..."$"Show Uncoded Files Only (sorted)"$handler <- fu
 }
 FileofCaseWidgetMenu$"Show Selected File Property"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    Fid <- GetFileId("case","selected")
-    Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
-    Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
-    if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
-    if (!is.null(Case)) Encoding(Case) <- "UTF-8"
-    glabel(sprintf(" File ID is %i \n File Category is %s\n Case is %s",
-                   Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", ")),cont=TRUE)
-  }
+    ShowFileProperty(Fid=GetFileId("case","selected"))
+    }
 }
 
 ##   AddWebSearchButton <- function(label="WebSearch",CaseNamesWidget=.rqda$.CasesNamesWidget){

@@ -129,6 +129,8 @@ close_proj <- function(conName="qdacon",assignenv=.rqda,...){
     if (isIdCurrent(con)) {
         tryCatch(dispose(.rqda$.sfp),error=function(e){})
         tryCatch(dispose(.rqda$.root_edit),error=function(e){})
+        WidgetList <- ls(envir=RQDA:::.rqda,pattern="^[.]codingsOf",all=TRUE)
+        for (i in WidgetList) tryCatch(dispose(get(i,env=.rqda)),error=function(e){})
         if (!dbDisconnect(con)) {
         gmessage("Closing project failed.",icon="waring",con=TRUE)
       }

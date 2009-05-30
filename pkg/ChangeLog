@@ -1,3 +1,7 @@
+2009-05-30
+	* New function of ExportCodings() for exporting codings to a html file.
+	* Other minor improvements.
+
 2009-05-29
 	* new function of Annotation() and "Add Ann" button.
 	* "Hightlight all codings" moved to popup menu.

@@ -54,7 +54,7 @@ enc <- function(x,encoding="UTF-8") {
   ## encoding is the encoding of x (character vector).
   Encoding(x) <- encoding
   x <- gsub("'", "''", x)
-  if (Encoding(x)!="UTF-8") {
+  if (all(Encoding(x)!="UTF-8")) {
     x <- iconv(x,to="UTF-8")
   }
   x
@@ -372,7 +372,7 @@ ShowSubset.FileAttr <- function(x,...){
 
 ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-        if (isTRUE(.rqda$SFP) && !is.null(Fid)){
+        if (!is.null(Fid)){
         Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
         Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
         if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
@@ -381,6 +381,8 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
                               Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", "))
         tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
             gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,635),width=600,height=50)
+            mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+            gw@widget@widget$SetIconFromFile(mainIcon) 
             sfp <- glabel(val,cont=gw)
             assign(".sfp",sfp,env=.rqda)
         })
