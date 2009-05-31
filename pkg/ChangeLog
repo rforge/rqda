@@ -1,3 +1,8 @@
+2009-05-31
+	* set default coder name to username of OS.
+	* Add number of files in the title of retrieved codings widget and similarly revision of ExportCodings().
+	* upgrade database structure to version "0.1.8" (Old version of RQDA does not work with new *.rqda for the attributes). NOTE: add status column to caseAttr and fileAttr tables.
+
 2009-05-30
 	* New function of ExportCodings() for exporting codings to a html file.
 	* Other minor improvements.

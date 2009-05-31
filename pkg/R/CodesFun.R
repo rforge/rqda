@@ -281,9 +281,10 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
     if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
-      title <- sprintf(ngettext(nrow(retrieval),"%i Retrieved coding: %s","%i Retrieved codings: %s"),nrow(retrieval),currentCode)
-      ## tryCatch(dispose(get(sprintf("codingsOf%s",currentCid),env=.rqda)),error=function(e){})
-       tryCatch(eval(parse(text=sprintf("dispose(.rqda$.codingsOf%s)",currentCid))),error=function(e){})
+      Nfiles <- length(fid)
+      Ncodings <- nrow(retrieval)
+      title <- sprintf(ngettext(Ncodings,"%i Retrieved coding: \"%s\" from %s %s","%i Retrieved codings: \"%s\" from %s %s"),Ncodings,currentCode,Nfiles,ngettext(Nfiles,"file","files"))
+      tryCatch(eval(parse(text=sprintf("dispose(.rqda$.codingsOf%s)",currentCid))),error=function(e){})
       .gw <- gwindow(title=title, parent=getOption("widgetCoordinate"),width=600,height=600)
       mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
       .gw@widget@widget$SetIconFromFile(mainIcon)
@@ -325,7 +326,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
       
       buffer <- .retreivalgui@widget@widget$GetBuffer()
       iter <- buffer$getIterAtOffset(0)$iter
-      
+
       apply(retrieval,1, function(x){
         metaData <- sprintf("%s [%s:%s]",x[['fname']],x[['selfirst']],x[['selend']])
         ## buffer$InsertWithTagsByName(iter, metaData,"x-large","red")
@@ -351,7 +352,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
   }
 }
 
-ExportCoding <- function(file,Fid=NULL,order=c("fname","ftime","ctime"),append=TRUE)
+ExportCoding <- function(file="Exported Codings.html",Fid=NULL,order=c("fname","ftime","ctime"),append=FALSE)
 {
   
 ExportCodingOfOneCode <- function(file,currentCode,Fid=NULL,order=c("fname","ftime","ctime"),append=TRUE){
@@ -379,10 +380,12 @@ ExportCodingOfOneCode <- function(file,currentCode,Fid=NULL,order=c("fname","fti
           RQDAQuery(sprintf("update coding set status=0 where fid=%i",i))
         }
       }
-     if (nrow(retrieval)!=1) {
-       cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Coding of <a id='%s'>%s</a></b></font><hr><p align='left'>",nrow(retrieval),currentCode,currentCode),file=file,append=append)
-    } else {
-      cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Codings of <a id='%s'>%s</a></b></font><hr><p align='left'>",nrow(retrieval),currentCode,currentCode),file=file,append=append)
+      Nfiles <- length(unique(retrieval$fname))
+      Ncodings <- nrow(retrieval)
+      if (nrow(retrieval)==1) {
+        cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Coding of <a id='%s'>\"%s\" from %s %s </a></b></font><hr><p align='left'>",Ncodings,currentCode,currentCode,Nfiles,ngettext(Nfiles,"file","files")),file=file,append=append)
+     } else {
+       cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Codings of <a id='%s'>\"%s\"</a> from %s %s.</b></font><hr><p align='left'>",Ncodings,currentCode,currentCode,Nfiles,ngettext(Nfiles,"file","files")),file=file,append=append)
 }
       apply(retrieval,1, function(x){
         metaData <- sprintf("<b><font color='red'> %s [%s:%s] </font></b><br><br>",x[['fname']],x[['selfirst']],x[['selend']])
@@ -397,9 +400,10 @@ if (!is.null(allcodes)){
   allcodes <- enc(allcodes,"UTF-8")
   CodeList <- gselect.list(allcodes, multiple = TRUE, title = "Select one or more codes.")
   if (length(CodeList)>1 || CodeList!="") {
-    if (! append){
+    if (!append){
     cat("<HEAD><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
     }
+    cat(sprintf("Created by RQDA at %s<br><br>\n",Sys.time()),file=file,append=TRUE)
     cat(paste("<a href='#",CodeList,"'>",CodeList,"<a>",sep="",collapse="<br>\n"),"<hr><br>",file=file,append=TRUE)
     for (i in seq_along(CodeList)){
       ## append <- ifelse(i==1,append,TRUE)
@@ -479,10 +483,10 @@ HL_AllCodings <- function(...) {
               }}}}
 
 
-addAnnoTable <- function(){
-  tryCatch(
-  RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, status integer)"),error=function(e){})
-} ##RQDAQuery("drop table annotation")
+##addAnnoTable <- function(){
+##  tryCatch(
+##  RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, ##status integer)"),error=function(e){})
+##} ##RQDAQuery("drop table annotation")
 
 NextRowId <- function(table){
   ans <- RQDAQuery(sprintf("select max(rowid)+1 as nextid from %s",table))$nextid

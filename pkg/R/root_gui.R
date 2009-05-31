@@ -166,6 +166,7 @@ Version: 0.1-8 dev\n",
 
 ######################### GUI  for settings
 #########################
+  if (Sys.info()["user"]!="") assign("owner",Sys.info()["user"],env=.rqda) ## must before addSettingGUI()
    ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings\n")
    addSettingGUI(cont=.settings_gui)
 
@@ -194,7 +195,6 @@ assign(".currentProj",.currentProj,env=.rqda)
   ## cordinate of ViewFunWidget
   if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))
   assign("font","Sans 11",env=.rqda)
-
 ##########################
 ### set the positions
 svalue(.codes_pan) <- 0.09

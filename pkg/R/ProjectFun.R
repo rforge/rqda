@@ -58,10 +58,12 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
                                             selfirst real, selend real, status integer,
                                             owner text, date text, memo text)")
       if (dbExistsTable(con,"project")) dbRemoveTable(con, "project")
-      ## coding: information about the project
-      dbGetQuery(con,"create table project  (encoding text, databaseversion text, date text,dateM text,
-                                             memo text,BOM integer)")
-      dbGetQuery(con,sprintf("insert into project (databaseversion,date,memo) values ('0.1.6','%s','')",date()))
+      ##dbGetQuery(con,"create table project  (encoding text, databaseversion text, date text,dateM text,
+      ##                                       memo text,BOM integer)")
+      dbGetQuery(con,"create table project  (databaseversion text, date text,dateM text,
+                                             memo text,about text)")
+      dbGetQuery(con,sprintf("insert into project (databaseversion,date,about,memo) values ('0.1.8','%s',
+                            'Database created by RQDA (http://rqda.r-forge.r-project.org/)','')",date()))
       if (dbExistsTable(con,"cases")) dbRemoveTable(con, "cases")
       dbGetQuery(con,"create table cases  (name text, memo text,
                                            owner text,date text,dateM text,
@@ -70,7 +72,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       dbGetQuery(con,"create table caselinkage  (caseid integer, fid integer,
                                                 selfirst real, selend real, status integer,
                                             owner text, date text, memo text)")
-
+      
       if (dbExistsTable(con,"attributes")) dbRemoveTable(con, "attributes")
       dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text,memo text)")
       if (dbExistsTable(con,"caseAttr")) dbRemoveTable(con, "caseAttr")
@@ -79,6 +81,13 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       dbGetQuery(.rqda$qdacon,"create table fileAttr (variable text, value text, fileID integer, date text, dateM text, owner text)")
       if (dbExistsTable(con,"journal")) dbRemoveTable(con, "journal")
       dbGetQuery(.rqda$qdacon,"create table journal (name text, journal text, date text, dateM text, owner text,status integer)")
+      RQDAQuery("alter table project add column imageDir text")
+      try(RQDAQuery("alter table attributes add column class text"),TRUE)
+      RQDAQuery("alter table caseAttr add column status integer")
+      RQDAQuery("alter table fileAttr add column status integer")
+      try(RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, status integer)"),TRUE)
+      RQDAQuery("create table image (name text, id integer, date text, dateM text, owner text,status integer)")
+      RQDAQuery("create table imageCoding (cid integer,iid integer,x1 integer, y1 integer, x2 integer, y2 integer, memo text, date text, dateM text, owner text,status integer)")
     }
   }
 }
@@ -100,10 +109,38 @@ UpgradeTables <- function(){
     ## attributes table
     dbGetQuery(.rqda$qdacon,"create table journal (name text, journal text, date text, dateM text, owner text,status integer)")
     ## journal table
-    dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.6'")
+    RQDAQuery("alter table project add column about text")
+    dbGetQuery(.rqda$qdacon,"update project set about='Database created by RQDA (http://rqda.r-forge.r-project.org/)'")
+    dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.8'")
     ## reset the version.
+    ## added for version 0.1.8
+    ## (no version 0.1.7 to make the version number consistent with RQDA version)
+    RQDAQuery("alter table project add column imageDir text")
+    try(RQDAQuery("alter table attributes add column class text"),TRUE)
+    RQDAQuery("alter table caseAttr add column status integer")
+    RQDAQuery("alter table fileAttr add column status integer")
+    RQDAQuery("update caseAttr set status==1")
+    RQDAQuery("update fileAttr set status==1")
+    try(RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, status integer)"),TRUE)
+    RQDAQuery("create table image (name text, id integer, date text, dateM text, owner text,status integer)")
+    RQDAQuery("create table imageCoding (cid integer,iid integer,x1 integer, y1 integer, x2 integer, y2 integer, memo text, date text, dateM text, owner text,status integer)")
+  }
+  if (currentVersion=="0.1.6"){
+    RQDAQuery("alter table project add column about text")
+    dbGetQuery(.rqda$qdacon,"update project set about='Database created by RQDA (http://rqda.r-forge.r-project.org/)'")
+    dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.8'")
+    RQDAQuery("alter table project add column imageDir text")
+    try(RQDAQuery("alter table attributes add column class text"),TRUE)
+    RQDAQuery("alter table caseAttr add column status integer")
+    RQDAQuery("update caseAttr set status==1")
+    RQDAQuery("alter table fileAttr add column status integer")
+    RQDAQuery("update fileAttr set status==1")
+    try(RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, status integer)"),TRUE)
+    RQDAQuery("create table image (name text, id integer, date text, dateM text, owner text,status integer)")
+    RQDAQuery("create table imageCoding (cid integer,iid integer,x1 integer, y1 integer, x2 integer, y2 integer, memo text, date text, dateM text, owner text,status integer)")
   }
 }
+
 
 open_proj <- function(path,conName="qdacon",assignenv=.rqda,...){
   tryCatch({ con <- get(conName,assignenv)
