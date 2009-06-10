@@ -1,3 +1,6 @@
+2009-06-10
+	* change GetFileId() according change of 2009-06-05.
+	
 2009-06-06
 	* use font from "font setting" to set font of journal widget.
 
@@ -44,7 +47,7 @@
 	* improve "search file..." menu, to keep the last search pattern.
 
 2009-05-20
-	* add some tooltips of buttons in Code Tab.
+	* add some tooltips of buttons in Code Tab (Tooltips under Linux need RGtk2-2.12.12).
 	* font-setting for memo widget.
 
 2009-05-19

@@ -406,31 +406,19 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
     if (type=="selected"){
       selected <- svalue(.rqda$.FileofCat)
       ans <- dbGetQuery(.rqda$qdacon,
-                  sprintf("select id from source where status==1 and name in (%s)",
-                          paste(paste("'",selected,"'",sep=""),collapse=",")
-                          ))$id
-    } else {
-      Selected <- svalue(.rqda$.FileCatWidget)
-      if (length(Selected)==0){
-        ans <- NULL
-      } else {
-        if (length(Selected)>1) {gmessage("select one case only.",con=TRUE)
-                                 stop("more than one cases are selected")
-                               }
-        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",Selected))$catid
-        fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid==%i",catid))$fid
-        ## roll back to rev 90
-##         catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name in (%s)",
-##                                                  paste(paste("'",Selected,"'",sep=""),collapse=",")))$catid
-##         fidofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid in (%s)",
-##                                                     paste(paste("'",catid,"'",sep=""),collapse=",")))$fid
-        allfid <-  unconditionalFun(type=type)
-        ans <- intersect(fidofcat,allfid)
-      }
-      ans
+                        sprintf("select id from source where status==1 and name in (%s)",
+                                paste(paste("'",selected,"'",sep=""),collapse=",")
+                                ))$id
     }
+    allfid <- GetFileIdSets("filecategory","intersect")
+    if (type=="all") {ans <- allfid} else {
+      codedfid <- RQDAQuery(sprintf("select fid from coding where status==1 and fid in (%s) group by fid",paste(shQuote(allfid),collapse=",")))$fid
+      if (type=="coded") {ans <- codedfid}
+      if (type=="uncoded") { ans <-  setdiff(allfid,codedfid)}
+    }
+    ans
   }
-
+  
   condition <- match.arg(condition)
   type <- match.arg(type)
   fid <- switch(condition,
@@ -438,7 +426,7 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
                 case=FidOfCaseFun(type=type),
                 filecategory=FidOfCatFun(type=type)
                 )
-fid
+  fid
 }
 
 
