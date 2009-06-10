@@ -53,6 +53,7 @@ gbutton("Open Project",container=container,handler=function(h,...){
 
 CloseProjectButton <- function(container){
 gbutton("Close Project",container=container,handler=function(h,...){
+      svalue(.rqda$.currentProj) <- "Closing ..."
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})

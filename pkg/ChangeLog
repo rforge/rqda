@@ -1,3 +1,12 @@
+2009-06-06
+	* use font from "font setting" to set font of journal widget.
+
+2009-06-05
+	* When select multiple file categories, "files of this category" shows the intersect of files from these categories.
+	
+2009-06-03
+	* use gcombox rather than gtext to set colors in settings Tab.
+	
 2009-05-31
 	* set default coder name to username of OS.
 	* Add number of files in the title of retrieved codings widget and similarly revision of ExportCodings().

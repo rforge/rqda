@@ -94,7 +94,7 @@ AddNewJournalFun <- function(){
         }
                 )## end of save button
         tmp <- gtext(container=get(".AddNewJournalWidget2",env=.rqda))
-        font <- pangoFontDescriptionFromString("Sans 10")
+        font <- pangoFontDescriptionFromString(.rqda$font)
         gtkWidgetModifyFont(tmp@widget@widget,font)
         assign(".AddNewJournalWidgetW", tmp, env=.rqda)
         textW <- get(".AddNewJournalWidgetW",env=.rqda)
@@ -122,7 +122,7 @@ ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,
         }
                 )## end of save button
         tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
-        font <- pangoFontDescriptionFromString("Sans 10")
+        font <- pangoFontDescriptionFromString(.rqda$font)
         gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
         assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
         prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select journal from %s where name='%s'",dbTable,Selected))[1,1]

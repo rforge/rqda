@@ -84,6 +84,22 @@ UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sortB
     tryCatch(Widget[] <- items,error=function(e){})
 }
 
+UpdateFileofCatWidget2 <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sortByTime=FALSE,...)
+{
+  Total_fid <- GetFileIdSets("filecategory","intersect")
+  if (length(Total_fid)!=0){
+    items <- dbGetQuery(con,"select name,id,date from source where status==1")
+    if (nrow(items)!=0) {
+      items <- items[items$id %in% Total_fid,c("name","date")]
+      items <- items$name[OrderByTime(items$date)] ## sort by date
+      Encoding(items) <- "UTF-8"
+      if (!sortByTime) items <- sort(items)
+    } else items <- NULL
+  } else items <- NULL
+  tryCatch(Widget[] <- items,error=function(e){})
+}
+
+
 
 FileCatMemoButton <- function(label="Memo"){
   gbutton(label,handler=function(h,...) {

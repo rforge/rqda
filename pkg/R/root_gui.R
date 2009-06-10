@@ -166,9 +166,8 @@ Version: 0.1-8 dev\n",
 
 ######################### GUI  for settings
 #########################
-  if (Sys.info()["user"]!="") assign("owner",Sys.info()["user"],env=.rqda) ## must before addSettingGUI()
-   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings\n")
-   addSettingGUI(cont=.settings_gui)
+  ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings\n")
+  addSettingGUI(cont=.settings_gui)
 
 ######################### Put them together
 #########################
@@ -290,8 +289,8 @@ AddHandler <- function(){
     }
                           )
     add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
-    addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
-        UpdateFileofCatWidget(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
+    addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){    
+        UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
     })
     addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat"))
     add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)

@@ -354,8 +354,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
 
 ExportCoding <- function(file="Exported Codings.html",Fid=NULL,order=c("fname","ftime","ctime"),append=FALSE)
 {
-  
-ExportCodingOfOneCode <- function(file,currentCode,Fid=NULL,order=c("fname","ftime","ctime"),append=TRUE){
+ExportCodingOfOneCode <- function(file,currentCode,Fid,order=c("fname","ftime","ctime"),append=TRUE){
   if (length(currentCode)!=0){
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
     order <- match.arg(order)
@@ -363,11 +362,11 @@ ExportCodingOfOneCode <- function(file,currentCode,Fid=NULL,order=c("fname","fti
                     fname="order by source.name",
                     ftime="order by source.id",
                     ctime="")
-    if (is.null(Fid)){
-      retrieval <- RQDAQuery(sprintf("select coding.cid,coding.fid, coding.selfirst, coding.selend,coding.seltext,coding.rowid, source.name,source.id from coding,source where coding.status==1 and coding.cid=%i and source.id=coding.fid %s",currentCid,order))
-    } else {
-      retrieval <- RQDAQuery(sprintf("select coding.cid,coding.fid, coding.selfirst, coding.selend, coding.seltext, coding.rowid,source.name,source.id from coding,source where coding.status==1 and coding.cid=%i and source.id=coding.fid and coding.fid in (%s) %s",currentCid, paste(Fid,collapse=","), order))
-    }
+    ##if (is.null(Fid)){
+    ##  retrieval <- RQDAQuery(sprintf("select coding.cid,coding.fid, coding.selfirst, ##coding.selend,coding.seltext,coding.rowid, source.name,source.id from coding,source where coding.status==1 and coding.cid=%i and source.id=coding.fid %s",currentCid,order))
+   ## } else {
+    retrieval <- RQDAQuery(sprintf("select coding.cid,coding.fid, coding.selfirst, coding.selend, coding.seltext, coding.rowid,source.name,source.id from coding,source where coding.status==1 and coding.cid=%i and source.id=coding.fid and coding.fid in (%s) %s",currentCid, paste(Fid,collapse=","), order))
+##    }
     if (nrow(retrieval)==0) gmessage(sprintf("No Coding associated with the '%s'.",currentCode),con=TRUE) else {
       fid <- unique(retrieval$fid)
       retrieval$fname <-""
@@ -395,19 +394,21 @@ ExportCodingOfOneCode <- function(file,currentCode,Fid=NULL,order=c("fname","fti
       }
             )## end of apply
     }}}## end of export helper function
-allcodes <- RQDAQuery("select name from freecode where status==1")$name
+
+if (is.null(Fid)) Fid <- GetFileId(type="coded")
+allcodes <- RQDAQuery(sprintf("select freecode.name from freecode, coding where freecode.status==1 and freecode.id==coding.cid and coding.status==1 and coding.fid in (%s) group by freecode.name",paste(shQuote(Fid),collapse=",")))$name
 if (!is.null(allcodes)){
   allcodes <- enc(allcodes,"UTF-8")
   CodeList <- gselect.list(allcodes, multiple = TRUE, title = "Select one or more codes.")
   if (length(CodeList)>1 || CodeList!="") {
     if (!append){
-    cat("<HEAD><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
+    cat("<HEAD><META HTTP-EQUIV='CONTENT-TYPE' CONTENT='text/html; charset=UTF-8'><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
     }
-    cat(sprintf("Created by RQDA at %s<br><br>\n",Sys.time()),file=file,append=TRUE)
+    cat(sprintf("Created by <a href='http://rqda.r-forge.r-project.org/'>RQDA</a> at %s<br><br>\n",Sys.time()),file=file,append=TRUE)
     cat(paste("<a href='#",CodeList,"'>",CodeList,"<a>",sep="",collapse="<br>\n"),"<hr><br>",file=file,append=TRUE)
     for (i in seq_along(CodeList)){
       ## append <- ifelse(i==1,append,TRUE)
-    ExportCodingOfOneCode(file=file,currentCode=CodeList[i],order=order,append=TRUE)
+    ExportCodingOfOneCode(file=file,currentCode=CodeList[i],Fid=Fid,order=order,append=TRUE)
 }}}}
 
 
