@@ -223,7 +223,7 @@ AddHandler <- function(){
                         )
     ## handler for .fnames_rqda (gtable holding the file names)
     addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
-       if (isTRUE(.rqda$SFP)) ShowFileProperty()
+       if (isTRUE(.rqda$SFP)) ShowFileProperty(focus=FALSE)
     })
     add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
     ## right click to add file to a case category
@@ -296,7 +296,7 @@ AddHandler <- function(){
     add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
     addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
     addHandlerClicked(.rqda$.FileofCat, handler <- function(h, ...) {
-       if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("file", "selected"))
+       if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("file", "selected"),focus=FALSE)
     })
     add3rdmousepopupmenu(.rqda$.FileofCat,FileofCatWidgetMenu)
     add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
@@ -307,7 +307,7 @@ AddHandler <- function(){
         HL_Case()
     })
     addHandlerClicked(.rqda$.FileofCase, handler <- function(h, ...) {
-        if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"))
+        if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
     })
     addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) ViewJournalWidget())
 }## end of AddHandler()

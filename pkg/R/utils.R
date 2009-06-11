@@ -370,7 +370,7 @@ ShowSubset.FileAttr <- function(x,...){
 }
 
 
-ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
+ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
         if (!is.null(Fid)){
         Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
@@ -380,11 +380,12 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
         val <- sprintf(" File ID is %i \n File Category is %s\n Case is %s",
                               Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", "))
         tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
-            gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,635),width=600,height=50)
-            mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-            gw@widget@widget$SetIconFromFile(mainIcon)
-            sfp <- glabel(val,cont=gw)
-            assign(".sfp",sfp,env=.rqda)
+          gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,635),width=600,height=50)
+          mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+          gw@widget@widget$SetIconFromFile(mainIcon)
+          sfp <- glabel(val,cont=gw)
+          assign(".sfp",sfp,env=.rqda)
+          "focus<-"(gw,value=focus)
         })
     }}
 }

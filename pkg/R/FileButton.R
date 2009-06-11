@@ -251,7 +251,7 @@ FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
         Encoding(content) <- Encoding(word) <- "UTF-8"
         idx1 <- gregexpr(word,content)[[1]] -1
         idx2 <- idx1 + attr(idx1,"match.length")
-        markidx <- RQDAQuery(sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",fid))
+        markidx <- RQDAQuery(sprintf("select coding.selfirst,coding.selend from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",fid))
         anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",fid))
         allidx <- c(unlist(markidx),anno)
         if (!is.null(allidx)){
