@@ -43,11 +43,11 @@ ScrollToItem <- function(widget,item=svalue(widget)){
     items <- widget[]
     if (length(items)!= 0){
         Encoding(items) <- "UTF-8"
-        idx <- as.character(which(items %in% item))
+        idx <- as.character(which(items %in% item) - 1)
         if (length(idx)!=0){
-        path <-gtkTreePathNewFromString(idx)
-        gtkTreeViewScrollToCell(slot(slot(widget,"widget"),"widget"), path,use.align=TRUE,row.align = 0.07)
-    }}}
+            path <-gtkTreePathNewFromString(idx)
+            gtkTreeViewScrollToCell(slot(slot(widget,"widget"),"widget"), path,use.align=TRUE,row.align = 0.07)
+        }}}
 
 enc <- function(x,encoding="UTF-8") {
   ## replace " with two '. to make insert smoothly.
@@ -382,7 +382,7 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected")) {
         tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
             gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,635),width=600,height=50)
             mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-            gw@widget@widget$SetIconFromFile(mainIcon) 
+            gw@widget@widget$SetIconFromFile(mainIcon)
             sfp <- glabel(val,cont=gw)
             assign(".sfp",sfp,env=.rqda)
         })

@@ -7,7 +7,7 @@ AddCaseButton <- function(label="ADD"){
         CaseName <- enc(CaseName,encoding="UTF-8")
         AddCase(CaseName)
         CaseNamesUpdate()
-        idx <- as.character(which(.rqda$.CasesNamesWidget[] %in%  CaseName)) ## note the position, before manipulation of items
+        idx <- as.character(which(.rqda$.CasesNamesWidget[] %in%  CaseName) -1) ## note the position, before manipulation of items
         path <-gtkTreePathNewFromString(idx)
         gtkTreeViewScrollToCell(slot(slot(.rqda$.CasesNamesWidget,"widget"),"widget"),
                                 path,use.align=TRUE,row.align = 0.05)
