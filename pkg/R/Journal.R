@@ -71,7 +71,7 @@ JournalNamesUpdate <- function(Widget=.rqda$.JournalNamesWidget,decreasing=FALSE
 AddNewJournalFun <- function(){
     if (is_projOpen(env=.rqda,"qdacon")) {
         tryCatch(eval(parse(text="dispose(.rqda$.AddNewJournalWidget")),error=function(e) {}) ## close the widget if open
-        gw <- gwindow(title=sprintf("%s:%s",prefix,Selected),parent=getOption("widgetCoordinate"),width=600,height=400)
+        gw <- gwindow(title="Add New Journal.",parent=getOption("widgetCoordinate"),width=600,height=400)
         mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
         gw@widget@widget$SetIconFromFile(mainIcon) 
         assign(".AddNewJournalWidget",gw,env=.rqda)
