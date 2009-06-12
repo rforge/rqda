@@ -273,6 +273,12 @@ FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
 FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
   ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
 }
+FileNamesWidgetMenu$"Open Last Coded File"$handler <- function(h,...){
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    fname <- RQDAQuery("select name from source where id in ( select fid from coding where rowid in (select max(rowid) from coding where status==1))")$name
+    if (length(fname)!=0)  fname <- enc(fname,"UTF-8")
+    ViewFileFunHelper(FileName=fname)
+  }}
 FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     pattern <- ifelse(is.null(.rqda$lastsearch),"file like '%%'",.rqda$lastsearch)
@@ -283,17 +289,10 @@ FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
     }
     }
   }
-FileNamesWidgetMenu$"Show ..."$"Show last coded file"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show ..."$"Show All Sorted By Imported Time"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-        fname <- RQDAQuery("select name from source where id in ( select fid from coding where rowid in (select max(rowid) from coding where status==1))")$name
-        if (length(fname)!=0)  fname <- enc(fname,"UTF-8")
-        .rqda$.fnames_rqda[] <- fname
-    }}
-FileNamesWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-      ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)
-      FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="uncoded"))
-      ## By default, the file names in the widget will be sorted.
+     ##FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
+     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="all"))
     }
   }
 FileNamesWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handler <- function(h,...){
@@ -301,12 +300,19 @@ FileNamesWidgetMenu$"Show ..."$"Show Coded Files Sorted by Imported time"$handle
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="coded"))
   }
 }
-FileNamesWidgetMenu$"Show ..."$"Show All Sorted By Imported Time"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-     ##FileNamesUpdate(FileNamesWidget=.rqda$.fnames_rqda)
-     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="all"))
+      ## UncodedFileNamesUpdate(FileNamesWidget = .rqda$.fnames_rqda)
+      FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=GetFileId(condition="unconditional",type="uncoded"))
+      ## By default, the file names in the widget will be sorted.
     }
   }
+## FileNamesWidgetMenu$"Show ..."$"Show Last Coded File"$handler <- function(h, ...) {
+##     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+##         fname <- RQDAQuery("select name from source where id in ( select fid from coding where rowid in (select max(rowid) from coding where status==1))")$name
+##         if (length(fname)!=0)  fname <- enc(fname,"UTF-8")
+##         .rqda$.fnames_rqda[] <- fname
+##     }}
 FileNamesWidgetMenu$"Show ..."$"Show Files With Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is not null")
@@ -329,4 +335,3 @@ FileNamesWidgetMenu$"Show Selected File Property"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
   ShowFileProperty()
 }}
-

@@ -1,3 +1,9 @@
+2009-06-12
+	* Improve ShowFileProperty function.
+	* Fix bug of "Add Anno" button.
+	* Fix bug of countAnchorsWithFileName()
+	* New function of Query.
+
 2009-06-11
 	* "Show last coded file" in popup menu of Files Tab.
 	* Revision of "Find a word" menu according to new method of

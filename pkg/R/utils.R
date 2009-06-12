@@ -40,14 +40,14 @@ UpdateWidget <- function(widget,from,to=NULL){
 }
 
 ScrollToItem <- function(widget,item=svalue(widget)){
-    items <- widget[]
-    if (length(items)!= 0){
-        Encoding(items) <- "UTF-8"
-        idx <- as.character(which(items %in% item) - 1)
-        if (length(idx)!=0){
-            path <-gtkTreePathNewFromString(idx)
-            gtkTreeViewScrollToCell(slot(slot(widget,"widget"),"widget"), path,use.align=TRUE,row.align = 0.07)
-        }}}
+  items <- widget[]
+  if (length(items)!= 0){
+    Encoding(items) <- "UTF-8"
+    idx <- as.character(which(items %in% item) - 1)
+    if (length(idx)!=0){
+      path <-gtkTreePathNewFromString(idx)
+      gtkTreeViewScrollToCell(slot(slot(widget,"widget"),"widget"), path,use.align=TRUE,row.align = 0.07)
+    }}}
 
 enc <- function(x,encoding="UTF-8") {
   ## replace " with two '. to make insert smoothly.
@@ -258,48 +258,45 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,x=4
   ## gtk version of select.list()
   ## Thanks go to John Verzani for his help.
   title <- ifelse(multiple,"Select one or more","Select one")
-
   helper <- function(){
     ans<-new.env()
     x1<-ggroup(horizontal=FALSE) # no parent container here
     x2<-gtable(list,multiple=multiple,con=x1,expand=TRUE)
     gtkWidgetSetSizeRequest(x1@widget@widget, width=width, height=height)
-
- gbasicdialog2 <- function(title="Dialog",widget,action=NULL,handler=NULL,x,y,..., toolkit=guiToolkit()){
-             parent <- gtkWindowNew(show=FALSE) ## modified from gbasicdialog of gWidgetRGtk2
-             dlg = gtkDialog(title,
-              parent=parent,
-              c("modal"),
-              "gtk-cancel", GtkResponseType["cancel"],
-              "gtk-ok", GtkResponseType["ok"])
-            dlg$SetTitle(title)
-            dlg$GrabFocus()
-            dlg$GetWindow()$Move(as.integer(x),as.integer(y))
-            dlg$GetWindow()$Raise()
-            tag(widget,"dlg") <- dlg
-            group = ggroup()
-            add(group, widget, expand=TRUE)
-            dlg$GetVbox()$PackStart(group@widget@block)
-            response = dlg$Run()
-            h = list(obj=widget, action=action)
-            if(response == GtkResponseType["cancel"] ||
-               response == GtkResponseType["close"] ||
-               response == GtkResponseType["delete-event"]) {
-               dlg$Destroy()
-              return(FALSE)
-            } else if(response == GtkResponseType["ok"]) {
-              if(!is.null(handler))
-                handler(h)
-              dlg$Destroy()
-              return(TRUE)
-            } else {
-              gwCat("Don't know this response")
-              print(response)
-              dlg$Destroy()
-              invisible(NA)
-            }
-  }
-
+    gbasicdialog2 <- function(title="Dialog",widget,action=NULL,handler=NULL,x,y,..., toolkit=guiToolkit()){
+      parent <- gtkWindowNew(show=FALSE) ## modified from gbasicdialog of gWidgetRGtk2
+      dlg = gtkDialog(title,
+        parent=parent,
+        c("modal"),
+        "gtk-cancel", GtkResponseType["cancel"],
+        "gtk-ok", GtkResponseType["ok"])
+      dlg$SetTitle(title)
+      dlg$GrabFocus()
+      dlg$GetWindow()$Move(as.integer(x),as.integer(y))
+      dlg$GetWindow()$Raise()
+      tag(widget,"dlg") <- dlg
+      group = ggroup()
+      add(group, widget, expand=TRUE)
+      dlg$GetVbox()$PackStart(group@widget@block)
+      response = dlg$Run()
+      h = list(obj=widget, action=action)
+      if(response == GtkResponseType["cancel"] ||
+         response == GtkResponseType["close"] ||
+         response == GtkResponseType["delete-event"]) {
+        dlg$Destroy()
+        return(FALSE)
+      } else if(response == GtkResponseType["ok"]) {
+        if(!is.null(handler))
+          handler(h)
+        dlg$Destroy()
+        return(TRUE)
+      } else {
+        gwCat("Don't know this response")
+        print(response)
+        dlg$Destroy()
+        invisible(NA)
+      }
+    }
     ret <- gbasicdialog2(title=title,widget=x1,x=x,y=y,handler=function(h,...){
       value <- svalue(x2)
       assign("selected",value,env=h$action$env)
@@ -325,8 +322,7 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,x=4
 GetFileName <- function(fid=GetFileId()){
   ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from source where status=1 and id in (%s)",paste(shQuote(fid),collapse=",")))$name
   if (length(ans)>0) Encoding(ans) <- "UTF-8"
-  ans
-}
+  ans}
 
 
 GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
@@ -350,10 +346,7 @@ GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
   ans
 }
 
-RQDAQuery <- function(sql){
-  ans <- dbGetQuery(.rqda$qdacon,sql)
-  ans
-}
+RQDAQuery <- function(sql){dbGetQuery(.rqda$qdacon,sql)}
 
 ShowSubset <- function(x,...){
   UseMethod("ShowSubset")
@@ -371,21 +364,39 @@ ShowSubset.FileAttr <- function(x,...){
 
 
 ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-        if (!is.null(Fid)){
-        Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
-        Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
-        if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
-        if (!is.null(Case)) Encoding(Case) <- "UTF-8"
-        val <- sprintf(" File ID is %i \n File Category is %s\n Case is %s",
-                              Fid,paste(shQuote(Fcat),collapse=", "),paste(shQuote(Case),collapse=", "))
-        tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
-          gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,635),width=600,height=50)
-          mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-          gw@widget@widget$SetIconFromFile(mainIcon)
-          sfp <- glabel(val,cont=gw)
-          assign(".sfp",sfp,env=.rqda)
-          "focus<-"(gw,value=focus)
-        })
-    }}
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    if (is.null(Fid)) val <- "No files are selected."
+    if (length(Fid)==1) {
+      Fcat <- RQDAQuery(sprintf("select name from filecat where catid in (select catid from treefile where fid=%i and status=1) and status=1",Fid))$name
+      Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
+      if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
+      if (!is.null(Case)) Encoding(Case) <- "UTF-8"
+      fcat <- paste(strwrap(sprintf("File Category is %s",paste(shQuote(Fcat),collapse=",\n")),105,exdent=4),collpase="\n")
+      val <- sprintf(" File ID is %i \n %s \n Case is %s",Fid,fcat,paste(shQuote(Case),collapse=", "))
+    }
+    if (length(Fid)>1) val <- "Please select one file only."
+    tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
+      gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,635),width=600,height=50)
+      mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+      gw@widget@widget$SetIconFromFile(mainIcon)
+      sfp <- glabel(val,cont=gw)
+      assign(".sfp",sfp,env=.rqda)
+      "focus<-"(gw,value=focus)
+    })
+  }}
+
+
+Query <- function(cond){
+  ##cond="(1,2,3) and (2 or 3) not (4)"
+  cond <- gsub("or",",",cond)
+  cond <- gsub("and","and cid in",cond)
+  cond <- gsub("not","and cid not in",cond)
+  cond <- paste("cid in",cond,collapse=" ")
+  fnames <- RQDAQuery(sprintf("select name from source where status==1 and id in (
+select fid from coding where %s and status==1 group by fid)",cond))$name
+  if (!is.null(fnames)){
+    fnames <- enc(fnames,"UTF-8")
+    .rqda$.fnames_rqda[] <- fnames
+  }
+  invisible(fnames)
 }

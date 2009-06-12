@@ -247,19 +247,21 @@ countAnchorsWithFileName <- function(to,fileName=enc(svalue(.rqda$.root_edit),en
   anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",fid))$position
   allidx <- c(unlist(idx),anno)
   if (!is.null(allidx)){
-  if (nrow(idx)!=0){
-    allidx <- unlist(idx)
-    allidx <- allidx + rank(idx) ## 
+    ##if (nrow(idx)!=0){
+    ##allidx <- unlist(idx)
+    ##allidx <- allidx + rank(idx)
+    allidx <- allidx + rank(allidx)
     ans <- sum(allidx <= to) ## note the equal sign
-  }} else ans <- 0
+   ## }
+  } else ans <- 0
   ans
 }
 
-testIt <- function(){ ## test the reliability of countAnchorsWithFileName().
-a <- sindex(incl=T)
-ans <- data.frame(correct=c(countAnchors(to=a$startN),countAnchors(to=a$endN)),wrong=c(countAnchorsWithFileName(to=a$startN),countAnchorsWithFileName(to=a$endN)))
-ans
-}
+## testIt <- function(){ ## test the reliability of countAnchorsWithFileName().
+## a <- sindex(incl=T)
+## ans <- data.frame(correct=c(countAnchors(to=a$startN),countAnchors(to=a$endN)),wrong=c(countAnchorsWithFileName(to=a$startN),countAnchorsWithFileName(to=a$endN)))
+## ans
+## }
 
 retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.rqda$.codes_rqda)
 ## retrieval is rewritten in rev 134
@@ -420,6 +422,7 @@ ClickHandlerFun <- function(CodeNameWidget){
 if (length(SelectedCode)!=0) {
 SelectedCode <- currentCode <- enc(currentCode,encoding="UTF-8")
 currentCid <- dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+names(CodeNameWidget) <- sprintf("Selected code id is %s",currentCid)
 SelectedFile <- tryCatch(svalue(.rqda$.root_edit)  ## use root_edit is more reliable
                          ,error=function(e){})
 if (!is.null(SelectedFile)) {
@@ -495,7 +498,7 @@ NextRowId <- function(table){
   ans
 }
   
-InsertAnnotation <- function (index,fid,rowid,label="[Annotation]") 
+InsertAnnotation <- function (index,fid,rowid,label="[Annotation]",AnchorPos=NULL)
   {
     widget=.rqda$.openfile_gui
     lab <- gtkLabelNew(label)
@@ -507,7 +510,8 @@ InsertAnnotation <- function (index,fid,rowid,label="[Annotation]")
       openAnnotation(New=FALSE,pos=moreArgs$pos,fid=moreArgs$fid,rowid=moreArgs$rowid)
     }
     gSignalConnect(label, "button-press-event", button_press,data = list(pos=index,fid=fid,rowid=rowid))
-    iter <- gtkTextBufferGetIterAtOffset(buffer, index)$iter
+    if (is.null(AnchorPos)) AnchorPos <- index
+    iter <- gtkTextBufferGetIterAtOffset(buffer, AnchorPos)$iter
     buffer$CreateMark(mark.name=sprintf("%s.3",rowid),where=iter)
     anchorcreated <- buffer$createChildAnchor(iter)
     iter$BackwardChar()
@@ -517,7 +521,7 @@ InsertAnnotation <- function (index,fid,rowid,label="[Annotation]")
   } ## end of helper widget
 
 DeleteAnnotationAnchorByMark <- function(markname){
-  buffer <- RQDA:::.rqda$.openfile_gui@widget@widget$GetBuffer()
+  buffer <- .rqda$.openfile_gui@widget@widget$GetBuffer()
   mark <- buffer$GetMark(markname)
   buffer$GetIterAtMark(mark)
   offset2 <- buffer$GetIterAtMark(mark)$iter$GetOffset()
@@ -528,7 +532,7 @@ DeleteAnnotationAnchorByMark <- function(markname){
 }
 
 
-openAnnotation <- function(New=TRUE,pos,fid,rowid){
+openAnnotation <- function(New=TRUE,pos,fid,rowid,AnchorPos=NULL){
   tryCatch(dispose(.rqda$.annotation),error=function(e) {})
   .annotation <- gwindow(title="Annotation",parent=getOption("widgetCoordinate"),width=600,height=400)
   assign(".annotation",.annotation, env=.rqda)
@@ -538,22 +542,24 @@ openAnnotation <- function(New=TRUE,pos,fid,rowid){
     newcontent <- enc(newcontent,encoding="UTF-8")
     if (newcontent != ""){
     if (New) {
-      InsertAnnotation(index=pos,fid=fid,rowid=rowid)
+      if (is.null(AnchorPos)) AnchorPos <- pos
+      InsertAnnotation(index=pos,fid=fid,rowid=rowid,AnchorPos=AnchorPos)
       RQDAQuery(sprintf("insert into annotation (fid,position,annotation,owner,date,status) values (%i,%i,'%s','%s','%s',1)", fid,pos,newcontent,.rqda$owner,date()))
       New <<- FALSE ## note the replacement <<-
     } else {
-        RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1",
-                          newcontent,fid,pos))
-      }} else {## action for empty new content.
+      ## RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1", newcontent,fid,pos))
+      RQDAQuery(sprintf("update annotation set annotation='%s' where rowid==%s and status=1", newcontent,rowid))
+    }} else {## action for empty new content.
       tryCatch(DeleteAnnotationAnchorByMark(sprintf("%s.3",rowid)),error=function(e){})
-      RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1",
-                          newcontent,fid,pos))
-      RQDAQuery(sprintf("update annotation set status=0 where fid=%i and position=%s and status=1",
-                          fid,pos))
-   }
+      ## RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1", newcontent,fid,pos))
+      RQDAQuery(sprintf("update annotation set annotation='%s' where rowid==%s and status=1", newcontent,rowid))
+      ## RQDAQuery(sprintf("update annotation set status=0 where fid=%i and position=%s and status=1",fid,pos))
+      RQDAQuery(sprintf("update annotation set status=0 where rowid==%s and status=1",rowid))
+    }
   })## end of save button
   assign(".annotationContent",gtext(container=.annotation2,font.attr=c(sizes="large")),env=.rqda)
-    prvcontent <- RQDAQuery(sprintf("select annotation from annotation where fid=%i and position=%s and status=1",fid,pos))[1,1]
+    ## prvcontent <- RQDAQuery(sprintf("select annotation from annotation where fid=%i and position=%s and status=1",fid,pos))[1,1]
+    prvcontent <- RQDAQuery(sprintf("select annotation from annotation where rowid==%s and status==1",rowid))[1,1]
   if (is.null(prvcontent)) prvcontent <- ""
   Encoding(prvcontent) <- "UTF-8"
   W <- get(".annotationContent",env=.rqda)
@@ -567,13 +573,14 @@ Annotation <- function(...){
     pos <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {}) ## if the not file is open, it doesn't work.
     if (is.null(pos)) {gmessage("Open a file first!",con=TRUE)}
     else {
+      AnchorPos <- sindex(W,includeAnchor=TRUE)$startN
       SelectedFile <- svalue(.rqda$.root_edit) 
       SelectedFile <- enc(SelectedFile,encoding="UTF-8")
       currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
       idx <- RQDAQuery(sprintf("select fid, annotation,rowid from annotation where fid==%i and position=%s and status=1",currentFid,pos$startN))
       New <- ifelse(nrow(idx)==0,TRUE,FALSE)
       if (nrow(idx)==0) rowid <- NextRowId("annotation") else rowid <- idx$rowid
-      openAnnotation(New=New,pos=pos$startN,fid=currentFid,rowid=rowid)
+      openAnnotation(New=New,pos=pos$startN,fid=currentFid,rowid=rowid,AnchorPos=AnchorPos)
     }
   }}
 
