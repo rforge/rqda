@@ -69,22 +69,33 @@ h1 {
 <p><b>4. Writing memo</b>
 <p> Writing what you think during reading and coding is an integral part of QDA. This is called "<b>Memo writing</b>", and what you write is "<b>Memo</b>". RQDA offers different kinds of memos. For ideas apply to the whole project, you should write a project memo (project memo button in Project Tab). You can write memo about a specific file by clicking F-Memo button in Files Tab, or by cliking "File Memo" via popup memu in Files Tab. In the Codes Tab, there are two kinds of memo, the "C-memo" button is used to attach memo to a selected code. You can select a code then click "C-memo" button to view/add memo. "C2Memo" is used to attach a memo to a coding (a coded text segments). In the open file, you can see the coded segments (highlighted), select one segment, and click "C2Memo" button, you can view/add memo to that coded-segment.
 
-<p><b>5. F-cat</b>
-<p> F-Cat stands for file category, it helps to organize your files. For example, when I analyze newspaper reports, I would like to classify the files accoding to the sources (what newspaper does a file come from), so I add the name of newspapers as categories. You can click "add" button in F-CAT Tab to do this. Then you want to add files to a specific category, you select that category first, then click "AddTo" button, a file list pops up, select files belonging to this categroy and click "OK".  If you want to delete files from a category, select a category first, then files of this category will show in the "Files.of.This.Categroy", select files you want to drop from this category, then cilck "DropFrom" button.
+<p><b>5. File categories</b>
+<p> File category (or F-Cat in early version of RQDA) helps to organize your files. For example, when I analyze newspaper reports, I would like to classify the files accoding to the sources (what newspaper does a file come from), so I add the name of newspapers as categories. You can click "add" button in F-CAT Tab to do this. Then you want to add files to a specific category, you select that category first, then click "AddTo" button, a file list pops up, select files belonging to this categroy and click "OK".  If you want to delete files from a category, select a category first, then files of this category will show in the "Files.of.This.Categroy", select files you want to drop from this category, then cilck "DropFrom" button.
 
 <p>The other way to add files to category: in Files Tab, select files you want to add to a category, then click "Add to file category ..." in popup menu of Files Tab, then a file category list pops up, select one category and click "OK".
 
 <p>Of course, you can rename the file category and delete them. Delete file category will not affect the original files. If you want to delete original files, you should go to Files Tab to delete files.
 
-<p><b>6. C-cat</b>
-<p> Code category is crucial facilitator of <b>theory development</b>. The two most important steps in this process is 1) to move between concepts of different level of abstraction; and 2) to organize those concepts according to the logical relationship among them. C-cat helps you to do the second type of work.
+<p><b>6. Code categories</b>
+<p> Code category (or C-Cat in early version of RQDA) is crucial facilitator of <b>theory development</b>. The two most important steps in this process is 1) to move between concepts of different level of abstraction; and 2) to organize those concepts according to the logical relationship among them. C-cat helps you to do the second type of work.
 
 <p>First, you add a higher (comparaed to codes) level concept by clicking "add" button. You can add more by similar step. Then You add codes to one higher level concept. To do this, you first select that higher level concept, then click "AddTo" button. A list of codes pops up, you can select codes you want to add, then click ok. If you want to delete codes from a category, select a category first, then codes of this category will show in the "Codes.of.This.Categroy", select codes you want to drop from this category, then cilck "DropFrom" button. The operation is similar to F-Cat.
 
 <P> You may want to organize those higher level concepts--<b>"structure of concepts"</b>. RQDA doesn't provide tree-like structure to organize them. I avoid this choice because sometimes tree-like structure brings confusion (loops between concepts are possible, which is the main sources of confusion). Meanwhile, I would like to encourage users to think hard about the structure of higher level concepts. After all, theory should inform knowledge in a parsimonious way. It makes no sense to make theory as complex as the real-world. Still, it is possible to manage higher level concepts in using proper naming rules. For example, I have "trust" and "norms of reciprocity", and I want to group them by "cognitive social capital". Then I can rename them to "10-trust","10-norms of reciprocity", and "1-cognitive social capital". By sorting (see tips 3), you can see the relationship between these concepts.
 
 <p><b>7. Cases</b>
-<p> under construction.
+<p> The concept of case in RQDA comes from Qualitative Comparative Analysis (QCA). It is implemented but not documented yet.
+
+<p>Two differences between file category and cases: a) you can assign
+attributes to a case but not a file category. By exporting the
+attributes, we can do QCA. b) you can link part of a file to a case
+but only a whole file to a file category.
+
+<p>How to assign a file to a case: a) select a file in Files Tab,
+right-click, in the popup menu, you can see "add to a case....". This
+method will add a whole file to a case. b) Open a file, select part of
+the file, select a case name, then click button "mark" in cases Tab,
+you can link the selected part of file to the selected case.
 
 <p><b>8. Settings</b>
 <p> "Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 

@@ -250,7 +250,7 @@ countAnchorsWithFileName <- function(to,fileName=enc(svalue(.rqda$.root_edit),en
     ##if (nrow(idx)!=0){
     ##allidx <- unlist(idx)
     ##allidx <- allidx + rank(idx)
-    allidx <- allidx + rank(allidx)
+    allidx <- allidx + rank(allidx,tie="first")
     ans <- sum(allidx <= to) ## note the equal sign
    ## }
   } else ans <- 0
