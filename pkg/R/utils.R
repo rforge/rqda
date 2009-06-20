@@ -386,14 +386,21 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
   }}
 
 
-Query <- function(cond){
-  ##cond="(1,2,3) and (2 or 3) not (4)"
-  cond <- gsub("or",",",cond)
-  cond <- gsub("and","and cid in",cond)
-  cond <- gsub("not","and cid not in",cond)
-  cond <- paste("cid in",cond,collapse=" ")
-  fnames <- RQDAQuery(sprintf("select name from source where status==1 and id in (
-select fid from coding where %s and status==1 group by fid)",cond))$name
+Query <- function(or,and=NULL,not=NULL){
+ or <- gsub("or",",",or)
+ if (!is.null(and))  and <- gsub("or",",",and)
+ if (!is.null(not))  not <- gsub("or",",",not)
+  fnamesOR <- RQDAQuery(sprintf("select name from source where status==1 and id in (
+select fid from coding where cid in %s and status==1 group by fid)",or))$name
+ if (!is.null(and)){
+ fnamesAND <- RQDAQuery(sprintf("select name from source where status==1 and id in (
+select fid from coding where cid in %s and status==1 group by fid)",and))$name
+ } else  fnamesAND <- fnamesOR
+ if (!is.null(not)) {
+  fnamesNOT <- RQDAQuery(sprintf("select name from source where status==1 and id in (
+select fid from coding where cid in %s and status==1 group by fid)",not))$name
+} else  fnamesNOT <- NULL
+fnames <- setdiff(intersect(fnamesOR,fnamesAND),fnamesNOT)
   if (!is.null(fnames)){
     fnames <- enc(fnames,"UTF-8")
     .rqda$.fnames_rqda[] <- fnames

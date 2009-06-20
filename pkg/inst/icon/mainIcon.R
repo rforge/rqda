@@ -1,6 +1,0 @@
- library(igraph)
- a <-graph.formula(R--+Q,R--+D,R--+A)
- png("mainIcon.png",width=480,height=480,bg="darkseagreen")
- par(mar=c(0,0,0,0))
- plot(a,vertex.label=V(a)$name,vertex.size=180,vertex.label.font=2,vertex.label.cex=15,edge.width=10,layout=matrix(c(-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5),ncol=2))
- dev.off()
