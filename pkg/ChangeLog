@@ -1,4 +1,7 @@
 2009-06-17
+	* AddToFileCategory() can add multiple files to multiple categories at one time.
+
+2009-06-17
 	* RGtk2 (>=2.12.8), thanks Gaua for feedback.
 
 2009-06-12
