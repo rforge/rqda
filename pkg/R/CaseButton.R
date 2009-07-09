@@ -255,8 +255,8 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
 }
 CaseNamesWidgetMenu$"Show Cases with Memo Only"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
-   cnames <- RQDAQuery("select name from cases where memo is not null")
-   cnames <- enc(cnames,"UTF-8")
+   cnames <- RQDAQuery("select name from cases where memo is not null")$name
+   if (!is.null(cnames)) cnames <- enc(cnames,"UTF-8")
    .rqda$.CasesNamesWidget[] <- cnames
   }
 }

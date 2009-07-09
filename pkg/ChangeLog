@@ -1,3 +1,6 @@
+2009-07-09
+	*  "show case with memo only", correct some mismatch in Rd files.
+
 2009-06-17
 	* AddToFileCategory() can add multiple files to multiple categories at one time.
 
