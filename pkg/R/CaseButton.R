@@ -253,6 +253,13 @@ CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
     ## see CodeCatButton.R  for definition of MemoWidget
   }
 }
+CaseNamesWidgetMenu$"Show Cases with Memo Only"$handler <- function(h,...){
+  if (is_projOpen(env=.rqda,conName="qdacon")) {
+   cnames <- RQDAQuery("select name from cases where memo is not null")
+   cnames <- enc(cnames,"UTF-8")
+   .rqda$.CasesNamesWidget[] <- cnames
+  }
+}
 CaseNamesWidgetMenu$"Add/modify Attributes..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     SelectedCase <- svalue(.rqda$.CasesNamesWidget)
