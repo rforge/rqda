@@ -372,7 +372,7 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
       if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
       if (!is.null(Case)) Encoding(Case) <- "UTF-8"
       fcat <- paste(strwrap(sprintf("File Category is %s",paste(shQuote(Fcat),collapse=",\n")),105,exdent=4),collpase="\n")
-      val <- sprintf(" File ID is %i \n %s \n Case is %s",Fid,fcat,paste(shQuote(Case),collapse=", "))
+      val <- sprintf(" File ID is %i \n %s Case is %s",Fid,fcat,paste(shQuote(Case),collapse=", "))
     }
     if (length(Fid)>1) val <- "Please select one file only."
     tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){

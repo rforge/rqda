@@ -102,10 +102,28 @@ you can link the selected part of file to the selected case.
 <p>Encoding of file is the encoding of the file you want to imported. If it is ASCII file, the default "unknown" is fine. If it is other encoding, you should set it accordingly. For example, you should set it to UTF-8 if the file is in UTF-8. Note that if you save a plain text with encoding UTF-8 with using MS notepad, the notepad will add BOM (Byte order Mark, it is a 3 bite mark) in the beginning of the file, for this case, you should set BOM to TRUE.
 <p> To change the setting is simple, you change the value of each setting and then click OK button. If you want to reset to the default setting, you can just click the default button.
 
-<p><b>9. Implementation History</b>
+<p><b>9.Use functions to perform complex tasks</b>
+<p> Contributed by Amman Madan (amman@iitk.ac.in)
+<p>There are several very powerful RQDA commands which do not appear in the
+GUI. To see them enter in the R window: help(package="RQDA")
+<p>All kinds of boolean searches can be done on coded data. Unfortunately
+this has not yet been implemented in the GUI. But boolean searches can be
+done very easily by typing a command in the R window.
+<p>Codes are identified by cid numbers like 1, 2, 3, etc. To see the cid
+numbers of different codes give the command: GetCodingTable()
+<p>To see the selected text for code 1 give the command: RQDAQuery("select seltext from coding where cid=1")
+<p> This command can be extended to <b>do boolean searches</b>. RQDAQuery uses SQL
+format so various search criteria can be built like
+<br> RQDAQuery("select seltext from coding where cid=1 AND cid=2")
+<br> RQDAQuery("select seltext from coding where cid=1 AND cid!=2")
+<br>etc.
+<p>For more on RQDAQuery use:?RQDAQuery
+<p>For more commands use: help(package="RQDA")
+
+<p><b>10. Implementation History</b>
 <p>When I started my PhD research project, I planned to conduct some content analysis of newspaper reports. I need a QDA software. I hope it is available to me, has basic functionalits of QDA software, runs both under Windows and Linux/FreeBSD. Last but not least, I should have full control of it. I can't find one, so I decided to write one by myself. I had this idea in 2007, but not until late 2008 do I implemented most parts of this package.
 
-<p><b>10. Warranty</b>
+<p><b>11. Warranty</b>
 <p>As a open source and free project, there is no warranty that it is fit for any particular purpose, or that it will work at all. You use RQDA solely at your own risk, and no liability can be assumed for any damage or loss incurred by your use of the software. You can learn more from the <A HREF="License.html">license</A>.
 
 
@@ -126,4 +144,8 @@ you can link the selected part of file to the selected case.
 <br>A: One possible reason is the font issue. You can uninstall GTK+. Launch R, set the locale to CHS by command Sys.setlocale(,"CHS"), load RGtk2 by command library(RGtk2), then R will ask if you want to install GTK+, install it. Then you can launch RQDA. It should work.
 <br><B>Q:</B> I press the save button in the memo/journal widget, but it warns that I have not saved it yet when I try to close the widget. Why?
 <br>A: This may be due to the encoding issue. Set the appropriate locale by Sys.setlocale function. The technical aspect is that RQDA needs to convert ' into '' by gsub in order to save it in SQLite database, without proper locales, the conversion may not what you want.
+<!-- <br><B>Q:</B> Will RQDA support coding of photos in the near future?
+<br>A: It is highly possible. RQDA can open and view photos in the comming version, and might support coding of photos when I have more time.-->
+<br><B>Q:</B> Will RQDA support coding of audio files in the near future?
+<br> A: Maybe not.I prefer to use specialized software such as <A href="http://trans.sourceforge.net/en/presentation.php">Transcriber</A>. If necessary, an interface between RQDA and *.trs might be provided in the future.
 </Body>
