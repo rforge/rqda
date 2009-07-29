@@ -57,6 +57,7 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
+      tryCatch(.rqda$.FileofCase[]<-NULL,error=function(e){})
       tryCatch(.rqda$.CodeCatWidget[]<-NULL,error=function(e){})
       tryCatch(.rqda$.CodeofCat[]<-NULL,error=function(e){})
       tryCatch(.rqda$.FileCatWidget[]<-NULL,error=function(e){})
