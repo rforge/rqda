@@ -112,3 +112,11 @@ CleanProjButton <- function(label="Clean Project",container,...){
   }
           )
 }
+
+CloseAllCodingsButton <- function(label="Close All Codings",container,...){
+  gbutton(label, contain=container, handler=function(h,...) {
+    close_AllCodings()
+  }
+          )
+}
+

@@ -32,6 +32,7 @@ RQDA <- function() {
   ## ProjectInforButton(container=.proj_gui)
   BackupProjectButton(container=.proj_gui)
   CleanProjButton(container=.proj_gui)
+  CloseAllCodingsButton(container=.proj_gui)
   gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
 
   gseparator(con=.proj_gui)
