@@ -43,7 +43,7 @@ RQDA <- function() {
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: BSD License\n
-Version: 0.1-8 dev\n",
+Version: 0.1-8\n",
          container=.proj_gui
         )
 
@@ -62,7 +62,7 @@ Version: 0.1-8 dev\n",
   ## memo button of selected file. The code of File_Memo buttion has been moved into memo.R
   File_RenameButton(label="Rename", container=.files_button,FileWidget=.fnames_rqda)
   ## rename a selected file.
-  
+
 ########################### GUI for CODES
 ###########################
   ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes\n")
@@ -83,7 +83,7 @@ Version: 0.1-8 dev\n",
   ## .codes_button[2,3]<- ExtendButton("Retrieval")
   .codes_button[2,4]<- Unmark_Button()
   .codes_button[1:2,5]<- Mark_Button()
-  
+
 ######################### GUI  for cases
 #########################
   ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Cases\n")
@@ -119,7 +119,7 @@ Version: 0.1-8 dev\n",
   .attr_buttons[1,3] <- RenameAttrButton()
   .attr_buttons[1,4] <- AttrMemoButton()
   .attr_buttons[1,5] <- SetAttrClsButton()
-  
+
 ######################### GUI  for C-cat
 #########################
   ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Code\nCategories")
@@ -159,7 +159,7 @@ Version: 0.1-8 dev\n",
   .filecat_buttons[2,3] <- FileCatMemoButton()
   .filecat_buttons[2,1] <- FileCatAddToButton("Add To")
   .filecat_buttons[2,2] <- FileCatDropFromButton("Drop From")
-  
+
 ########################### GUI for Search
 ###########################
 ##   ".fsearch_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="F-Search")
@@ -181,17 +181,17 @@ Version: 0.1-8 dev\n",
   .journal_buttons[1,2] <- DeleteJournalButton()
   .journal_buttons[1,3] <-  OpenJournalButton()
   .journal_buttons[1,4] <-  RenameJournalButton()
-  
+
 ######################### GUI  for settings
 #########################
   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings\n")
   addSettingGUI(cont=.settings_gui)
-  
+
 ######################### Put them together
 #########################
   visible(.root_rqdagui) <- TRUE
   svalue(.nb_rqdagui) <- 1 ## make sure the project tab gain the focus.
-  
+
 ##########################
   ## add documentation here
   assign(".root_rqdagui",.root_rqdagui,env=.rqda)
@@ -208,7 +208,7 @@ Version: 0.1-8 dev\n",
   assign(".FileCatWidget",.FileCatWidget,env=.rqda)
   assign(".FileofCat",.FileofCat,env=.rqda)
   assign(".currentProj",.currentProj,env=.rqda)
-  
+
   ## cordinate of ViewFunWidget
   if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))
   assign("font","Sans 11",env=.rqda)
@@ -220,7 +220,7 @@ Version: 0.1-8 dev\n",
   svalue(.case_pan)<-0.04
   svalue(.attr_pan)<-0.04
   svalue(.journal_pan)<-0.04
-  
+
 ##########################
   AddHandler()
 }
@@ -257,8 +257,8 @@ AddHandler <- function(){
     ## handler for .CodeofCat
     addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){ClickHandlerFun(.rqda$.CodeofCat)})
     addhandlerdoubleclick(.rqda$.CasesNamesWidget, handler=function(h,...) MemoWidget("Case",.rqda$.CasesNamesWidget,"cases"))
-    
-    addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){              
+
+    addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
       ## CaseNamesUpdate(.rqda$.CasesNamesWidget)
       con <- .rqda$qdacon
       SelectedCase <- currentCase <- svalue(.rqda$.CasesNamesWidget)
@@ -294,8 +294,8 @@ AddHandler <- function(){
       }
     },action=list(marktxtwidget=".openfile_gui")
       )
-                      
-    
+
+
     addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
         UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
     })
@@ -307,7 +307,7 @@ AddHandler <- function(){
     }
                           )
     add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
-    addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){    
+    addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
         UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
     })
     addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat"))
