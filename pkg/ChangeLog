@@ -1,3 +1,6 @@
+2009-09-14 (version 0.1-8)
+	* document all the exported function, ready for CRAN.
+
 2009-08-01
 	* Add "Close all codings" button. 
 

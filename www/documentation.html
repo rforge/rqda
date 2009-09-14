@@ -101,7 +101,7 @@ you can link the selected part of file to the selected case.
 <p>"Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
 <p>Encoding of file is the encoding of the file you want to imported. If it is ASCII file, the default "unknown" is fine. If it is other encoding, you should set it accordingly. For example, you should set it to UTF-8 if the file is in UTF-8. Note that if you save a plain text with encoding UTF-8 with using MS notepad, the notepad will add BOM (Byte order Mark, it is a 3 bite mark) in the beginning of the file, for this case, you should set BOM to TRUE.
 <p>To change the setting is simple, you change the value of each setting and then click OK button. If you want to reset to the default setting, you can just click the default button.
-<p>When "Type of retrieval" is set to "case", and a case is selected, then only codings of the selected case is retrieved. However, if no cases are selected, all codings of the selected code are retrieved.
+<p>When "Type of retrieval" is set to "case", and a case is selected, then only codings of the selected case is retrieved. However, if no cases are selected, all codings of the selected code are retrieved. Similarly, when set to "filecategory", and a file category is selected, then only codings of that category will be retrieved.
 
 <p><b>9.Use functions to perform complex tasks</b>
 <p> Contributed by Amman Madan (amman@iitk.ac.in)
@@ -113,7 +113,7 @@ done very easily by typing a command in the R window.
 <p>Codes are identified by cid numbers like 1, 2, 3, etc. To see the cid
 numbers of different codes give the command: GetCodingTable()
 <p>To see the selected text for code 1 give the command: RQDAQuery("select seltext from coding where cid=1")
-<p> This command can be extended to <b>do boolean searches</b>. RQDAQuery uses SQL
+<p> This command can be extended to do <b>boolean searches</b>. RQDAQuery uses SQL
 format so various search criteria can be built like
 <br> RQDAQuery("select seltext from coding where cid=1 AND cid=2")
 <br> RQDAQuery("select seltext from coding where cid=1 AND cid!=2")
