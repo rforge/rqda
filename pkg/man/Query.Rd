@@ -21,7 +21,7 @@ This function is experimental, and may be changed in future.
 For arguments of 'or', 'and' and 'not', all of them have the same form of input. Examples are '(fid1 or fid2 or fid3)' or "(fid1, fid2, fid3)", where fid1,fid2 and fid3 are file IDs.
 }
 \value{
-
+A vector.
 }
 \author{
 HUANG Ronggui

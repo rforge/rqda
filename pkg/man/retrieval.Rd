@@ -19,7 +19,7 @@ retrieval(Fid = NULL, order = c("fname", "ftime", "ctime"),
   files which are determined by \code{Fid}.
 }
 \value{
-A \code{\link[gWidgets]{gext}} widget is open and all the codings are pushed into that widget.
+A \code{\link[gWidgets]{gtext}} widget is open and all the codings are pushed into that widget.
 }
 \author{HUANG Ronggui}
 \seealso{\code{\link{GetFileId}}}
