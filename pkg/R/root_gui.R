@@ -43,7 +43,7 @@ RQDA <- function() {
   glabel(
 "Author: <ronggui.huang@gmail.com>\n
 License: BSD License\n
-Version: 0.1-8\n",
+Version: 0.1-9-dev\n",
          container=.proj_gui
         )
 

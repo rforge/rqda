@@ -285,6 +285,7 @@ FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
     pattern <- ginput("Please input a search pattern.",text=pattern)
     if (!is.na(pattern)){
     tryCatch(SearchFiles(pattern,Widget=".fnames_rqda",is.UTF8=TRUE),error=function(e) gmessage("Error~~~."),con=TRUE)
+    Encoding(pattern) <- "UTF-8"
     assign("lastsearch",pattern,env=.rqda)
     }
     }
