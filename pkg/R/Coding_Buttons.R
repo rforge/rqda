@@ -367,6 +367,20 @@ CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
     } else gmessage("No Code with memo.",con=TRUE)
   }
 }
+CodesNamesWidgetMenu$"Set coding mark color"$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    Selected <- svalue(.rqda$.codes_rqda)
+    codeInfo <- dbGetQuery(.rqda$qdacon,sprintf("select id,color from freecode where name=='%s'",Selected))[1,]
+    cid <- codeInfo[,1]
+    codeColor <- codeInfo[,2]
+    if (is.na(codeColor)) title <- "Change color to..." else title <- sprintf("Change from '%s' to...",codeColor)
+    newCol <- gselect.list(colors(), multiple = FALSE, title = title)
+    if (newCOl!=""){
+    if (!identical(codeColor,newCol)){
+      RQDAQuery(sprintf("update freecode set color='%s' where id ==%i",newCol,cid))
+    }
+  }}
+}
 CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     Selected1 <- svalue(.rqda$.codes_rqda)

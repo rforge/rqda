@@ -2,6 +2,7 @@
 	* add argument to markRange and InsertAnchor to allow user-provided color.
 	* markCodeFun/ViewFileFun use code-specific color to highlight the code-mark.
 	* update project database structure.
+	* pop-up menu for specify color for a code.
 
 	
 2009-10-13
