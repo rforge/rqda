@@ -74,7 +74,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
           currentCid <- codeInfo[,1]
           codeCol <- codeInfo[,2] ## select color for the code
           if (is.na(codeCol)) codeCol <- .rqda$codeMark.col
-          
+
           SelectedFile <- svalue(.rqda$.root_edit)
           SelectedFile <- enc(SelectedFile,encoding="UTF-8")
           currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
@@ -198,7 +198,7 @@ CodeMemoButton <- function(label="C-Memo",...){
 CodingMemoButton <- function(label="C2Memo")
 {
 
-  InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]",title) 
+  InsertCodingMemoAnchor <- function (index,rowid,label="[Coding Memo]",title)
     {
       ## don't use this function.
       ## use Annotation to add anno to a file.
@@ -220,7 +220,7 @@ CodingMemoButton <- function(label="C2Memo")
       widget@widget@widget$addChildAtAnchor(label, anchor)
       return(TRUE)
     }
-  
+
   OpenCodingMemo <- function(rowid,AnchorPos=NULL,title=NULL){
     ##  open a widget for memo, and take care of the save memo function
     tryCatch(dispose(.rqda$.codingmemo),error=function(e) {})
@@ -246,8 +246,8 @@ CodingMemoButton <- function(label="C2Memo")
     if (prvcontent=="") assign("NewCodingMemo",TRUE,env=.rqda)
     W <- get(".cdmemocontent",env=.rqda)
     add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
-  } ## end of OpenCodingMemo 
-  
+  } ## end of OpenCodingMemo
+
   c2memobutton <- gbutton(label, handler= function(h,...){
     con <- .rqda$qdacon
     if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -262,7 +262,7 @@ CodingMemoButton <- function(label="C2Memo")
         if (length(SelectedCode)==0) gmessage("select a code first.",con=TRUE) else {
           SelectedCode <- enc(SelectedCode,"UTF-8")
           currentCid <-  RQDAQuery(sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
-          SelectedFile <- svalue(.rqda$.root_edit) 
+          SelectedFile <- svalue(.rqda$.root_edit)
           SelectedFile <- enc(SelectedFile,encoding="UTF-8")
           currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
           codings_index <-  RQDAQuery(sprintf("select rowid, cid, fid, selfirst, selend from coding where
@@ -375,7 +375,7 @@ CodesNamesWidgetMenu$"Set coding mark color"$handler <- function(h, ...) {
     codeColor <- codeInfo[,2]
     if (is.na(codeColor)) title <- "Change color to..." else title <- sprintf("Change from '%s' to...",codeColor)
     newCol <- gselect.list(colors(), multiple = FALSE, title = title)
-    if (newCOl!=""){
+    if (newCol!=""){
     if (!identical(codeColor,newCol)){
       RQDAQuery(sprintf("update freecode set color='%s' where id ==%i",newCol,cid))
     }
