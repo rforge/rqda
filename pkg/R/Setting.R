@@ -35,7 +35,7 @@ addSettingGUI <- function(container,width=12){
                                 items=c(.rqda$back.col,colorsList)
                                 ),
                            list(name = "codeMark.col",
-                                label = "Color for Coding Marker",
+                                label = "Global Code Marker Color",
                                 ## type = "gedit",width=width,
                                 ## text = .rqda$codeMark.col
                                 type = "gcombobox",

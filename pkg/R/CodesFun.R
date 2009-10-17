@@ -85,7 +85,7 @@ mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,bu
   }
 }
 
-markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel=""){
+markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel="",buttonCol=.rqda$codeMark.col){
   if (from != to){
     FileName <- tryCatch(svalue(.rqda$.root_edit),error=function(e){})
     if (!is.null(FileName)){
@@ -106,7 +106,7 @@ markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL
       buffer$CreateMark(sprintf("%s.2",rowid),where=endIter)
       buffer <- slot(widget,"widget")@widget$GetBuffer()
       if(addButton) {
-        InsertAnchor(widget,sprintf("%s<",buttonLabel),index=from,handler=TRUE)
+        InsertAnchor(widget,sprintf("%s<",buttonLabel),index=from,handler=TRUE,label.col=buttonCol)
         InsertAnchor(widget,sprintf(">%s",buttonLabel),index=to + 1)
       }
       m1 <- buffer$GetMark(sprintf("%s.1", rowid))
@@ -164,10 +164,10 @@ sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE){
               startMark=startMark,endMark=endMark,seltext=selected))
 }
 
-InsertAnchor<-function(widget,label,index,handler=FALSE){
+InsertAnchor <- function(widget,label,index,handler=FALSE,label.col=.rqda$codeMark.col){
     lab <- gtkLabelNew(label)
     label <- gtkEventBoxNew()
-    if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(.rqda$codeMark.col)$color)
+    if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(label.col)$color)
     label$Add(lab)
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     if (isTRUE(handler)){

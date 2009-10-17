@@ -87,7 +87,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
   W <- get(".openfile_gui", .rqda)
   add(W, content)
   slot(W, "widget")@widget$SetEditable(FALSE)
-  markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
+  markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name,freecode.color from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
   anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
   buffer <- W@widget@widget$GetBuffer()
   if (nrow(markidx)!=0){ ## make sense only when there is coding there
@@ -105,10 +105,13 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
   if (nrow(markidx)!=0){
     sapply(markidx[, "rowid"], FUN = function(x) {
       code <- enc(markidx[markidx$rowid == x, "name"],"UTF-8")
+      codeColor <- markidx[markidx$rowid == x, "color"]
+      if (is.na(codeColor)) codeColor <- .rqda$codeMark.col
       m1 <- buffer$GetMark(sprintf("%s.1", x))
       iter1 <- buffer$GetIterAtMark(m1)
       idx1 <- gtkTextIterGetOffset(iter1$iter)
-      InsertAnchor(.rqda$.openfile_gui, label = sprintf("%s<",code), index = idx1,handler=TRUE)
+      InsertAnchor(.rqda$.openfile_gui, label = sprintf("%s<",code), index = idx1,handler=TRUE,
+                   label.col=codeColor)
       m2 <- buffer$GetMark(sprintf("%s.2", x))
       iter2 <- buffer$GetIterAtMark(m2)
       idx2 <- gtkTextIterGetOffset(iter2$iter)

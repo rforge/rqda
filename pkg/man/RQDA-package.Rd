@@ -12,7 +12,7 @@
 \tabular{ll}{
 Package: \tab RQDA\cr
 Type: \tab Package\cr
-Version: \tab 0.1-8\cr
+Version: \tab 0.1-9\cr
 Date: \tab 2009-09-12\cr
 Depends: \tab R (>= 2.5.0), DBI, RSQLite, gWidgets (>= 0.0-31), gWidgetsRGtk2 (>= 0.0-36),igraph \cr
 Imports: \tab RGtk2 (>= 2.12.8), methods \cr
@@ -27,7 +27,7 @@ section of the project homepage for the usage of RQDA.
 
 The position of ViewFile widget can be controlled by "widgetCoordinate"
 options, with default value c(400,2). You can change it by
-options("widgetCoordinate"=c(x,y)), where x and y is integer specify the
+options("widgetCoordinate"=c(x,y)), where x and y is integer specifying the
 position.
 }
 \author{

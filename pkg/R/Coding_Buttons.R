@@ -70,7 +70,11 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
           SelectedCode <- svalue(codeListWidget)
           if (length(SelectedCode)!=0){
           SelectedCode <- enc(SelectedCode,encoding="UTF-8")
-          currentCid <-  dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+          codeInfo<-  dbGetQuery(con,sprintf("select id,color from freecode where name=='%s'",SelectedCode))
+          currentCid <- codeInfo[,1]
+          codeCol <- codeInfo[,2] ## select color for the code
+          if (is.na(codeCol)) codeCol <- .rqda$codeMark.col
+          
           SelectedFile <- svalue(.rqda$.root_edit)
           SelectedFile <- enc(SelectedFile,encoding="UTF-8")
           currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
@@ -81,7 +85,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
             rowid <- NextRowId("coding")
             success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
             if (success){
-              markRange(widget=.rqda$.openfile_gui,from=ans$start,to=ans$end,rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode)} else{gmessage("Fail to write to database.")}
+              markRange(widget=.rqda$.openfile_gui,from=ans$start,to=ans$end,rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode,buttonCol=codeCol)} else{gmessage("Fail to write to database.")}
           } else {
             Exist <- Exist1[,c("selfirst","selend","rowid")]
             Relations <- apply(Exist,1,FUN=function(x) relation(x[c("selfirst","selend")],c(ans$start,ans$end)))
@@ -95,7 +99,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
                 rowid <- NextRowId("coding")
                 success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
                 if (success){
-                  markRange(widget=.rqda$.openfile_gui,from=ans$start,to=ans$end,rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode)} else {gmessage("Fail to write to database.")}
+                  markRange(widget=.rqda$.openfile_gui,from=ans$start,to=ans$end,rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode,buttonCol=codeCol)} else {gmessage("Fail to write to database.")}
                 ## if there are no overlap in any kind, just write to database; otherwise, pass to else{}.
               } else {
                 del1 <- (Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
@@ -124,7 +128,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
                   rowid <- NextRowId("coding")
                   success <- dbWriteTable(.rqda$qdacon,"coding",DAT,row.name=FALSE,append=TRUE)
                   if (success){
-                    markRange(widget=.rqda$.openfile_gui,from=Sel[1],to=Sel[2],rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode)}else{gmessage("Fail to write to database.")}
+                    markRange(widget=.rqda$.openfile_gui,from=Sel[1],to=Sel[2],rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode,buttonCol=codeCol)}else{gmessage("Fail to write to database.")}
                 }
               }}}}}}}}
 
