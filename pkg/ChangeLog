@@ -1,3 +1,6 @@
+2009-11-08
+	* fix a minor bug in SummaryCoding (Thanks Julien Biaudet)
+	
 2009-10-16
 	* add argument to markRange and InsertAnchor to allow user-provided color.
 	* markCodeFun/ViewFileFun use code-specific color to highlight the code-mark.

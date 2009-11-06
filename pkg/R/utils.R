@@ -171,7 +171,7 @@ SummaryCoding <- function(byFile=FALSE,...){
     if (nrow(Codings)>0){
       NumOfCoding <- table(Codings$codename,...) ## how many coding for each code
       AvgLength <- tapply(Codings$CodingLength,Codings$codename,FUN=mean,...) # Average of words for each code
-      NumOfFile <- tapply(Codings$fid,Codings$codename,FUN=length,...) # Number of files for each code
+      NumOfFile <- tapply(Codings$fid,Codings$codename,FUN=function(ii)length(unique(ii))) # Number of files for each code
       if (byFile){
         CodingOfFile <- tapply(Codings$codename,Codings$filename,FUN=table,...) # summary of codings for each file
       } else CodingOfFile <- NULL
