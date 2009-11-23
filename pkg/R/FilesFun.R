@@ -87,7 +87,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
   W <- get(".openfile_gui", .rqda)
   add(W, content)
   slot(W, "widget")@widget$SetEditable(FALSE)
-  markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name,freecode.color from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
+  markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name,freecode.color, freecode.id from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
   anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
   buffer <- W@widget@widget$GetBuffer()
   if (nrow(markidx)!=0){ ## make sense only when there is coding there
@@ -106,7 +106,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
     sapply(markidx[, "rowid"], FUN = function(x) {
       code <- enc(markidx[markidx$rowid == x, "name"],"UTF-8")
       codeColor <- markidx[markidx$rowid == x, "color"]
-      if (is.na(codeColor)) codeColor <- .rqda$codeMark.col
+      if (is.na(codeColor)) codeColor <-  c("antiquewhite1","green","aquamarine2","bisque1","brown1")[as.numeric(markidx[markidx$rowid == x, "id"]) %% 5+1] ## specification of default color for codemark
       m1 <- buffer$GetMark(sprintf("%s.1", x))
       iter1 <- buffer$GetIterAtMark(m1)
       idx1 <- gtkTextIterGetOffset(iter1$iter)
@@ -421,7 +421,7 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
     }
     ans
   }
-  
+
   condition <- match.arg(condition)
   type <- match.arg(type)
   fid <- switch(condition,
