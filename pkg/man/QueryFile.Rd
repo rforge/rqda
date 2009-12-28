@@ -1,6 +1,6 @@
-\name{Query}
+\name{QueryFile}
 \Rdversion{1.1}
-\alias{Query}
+\alias{QueryFile}
 \title{
 Retrieval of file names according to their codings.
 }
@@ -8,7 +8,7 @@ Retrieval of file names according to their codings.
 To retrieve file names according to their codings and the relationship of codings.
 }
 \usage{
-Query(or, and = NULL, not = NULL)
+QueryFile(or, and = NULL, not = NULL)
 }
 \arguments{
   \item{or}{ code id.}
@@ -29,11 +29,11 @@ HUANG Ronggui
 
 \examples{
 \dontrun{
-Query(or=(1,2)) ## files coded to code 1 or 2.
+QueryFile(or=(1,2)) ## files coded to code 1 or 2.
 
-Query(or=(1), and=(2)) ## files coded to code 1 and 2.
+QueryFile(or=(1), and=(2)) ## files coded to code 1 and 2.
 
-Query(or=(1), not=(2,3)) ## files coded to code 1 but not either 2 or 2.
+QueryFile(or=(1), not=(2,3)) ## files coded to code 1 but not either 2 or 2.
 }
 }
 

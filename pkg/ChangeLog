@@ -1,3 +1,6 @@
+2009-12-28
+	* Rename Query to QueryFile.
+	
 2009-11-22
 	* change default color scheme for code mark.
 
@@ -10,10 +13,9 @@
 	* update project database structure.
 	* pop-up menu for specify color for a code.
 
-	
 2009-10-13
 	* fix bug in saveFUN4CaseAttr().
-	
+
 2009-10-06
 	* proto of setColor function.
 
@@ -24,7 +26,7 @@
 	* document all the exported function, ready for CRAN.
 
 2009-08-01
-	* Add "Close all codings" button. 
+	* Add "Close all codings" button.
 
 2009-07-28
 	*  clean "file of case" widget when project is closed.

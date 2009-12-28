@@ -386,7 +386,7 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
   }}
 
 
-Query <- function(or,and=NULL,not=NULL){
+QueryFile <- function(or,and=NULL,not=NULL){
  or <- gsub("or",",",or)
  if (!is.null(and))  and <- gsub("or",",",and)
  if (!is.null(not))  not <- gsub("or",",",not)
