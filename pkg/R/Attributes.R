@@ -25,7 +25,7 @@
 ##       }
 ##       return(model)
 ##     }
-  
+
 ##   add.item <- function(button, data)
 ##     {
 ##       stopifnot(!is.null(articles))
@@ -36,7 +36,7 @@
 ##                 COLUMN["Value"], foo$Value,
 ##                 COLUMN["editable"], foo$editable)
 ##     }
-  
+
 ##   remove.item <- function(widget, data)
 ##     {
 ##       checkPtrType(data, "GtkTreeView")
@@ -53,12 +53,12 @@
 ##           articles <<- articles[-i]
 ##         }
 ##     }
-  
+
 ##   cell.edited <- function(cell, path.string, new.text, data)
 ##     {
 ##       checkPtrType(data, "GtkListStore")
 ##       model <- data
-##       path <- gtkTreePathNewFromString(path.string) 
+##       path <- gtkTreePathNewFromString(path.string)
 ##       column <- cell$getData("column")
 ##       iter <- model$getIter(path)$iter
 ##       switch(column+1,
@@ -75,7 +75,7 @@
 ##              }
 ##              )
 ##     }
-  
+
 ##   add.columns <- function(treeview)
 ##     {
 ##       model <- treeview$getModel()
@@ -90,7 +90,7 @@
 ##       renderer$setData("column", COLUMN["Value"])
 ##       treeview$insertColumnWithAttributes(-1, "Value", renderer, text = COLUMN[["Value"]],editable = COLUMN[["editable"]])
 ##     }
-  
+
 ##   save.project <- function(button,data){
 ##     ## push dataset into project file.
 ##      IterFirst <- data$getIterFirst()
@@ -111,7 +111,7 @@
 ##      dbWriteTable(.rqda$qdacon, "caseAttr", ans, append = TRUE,row.names=FALSE)
 ##      window$Destroy()## close
 ##    }
-  
+
 ##   ## create window, etc
 ##   window <- gtkWindowNew("toplevel", show = F)
 ##   window$setTitle(paste("Var:",title))
@@ -181,7 +181,7 @@ EditVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL,s
     {
       checkPtrType(data, "GtkListStore")
       model <- data
-      path <- gtkTreePathNewFromString(path.string) 
+      path <- gtkTreePathNewFromString(path.string)
       column <- cell$getData("column")
       iter <- model$getIter(path)$iter
       if (column==1){
@@ -190,7 +190,7 @@ EditVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL,s
                model$set(iter, column, articles[[i]]$Value)
              }
     }
-  
+
   add.columns <- function(treeview)
     {
       model <- treeview$getModel()
@@ -207,7 +207,7 @@ EditVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL,s
     }
 
     saveFUN <- get(saveFUN,mode="function")
- 
+
   ## create window, etc
   window <- gtkWindowNew("toplevel", show = F)
   window$setTitle(paste("Var:",title))
@@ -261,7 +261,7 @@ saveFUN4CaseAttr <- function(button,data){
     ## cal which variable is added and which is modified
     change_idx <- ans$Value != ExistingItems$value
     mod_idx <- change_idx & (ExistingItems$value!= "NA")
-    new_idx <- change_idx & (! mod_idx)   
+    new_idx <- change_idx & (! mod_idx)
     if (any(mod_idx)) {
     ## alter the table for the modified variable
     vars <- ans[mod_idx,]
@@ -322,7 +322,7 @@ saveFUN4FileAttr <- function(button,data){
     }
     if (any(new_idx)){
     ## add the new variable to table
-    vars <- data.frame(variable=ans[new_idx,1],value=ans[new_idx,2],fileID=MoreArgs$fileId,date=date(),dateM=NA,owner=.rqda$owner,status==1)
+    vars <- data.frame(variable=ans[new_idx,1],value=ans[new_idx,2],fileID=MoreArgs$fileId,date=date(),dateM=NA,owner=.rqda$owner,status=1)
     dbWriteTable(.rqda$qdacon, "fileAttr", vars, append = TRUE,row.names=FALSE)
     }
   }

@@ -1,3 +1,10 @@
+2009-12-29
+	* Bugfix of saveFUN4FileAttr(). Thanks Julien Biaudet for bug
+	report.
+	* relation() return the index when Relation is exact.
+	* Add new file of Boolean to implement boolean search and a new
+	function of and().
+	
 2009-12-28
 	* Rename Query to QueryFile.
 	

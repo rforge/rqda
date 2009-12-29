@@ -103,23 +103,30 @@ you can link the selected part of file to the selected case.
 <p>To change the setting is simple, you change the value of each setting and then click OK button. If you want to reset to the default setting, you can just click the default button.
 <p>When "Type of retrieval" is set to "case", and a case is selected, then only codings of the selected case is retrieved. However, if no cases are selected, all codings of the selected code are retrieved. Similarly, when set to "filecategory", and a file category is selected, then only codings of that category will be retrieved.
 
-<p><b>9.Use functions to perform complex tasks</b>
-<p> Contributed by Amman Madan (amman@iitk.ac.in)
+<p><b>9.1 Use SQL to perform complex query</b>
 <p>There are several very powerful RQDA commands which do not appear in the
 GUI. To see them enter in the R window: help(package="RQDA")
 <p>All kinds of boolean searches can be done on coded data. Unfortunately
 this has not yet been implemented in the GUI. But boolean searches can be
 done very easily by typing a command in the R window.
-<p>Codes are identified by cid numbers like 1, 2, 3, etc. To see the cid
+<p>Codes are identified by cid numbers like 1, 2, 3, etc. 
+<p>To see the cid
 numbers of different codes give the command: GetCodingTable()
-<p>To see the selected text for code 1 give the command: RQDAQuery("select seltext from coding where cid=1")
-<p> This command can be extended to do <b>boolean searches</b>. RQDAQuery uses SQL
-format so various search criteria can be built like
-<br> RQDAQuery("select seltext from coding where cid=1 AND cid=2")
-<br> RQDAQuery("select seltext from coding where cid=1 AND cid!=2")
-<br>etc.
+<br>To see the selected text for code 1 give the command: RQDAQuery("select seltext from coding where cid=1")
+<br> To see codings of code 1 OR code 2, you can search by: RQDAQuery("select seltext from coding where cid=1 or cid=2")
 <p>For more on RQDAQuery use:?RQDAQuery
-<p>For more commands use: help(package="RQDA")
+<br>For more commands use: help(package="RQDA")
+<p> Contributed by Amman Madan (amman@iitk.ac.in)
+
+<p><b>9.2 Simple Boolean search</b>
+<p> To do complex <b>Boolean search</b>, programming is needed. More programming is under way now.
+<p> To retreive coding by cid 1 and cid 2, you can run the following command (since rev 171):
+<i>
+<br> a <- GetCodingTable()
+<br> c1 <- subset(b,cid==1)
+<br> c2 <- subset(b,cid==2)
+<br> and(c1,c2,show=TRUE)
+</i>
 
 <p><b>10. Implementation History</b>
 <p>When I started my PhD research project, I planned to conduct some content analysis of newspaper reports. I need a QDA software. I hope it is available to me, has basic functionalits of QDA software, runs both under Windows and Linux/FreeBSD. Last but not least, I should have full control of it. I can't find one, so I decided to write one by myself. I had this idea in 2007, but not until late 2008 do I implemented most parts of this package.
