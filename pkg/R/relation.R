@@ -99,7 +99,9 @@ CrossCode <- function(relation=c("overlap","inclusion","exact","proximity"),code
     } else {
       cidList <- Cid_Name$cid[which(Cid_Name$codename %in% codeList)]
       relation <- match.arg(relation)
-      ans <- matrix(nrow=length(codeList), ncol=length(codeList),dimnames=list(codeList,cidList))
+      ans <- matrix(nrow=length(codeList), ncol=length(codeList),dimnames=list(
+                                                                 sprintf("%s(%s)", codeList,cidList),
+                                                                 cidList))
       for (i in 1:length(codeList)){
         for (j in i:length(codeList)){
           ans[i,j] <- CrossTwo(cidList[i],cidList[j],data=data,relation=relation)
