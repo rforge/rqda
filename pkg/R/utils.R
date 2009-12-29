@@ -1,3 +1,5 @@
+DefaultCodeColor <- c("#A6CEE3","#1F78B4","#B2DF8A","#33A02C","#FB9A99","#E31A1C","#FDBF6F","#FF7F00","#CAB2D6","#6A3D9A","#FFFF99")
+
 rename <- function(from,to,table=c("source","freecode","cases","codecat","filecat","journal")){
   ## rename name field in table source and freecode (other tables can be added futher)
   ## source is the file name, freecode is the free code name

@@ -73,7 +73,8 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
           codeInfo<-  dbGetQuery(con,sprintf("select id,color from freecode where name=='%s'",SelectedCode))
           currentCid <- codeInfo[,1]
           codeCol <- codeInfo[,2] ## select color for the code
-          if (is.na(codeCol)) codeCol <-  c("antiquewhite1","green","aquamarine2","bisque1","brown1")[as.numeric(currentCid) %% 5+1] ## specification of default color for codemark
+          ## if (is.na(codeCol)) codeCol <-  c("antiquewhite1","green","aquamarine2","bisque1","brown1")[as.numeric(currentCid) %% 5+1] ## specification of default color for codemark
+          if (is.na(codeCol)) codeCol <-  DefaultCodeColor[as.numeric(currentCid) %% 11+1] ## specification of default color for codemark
           SelectedFile <- svalue(.rqda$.root_edit)
           SelectedFile <- enc(SelectedFile,encoding="UTF-8")
           currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]

@@ -106,7 +106,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
     sapply(markidx[, "rowid"], FUN = function(x) {
       code <- enc(markidx[markidx$rowid == x, "name"],"UTF-8")
       codeColor <- markidx[markidx$rowid == x, "color"]
-      if (is.na(codeColor)) codeColor <-  c("antiquewhite1","green","aquamarine2","bisque1","brown1")[as.numeric(markidx[markidx$rowid == x, "id"]) %% 5+1] ## specification of default color for codemark
+      if (is.na(codeColor)) codeColor <-  DefaultCodeColor[as.numeric(markidx[markidx$rowid == x, "id"]) %% 11+1] ## specification of default color for codemark ##c("antiquewhite1","green","aquamarine2","bisque1","brown1")
       m1 <- buffer$GetMark(sprintf("%s.1", x))
       iter1 <- buffer$GetIterAtMark(m1)
       idx1 <- gtkTextIterGetOffset(iter1$iter)

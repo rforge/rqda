@@ -4,6 +4,8 @@
 	* relation() return the index when Relation is exact.
 	* Add new file of Boolean to implement boolean search and a new
 	function of and().
+	* change default color scheme for code mark again, 11-color scheme
+	from http://colorbrewer2.org/.
 	
 2009-12-28
 	* Rename Query to QueryFile.
