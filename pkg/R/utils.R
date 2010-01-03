@@ -373,8 +373,9 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
       Case <- RQDAQuery(sprintf("select name from cases where id in (select caseid from caselinkage where fid=%i and status=1) and status=1",Fid))$name
       if (!is.null(Fcat)) Encoding(Fcat) <- "UTF-8"
       if (!is.null(Case)) Encoding(Case) <- "UTF-8"
-      fcat <- paste(strwrap(sprintf("File Category is %s",paste(shQuote(Fcat),collapse=",\n")),105,exdent=4),collpase="\n")
-      val <- sprintf(" File ID is %i \n %s Case is %s",Fid,fcat,paste(shQuote(Case),collapse=", "))
+      fcat <- paste(strwrap(sprintf("File Category is %s",paste(shQuote(Fcat),collapse=", ")),105,exdent=4),collapse="\n")
+      Encoding(fcat) <-  "UTF-8"
+      val <- sprintf(" File ID is %i \n %s \nCase is %s",Fid,fcat,paste(shQuote(Case),collapse=", "))
     }
     if (length(Fid)>1) val <- "Please select one file only."
     tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
@@ -388,24 +389,36 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
   }}
 
 
-QueryFile <- function(or,and=NULL,not=NULL){
- or <- gsub("or",",",or)
- if (!is.null(and))  and <- gsub("or",",",and)
- if (!is.null(not))  not <- gsub("or",",",not)
+QueryFile <- function(or,and=NULL,not=NULL,names=TRUE){
+  or <- sprintf("(%s)",or)
+  or <- gsub("or",",",or)
+  if (!is.null(and)) {
+    and <- sprintf("(%s)", and)
+    and <- gsub("or",",",and)
+  }
+  if (!is.null(not))  {
+    not <- sprintf("(%s)",not)
+    not <- gsub("or",",",not)
+  }
   fnamesOR <- RQDAQuery(sprintf("select name from source where status==1 and id in (
 select fid from coding where cid in %s and status==1 group by fid)",or))$name
- if (!is.null(and)){
- fnamesAND <- RQDAQuery(sprintf("select name from source where status==1 and id in (
+  if (!is.null(and)){
+    fnamesAND <- RQDAQuery(sprintf("select name from source where status==1 and id in (
 select fid from coding where cid in %s and status==1 group by fid)",and))$name
- } else  fnamesAND <- fnamesOR
- if (!is.null(not)) {
-  fnamesNOT <- RQDAQuery(sprintf("select name from source where status==1 and id in (
+  } else  fnamesAND <- fnamesOR
+  if (!is.null(not)) {
+    fnamesNOT <- RQDAQuery(sprintf("select name from source where status==1 and id in (
 select fid from coding where cid in %s and status==1 group by fid)",not))$name
-} else  fnamesNOT <- NULL
-fnames <- setdiff(intersect(fnamesOR,fnamesAND),fnamesNOT)
+  } else  fnamesNOT <- NULL
+  fnames <- setdiff(intersect(fnamesOR,fnamesAND),fnamesNOT)
   if (!is.null(fnames)){
     fnames <- enc(fnames,"UTF-8")
     .rqda$.fnames_rqda[] <- fnames
+    if (names) {
+      invisible(fnames)
+    } 
+    else {ids <- RQDAQuery(sprintf("select id from source where name in (%s)",paste(paste("'",fnames,"'",sep=""),collapse=",")))
+          invisible(ids)
+        }
   }
-  invisible(fnames)
 }

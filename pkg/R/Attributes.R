@@ -318,7 +318,7 @@ saveFUN4FileAttr <- function(button,data){
     if (any(mod_idx)) {
     ## alter the table for the modified variable
     vars <- ans[mod_idx,]
-    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update fileAttr set value == '%s' where variable == '%s' and fileID=='%s' status==1",x[2],x[1],MoreArgs$fileId)))
+    apply(vars,1,FUN=function(x) dbGetQuery(.rqda$qdacon,sprintf("update fileAttr set value == '%s' where variable == '%s' and fileID=='%s'and status==1",x[2],x[1],MoreArgs$fileId)))
     }
     if (any(new_idx)){
     ## add the new variable to table

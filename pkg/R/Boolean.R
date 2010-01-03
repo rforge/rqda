@@ -8,7 +8,7 @@ and <- function(CT1,CT2,showCoding=FALSE){
         for (i in 1:nrow(CT1)) {
             for (j in 1:nrow(CT2)){
                 rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
-                if (rel$Relation %in% c("overlap","exact")){
+                if (rel$Relation %in% c("overlap","exact","inclusion")){
                     ridx <- c(ridx,i,j)
                     idx <- rel$OverlapIndex
                 }

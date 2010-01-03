@@ -1,3 +1,9 @@
+2010-01-02
+	* bugfix of saveFUN4FileAttr() and ShowFileProperty().
+	* Improve QueryFile() and its Rd file.
+	* Bugfix of file category memo button and add tooltips.
+	* setting about code mark color is no longer needed.
+	
 2009-12-29
 	* Bugfix of saveFUN4FileAttr(). Thanks Julien Biaudet for bug
 	report.
