@@ -137,7 +137,7 @@ Version: 0.1-9-dev\n",
   .codecat_buttons[2,1] <- CodeCatAddToButton("Add To")
   .codecat_buttons[2,2] <- CodeCatDropFromButton("Drop From")
   .codecat_buttons[1,4] <- CodeCatMemoButton()
-  .codecat_buttons[2,3] <- Unmark_Button(label="UnMark", codeListWidget=.rqda.CodeofCat)
+  .codecat_buttons[2,3] <- Unmark_Button(label="UnMark", codeListWidget=.rqda$.CodeofCat)
   .codecat_buttons[2,4] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat")
 
 ######################### GUI  for F-cat
