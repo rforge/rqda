@@ -502,7 +502,7 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget)){
     fileName <- dbGetQuery(.rqda$qdacon,"select name,id from source where status==1")
     if (nrow(fileName)!=0){
       names(fileName) <- c("file","fileID")
-      Encoding(fileName$case) <- "UTF-8"
+      Encoding(fileName$file) <- "UTF-8"
       DF <- merge(fileName,DF)
       class(DF) <- c("FileAttr","data.frame")
     }}
