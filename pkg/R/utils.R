@@ -98,7 +98,10 @@ MemoWidget <- function(prefix,widget,dbTable){
               InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable, currentCode))[1, 1]
               if (isTRUE(all.equal(withinWidget,InRQDA))) {
                   return(TRUE) } else {
+                      if (is.na(InRQDA) && withinWidget=="")  {
+                          return(TRUE) } else {
                       val <- gconfirm("The memo has bee change, Close anyway?",con=TRUE)
+                  }
                       return(val)
                   }
           } ## helper function
@@ -416,7 +419,7 @@ select fid from coding where cid in %s and status==1 group by fid)",not))$name
     .rqda$.fnames_rqda[] <- fnames
     if (names) {
       invisible(fnames)
-    } 
+    }
     else {ids <- RQDAQuery(sprintf("select id from source where name in (%s)",paste(paste("'",fnames,"'",sep=""),collapse=",")))
           invisible(ids)
         }
