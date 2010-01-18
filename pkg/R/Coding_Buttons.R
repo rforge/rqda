@@ -351,7 +351,7 @@ CodesNamesWidgetMenu$"Show Codes With Codings"$handler <- function(h, ...) {
 }
 CodesNamesWidgetMenu$"Show Codes With Memo"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is not null")
+    cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is not null and memo != ''")
     if (nrow(cid)!=0) {
     cid <- cid[[1]]
     CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid,sortByTime=FALSE)
@@ -360,7 +360,7 @@ CodesNamesWidgetMenu$"Show Codes With Memo"$handler <- function(h, ...) {
 }
 CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is null")
+    cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is null or memo == ''")
     if (nrow(cid)!=0) {
       cid <- cid[[1]]
       CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid,sortByTime=FALSE)
