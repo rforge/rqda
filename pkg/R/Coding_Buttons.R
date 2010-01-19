@@ -392,6 +392,10 @@ CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
   }
 }
 
+CodesNamesWidgetMenu$"Add to code category..."$handler <- function(h, ...) {
+    AddToCodeCategory()
+}
+
 ######################################## un-used functions
 ## HL_ALLButton <- function(){
 ##     ans <- gbutton("HL ALL",

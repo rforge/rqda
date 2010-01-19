@@ -325,7 +325,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
         }
         CallBackFUN
       } ## end of ComputeCallbackFun
-      
+
       buffer <- .retreivalgui@widget@widget$GetBuffer()
       iter <- buffer$getIterAtOffset(0)$iter
 
@@ -497,7 +497,7 @@ NextRowId <- function(table){
   if (is.na(ans)) ans <- 1
   ans
 }
-  
+
 InsertAnnotation <- function (index,fid,rowid,label="[Annotation]",AnchorPos=NULL)
   {
     widget=.rqda$.openfile_gui
@@ -574,7 +574,7 @@ Annotation <- function(...){
     if (is.null(pos)) {gmessage("Open a file first!",con=TRUE)}
     else {
       AnchorPos <- sindex(W,includeAnchor=TRUE)$startN
-      SelectedFile <- svalue(.rqda$.root_edit) 
+      SelectedFile <- svalue(.rqda$.root_edit)
       SelectedFile <- enc(SelectedFile,encoding="UTF-8")
       currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
       idx <- RQDAQuery(sprintf("select fid, annotation,rowid from annotation where fid==%i and position=%s and status=1",currentFid,pos$startN))
@@ -594,6 +594,46 @@ CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory"
   .rqda$.codes_rqda[] <- ans
   invisible(ans)
 }}}
+
+AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
+{
+    codename <- svalue(Widget)
+    Encoding(codename) <- "unknown"
+    query <- dbGetQuery(.rqda$qdacon, sprintf("select id, name from freecode where name in(%s) and status=1",
+                                              paste("'", codename, "'", sep = "", collapse = ",")))
+    cid <- query$id
+    Encoding(query$name) <- "UTF-8"
+    CodeCat <- dbGetQuery(.rqda$qdacon, "select catid, name from codecat where status=1")
+    if (nrow(CodeCat) == 0) {
+        gmessage("Add Code Categroy first.", con = TRUE)
+    }
+    else {
+        Encoding(CodeCat$name) <- "UTF-8"
+        Selecteds <- gselect.list(CodeCat$name, multiple = TRUE)
+        if (length(Selecteds) > 0 || Selecteds != "") {
+            Encoding(Selecteds) <- "UTF-8"
+            for (Selected in Selecteds) {
+                CodeCatid <- CodeCat$catid[CodeCat$name %in% Selected]
+                exist <- dbGetQuery(.rqda$qdacon, sprintf("select cid from treecode where status=1 and cid in (%s) and catid=%i",
+                                                          paste("'", cid, "'", sep = "", collapse = ","),
+                                                          CodeCatid))
+                if (nrow(exist) != length(cid)) {
+                    DAT <- data.frame(cid = cid[!cid %in% exist$cid],
+                                      catid = CodeCatid, date = date(), dateM = date(),
+                                      memo = "", status = 1)
+                    success <- dbWriteTable(.rqda$qdacon, "treecode",
+                                            DAT, row.name = FALSE, append = TRUE)
+                    if (success && updateWidget) {
+                        UpdateCodeofCatWidget()
+                    }
+                    if (!success)
+                        gmessage(sprintf("Fail to write to code category of %s",
+                                         Selected))
+                }
+            }
+        }
+    }
+}
 
 ## c2InfoFun <- function(){
 ##   con <- .rqda$qdacon
