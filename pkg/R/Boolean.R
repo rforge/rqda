@@ -41,6 +41,6 @@ and <- function(CT1,CT2,showCoding=FALSE){
 }
 
 ##a<- GetCodingTable()
-##c1 <- subset(b,cid==6)
-##c2 <- subset(b,cid==24)
+##c1 <- subset(a,cid==6)
+##c2 <- subset(a,cid==24)
 ##and(c1,c2,T)

@@ -222,6 +222,13 @@ CodeCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
 
 ##
 CodeofCatWidgetMenu <- list()
+
+CodeofCatWidgetMenu$"Code Memo"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    MemoWidget("code",.rqda$.CodeofCat,"freecode")
+    }
+  }
+
 CodeofCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  UpdateCodeofCatWidget()

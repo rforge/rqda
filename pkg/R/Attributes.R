@@ -477,7 +477,7 @@ viewFileAttr <- function(){
 }
 
 
-GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget)){
+GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget),subset){
   if (isIdCurrent(.rqda$qdacon)){
   type <-  match.arg(type)
   if (length(attrs)==0) attrs <- NULL
@@ -511,7 +511,14 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget)){
   attrs <- tt[tt$class=="numeric","name"]
   idx <- which(names(DF) %in% attrs)
   DF[,idx]<-as.data.frame(apply(DF[,idx,drop=FALSE],2,as.numeric))
-  DF
+  if (missing(subset)) DF else {
+      r <- eval(substitute(subset),DF)
+      if (!is.logical(r))
+          stop("'subset' must evaluate to logical")
+      r <- r & !is.na(r)
+      DF <- DF[r,,drop=FALSE]
+      DF
+  }
 }}
 
 SetAttrClsButton <- function(label="Class"){

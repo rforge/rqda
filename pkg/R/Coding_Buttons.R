@@ -327,6 +327,9 @@ AnnotationButton <- function(label="Add Anno"){
 
 ## popup-menu
 CodesNamesWidgetMenu <- list()
+CodesNamesWidgetMenu$"Add to code category..."$handler <- function(h, ...) {
+    AddToCodeCategory()
+}
 CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
@@ -392,9 +395,6 @@ CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
   }
 }
 
-CodesNamesWidgetMenu$"Add to code category..."$handler <- function(h, ...) {
-    AddToCodeCategory()
-}
 
 ######################################## un-used functions
 ## HL_ALLButton <- function(){
