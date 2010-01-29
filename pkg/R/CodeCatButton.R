@@ -204,6 +204,28 @@ and treecode.catid==codecat.catid and freecode.id=treecode.cid and codecat.name 
 
 
 CodeCatWidgetMenu <- list()
+CodeCatWidgetMenu$"Add New Code to Selected Category"$handler <- function(h,...) {
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        codename <- ginput("Enter new code. ", icon="info")
+        if (!is.na(codename)){
+            codename <- enc(codename,encoding="UTF-8")
+            addcode(codename)
+            CodeNamesUpdate(sortByTime=FALSE)
+            cid <- RQDAQuery(sprintf("select id from freecode where status==1 and name=='%s'",codename))
+            ## end of add a new code to free code.
+            SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
+            if (length(SelectedCodeCat)==0) {gmessage("Select a code category first.",con=TRUE)} else{
+                catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from codecat where status=1 and name='%s'",SelectedCodeCat))[,1]
+                ## CodeList and the id (table freecode): sql -> name and id where status==1
+                Dat <- data.frame(cid=cid,catid=catid,date=date(),dateM=date(),memo="",status=1)
+                ## Push selected codeList to table treecode
+                dbWriteTable(.rqda$qdacon,"treecode",Dat,row.names=FALSE,append=TRUE)
+                ## update .CodeofCat Widget
+                UpdateCodeofCatWidget()
+            }
+        }
+    }
+}
 CodeCatWidgetMenu$Memo$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
@@ -221,9 +243,9 @@ CodeCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
 }
 }
 
+
 ##
 CodeofCatWidgetMenu <- list()
-
 CodeofCatWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     MemoWidget("code",.rqda$.CodeofCat,"freecode")

@@ -362,6 +362,15 @@ CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
 CodesNamesWidgetMenu$"Show Codes With Codings"$handler <- function(h, ...) {
   CodeWithCoding(.rqda$TOR)
 }
+CodesNamesWidgetMenu$"Show Codes With Code Category"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        cid <- RQDAQuery("select id from freecode where status==1 and id in (select cid from treecode where status==1)")
+        if (nrow(cid)!=0) {
+            cid <- cid[[1]]
+            CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid,sortByTime=FALSE)
+        } else gmessage("All codes are assiged to code category.",con=TRUE)
+    }
+}
 CodesNamesWidgetMenu$"Show Codes With Memo"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     cid <- dbGetQuery(.rqda$qdacon,"select id from freecode where memo is not null and memo != ''")
