@@ -332,6 +332,15 @@ FileNamesWidgetMenu$"Show ..."$"Show Files Without Memo"$handler <- function(h, 
     } else gmessage("No file is found.",con=TRUE)
     }
   }
+FileNamesWidgetMenu$"Show ..."$"Show Files Without File Category"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conNae = "qdacon", message = FALSE)) {
+        fileid <- RQDAQuery("select id from source where status==1 and id not in (select fid from treefile where status==1)")
+        if (nrow(fileid)!=0) {
+            fileid <- fileid[[1]]
+            FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
+        } else gmessage("All are linked with file category.",con=TRUE)
+    }
+}
 FileNamesWidgetMenu$"Show Selected File Property"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
   ShowFileProperty()

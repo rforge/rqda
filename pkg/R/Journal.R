@@ -73,11 +73,12 @@ AddNewJournalFun <- function(){
         tryCatch(eval(parse(text="dispose(.rqda$.AddNewJournalWidget")),error=function(e) {}) ## close the widget if open
         gw <- gwindow(title="Add New Journal.",parent=getOption("widgetCoordinate"),width=600,height=400)
         mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-        gw@widget@widget$SetIconFromFile(mainIcon) 
+        gw@widget@widget$SetIconFromFile(mainIcon)
         assign(".AddNewJournalWidget",gw,env=.rqda)
         assign(".AddNewJournalWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewJournalWidget",env=.rqda)),env=.rqda)
         gbutton("Save Journal",con=get(".AddNewJournalWidget2",env=.rqda),handler=function(h,...){
-            title <- Sys.time()
+            title <- ginput("Enter new file name. ",text=Sys.time(), icon="info")
+            if (!is.na(title)){
             if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from journal where name=='%s'",title)))!=0) {
                 title <- paste("New",title)
             }## Make sure it is unique
@@ -92,16 +93,14 @@ AddNewJournalFun <- function(){
             }
             ## must put here rather than in AddJournalButton()
             JournalNamesUpdate()
-
-        }
+        }}
                 )## end of save button
         tmp <- gtext(container=get(".AddNewJournalWidget2",env=.rqda))
         font <- pangoFontDescriptionFromString(.rqda$font)
         gtkWidgetModifyFont(tmp@widget@widget,font)
         assign(".AddNewJournalWidgetW", tmp, env=.rqda)
         textW <- get(".AddNewJournalWidgetW",env=.rqda)
-    }
-}
+    }}
 
 ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,dbTable="journal"){
   if (is_projOpen(env=.rqda,"qdacon")) {
@@ -113,7 +112,7 @@ ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,
         tryCatch(eval(parse(text=sprintf("dispose(.rqda$.%smemo)",prefix))),error=function(e) {})
         gw <- gwindow(title=sprintf("%s:%s",prefix,Selected),parent=getOption("widgetCoordinate"),width=600,height=400)
         mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-        gw@widget@widget$SetIconFromFile(mainIcon) 
+        gw@widget@widget$SetIconFromFile(mainIcon)
         assign(sprintf(".%smemo",prefix),gw,env=.rqda)
         assign(sprintf(".%smemo2",prefix),
                gpanedgroup(horizontal = FALSE, con=get(sprintf(".%smemo",prefix),env=.rqda)),

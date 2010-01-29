@@ -17,7 +17,7 @@ OpenProjectButton <- function(container){
 gbutton("Open Project",container=container,handler=function(h,...){
     path <- gfile(text = "Select a *.rqda file and click OK.",type="open",filter=list("rqda"=list(patterns = c("*.rqda")),
                                           "All files" = list(patterns = c("*"))))
-    if (path!=""){
+    if (path != ""){
       Encoding(path) <- "UTF-8"
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})

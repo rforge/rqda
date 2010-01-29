@@ -244,10 +244,11 @@ AddHandler <- function(){
                         )
     ## handler for .fnames_rqda (gtable holding the file names)
     addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
-       if (isTRUE(.rqda$SFP)) ShowFileProperty(focus=FALSE)
+        if (isTRUE(.rqda$SFP)) ShowFileProperty(focus=FALSE)
        Fid <- GetFileId(,"select")
-       names(.rqda$.fnames_rqda) <- sprintf("Selected File id is %s",Fid)
-   })
+       if (!is.null(Fid) && length(Fid)==1) {
+           names(.rqda$.fnames_rqda) <- sprintf("Selected File id is %s",Fid)
+       }})
     add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
     ## right click to add file to a case category
     addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))
