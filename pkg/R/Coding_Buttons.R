@@ -327,7 +327,7 @@ AnnotationButton <- function(label="Add Anno"){
 
 ## popup-menu
 CodesNamesWidgetMenu <- list()
-CodesNamesWidgetMenu$"Add to code category..."$handler <- function(h, ...) {
+CodesNamesWidgetMenu$"Add To Code Category..."$handler <- function(h, ...) {
     AddToCodeCategory()
 }
 CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
