@@ -333,7 +333,7 @@ FileNamesWidgetMenu$"Show ..."$"Show Files Without Memo"$handler <- function(h, 
     }
   }
 FileNamesWidgetMenu$"Show ..."$"Show Files Without File Category"$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conNae = "qdacon", message = FALSE)) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
         fileid <- RQDAQuery("select id from source where status==1 and id not in (select fid from treefile where status==1)")
         if (nrow(fileid)!=0) {
             fileid <- fileid[[1]]
