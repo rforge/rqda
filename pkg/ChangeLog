@@ -1,3 +1,7 @@
+2010-01-29
+	* better management system of code category.
+	* change positions of code category Tab.
+	
 2010-01-02
 	* bugfix of saveFUN4FileAttr() and ShowFileProperty().
 	* Improve QueryFile() and its Rd file.

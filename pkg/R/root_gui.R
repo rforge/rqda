@@ -84,6 +84,28 @@ Version: 0.1-9-dev\n",
   .codes_button[2,4]<- Unmark_Button()
   .codes_button[1:2,5]<- Mark_Button()
 
+
+######################### GUI  for C-cat
+#########################
+  ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Code\nCategories")
+  ".codecat_buttons" <- glayout(container=.codecat_pan)
+  ".Ccat_PW" <- ggroup(cont=.codecat_pan,horizontal = FALSE)## parent Widget of C-cat
+  ##".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
+  ##.CodeCatWidget[] <- NULL
+  ".CodeCatWidget" <- gtable(character(0),container=.Ccat_PW,expand=TRUE,multiple=TRUE)
+  names(.CodeCatWidget)<-"Code Category"
+  ".CodeofCat" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
+  .CodeofCat[] <- NULL;names(.CodeofCat)<-"Codes of This Category"
+  .codecat_buttons[1,1] <- AddCodeCatButton("Add")
+  .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
+  .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
+  .codecat_buttons[2,1] <- CodeCatAddToButton("Add To")
+  .codecat_buttons[2,2] <- CodeCatDropFromButton("Drop From")
+  .codecat_buttons[1,4] <- CodeCatMemoButton()
+  .codecat_buttons[2,3] <- Unmark_Button(label="UnMark", codeListWidget=.rqda$.CodeofCat)
+  .codecat_buttons[2,4] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat")
+
+
 ######################### GUI  for cases
 #########################
   ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Cases\n")
@@ -120,25 +142,6 @@ Version: 0.1-9-dev\n",
   .attr_buttons[1,4] <- AttrMemoButton()
   .attr_buttons[1,5] <- SetAttrClsButton()
 
-######################### GUI  for C-cat
-#########################
-  ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Code\nCategories")
-  ".codecat_buttons" <- glayout(container=.codecat_pan)
-  ".Ccat_PW" <- ggroup(cont=.codecat_pan,horizontal = FALSE)## parent Widget of C-cat
-  ##".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
-  ##.CodeCatWidget[] <- NULL
-  ".CodeCatWidget" <- gtable(character(0),container=.Ccat_PW,expand=TRUE,multiple=TRUE)
-  names(.CodeCatWidget)<-"Code Category"
-  ".CodeofCat" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
-  .CodeofCat[] <- NULL;names(.CodeofCat)<-"Codes of This Category"
-  .codecat_buttons[1,1] <- AddCodeCatButton("Add")
-  .codecat_buttons[1,2] <- DeleteCodeCatButton("Delete") ## should take care of treecode table
-  .codecat_buttons[1,3] <- CodeCat_RenameButton("Rename")
-  .codecat_buttons[2,1] <- CodeCatAddToButton("Add To")
-  .codecat_buttons[2,2] <- CodeCatDropFromButton("Drop From")
-  .codecat_buttons[1,4] <- CodeCatMemoButton()
-  .codecat_buttons[2,3] <- Unmark_Button(label="UnMark", codeListWidget=.rqda$.CodeofCat)
-  .codecat_buttons[2,4] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat")
 
 ######################### GUI  for F-cat
 #########################
@@ -242,7 +245,9 @@ AddHandler <- function(){
     ## handler for .fnames_rqda (gtable holding the file names)
     addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
        if (isTRUE(.rqda$SFP)) ShowFileProperty(focus=FALSE)
-    })
+       Fid <- GetFileId(,"select")
+       names(.rqda$.fnames_rqda) <- sprintf("Selected File id is %s",Fid)
+   })
     add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
     ## right click to add file to a case category
     addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))

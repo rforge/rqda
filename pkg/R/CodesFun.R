@@ -603,9 +603,9 @@ AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
                                               paste("'", codename, "'", sep = "", collapse = ",")))
     cid <- query$id
     Encoding(query$name) <- "UTF-8"
-    CodeCat <- dbGetQuery(.rqda$qdacon, "select catid, name from codecat where status=1")
+    CodeCat <- dbGetQuery(.rqda$qdacon, printf("select catid, name from codecat where status=1 and cid not in (%)", paste("'", cid, "'", sep = "", collapse = ",")))
     if (nrow(CodeCat) == 0) {
-        gmessage("Add Code Categroy first.", con = TRUE)
+        gmessage("Add Code Categroy First.", con = TRUE)
     }
     else {
         Encoding(CodeCat$name) <- "UTF-8"
