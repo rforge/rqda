@@ -99,7 +99,7 @@ CodeCat_RenameButton <- function(label="Rename",Widget=.rqda$.CodeCatWidget,...)
           )
 }
 
-UpdateCodeofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.CodeofCat){
+UpdateCodeofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.CodeofCat,sort=TRUE){
   SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
   if (length(SelectedCodeCat)!=0){
     ## if code cat is selected, then continue
@@ -112,6 +112,7 @@ UpdateCodeofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.CodeofCat){
         items <- items[items$id %in% Total_cid$cid,c("name","date")]
         items <- items$name[OrderByTime(items$date)] ## sort accoding to date
         Encoding(items) <- "UTF-8"
+        if (sort) items <- sort(items)
       } else items <- NULL
     } else items <- NULL
   } else items <- NULL

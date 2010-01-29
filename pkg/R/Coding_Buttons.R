@@ -349,6 +349,16 @@ CodesNamesWidgetMenu$"Show All By Created Time"$handler <- function(h, ...) {
      CodeNamesUpdate(sortByTime=TRUE)
     }
   }
+CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    Selected1 <- svalue(.rqda$.codes_rqda)
+    cid1 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected1))[1,1]
+    Selected2 <- gselect.list(as.character(.rqda$.codes_rqda[]))
+    if (Selected2!="" && Selected1!=Selected2) cid2 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected2))[1,1]
+    mergeCodes(cid1,cid2)
+    CodeNamesWidgetUpdate()
+  }
+}
 CodesNamesWidgetMenu$"Show Codes With Codings"$handler <- function(h, ...) {
   CodeWithCoding(.rqda$TOR)
 }
@@ -370,7 +380,16 @@ CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
     } else gmessage("No Code with memo.",con=TRUE)
   }
 }
-CodesNamesWidgetMenu$"Set coding mark color"$handler <- function(h, ...) {
+CodesNamesWidgetMenu$"Show Codes Without Code Category"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        cid <- RQDAQuery("select id from freecode where status==1 and id not in (select cid from treecode where status==1)")
+        if (nrow(cid)!=0) {
+            cid <- cid[[1]]
+            CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid,sortByTime=FALSE)
+        } else gmessage("All codes are assiged to code category.",con=TRUE)
+    }
+}
+CodesNamesWidgetMenu$"Set Coding Mark Color"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     Selected <- svalue(.rqda$.codes_rqda)
     codeInfo <- dbGetQuery(.rqda$qdacon,sprintf("select id,color from freecode where name=='%s'",Selected))[1,]
@@ -383,16 +402,6 @@ CodesNamesWidgetMenu$"Set coding mark color"$handler <- function(h, ...) {
       RQDAQuery(sprintf("update freecode set color='%s' where id ==%i",newCol,cid))
     }
   }}
-}
-CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
-  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    Selected1 <- svalue(.rqda$.codes_rqda)
-    cid1 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected1))[1,1]
-    Selected2 <- gselect.list(as.character(.rqda$.codes_rqda[]))
-    if (Selected2!="" && Selected1!=Selected2) cid2 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected2))[1,1]
-    mergeCodes(cid1,cid2)
-    CodeNamesWidgetUpdate()
-  }
 }
 
 

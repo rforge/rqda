@@ -2,7 +2,7 @@
 \alias{RQDATables}
 \title{Data Tables in rqda file}
 \description{
-The internal data table structures in rqda file, which is a SQLite data base.
+  The internal data table structures in rqda file, which is a SQLite data base.
 }
 \details{
   Table "attributes" contatins information about the name list of attributes.
@@ -18,7 +18,7 @@ The internal data table structures in rqda file, which is a SQLite data base.
   Table "caseAttr" contatins information about attributes of cases.
   \tabular{ll}{
     variable:\tab name of case attributes, coresponding to name in
-  attributes table. \cr
+    attributes table. \cr
     value:\tab . \cr 
     caseID:\tab . \cr 
     date:\tab . \cr 
@@ -127,7 +127,8 @@ The internal data table structures in rqda file, which is a SQLite data base.
     BOM:\tab . \cr 
   }
   
-  Table "source" contains the content of files.
+  Table "source" contains the content of files. Files are held in widget
+  of ".fnames_rqda".
   \tabular{ll}{
     name:\tab name of the file.\cr
     id:\tab id of the file.\cr
@@ -140,7 +141,8 @@ The internal data table structures in rqda file, which is a SQLite data base.
   }
   
   The "treecode" table contains information on the codes categorization
-  (relationship between codes and the codecat).
+  (relationship between codes and the codecat). They are held in widget
+  of ".CodeCatWidget". Codes of specific category are held in widget of ".CodeofCat".
   \tabular{ll}{
     cid:\tab . \cr 
     catid:\tab . \cr 
