@@ -1,4 +1,4 @@
-and <- function(CT1,CT2,showCoding=FALSE){
+and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion")){
     ## CT1 and CT2 is from GetCodingTable
     ## for one code and one file only
 
@@ -8,7 +8,7 @@ and <- function(CT1,CT2,showCoding=FALSE){
         for (i in 1:nrow(CT1)) {
             for (j in 1:nrow(CT2)){
                 rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
-                if (rel$Relation %in% c("overlap","exact","inclusion")){
+                if (rel$Relation %in% method){
                     ridx <- c(ridx,i,j)
                     idx <- rel$OverlapIndex
                 }
@@ -27,7 +27,7 @@ and <- function(CT1,CT2,showCoding=FALSE){
     if (length(fid)>0) {
         ans <- lapply(fid,FUN=function(x) and_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x)))
         ans <- do.call(rbind,ans)
-        if (showCoding){
+        if (showCoding && !is.null(ans)){
         txt <- apply(ans,1,function(x){
             txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
             Encoding(txt) <- "UTF-8"
