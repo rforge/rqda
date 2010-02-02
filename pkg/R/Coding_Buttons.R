@@ -344,23 +344,23 @@ CodesNamesWidgetMenu$"Export Codings"$handler <- function(h, ...) {
     }}}
 CodesNamesWidgetMenu$"Highlight All Codings"$handler <- function(h, ...) {HL_AllCodings()}
 CodesNamesWidgetMenu$"Highlight Codings with Memo"$handler <- function(h, ...) {HL_CodingWithMemo()}
+CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        Selected1 <- svalue(.rqda$.codes_rqda)
+        cid1 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected1))[1,1]
+        Selected2 <- gselect.list(as.character(.rqda$.codes_rqda[]))
+        if (Selected2!="" && Selected1!=Selected2) cid2 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected2))[1,1]
+        mergeCodes(cid1,cid2)
+        CodeNamesWidgetUpdate()
+    }
+}
 CodesNamesWidgetMenu$"Show All By Created Time"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-     CodeNamesUpdate(sortByTime=TRUE)
+        CodeNamesUpdate(sortByTime=TRUE)
     }
-  }
-CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
-  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    Selected1 <- svalue(.rqda$.codes_rqda)
-    cid1 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected1))[1,1]
-    Selected2 <- gselect.list(as.character(.rqda$.codes_rqda[]))
-    if (Selected2!="" && Selected1!=Selected2) cid2 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected2))[1,1]
-    mergeCodes(cid1,cid2)
-    CodeNamesWidgetUpdate()
-  }
 }
 CodesNamesWidgetMenu$"Show Codes With Codings"$handler <- function(h, ...) {
-  CodeWithCoding(.rqda$TOR)
+    CodeWithCoding(.rqda$TOR)
 }
 CodesNamesWidgetMenu$"Show Codes With Code Category"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {

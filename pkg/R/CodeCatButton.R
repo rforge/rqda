@@ -246,12 +246,29 @@ CodeCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
 
 ##
 CodeofCatWidgetMenu <- list()
+CodeofCatWidgetMenu$"Rename Selected Code"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        selectedCodeName <- svalue(.rqda$.CodeofCat)
+        if (length(selectedCodeName)==0){
+            gmessage("Select a code first.",icon="error",con=TRUE)
+        }
+        else {
+            NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
+            if (!is.na(NewCodeName)) {
+                NewCodeName <- enc(NewCodeName,encoding="UTF-8")
+                selectedCodeName <- enc(selectedCodeName,encoding="UTF-8")
+                rename(selectedCodeName,NewCodeName,"freecode")
+                UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)
+                UpdateWidget(".CodeofCat",from=selectedCodeName,to=NewCodeName)
+            }
+        }
+    }
+}
 CodeofCatWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     MemoWidget("code",.rqda$.CodeofCat,"freecode")
     }
   }
-
 CodeofCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  UpdateCodeofCatWidget()
