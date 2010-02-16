@@ -42,10 +42,9 @@ RetrievalButton <- function(label){
   ans <- gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
-              retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
+                retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)}
             }
-          }
-          )
+                 )
   gtkTooltips()$setTip(ans@widget@widget,"Retrieve codings of the selected code.")
   return(ans)
 }

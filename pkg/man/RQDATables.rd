@@ -105,6 +105,7 @@
     dateM :\tab \cr 
     id :\tab \cr 
     status :\tab \cr
+    color:\tab color for code marker (added in version 0.19)\cr
   }
   
   Table "journal" contatins information about field work journal.

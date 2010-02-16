@@ -9,7 +9,7 @@ RQDA <- function() {
 
 ########################### GUI FOR ROOT
 ###########################
-  ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis.",parent=c(2,2),
+  ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis",parent=c(2,2),
                              width=300,height=700,visible=FALSE,handler=function(h,...){
                                tryCatch(dispose(.rqda$.root_edit),error=function(e){})
                                close_proj(assignenv=.rqda)
@@ -40,12 +40,20 @@ RQDA <- function() {
   ".currentProj" <- glabel("No project is open.",con=.proj_gui)
 
   gseparator(con=.proj_gui)
+  glabel("Author: <ronggui.huang@gmail.com>",container=.proj_gui)
+  gseparator(con=.proj_gui)
+  glabel("License: BSD License",
+         container=.proj_gui, handler=function(h,...){
+           gtext(readLines((system.file("License",package="RQDA")),warn=FALSE),
+                 con=gwindow(title="License"))
+         })
   glabel(
-"Author: <ronggui.huang@gmail.com>\n
-License: BSD License\n
-Version: 0.1-9-dev\n",
-         container=.proj_gui
-        )
+         "Version: 0.1-9-dev",
+         container=.proj_gui, handler=function(h,...){
+           gtext(readLines((system.file("CITATION",package="RQDA")),warn=FALSE),
+                 con=gwindow(title="Please cite this package."))
+         })
+
 
 ########################### GUI for FILES
 ###########################
@@ -255,8 +263,9 @@ AddHandler <- function(){
     ## addhandlerdoubleclick(.rqda$.fsearch_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fsearch_rqda))
     ## handler for .codes_rqda
     addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
-        if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
-    }
+        if (is_projOpen(env=.rqda,conName="qdacon"))
+            retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
+          }
                           )
     add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
     addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){ClickHandlerFun(.rqda$.codes_rqda)})
@@ -309,8 +318,9 @@ AddHandler <- function(){
     addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))
     add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
     addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
-        if (is_projOpen(env=.rqda,conName="qdacon"))  retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
-    }
+        if (is_projOpen(env=.rqda,conName="qdacon"))
+            retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
+          }
                           )
     add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
     addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){

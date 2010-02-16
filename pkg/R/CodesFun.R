@@ -584,7 +584,7 @@ Annotation <- function(...){
     }
   }}
 
-CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory")){
+CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory","both")){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
   condition <- match.arg(condition)
   fid <- GetFileId(condition,"coded")
@@ -603,7 +603,7 @@ AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
                                               paste("'", codename, "'", sep = "", collapse = ",")))
     cid <- query$id
     Encoding(query$name) <- "UTF-8"
-    CodeCat <- RQDAQuery(sprintf("select name from codecat where status==1 and catid in (select catid from treecode where status=1 and cid not in (%s) group by catid)", paste("'", cid, "'", sep = "", collapse = ",")))
+    CodeCat <- RQDAQuery(sprintf("select name, catid from codecat where status==1 and catid not in (select catid from treecode where status=1 and cid in (%s) group by catid)", paste("'", cid, "'", sep = "", collapse = ",")))
     if (nrow(CodeCat) == 0) {
         gmessage("Add Code Categroy First.", con = TRUE)
     }
@@ -614,9 +614,7 @@ AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
             Encoding(Selecteds) <- "UTF-8"
             for (Selected in Selecteds) {
                 CodeCatid <- CodeCat$catid[CodeCat$name %in% Selected]
-                exist <- dbGetQuery(.rqda$qdacon, sprintf("select cid from treecode where status=1 and cid in (%s) and catid=%i",
-                                                          paste("'", cid, "'", sep = "", collapse = ","),
-                                                          CodeCatid))
+                exist <- dbGetQuery(.rqda$qdacon, sprintf("select cid from treecode where status=1 and cid in (%s) and catid=%i", paste("'", cid, "'", sep = "", collapse = ","), CodeCatid)) ## this check is unnecessary
                 if (nrow(exist) != length(cid)) {
                     DAT <- data.frame(cid = cid[!cid %in% exist$cid],
                                       catid = CodeCatid, date = date(), dateM = date(),
@@ -629,7 +627,7 @@ AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
                     if (!success)
                         gmessage(sprintf("Fail to write to code category of %s",
                                          Selected))
-                }
+               }
             }
         }
     }

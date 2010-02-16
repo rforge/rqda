@@ -1,6 +1,31 @@
+2010-02-14
+	* Add click handler to version and license.
+	* Move some files to inst dir to make it consistent with convention.
+	* New option "both" in "type of retrieval".
+	
+2010-02-13
+	* fix a bug in AddToCodeCategory().
+
+2010-02-02
+	* Now can rename code directly from code category popup menu.
+
+2010-02-01
+	* Improve and() and add and.Rd.
+	
 2010-01-29
-	* better management system of code category.
+	* better management system of code category, including new function of AddToCodeCategory().
 	* change positions of code category Tab.
+	* Can name a journal when save it.
+
+2010-01-25
+	* memo popup menu in code of category.
+	* add subset argument to GetAtrr().
+	
+2010-01-19
+	* 'Add to code category' popup menu in code tab.
+
+1010-01-18
+	* Now regard '' in memo field as NULL.
 	
 2010-01-02
 	* bugfix of saveFUN4FileAttr() and ShowFileProperty().

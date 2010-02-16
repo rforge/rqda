@@ -27,11 +27,11 @@ h1 {
 
 <h1>What is RQDA and its features?</h1>
 
-<P>RDQA is a <A HREF="http://www.r-project.org/">R</A> package for Qualitative Data Analysis, a <B>free</B> qualitative analysis software application (<A HREF="License.html">New BSD style license</A>). It works both on the Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and (probably) MacOS platforms. RQDA is an easy-to-use tool to assist in the analysis of textual data. At the present, it supports only plain text format data. All the information is stored in <A HREF="http://www.sqlite.org/">SQLite</A> database via the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>. The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>, via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>. It includes a number of standard Computer-Aided Qualitative Data Analysis features. Besides, it seamlessly integrated with R, which means that a) statistical analysis on the coding is possible, and b) functions about data manipulation and analysis can be easily extended by writing R functions. To some extent, <B>RQDA and R makes an integrated platform for both quantitative and qualitative data analysis.</B>
+<P>RDQA is a <A HREF="http://www.r-project.org/">R</A> package for Qualitative Data Analysis, a <B>free</B> (free as freedom) qualitative analysis software application (<A HREF="License.html">New BSD style license</A>). It works both on the Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and (probably) MacOS platforms. RQDA is an easy-to-use tool to assist in the analysis of textual data. At the present, it supports only plain text format data. All the information is stored in <A HREF="http://www.sqlite.org/">SQLite</A> database via the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>. The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>, via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>. It includes a number of standard Computer-Aided Qualitative Data Analysis features. Besides, it seamlessly integrated with R, which means that a) statistical analysis on the coding is possible, and b) functions about data manipulation and analysis can be easily extended by writing R functions. To some extent, <B>RQDA and R makes an integrated platform for both quantitative and qualitative data analysis.</B>
 
 <p>By the GUI, it can:
 <li>Import documents from plain text or on-the-fly
-<li>Support non-English documents, Simplified Chinese Character is well-tested under Windows
+<li>Support non-English documents, Simplified Chinese Character is well-tested under Windows as well as Debian Linux (with locale of zh_CN.UTF-8)
 <li>Character-level coding using codes
 <li>File Editing after coding
 <li>Memos of documents, codes, coding, project, files and more
@@ -42,39 +42,38 @@ h1 {
 <li>Search files by keywords and can highlight keyword in the open file.
 <li> Atrributes of file, which is useful for content analysis
 <li>There is a case category and related attributes of cases, which is crucial feature to bridge qualitative and quantitative research.
-<li>Search information about selected case from the Internet vis popup menu
+<li>Search information about selected case from the Internet via popup menu
 <li>Temporary delete files and codes
-<li>Rename the files,code, code category, case and others
-<li>Write and organize fielwork journals
+<li>Rename the files,code, code category, case and the like
+<li>Write and organize field work journals
 <li>And more...
 
 <p>By R functions, it can:
 <li>Manipulate the temporary deletion (list, undo temporary deletion and permanently erase them)
 <li>Import a batch of files
 <li>Calculate the relation between two codings, given the coding indexs
-<li>Gives a summary of coding and inter-code relationship.
-<li>Export of file/case attributes and show subset of files/cases only in respective widget by ShowSubset function.
-<li>More flexible way of conditional retrieval.
-<li>Construct corpus from codings by RQDA2tm function.
+<li>Gives a summary of coding and inter-code relationship
+<li>Export of file/case attributes and show subset of files/cases only in respective widget by ShowSubset function
+<li>More flexible way of conditional retrieval
+<li>Construct corpus from codings by RQDA2tm function
 
 <p>You can use <i>help(package="RQDA")</i> to see more functions in the RQDA package. 
 
 <p>
 <h1>Installation</h1>
 
-<li><B>Step one.</B> Because RGtk2 depends on GTK+, you may need to install GTK+ before install RGtk2. For windows user, <A HREF="http://downloads.sourceforge.net/gladewin32/gtk-2.10.11-win32-1.exe?modtime=1175123376&big_mirror=0">download</A> GTK+ and install it. For MacOS users, <A HREF="http://r.research.att.com/gtk2-runtime.dmg">download</A> GTK+ here and install it. For Debian-based Linux users, you may use <i>sudo apt-get install libgtk2.0-dev</i> to install GTK+ develop library. Fedora 10, use <i>yum install -y gtk2-devel</i> to install. For other Linux users, you may have to manually install GTK+, <A HREF="http://www.gtk.org/download-linux.html"> download</A> the source tarball, and follow the <A HREF="http://library.gnome.org/devel/gtk/unstable/gtk-building.html">instructions</A> of installation.
+<li><B>Step one</B>, Install GTK+ (because RGtk2 depends on GTK+, you need to install it before install RGtk2). For windows user, <A HREF="http://downloads.sourceforge.net/gladewin32/gtk-2.10.11-win32-1.exe?modtime=1175123376&big_mirror=0">download</A> GTK+ and install it. For MacOS users, <A HREF="http://r.research.att.com/gtk2-runtime.dmg">download</A> GTK+ here and install it. For Debian-based Linux users, you may use <i>sudo apt-get install libgtk2.0-dev</i> to install GTK+ develop library. Fedora 10, use <i>yum install -y gtk2-devel</i> to install. For other Linux users, you may have to manually install GTK+, <A HREF="http://www.gtk.org/download-linux.html"> download</A> the source tarball, and follow the <A HREF="http://library.gnome.org/devel/gtk/unstable/gtk-building.html">instructions</A> of installation.
 
-<li><B>Step two.</B> Go to <A HREF="http://cran.r-project.org/">CRAN</A>, download R and install it. For Linux and BSD users, you can download binary version of R or the sources. For Windows users, you can download the binary version of R from the <A HREF="http://cran.r-project.org/bin/windows/base/">download page</A>. For MacOS users, download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download page</A>, More instruction about installing R is in the <A HREF="http://cran.r-project.org/doc/manuals/R-admin.html">R Installation and Administration</A> Manual.
+<li><B>Step two</B>, Install R. Go to <A HREF="http://cran.r-project.org/">CRAN</A>, download R and install it. For Linux and BSD users, you can download binary version of R or the sources. For Windows users, you can download the binary version of R from the <A HREF="http://cran.r-project.org/bin/windows/base/">download page</A>. For MacOS users, download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download page</A>, More instruction about installing R is in the <A HREF="http://cran.r-project.org/doc/manuals/R-admin.html">R Installation and Administration</A> Manual.
 
-<li><B>Step three.</B> Launch R (as usual applications under Windows; or by command $R within shell terminal under Linux and FreeBSD). Then, you can see the prompt &ldquo;&gt;&rdquo;,which indicates that R is ready for further commands.
+<li><B>Step three</B>, Launch R for further installation. It can be launched as usual applications under Windows, or by command <i>R</i> within shell terminal under Linux and FreeBSD. Then, you can see the prompt &ldquo;&gt;&rdquo;,which indicates that R is ready for further commands.
 
-<li><B>Step four.</B> Install relevant packages by R
-  command: <I>install.packages("RQDA",dependencies=c("Depends",
+<li><B>Step four</B>, Install relevant R packages by command: <I>install.packages("RQDA",dependencies=c("Depends",
     "Imports"))</I> . If you want to experience the developing version
   of RQDA, you can use this command after you have installed RQDA by
   the last command: <I>install.packages("RQDA",repos=" http://R-Forge.R-project.org")</I>.
 
-<li><B>Step five.</B> Launch RQDA by command <I>library(RQDA)</I> from within R. Then you can see the RQDA GUI.
+<li><B>Step five</B>, Launch RQDA by command <I>library(RQDA)</I> from within R. Then you can see the RQDA GUI.
 
 <h1>Documentation</h1>
 <A HREF="documentation.html#manual" target="_blank">User Manual</A>
@@ -84,14 +83,14 @@ h1 {
 <p>
 <h1>Reference</h1>
 <li> Fisher, M. 1997."Qualitative computing: Using software for qualiative data analysis." Chapter 1. England: Ashgate Publishing Company.
-<li> Kelle, U. (ed.).1995."Computer-aided qualitative data analysis : theory, methods and practice." Sage Publications.
+<li> Kelle, U. (ed.).1995."Computer-aided qualitative data analysis: theory, methods and practice." Sage Publications.
 
 
 <p>
 <h1>How to cite the software</h1>
 <p>I have put a lot of efforts on this project. I appreciate if you can cite this software in your research. You can use <i>citation("RQDA")</i> to get this citation.
 
-<p>HUANG Ronggui (2009). RQDA: R-based Qualitative Data Analysis. R package version 0.1-7. http://rqda.r-forge.r-project.org/
+<p>HUANG Ronggui (2009). RQDA: R-based Qualitative Data Analysis. R package version 0.1-8. http://rqda.r-forge.r-project.org/
 
 <h1>What's new in the latest version?</h1>
 <p>RQDA 0.1-8 is now on <A href ="http://cran.r-project.org/web/packages/RQDA/index.html" target="_blank">CRAN</a> (2009-09-20).
@@ -109,13 +108,17 @@ h1 {
 
 <p>
 <h1>Screenshots</h1>
-<A HREF="Main.png" target="_blank">Main Window</A>
-<br><A HREF="File.png" target="_blank">Reading File</A>
-<br><A HREF="FileMemo.png" target="_blank">File Memo</A>
-<br><A HREF="Codes.png" target="_blank">Code List</A>
-<br><A HREF="Coding.png" target="_blank">Coding</A>
-<br><A HREF="Retrieval.png" target="_blank">Retrieval</A>
-<br><A HREF="Cases.png" target="_blank">Cases</A>
-<br><A HREF="Settings.png" target="_blank">Settings</A>
+Main windows under <A HREF="screenshots/Main.png" target="_blank">Vista</A> and under <A HREF="screenshots/Main_Debian_linux.png" target="_blank">Debian Linux</A>
+<br><A HREF="screenshots/File.png" target="_blank">Reading File</A>
+<br><A HREF="screenshots/FileMemo.png" target="_blank">File Memo</A>
+<br>File Categories window under <A HREF="screenshots/FileCategories_Debian_Linux.png" target="_blank">Debian Linux</A>
+<br>Codes list window under <A HREF="screenshots/Codes.png" target="_blank">XP</A> and under <A HREF="screenshots/Codes_Debian_Linux.png" target="_blank">Debian Linux</A>
+<br>Code Categories window under <A HREF="screenshots/CodeCategories_Debian_Linux.png" target="_blank">Debian Linux</A>
+<br><A HREF="screenshots/Coding.png" target="_blank">Coding</A>
+<br><A HREF="screenshots/Retrieval.png" target="_blank">Retrieval</A>
+<br><A HREF="screenshots/Cases.png" target="_blank">Cases</A>
+<br>Attributes window under <A HREF="screenshots/Attributes_Debian_Linux.png" target="_blank">Debian Linux</A>
+<br>Journals window under <A HREF="screenshots/Journals_Debian_Linux.png" target="_blank">Debian Linux</A>
+<br>Settings window under <A HREF="screenshots/Settings.png" target="_blank">XP</A>and under <A HREF="screenshots/Settings_Debian_Linux.png" target="_blank">Debian Linux</A>
 </BODY>
 </HTML>

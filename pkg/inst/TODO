@@ -13,3 +13,5 @@ pdelete function for journal table.
 dbBeginTransaction(RQDA:::.rqda$qdacon)
 ....
 dbRollback(RQDA:::.rqda$qdacon) or dbCommit(RQDA:::.rqda$qdacon)
+
+withdraw image and imagecoding tables before submit it to CRAN.

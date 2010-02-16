@@ -349,7 +349,7 @@ FileNameWidgetUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,de
 }
 
 
-GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c("all","coded","uncoded","selected"))
+GetFileId <- function(condition=c("unconditional","case","filecategory","both"),type=c("all","coded","uncoded","selected"))
 {
   ## helper function
   unconditionalFun <- function(type)
@@ -422,12 +422,18 @@ GetFileId <- function(condition=c("unconditional","case","filecategory"),type=c(
     ans
   }
 
+ bothFun <- function(type){
+  ans <- intersect(GetFileId("case",type),GetFileId("file",type))
+  ans
+ }
+
   condition <- match.arg(condition)
   type <- match.arg(type)
   fid <- switch(condition,
                 unconditional=unconditionalFun(type=type),
                 case=FidOfCaseFun(type=type),
-                filecategory=FidOfCatFun(type=type)
+                filecategory=FidOfCatFun(type=type),
+                both=bothFun(type=type)
                 )
   fid
 }

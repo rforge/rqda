@@ -9,7 +9,7 @@ body {
   padding-left: 3em;
   padding-right: 3em;
   font-family: "Times New Roman",Times, serif;
-  color: darkblue;
+  color: blue;
   font-size:13px}
 h1 {
   font-family: Helvetica, Arial,SunSans-Regular, sans-serif;
@@ -33,7 +33,7 @@ h1 {
 <p><b>0. Design principles </b>
 <p>Reliability: This is the most important thing. In order to maximize the reliability, every change will write to the *.rqda file directly, so you don't have to manually save your project.
 <p>Capacity of file management: This package is written for my own research, aiming at analyzing newspaper reports. In this case, there are lots of files, and I have put much effect on the management and organization of files (Sorting, Show coded files only, Show uncoded files only, Show those fit the searching criterion only etc.).
-<p>Mixed methods study: RQDA aims at mixed methods study. One example is the Cases Tab, which offers possibility of Qualitative Comparative Study (see <A target="_blank" HREF=http://asrr.r-forge.r-project.org/>ASRR</a> or <A target="_blank" HREF=http://cran.r-project.org/web/packages/QCA/index.html>QCA</a> for more).
+<p>Mixed methods study: RQDA aims at mixed methods study. One example is the Cases Tab, which offers possibility of Qualitative Comparative Study (see <A target="_blank" HREF=http://asrr.r-forge.r-project.org/>QCA3</a> or <A target="_blank" HREF=http://cran.r-project.org/web/packages/QCA/index.html>QCA</a> for more).
 
 <p><b>1. Project </b>
 <p>You can create a new project in by clicking the new project button in Project Tab. RQDA will create a *.rqda file, which is a  SQLite database. All the information (e.g. files, code list, all kinds of memo, coding, and relation between codes or between files etc.) is stored in that single file. Single *.rqda file makes backup or data migration much easier.
@@ -64,7 +64,9 @@ h1 {
 
 <p>If you want to see what information has been attached to a code, you can  double click a code to retrieval all the related coding to that code. This process is called <b>"coding retrieval"</b>. Of course, you can select a code, and then click retrieval button to conduct similar operation. The latter method has an advantage that you can go back to the original file content by clicking the back button within the retrieved coding (though this method takes a bit more time to retrieve the coding). This method can give you a closeness with the original content and avoid, to some extent, segmentation due to coding. To get a overall statistics of coding, you can use R function SummaryCoding() to inspect the "Number of codings for each code", "Average number of words assciated with each code", "Number of files associated with each code". You can get more by GetCodingTable and GetFileId function. For more information, please refer to the help page by <i>?GetCodingTable</i> and <i>?GetFileId</i>.
 
-<p> When the file is open, all the codings are highlighted (You can click "HL ALL" button to achieve the same effect). If you  select a highlighted coding, and click "C2Info" button, a window called "associated code-list" pops up, it shows what codes the selected coding is attached to. By double-clicking a code in the "associated code-list" window, you can retrieve all the codings of that code.
+<p> When the file is open, all the codings are highlighted. You can click "HL ALL" button to achieve the same effect.
+
+<p> After finish coding, you can retrieve the coded text segments with the selected code. Unconditional retrieval, retrieval codings associated with specific case or file categories are all possible by setting type of retrieval (see section <b>8. setting</b> for more).
 
 <p><b>4. Writing memo</b>
 <p> Writing what you think during reading and coding is an integral part of QDA. This is called "<b>Memo writing</b>", and what you write is "<b>Memo</b>". RQDA offers different kinds of memos. For ideas apply to the whole project, you should write a project memo (project memo button in Project Tab). You can write memo about a specific file by clicking F-Memo button in Files Tab, or by cliking "File Memo" via popup memu in Files Tab. In the Codes Tab, there are two kinds of memo, the "C-memo" button is used to attach memo to a selected code. You can select a code then click "C-memo" button to view/add memo. "C2Memo" is used to attach a memo to a coding (a coded text segments). In the open file, you can see the coded segments (highlighted), select one segment, and click "C2Memo" button, you can view/add memo to that coded-segment.

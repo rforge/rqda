@@ -138,7 +138,7 @@ ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,
             InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select journal from %s where name='%s'",dbTable, Selected))[1, 1]
             if (isTRUE(all.equal(withinWidget,InRQDA))) {
                 return(FALSE) } else {
-                    val <- gconfirm("The Journal has bee change, Close anyway?",con=TRUE)
+                    val <- gconfirm("The Journal has bee changed, Close anyway?",con=TRUE)
                     return(!val)
                 }
         }
