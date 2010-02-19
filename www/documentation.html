@@ -99,11 +99,16 @@ method will add a whole file to a case. b) Open a file, select part of
 the file, select a case name, then click button "mark" in cases Tab,
 you can link the selected part of file to the selected case.
 
-<p><b>8. Settings</b>
-<p>"Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
-<p>Encoding of file is the encoding of the file you want to imported. If it is ASCII file, the default "unknown" is fine. If it is other encoding, you should set it accordingly. For example, you should set it to UTF-8 if the file is in UTF-8. Note that if you save a plain text with encoding UTF-8 with using MS notepad, the notepad will add BOM (Byte order Mark, it is a 3 bite mark) in the beginning of the file, for this case, you should set BOM to TRUE.
-<p>To change the setting is simple, you change the value of each setting and then click OK button. If you want to reset to the default setting, you can just click the default button.
-<p>When "Type of retrieval" is set to "case", and a case is selected, then only codings of the selected case is retrieved. However, if no cases are selected, all codings of the selected code are retrieved. Similarly, when set to "filecategory", and a file category is selected, then only codings of that category will be retrieved.
+<p><b>8. Attributes</b>
+<p> "Attribute" is basically the same concept of variable in quantitative study. When the "unit of analysis" is clearly defined, then each unit of analysis is treated as a case.
+
+You can assign attributes to a file or a case. The choice depends on your research design and questions. Usually, attributes of a file is closely related to data collection process, while attributes of a case is more analytical since what is a case depends on your analytical process.
+
+<p>For example, the research might be on collective action. Collective action is the unit of analysis, and I treat each as a case. By assigning attributes of collective action I can analysis the conditions of collective action.
+
+<p>To gain information about collective actions, I interview participants. Each interview record is a file, I can assign attributes (SES of the participants) of each files. The attributes of files play two roles. First, it can be used to show subset of files (it can be done by file category, but more efficient if the subset condition is complicated). Second, you can do statistics on these SES attributes, so you can report the profile of interviewees.
+
+<p>There is a delete button on Attributes Tab, you can select one attribute and delete it. This operation will delete all case attribute and file attributes. So please be cautious.
 
 <p><b>9.1 Use SQL to perform complex query</b>
 <p>There are several very powerful RQDA commands which do not appear in the
@@ -130,10 +135,16 @@ numbers of different codes give the command: GetCodingTable()
 <br> and(c1,c2,show=TRUE)
 </i>
 
-<p><b>10. Implementation History</b>
+<p><b>10. Settings</b>
+<p>"Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
+<p>Encoding of file is the encoding of the file you want to imported. If it is ASCII file, the default "unknown" is fine. If it is other encoding, you should set it accordingly. For example, you should set it to UTF-8 if the file is in UTF-8. Note that if you save a plain text with encoding UTF-8 with using MS notepad, the notepad will add BOM (Byte order Mark, it is a 3 bite mark) in the beginning of the file, for this case, you should set BOM to TRUE.
+<p>To change the setting is simple, you change the value of each setting and then click OK button. If you want to reset to the default setting, you can just click the default button.
+<p>When "Type of retrieval" is set to "case", and a case is selected, then only codings of the selected case is retrieved. However, if no cases are selected, all codings of the selected code are retrieved. Similarly, when set to "filecategory", and a file category is selected, then only codings of that category will be retrieved.
+
+<p><b>11. Implementation History</b>
 <p>When I started my PhD research project, I planned to conduct some content analysis of newspaper reports. I need a QDA software. I hope it is available to me, has basic functionalits of QDA software, runs both under Windows and Linux/FreeBSD. Last but not least, I should have full control of it. I can't find one, so I decided to write one by myself. I had this idea in 2007, but not until late 2008 do I implemented most parts of this package.
 
-<p><b>11. Warranty</b>
+<p><b>12. Warranty</b>
 <p>As a open source and free project, there is no warranty that it is fit for any particular purpose, or that it will work at all. You use RQDA solely at your own risk, and no liability can be assumed for any damage or loss incurred by your use of the software. You can learn more from the <A HREF="License.html">license</A>.
 
 
