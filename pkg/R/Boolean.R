@@ -19,7 +19,7 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
             rs <- ridx[seq(from=2,to=length(ridx),by=2)] ## second row index
             index1 <- idx[seq(from=1,to=length(idx),by=2)]
             index2 <- idx[seq(from=2,to=length(idx),by=2)]
-            ans <- cbind(c1[rf,c("fid","filename")],index1=index1,index2=index2)
+            ans <- cbind(CT1[rf,c("fid","filename")],index1=index1,index2=index2)
             ans
         }}
 
