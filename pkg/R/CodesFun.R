@@ -164,33 +164,50 @@ sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE){
               startMark=startMark,endMark=endMark,seltext=selected))
 }
 
-InsertAnchor <- function(widget,label,index,handler=FALSE,label.col=.rqda$codeMark.col){
+InsertAnchor <- function(widget,label,index,handler=FALSE,label.col="gray90",
+                         forward=TRUE){ ## forward is used only when handler is TRUE
     lab <- gtkLabelNew(label)
     label <- gtkEventBoxNew()
     if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(label.col)$color)
     label$Add(lab)
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     if (isTRUE(handler)){
-    button_press <-function(widget,event,W){
+      button_press <-function(widget,event,W){
         Iter <- gtkTextBufferGetIterAtChildAnchor(buffer,anchor)$iter
         Offset <- Iter$GetOffset()
         label <- lab$GetLabel()
-        label <- gsub("<$","",label)
-        Succeed <- FALSE
-        while (!Succeed){
+        if (forward) {
+          label <- gsub("<$","",label)
+          Succeed <- FALSE
+          while (!Succeed){
             if (! Iter$ForwardChar()) Succeed <- TRUE
             Anchor <- Iter$getChildAnchor()
             if (!is.null(Anchor)){
-                lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()##Anchor is event box.
-                lab <- gsub("^>","",lab)
-                if (lab==label){
-                    Succeed <- TRUE
-                    maxidx <- buffer$GetBounds()$end$GetOffset()
-                    ClearMark(W,min=0,max=maxidx)
-                    Offset2 <- Iter$GetOffset()
-                    HL(W=W, index=data.frame(Offset,Offset2))
-                }
-            }}}
+              lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()##Anchor is event box.
+              lab <- gsub("^>","",lab)
+              if (lab==label){
+                Succeed <- TRUE
+                maxidx <- buffer$GetBounds()$end$GetOffset()
+                ClearMark(W,min=0,max=maxidx)
+                Offset2 <- Iter$GetOffset()
+                HL(W=W, index=data.frame(Offset,Offset2))
+              }}}} else {
+                label <- gsub("^>","",label)
+                Succeed <- FALSE
+                while (!Succeed){
+                  if (! Iter$BackwardChar()) Succeed <- TRUE
+                  Anchor <- Iter$getChildAnchor()
+                  if (!is.null(Anchor)){
+                    lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()
+                    lab <- gsub("<$","",lab)
+                    if (lab==label){
+                      Succeed <- TRUE
+                      maxidx <- buffer$GetBounds()$end$GetOffset()
+                      ClearMark(W,min=0,max=maxidx)
+                      Offset2 <- Iter$GetOffset()
+                      HL(W=W, index=data.frame(Offset2,Offset)) ## note the offset2 comes first
+                    }}}}
+      }
     gSignalConnect(label, "button-press-event",button_press,data=widget)}
     iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
     anchorcreated <- buffer$createChildAnchor(iter)
