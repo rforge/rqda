@@ -34,7 +34,7 @@ and(CT1, CT2, showCoding = FALSE, method = c("overlap", "exact", "inclusion"))
   Ronggui HUANG
 }
 \seealso{
-  \code{relation}, \code{GetCodingTable}
+  \code{\link{relation}}, \code{\link{GetCodingTable}}
 }
 \examples{
 \dontrun{

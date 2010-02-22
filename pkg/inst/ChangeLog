@@ -1,6 +1,8 @@
 2010-02-21
 	* Click-handler for second half of code-mark.
 	* update citation file according to new convention, using meta.
+	* minor bugfixes of some Rd files. Tidy up various Rd files.
+	* use pkg:::foo in  mergeCodes() and RQDA2tm() to pass docs checking.
 	
 2010-02-14
 	* Add click handler to version and license.

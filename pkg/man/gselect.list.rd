@@ -5,7 +5,8 @@
   Select item(s) from a character vector.
 }
 \usage{
-gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500,x=420,y=2, ...)
+gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500,
+             x=420,y=2, ...)
 }
 \arguments{
   \item{list}{character vector. A list of items.}

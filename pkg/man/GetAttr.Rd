@@ -7,7 +7,7 @@ Get the attributes of case or file.
 }
 \usage{
 GetAttr(type = c("case", "file"),attrs = svalue(.rqda$.AttrNamesWidget),
-subset)
+        subset)
 
 ShowSubset(x,...)
 }

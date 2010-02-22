@@ -7,8 +7,8 @@
   Get the ids or names of files list.
 }
 \usage{
-	GetFileId(condition = c("unconditional", "case", "filecategory","both"), 
-			    type = c("all", "coded", "uncoded","selected"))
+GetFileId(condition = c("unconditional", "case", "filecategory","both"), 
+          type = c("all", "coded", "uncoded","selected"))
 
 GetFileName(fid = GetFileId())
 }

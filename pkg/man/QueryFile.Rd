@@ -14,7 +14,7 @@ QueryFile(or, and = NULL, not = NULL, names = TRUE)
   \item{or}{ code id.}
   \item{and}{ code id.}
   \item{not}{code id.}
-  \item{name}{logical, returns file names when TRUE.}
+  \item{names}{logical, returns file names when TRUE.}
 }
 \details{
 This function is experimental, and may be changed in future.
@@ -32,9 +32,7 @@ HUANG Ronggui
 \examples{
 \dontrun{
 QueryFile(or="1,2") ## files coded to code 1 or 2.
-
 QueryFile(or="1", and="2") ## files coded to code 1 and 2.
-
 QueryFile(or="1", not="2,3") ## files coded to code 1 but not either 2 or 2.
 }
 }
