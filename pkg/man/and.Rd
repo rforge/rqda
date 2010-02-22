@@ -1,41 +1,40 @@
 \name{and}
 \alias{and}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Boolean operation on codings.
+  Boolean operation on codings.
 }
 \description{
-Return codings belong to two codes.
+  Return codings belong to two codes.
 }
 \usage{
 and(CT1, CT2, showCoding = FALSE, method = c("overlap", "exact", "inclusion"))
 }
 \arguments{
   \item{CT1}{
-Coding of code one.
-}
+    Coding of code one.
+  }
   \item{CT2}{
-Coding of code two.
-}
+    Coding of code two.
+  }
   \item{showCoding}{
-Logic, return resulting coding if TRUE.
-}
+    Logic, return resulting coding if TRUE.
+  }
   \item{method}{
-a character vector, used to define the operation of and.
-}
+    a character vector, used to define the operation of and.
+  }
 }
 \details{
-When the relation of two coding is element of method argument, then the
-overlapping coding is the result of the and operator.
+  When the relation of two coding is element of method argument, then
+  the overlapping coding is the result of the and operator.
 }
 \value{
-  a data frame.
+  a data frame if there is overlapping coding. Otherwise, it is NULL.
 }
 \author{
-Ronggui HUANG
+  Ronggui HUANG
 }
 \seealso{
-\code{relation}, \code{GetCodingTable}
+  \code{relation}, \code{GetCodingTable}
 }
 \examples{
 \dontrun{

@@ -137,7 +137,7 @@
     memo:\tab memo of the file.\cr
     owner:\tab creator the the file.\cr
     date:\tab the date of the file-import.\cr
-    dataM:\tab not used now.\cr
+    dataM:\tab date of last editing of the file content.\cr
     status:\tab 1 for standard status and 0 for temporarily deleted file.\cr
   }
   
