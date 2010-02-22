@@ -13,8 +13,8 @@
 Package: \tab RQDA\cr
 Type: \tab Package\cr
 Version: \tab 0.1-9\cr
-Date: \tab 2009-09-12\cr
-Depends: \tab R (>= 2.5.0), DBI, RSQLite, gWidgets (>= 0.0-31), gWidgetsRGtk2 (>= 0.0-36),igraph \cr
+Date: \tab 2010-02-22\cr
+Depends: \tab R (>= 2.8.0), DBI, RSQLite, gWidgets (>= 0.0-31), gWidgetsRGtk2 (>= 0.0-36),igraph \cr
 Imports: \tab RGtk2 (>= 2.12.8), methods \cr
 Suggests: \tab tm, tcltk \cr
 License: \tab New style BSD License\cr
