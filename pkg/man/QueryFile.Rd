@@ -8,12 +8,13 @@ Retrieval of file names according to their codings.
 To retrieve file names according to their codings and the relationship of codings.
 }
 \usage{
-QueryFile(or, and = NULL, not = NULL)
+QueryFile(or, and = NULL, not = NULL, names = TRUE)
 }
 \arguments{
   \item{or}{ code id.}
   \item{and}{ code id.}
   \item{not}{code id.}
+  \item{name}{logical, returns file names when TRUE.}
 }
 \details{
 This function is experimental, and may be changed in future.

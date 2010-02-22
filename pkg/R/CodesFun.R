@@ -107,7 +107,7 @@ markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL
       buffer <- slot(widget,"widget")@widget$GetBuffer()
       if(addButton) {
         InsertAnchor(widget,sprintf("%s<",buttonLabel),index=from,handler=TRUE,label.col=buttonCol)
-        InsertAnchor(widget,sprintf(">%s",buttonLabel),index=to + 1)
+        InsertAnchor(widget,sprintf(">%s",buttonLabel),index=to + 1,handler=TRUE,forward=FALSE)
       }
       m1 <- buffer$GetMark(sprintf("%s.1", rowid))
       startIter <- buffer$GetIterAtMark(m1)$iter
