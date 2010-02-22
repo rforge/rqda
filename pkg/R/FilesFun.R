@@ -151,8 +151,10 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
     }
     else {
       tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
-      assign(".root_edit",gwindow(title=SelectedFileName,parent=getOption("widgetCoordinate"),
-                                  width=600,height=600),env=.rqda)
+      gw <- gwindow(title=SelectedFileName,parent=getOption("widgetCoordinate"),width=600,height=600)
+      mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+      gw@widget@widget$SetIconFromFile(mainIcon)
+      assign(".root_edit",gw,env=.rqda)
       assign(".root_edit2",gpanedgroup(horizontal = FALSE, con=.rqda$.root_edit),env=.rqda)
       gbutton("Save File",con=.rqda$.root_edit2,handler=function(h,...){
         content <-  svalue(.rqda$.openfile_gui)
