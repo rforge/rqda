@@ -1,10 +1,16 @@
-To cite package 'RQDA' in publications use:
+citHeader("To cite package 'RQDA' in publications use:")
+     
+     desc <- packageDescription("RQDA")
+     year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", desc$Date)
+     vers <- paste("R package version", desc$Version)
 
-Huang Ronggui. 2010. RQDA: R-based Qualitative Data Analysis. R package version 0.1-9.http://rqda.r-forge.r-project.org/.
+     citEntry(entry="Manual",
+              title = "RQDA: R-based Qualitative Data Analysis",
+              author = personList(as.person("Ronggui HUANG")),
+              year = 2010,
+              note = vers,
 
-@Manual{RQDA_rgHUANG,
-    title = {RQDA: R-based Qualitative Data Analysis},
-    author = {Ronggui HUANG},
-    year = {2010},   
-    url = {http://rqda.r-forge.r-project.org/}
-}
+              textVersion =
+              paste("HUANG, Ronggui. ",
+                    "(",year,"). RQDA: R-based Qualitative Data Analysis. ",
+                    vers, ".", sep=""))
