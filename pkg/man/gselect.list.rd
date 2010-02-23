@@ -25,8 +25,9 @@ gselect.list(list, multiple = TRUE, title = NULL, width = 200, height = 500,
   The license of this function is subject to interpretation of the first author.
 }
 \value{
-  A character vector of selected items with encoding of UTF-8. If no item was selected (or
-  'Cancel' was used), '""' is returned.
+  A character vector of selected items with encoding of UTF-8. If no
+  item was selected and click 'OK', it returns length 0 character
+  vector. If click 'Cancel', '""' is returned.
 }
 \author{John Verzani and Ronggui HUANG}
 \seealso{\code{\link[utils]{select.list}}}

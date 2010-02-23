@@ -1,6 +1,5 @@
 2010-02-22
-	* bugfixes of code name with ' in coding Tab (works for add,
-	delete and rename now).
+	* Various bugfixes of code name with ' in coding Tab.
 
 2010-02-21
 	* Click-handler for second half of code-mark.

@@ -159,26 +159,27 @@ CodeCatDropFromButton <- function(label="Drop From",Widget=.rqda$.CodeofCat,...)
 {
   ans <- gbutton(label,handler=function(h,...) {
     ## Get CodeList already in the category (table treecode): svalue()
-    CodeOfCat <- svalue(Widget)
-    if ((NumofSelected <- length(CodeOfCat)) ==0) {
-      gmessage("Please select the Codes you want to delete.",con=TRUE)} else
-    {
-      ## Give a confirm msg
-      del <- gconfirm(sprintf("Delete %i code(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
-      if (isTRUE(del)){
-        ## set status==0 for those selected CodeList (table treecode)
-    SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
-    Encoding(SelectedCodeCat) <- Encoding(CodeOfCat)<- "UTF-8"
-    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from codecat where status=1 and name='%s'",SelectedCodeCat))[,1]
-    for (i in CodeOfCat){
-    cid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where status=1 and name='%s'",i))[,1]
-    dbGetQuery(.rqda$qdacon,sprintf("update treecode set status==0 where catid==%i and cid==%i",catid,cid))
-  }
-    ## update .CodeofCat Widget
-    UpdateCodeofCatWidget()
-}}
-  }
-          )
+    CodeOfCat2 <- svalue(Widget)
+    if ((NumofSelected <- length(CodeOfCat2)) ==0) {
+        gmessage("Please select the Codes you want to delete.",con=TRUE)
+    } else {
+        ## Give a confirm msg
+        CodeOfCat <- enc(CodeOfCat2)
+        del <- gconfirm(sprintf("Delete %i code(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
+        if (isTRUE(del)){
+            ## set status==0 for those selected CodeList (table treecode)
+            SelectedCodeCat <- svalue(.rqda$.CodeCatWidget)
+            Encoding(SelectedCodeCat) <- "UTF-8"
+            catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from codecat where status=1 and name='%s'",SelectedCodeCat))[,1]
+            for (i in CodeOfCat){
+                cid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where status=1 and name='%s'",i))[,1]
+                dbGetQuery(.rqda$qdacon,sprintf("update treecode set status==0 where catid==%i and cid==%i",catid,cid))
+            }
+            ## update .CodeofCat Widget
+            UpdateCodeofCatWidget()
+        }}
+}
+                 )
   gtkTooltips()$setTip(ans@widget@widget,"Drop selected code(s) from code category.")
   return(ans)
 }

@@ -337,7 +337,7 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
 CodesNamesWidgetMenu$"Export Codings"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     path=gfile(type="save",text = "Type a name for the exported codings (with suffix of .html) and click OK.")
-    if (path!=""){
+    if (!is.na(path)){
       Encoding(path) <- "UTF-8"
       ExportCoding(file=path)
     }}}
@@ -400,12 +400,13 @@ CodesNamesWidgetMenu$"Show Codes Without Code Category"$handler <- function(h, .
 CodesNamesWidgetMenu$"Set Coding Mark Color"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     Selected <- svalue(.rqda$.codes_rqda)
+    Selected <- enc(Selected,"UTF-8")
     codeInfo <- dbGetQuery(.rqda$qdacon,sprintf("select id,color from freecode where name=='%s'",Selected))[1,]
     cid <- codeInfo[,1]
     codeColor <- codeInfo[,2]
     if (is.na(codeColor)) title <- "Change color to..." else title <- sprintf("Change from '%s' to...",codeColor)
     newCol <- gselect.list(colors(), multiple = FALSE, title = title)
-    if (newCol!=""){
+    if (newCol!="" && length(newCol)!=0){
     if (!identical(codeColor,newCol)){
       RQDAQuery(sprintf("update freecode set color='%s' where id ==%i",newCol,cid))
     }

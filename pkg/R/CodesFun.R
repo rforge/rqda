@@ -283,9 +283,10 @@ countAnchorsWithFileName <- function(to,fileName=enc(svalue(.rqda$.root_edit),en
 retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.rqda$.codes_rqda)
 ## retrieval is rewritten in rev 134
 {
-  currentCode <- svalue(CodeNameWidget)
-  if (length(currentCode)!=0){
-    currentCode <- enc(currentCode,"UTF-8")
+  currentCode2 <- svalue(CodeNameWidget)
+  if (length(currentCode2)!=0){
+    currentCode <- enc(currentCode2,"UTF-8")
+    Encoding(currentCode2) <- "UTF-8"
     currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
     order <- match.arg(order)
     order <- switch(order,
@@ -302,7 +303,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
       retrieval$fname <-""
       Nfiles <- length(fid)
       Ncodings <- nrow(retrieval)
-      title <- sprintf(ngettext(Ncodings,"%i Retrieved coding: \"%s\" from %s %s","%i Retrieved codings: \"%s\" from %s %s"),Ncodings,currentCode,Nfiles,ngettext(Nfiles,"file","files"))
+      title <- sprintf(ngettext(Ncodings,"%i Retrieved coding: \"%s\" from %s %s","%i Retrieved codings: \"%s\" from %s %s"),Ncodings,currentCode2,Nfiles,ngettext(Nfiles,"file","files"))
       tryCatch(eval(parse(text=sprintf("dispose(.rqda$.codingsOf%s)",currentCid))),error=function(e){})
       .gw <- gwindow(title=title, parent=getOption("widgetCoordinate"),width=600,height=600)
       mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
@@ -375,7 +376,7 @@ ExportCoding <- function(file="Exported Codings.html",Fid=NULL,order=c("fname","
 {
 ExportCodingOfOneCode <- function(file,currentCode,Fid,order=c("fname","ftime","ctime"),append=TRUE){
   if (length(currentCode)!=0){
-    currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
+    currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",enc(currentCode)))[1,1]
     order <- match.arg(order)
     order <- switch(order,
                     fname="order by source.name",
@@ -417,18 +418,18 @@ ExportCodingOfOneCode <- function(file,currentCode,Fid,order=c("fname","ftime","
 if (is.null(Fid)) Fid <- GetFileId(type="coded")
 allcodes <- RQDAQuery(sprintf("select freecode.name from freecode, coding where freecode.status==1 and freecode.id==coding.cid and coding.status==1 and coding.fid in (%s) group by freecode.name",paste(shQuote(Fid),collapse=",")))$name
 if (!is.null(allcodes)){
-  allcodes <- enc(allcodes,"UTF-8")
-  CodeList <- gselect.list(allcodes, multiple = TRUE, title = "Select one or more codes.")
-  if (length(CodeList)>1 || CodeList!="") {
-    if (!append){
-    cat("<HEAD><META HTTP-EQUIV='CONTENT-TYPE' CONTENT='text/html; charset=UTF-8'><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
-    }
-    cat(sprintf("Created by <a href='http://rqda.r-forge.r-project.org/'>RQDA</a> at %s<br><br>\n",Sys.time()),file=file,append=TRUE)
-    cat(paste("<a href='#",CodeList,"'>",CodeList,"<a>",sep="",collapse="<br>\n"),"<hr><br>",file=file,append=TRUE)
-    for (i in seq_along(CodeList)){
-      ## append <- ifelse(i==1,append,TRUE)
-    ExportCodingOfOneCode(file=file,currentCode=CodeList[i],Fid=Fid,order=order,append=TRUE)
-}}}}
+    Encoding(allcodes) <- "UTF-8"
+    CodeList <- gselect.list(allcodes, multiple = TRUE, title = "Select one or more codes.")
+    if (length(CodeList)>1 || CodeList!="") {
+        if (!append){
+            cat("<HEAD><META HTTP-EQUIV='CONTENT-TYPE' CONTENT='text/html; charset=UTF-8'><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
+        }
+        cat(sprintf("Created by <a href='http://rqda.r-forge.r-project.org/'>RQDA</a> at %s<br><br>\n",Sys.time()),file=file,append=TRUE)
+        cat(paste("<a href='#",CodeList,"'>",CodeList,"<a>",sep="",collapse="<br>\n"),"<hr><br>",file=file,append=TRUE)
+        for (i in seq_along(CodeList)){
+            ## append <- ifelse(i==1,append,TRUE)
+            ExportCodingOfOneCode(file=file,currentCode=CodeList[i],Fid=Fid,order=order,append=TRUE)
+        }}}}
 
 
 ClickHandlerFun <- function(CodeNameWidget){
@@ -602,20 +603,20 @@ Annotation <- function(...){
   }}
 
 CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory","both")){
-  if (is_projOpen(env=.rqda,conName="qdacon")) {
-  condition <- match.arg(condition)
-  fid <- GetFileId(condition,"coded")
-  if (length(fid)!=0){
-  ans <- unlist(RQDAQuery(sprintf("select name from freecode where status==1 and id in (select cid from coding where status==1 and fid in (%s) group by cid)",paste(shQuote(fid),collapse=","))))
-  ans <- enc(ans)
-  .rqda$.codes_rqda[] <- ans
-  invisible(ans)
-}}}
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        condition <- match.arg(condition)
+        fid <- GetFileId(condition,"coded")
+        if (length(fid)!=0){
+            ans <- unlist(RQDAQuery(sprintf("select name from freecode where status==1 and id in (select cid from coding where status==1 and fid in (%s) group by cid)",paste(shQuote(fid),collapse=","))))
+            Encoding(ans) <- "UTF-8"
+            .rqda$.codes_rqda[] <- ans
+            invisible(ans)
+        }}}
 
 AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
 {
-    codename <- svalue(Widget)
-    Encoding(codename) <- "unknown"
+    codename2 <- svalue(Widget)
+    codename <- enc(codename2)
     query <- dbGetQuery(.rqda$qdacon, sprintf("select id, name from freecode where name in(%s) and status=1",
                                               paste("'", codename, "'", sep = "", collapse = ",")))
     cid <- query$id
