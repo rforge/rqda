@@ -104,7 +104,8 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
     })} ## creat marks for annotation
   if (nrow(markidx)!=0){
     sapply(markidx[, "rowid"], FUN = function(x) {
-      code <- enc(markidx[markidx$rowid == x, "name"],"UTF-8")
+      code <- markidx[markidx$rowid == x, "name"]
+      Encoding(code) <- "UTF-8"
       codeColor <- markidx[markidx$rowid == x, "color"]
       if (is.na(codeColor)) codeColor <-  DefaultCodeColor[as.numeric(markidx[markidx$rowid == x, "id"]) %% 11+1] ## specification of default color for codemark ##c("antiquewhite1","green","aquamarine2","bisque1","brown1")
       m1 <- buffer$GetMark(sprintf("%s.1", x))

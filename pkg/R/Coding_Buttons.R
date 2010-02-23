@@ -68,8 +68,9 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
         if (ans$start != ans$end){ ## when selected no text, makes on sense to do anything.
           SelectedCode <- svalue(codeListWidget)
           if (length(SelectedCode)!=0){
-          SelectedCode <- enc(SelectedCode,encoding="UTF-8")
-          codeInfo<-  dbGetQuery(con,sprintf("select id,color from freecode where name=='%s'",SelectedCode))
+          Encoding(SelectedCode) <- "UTF-8"
+          SelectedCode2 <- enc(SelectedCode,encoding="UTF-8")
+          codeInfo<-  dbGetQuery(con,sprintf("select id,color from freecode where name=='%s'",SelectedCode2))
           currentCid <- codeInfo[,1]
           codeCol <- codeInfo[,2] ## select color for the code
           ## if (is.na(codeCol)) codeCol <-  c("antiquewhite1","green","aquamarine2","bisque1","brown1")[as.numeric(currentCid) %% 5+1] ## specification of default color for codemark
@@ -147,11 +148,12 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
         if (!is.null(idx1)) {
           ## codeListWidget <- get(codeListWidget,env=.rqda)
           SelectedCode <- svalue(codeListWidget)
-          if (length(SelectedCode)==0) {gmessage("Select a code first.",con=TRUE)} else{
-            SelectedCode <- enc(SelectedCode,"UTF-8") ## Encoding(SelectedCode) <- "UTF-8"
+          if (length(SelectedCode)==0) {gmessage("Select a code first.",con=TRUE)} else{          
+            Encoding(SelectedCode) <- "UTF-8"
+            SelectedCode2 <- enc(SelectedCode,"UTF-8") 
             currentCid <-  dbGetQuery(.rqda$qdacon,
                                       sprintf("select id from freecode where name=='%s'",
-                                              SelectedCode))[,1]
+                                              SelectedCode2))[,1]
             SelectedFile <- svalue(.rqda$.root_edit)
             SelectedFile <- enc(SelectedFile,"UTF-8") ## Encoding(SelectedFile) <- "UTF-8"
             currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
@@ -259,8 +261,9 @@ CodingMemoButton <- function(label="C2Memo")
       else {
         SelectedCode <- svalue(.rqda$.codes_rqda)
         if (length(SelectedCode)==0) gmessage("select a code first.",con=TRUE) else {
-          SelectedCode <- enc(SelectedCode,"UTF-8")
-          currentCid <-  RQDAQuery(sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+          Encoding(SelectedCode) <- "UTF-8"
+          SelectedCode2 <- enc(SelectedCode,"UTF-8")
+          currentCid <-  RQDAQuery(sprintf("select id from freecode where name=='%s'",SelectedCode2))[,1]
           SelectedFile <- svalue(.rqda$.root_edit)
           SelectedFile <- enc(SelectedFile,encoding="UTF-8")
           currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
