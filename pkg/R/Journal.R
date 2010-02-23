@@ -15,7 +15,7 @@ DeleteJournalButton <- function(label="Delete"){
         if (isTRUE(del)){
           Selected <- svalue(.rqda$.JournalNamesWidget)
           Encoding(Selected) <- "UTF-8"
-          dbGetQuery(.rqda$qdacon,sprintf("update journal set status=0 where name=='%s'",Selected))
+          RQDAQuery(sprintf("update journal set status=0 where name=='%s'",enc(Selected)))
           JournalNamesUpdate()
         }
       }
@@ -34,7 +34,6 @@ RenameJournalButton <- function(label="Rename")
       else {
         NewName <- ginput("Enter new journal name. ",text=selected, icon="info")
         if (!is.na(NewName)) {
-          NewName <- enc(NewName,"UTF-8")
           rename(from=selected,to=NewName,"journal")
           JournalNamesUpdate()
         }
@@ -79,14 +78,14 @@ AddNewJournalFun <- function(){
         gbutton("Save Journal",con=get(".AddNewJournalWidget2",env=.rqda),handler=function(h,...){
             title <- ginput("Enter new file name. ",text=Sys.time(), icon="info")
             if (!is.na(title)){
-            if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from journal where name=='%s'",title)))!=0) {
+            if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from journal where name=='%s'",enc(title))))!=0) {
                 title <- paste("New",title)
             }## Make sure it is unique
             content <- svalue(textW)
             content <- enc(content,encoding="UTF-8") ## take care of double quote.
             ans <- dbGetQuery(.rqda$qdacon,sprintf("insert into journal (name, journal,date,owner, status)
                              values ('%s', '%s', '%s', '%s', %i)",
-                                                   title, content, date(),.rqda$owner,1))
+                                                   enc(title), content, date(),.rqda$owner,1))
             if (is.null(ans)) {
                 dispose(.rqda$.AddNewJournalWidget)
                 ##gmessage("Succeed.",con=T)
@@ -121,21 +120,21 @@ ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,
           newcontent <- svalue(W)
           newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
           Encoding(Selected) <- "UTF-8"
-          dbGetQuery(.rqda$qdacon,sprintf("update %s set journal='%s' where name='%s'",dbTable,newcontent,Selected))
+          dbGetQuery(.rqda$qdacon,sprintf("update %s set journal='%s' where name='%s'",dbTable,newcontent,enc(Selected)))
         }
                 )## end of save button
         tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
         font <- pangoFontDescriptionFromString(.rqda$font)
         gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
         assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
-        prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select journal from %s where name='%s'",dbTable,Selected))[1,1]
+        prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select journal from %s where name='%s'",dbTable,enc(Selected)))[1,1]
         if (is.na(prvcontent)) prvcontent <- ""
         Encoding(prvcontent) <- "UTF-8"
         W <- get(sprintf(".%smemoW",prefix),env=.rqda)
         add(W,prvcontent,do.newline=FALSE)
         addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...){
             withinWidget <- svalue(get(sprintf(".%smemoW",prefix),env=.rqda))
-            InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select journal from %s where name='%s'",dbTable, Selected))[1, 1]
+            InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select journal from %s where name='%s'",dbTable, enc(Selected)))[1, 1]
             if (isTRUE(all.equal(withinWidget,InRQDA))) {
                 return(FALSE) } else {
                     val <- gconfirm("The Journal has bee changed, Close anyway?",con=TRUE)
