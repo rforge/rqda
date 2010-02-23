@@ -86,7 +86,6 @@ OrderByTime <- function(date,decreasing = FALSE)
 MemoWidget <- function(prefix,widget,dbTable){
   ## prefix of window tile. E.g. "Code" ->  tile of gwindow becomes "Code Memo:"
   ## widget of the F-cat/C-cat list, such as widget=.rqda$.fnames_rqda
-
   if (is_projOpen(env=.rqda,"qdacon")) {
       Selected <- svalue(widget)
       if (length(Selected)==0){
@@ -95,7 +94,7 @@ MemoWidget <- function(prefix,widget,dbTable){
       else {
           CloseYes <- function(currentCode){
               withinWidget <- svalue(get(sprintf(".%smemoW",prefix),env=.rqda))
-              InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable, currentCode))[1, 1]
+              InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable, enc(currentCode,"UTF-8")))[1, 1]
               if (isTRUE(all.equal(withinWidget,InRQDA))) {
                   return(TRUE) } else {
                       if (is.na(InRQDA) && withinWidget=="")  {
@@ -107,13 +106,15 @@ MemoWidget <- function(prefix,widget,dbTable){
           } ## helper function
           IsOpen <- tryCatch(eval(parse(text=sprintf("svalue(.rqda$.%smemoW)",prefix))),error=function(e) simpleError("No opened memo widget."))
           if (!inherits(IsOpen,"simpleError")){ ## if a widget is open
-              prvSelected <- sub(sprintf("^%s Memo:",prefix),"",enc(svalue(get(sprintf(".%smemo",prefix),env=.rqda)),"UTF-8"))
-              prvSelected <- iconv(prvSelected,to="UTF-8")
+              prvSelected <- svalue(get(sprintf(".%smemo",prefix),env=.rqda)) ## title of the memo widget
+              Encoding(prvSelected) <- "UTF-8"
+              prvSelected <- sub(sprintf("^%s Memo:",prefix),"",prvSelected)
+              prvSelected <- iconv(prvSelected,to="UTF-8") ## previously selected codename
               IfCont <- CloseYes(currentCode=prvSelected)}
           if ( inherits(IsOpen,"simpleError") || IfCont){ ## if not open or the same.
               tryCatch(eval(parse(text=sprintf("dispose(.rqda$.%smemo)",prefix))),error=function(e) {})
               gw <- gwindow(title=sprintf("%s Memo:%s",prefix,Selected),
-                     parent=getOption("widgetCoordinate"),width=600,height=600)
+                            parent=getOption("widgetCoordinate"),width=600,height=600)
               mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
               gw@widget@widget$SetIconFromFile(mainIcon)
               assign(sprintf(".%smemo",prefix),gw,env=.rqda)
@@ -122,24 +123,19 @@ MemoWidget <- function(prefix,widget,dbTable){
                      env=.rqda)
               gbutton("Save Memo",con=get(sprintf(".%smemo2",prefix),env=.rqda),handler=function(h,...){
                   newcontent <- svalue(W)
-                  ## Encoding(newcontent) <- "UTF-8"
                   newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
-                  ## Encoding(Selected) <- "UTF-8"
-                  Selected <- enc(Selected,encoding="UTF-8")
-                  dbGetQuery(.rqda$qdacon,sprintf("update %s set memo='%s' where name='%s'",dbTable,newcontent,Selected))
+                  dbGetQuery(.rqda$qdacon,sprintf("update %s set memo='%s' where name='%s'",dbTable,newcontent,enc(Selected)))
               }
                       )## end of save memo button
               tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
               font <- pangoFontDescriptionFromString(.rqda$font)
               gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
               assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
-              prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable,Selected))[1,1]
+              prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable,enc(Selected)))[1,1]
               if (is.na(prvcontent)) prvcontent <- ""
               Encoding(prvcontent) <- "UTF-8"
               W <- get(sprintf(".%smemoW",prefix),env=.rqda)
-              ## add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
               add(W,prvcontent,do.newline=FALSE)
-              ## add handler to make sure the change is not lost when closed
               addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...)  {!CloseYes(Selected)})
           }}}}
 
