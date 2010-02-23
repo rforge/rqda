@@ -24,9 +24,9 @@ DeleteCodeButton <- function(label="Delete"){
               del <- gconfirm("Really delete the code?",icon="question")
               if (isTRUE(del)){
                 SelectedCode <- svalue(.rqda$.codes_rqda)
-                SelectedCode <- enc(SelectedCode,encoding="UTF-8")
-                cid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",SelectedCode))$id
-                dbGetQuery(.rqda$qdacon,sprintf("update freecode set status=0 where name=='%s'",SelectedCode))
+                SelectedCode2 <- enc(SelectedCode,encoding="UTF-8")
+                cid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",SelectedCode2))$id
+                dbGetQuery(.rqda$qdacon,sprintf("update freecode set status=0 where name=='%s'",SelectedCode2))
                 ## set status in table freecode to 0
                 dbGetQuery(.rqda$qdacon,sprintf("update coding set status=0 where cid==%i",cid))
                 ## set status in table coding to 0
@@ -298,11 +298,11 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
         ## get the new file names
         NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
         if (!is.na(NewCodeName)) {
-          ## Encoding(NewCodeName) <- "UTF-8"
-          NewCodeName <- enc(NewCodeName,encoding="UTF-8")
-          selectedCodeName <- enc(selectedCodeName,encoding="UTF-8")
+          Encoding(NewCodeName) <- "UTF-8"
+          NewCodeName2 <- enc(NewCodeName,encoding="UTF-8")
+          selectedCodeName2 <- enc(selectedCodeName,encoding="UTF-8")
           ## update the name in source table by a function
-          rename(selectedCodeName,NewCodeName,"freecode")
+          rename(selectedCodeName2,NewCodeName2,"freecode")
           ## (name is the only field should be modifed, as other table use ID rather than name)
           ## CodeNamesUpdate(sortByTime=FALSE)
           UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)

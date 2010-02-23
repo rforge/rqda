@@ -1,14 +1,18 @@
+2010-02-22
+	* bugfixes of code name with ' in coding Tab (works for add,
+	delete and rename now).
+
 2010-02-21
 	* Click-handler for second half of code-mark.
 	* update citation file according to new convention, using meta.
 	* minor bugfixes of some Rd files. Tidy up various Rd files.
 	* use pkg:::foo in  mergeCodes() and RQDA2tm() to pass docs checking.
-	
+
 2010-02-14
 	* Add click handler to version and license.
 	* Move some files to inst dir to make it consistent with convention.
 	* New option "both" in "type of retrieval".
-	
+
 2010-02-13
 	* fix a bug in AddToCodeCategory().
 
@@ -17,7 +21,7 @@
 
 2010-02-01
 	* Improve and() and add and.Rd.
-	
+
 2010-01-29
 	* better management system of code category, including new function of AddToCodeCategory().
 	* change positions of code category Tab.
@@ -26,19 +30,19 @@
 2010-01-25
 	* memo popup menu in code of category.
 	* add subset argument to GetAtrr().
-	
+
 2010-01-19
 	* 'Add to code category' popup menu in code tab.
 
 1010-01-18
 	* Now regard '' in memo field as NULL.
-	
+
 2010-01-02
 	* bugfix of saveFUN4FileAttr() and ShowFileProperty().
 	* Improve QueryFile() and its Rd file.
 	* Bugfix of file category memo button and add tooltips.
 	* setting about code mark color is no longer needed.
-	
+
 2009-12-29
 	* Bugfix of saveFUN4FileAttr(). Thanks Julien Biaudet for bug
 	report.
@@ -47,16 +51,16 @@
 	function of and().
 	* change default color scheme for code mark again, 11-color scheme
 	from http://colorbrewer2.org/.
-	
+
 2009-12-28
 	* Rename Query to QueryFile.
-	
+
 2009-11-22
 	* change default color scheme for code mark.
 
 2009-11-08
 	* fix a minor bug in SummaryCoding (Thanks Julien Biaudet)
-	
+
 2009-10-16
 	* add argument to markRange and InsertAnchor to allow user-provided color.
 	* markCodeFun/ViewFileFun use code-specific color to highlight the code-mark.
@@ -100,21 +104,21 @@
 	* "Show last coded file" in popup menu of Files Tab.
 	* Revision of "Find a word" menu according to new method of
 	highlighting coding.
-	
+
 2009-06-10
 	* change GetFileId() according change of 2009-06-05.
-	
+
 2009-06-06
 	* use font from "font setting" to set font of journal widget.
 
 2009-06-05
 	* When select multiple file categories, "files of this category"
 	shows the intersect of files from these categories.
-	
-	
+
+
 2009-06-03
 	* use gcombox rather than gtext to set colors in settings Tab.
-	
+
 2009-05-31
 	* set default coder name to username of OS.
 	* Add number of files in the title of retrieved codings widget and
@@ -122,7 +126,7 @@
 	* upgrade database structure to version "0.1.8" (Old version of
 	RQDA does not work with new *.rqda for the attributes). NOTE: add
 	status column to caseAttr and fileAttr tables.
-	
+
 2009-05-30
 	* New function of ExportCodings() for exporting codings to a html file.
 	* Other minor improvements.
@@ -137,11 +141,11 @@
 	* Revise MarkCodeFun() accodingly, so insert code label as mark
 	after data is written to database and delete unused code label too
 	(when new and old code are overlapped).
-		
+
 2009-05-28
 	* new function of countAnchorsWithFileName(), different way to do
 	things as countAnchors(), faster.
-	
+
 2009-05-27
 	* Rewrite retrieval() according to revision of 2009-05-26.
 
