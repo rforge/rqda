@@ -148,9 +148,9 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
         if (!is.null(idx1)) {
           ## codeListWidget <- get(codeListWidget,env=.rqda)
           SelectedCode <- svalue(codeListWidget)
-          if (length(SelectedCode)==0) {gmessage("Select a code first.",con=TRUE)} else{          
+          if (length(SelectedCode)==0) {gmessage("Select a code first.",con=TRUE)} else{
             Encoding(SelectedCode) <- "UTF-8"
-            SelectedCode2 <- enc(SelectedCode,"UTF-8") 
+            SelectedCode2 <- enc(SelectedCode,"UTF-8")
             currentCid <-  dbGetQuery(.rqda$qdacon,
                                       sprintf("select id from freecode where name=='%s'",
                                               SelectedCode2))[,1]
@@ -289,31 +289,29 @@ CodingMemoButton <- function(label="C2Memo")
 
 FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rqda,...)
 {
-  ## rename of selected file.
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,"qdacon")) {
-      ## if project is open, then continue
-      selectedCodeName <- svalue(CodeNamesWidget)
-      if (length(selectedCodeName)==0){
-        gmessage("Select a code first.",icon="error",con=TRUE)
-      }
-      else {
-        ## get the new file names
-        NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
-        if (!is.na(NewCodeName)) {
-          Encoding(NewCodeName) <- "UTF-8"
-          NewCodeName2 <- enc(NewCodeName,encoding="UTF-8")
-          selectedCodeName2 <- enc(selectedCodeName,encoding="UTF-8")
-          ## update the name in source table by a function
-          rename(selectedCodeName2,NewCodeName2,"freecode")
-          ## (name is the only field should be modifed, as other table use ID rather than name)
-          ## CodeNamesUpdate(sortByTime=FALSE)
-          UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)
+    ## rename of selected file.
+    gbutton(label,handler=function(h,...) {
+        if (is_projOpen(env=.rqda,"qdacon")) {
+            ## if project is open, then continue
+            selectedCodeName <- svalue(CodeNamesWidget)
+            if (length(selectedCodeName)==0){
+                gmessage("Select a code first.",icon="error",con=TRUE)
+            }
+            else {
+                ## get the new file names
+                NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
+                if (!is.na(NewCodeName)) {
+                    Encoding(NewCodeName) <- Encoding(selectedCodeName) <- "UTF-8"
+                    ## update the name in source table by a function
+                    rename(selectedCodeName, NewCodeName, "freecode")
+                    ## (name is the only field should be modifed, as other table use ID rather than name)
+                    ## CodeNamesUpdate(sortByTime=FALSE)
+                    UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)
+                }
+            }
         }
-      }
     }
-  }
-          )
+            )
 }
 
 

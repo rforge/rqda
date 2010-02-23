@@ -256,8 +256,7 @@ CodeofCatWidgetMenu$"Rename Selected Code"$handler <- function(h, ...) {
         else {
             NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
             if (!is.na(NewCodeName)) {
-                NewCodeName <- enc(NewCodeName,encoding="UTF-8")
-                selectedCodeName <- enc(selectedCodeName,encoding="UTF-8")
+                Encoding(NewCodeName) <- Encoding(selectedCodeName) <- "UTF-8"
                 rename(selectedCodeName,NewCodeName,"freecode")
                 UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)
                 UpdateWidget(".CodeofCat",from=selectedCodeName,to=NewCodeName)
