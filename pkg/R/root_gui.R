@@ -312,7 +312,15 @@ AddHandler <- function(){
 
 
     addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
-        UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
+      if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
+      catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
+                        enc(svalue(.rqda$.CodeCatWidget))
+                        )
+                )$catid
+      if (!is.null(catid) && length(catid)==1) {
+        names(.rqda$.CodeCatWidget) <- sprintf("Selected category id is %s",catid)
+      }}
+      UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
     })
     addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes"))
     addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))

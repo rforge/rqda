@@ -3,15 +3,16 @@ AddCaseButton <- function(label="ADD"){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       CaseName <- ginput("Enter new Case Name. ", icon="info")
       if (!is.na(CaseName)) {
-        ## Encoding(CaseName) <- "UTF-8"
-        CaseName <- enc(CaseName,encoding="UTF-8")
+        Encoding(CaseName) <- "UTF-8"
+        ## CaseName <- enc(CaseName,encoding="UTF-8") ## use enc() in AddCase() etc.
         AddCase(CaseName)
         CaseNamesUpdate()
-        idx <- as.character(which(.rqda$.CasesNamesWidget[] %in%  CaseName) -1) ## note the position, before manipulation of items
+        idx <- as.character(which(.rqda$.CasesNamesWidget[] %in%  CaseName) -1)
+        ## note the position, before manipulation of items
         path <-gtkTreePathNewFromString(idx)
         gtkTreeViewScrollToCell(slot(slot(.rqda$.CasesNamesWidget,"widget"),"widget"),
                                 path,use.align=TRUE,row.align = 0.05)
-    }
+      }
     }
   }
           )
@@ -26,16 +27,18 @@ DeleteCaseButton <- function(label="Delete"){
               del <- gconfirm("Really delete the Case?",icon="question")
               if (isTRUE(del)){
                 SelectedCase <- svalue(.rqda$.CasesNamesWidget)
-                ## Encoding(SelectedCase) <- "UTF-8"
-                SelectedCase <- enc(SelectedCase, "UTF-8")
-                caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where name=='%s'",SelectedCase))$id
-                dbGetQuery(.rqda$qdacon,sprintf("update cases set status=0 where name=='%s'",SelectedCase))
+                Encoding(SelectedCase) <- "UTF-8"
+                ## SelectedCase <- enc(SelectedCase, "UTF-8")
+                caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where name=='%s'",
+                                                          enc(SelectedCase)))$id
+                dbGetQuery(.rqda$qdacon,sprintf("update cases set status=0 where name=='%s'",
+                                                enc(SelectedCase)))
                 ## set status in table freecode to 0
                 dbGetQuery(.rqda$qdacon,sprintf("update caselinkage set status=0 where caseid=%i",caseid))
                 ## set status in table caselinkage to 0
                 CaseNamesUpdate()
               }
-                                 }
+            }
           }
           )
 }
@@ -54,8 +57,8 @@ Case_RenameButton <- function(label="Rename",CaseNamesWidget=.rqda$.CasesNamesWi
         ## get the new file names
         NewName <- ginput("Enter new Case name. ", text=selectedCaseName, icon="info")
         if (!is.na(NewName)){
-          NewName <- enc(NewName,"UTF-8")
-          selectedCaseName <- enc(selectedCaseName,"UTF-8")
+          ## NewName <- enc(NewName,"UTF-8")
+          ## selectedCaseName <- enc(selectedCaseName,"UTF-8") ## rename() takes care of ' now.
           rename(selectedCaseName,NewName,"cases")
           CaseNamesUpdate()
         }
@@ -213,9 +216,11 @@ CaseUnMark_Button<-function(label="Unmark"){
                 ## even for the non-current code. can improve.
               }
               }
-            }}
-            )
-        }
+              UpdateFileofCaseWidget()
+            }
+          }
+          )
+}
 
 CaseNamesWidgetMenu <- list()
 CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
