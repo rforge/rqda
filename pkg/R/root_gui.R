@@ -48,10 +48,10 @@ RQDA <- function() {
                  con=gwindow(title="License"))
          })
   glabel(
-         "Version: 0.1-9-dev",
+         paste("Version:", packageDescription("RQDA")$Version, " Year:", substr(packageDescription("RQDA")$Date,1,4)),
          container=.proj_gui, handler=function(h,...){
-           gtext(readLines((system.file("CITATION",package="RQDA")),warn=FALSE),
-                 con=gwindow(title="Please cite this package."))
+             gtext(paste(attr(citation("RQDA")[[1]],"textVersion"),"\n\nUse citation('RQDA') to get more info."),
+                   con=gwindow(title="Please cite this package."))
          })
 
 
