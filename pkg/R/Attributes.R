@@ -379,12 +379,18 @@ AddAttrButton <- function(label="ADD"){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       AttrName <- ginput("Enter new Attr Name. ", icon="info")
       if (!is.na(AttrName)) {
-        AttrName <- enc(AttrName,encoding="UTF-8")
-        ## Encoding(AttrName) <- "UTF-8"
-        if (AttrName %in% c("fileID","caseID")) gmessage("This is a reserved keyword.",con=TRUE) else{
-        AddAttrNames(AttrName)
-        AttrNamesUpdate()
-      }}
+        ## AttrName <- enc(AttrName,encoding="UTF-8")
+        Encoding(AttrName) <- "UTF-8"
+        invalid <- grepl("'",AttrName)
+        if (invalid) {
+          gmessage("Attribute should NOT contain '.",con=TRUE)
+        } else {
+          if (AttrName %in% c("fileID","caseID")) {
+            gmessage("This is a reserved keyword.",con=TRUE)
+          } else{
+            AddAttrNames(AttrName)
+            AttrNamesUpdate()
+          }}}
     }
   }
           )
@@ -422,18 +428,22 @@ RenameAttrButton <- function(label="Rename"){
         ## get the new file names
         NewName <- ginput("Enter new attribute name. ", text=selected, icon="info")
         if (!is.na(NewName)){
-          ## Encoding(NewName) <- "UTF-8"
+          Encoding(NewName) <- "UTF-8"
           selected <- enc(selected,encoding="UTF-8")
-          NewName<- enc(NewName,encoding="UTF-8")
-          exists <- dbGetQuery(.rqda$qdacon, sprintf("select * from attributes where name == '%s' ",NewName))
-          if (nrow(exists) > 0 ){
-          gmessage("Name duplicated. Please use anaother name.",cont=TRUE)
+          invalid <- grepl("'",NewName)
+          if (invalid) {
+            gmessage("Attribute should NOT contain '.",con=TRUE)
           } else {
-          dbGetQuery(.rqda$qdacon, sprintf("update attributes set name = '%s' where name == '%s' ",NewName,selected))
-          dbGetQuery(.rqda$qdacon, sprintf("update caseAttr set variable = '%s' where variable == '%s' ",NewName,selected))
-          dbGetQuery(.rqda$qdacon, sprintf("update fileAttr set variable = '%s' where variable == '%s' ",NewName,selected))
-          AttrNamesUpdate()
-         }
+            exists <- dbGetQuery(.rqda$qdacon, sprintf("select * from attributes where name == '%s' ",NewName))
+            if (nrow(exists) > 0 ){
+              gmessage("Name duplicated. Please use anaother name.",cont=TRUE)
+            } else {
+              dbGetQuery(.rqda$qdacon, sprintf("update attributes set name = '%s' where name == '%s' ",NewName,selected))
+              dbGetQuery(.rqda$qdacon, sprintf("update caseAttr set variable = '%s' where variable == '%s' ",NewName,selected))
+              dbGetQuery(.rqda$qdacon, sprintf("update fileAttr set variable = '%s' where variable == '%s' ",NewName,selected))
+              AttrNamesUpdate()
+            }
+          }
         }
       }
     }
