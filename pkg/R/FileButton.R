@@ -29,6 +29,7 @@ DeleteFileButton <- function(label="Delete", container,...){
               if (isTRUE(del)) {
                 ## con <- .rqda$qdacon
                   for (i in SelectedFile){
+                    i <- enc(i)
                 fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",i))$id
                 dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
                 ## set the status of the selected file to 0

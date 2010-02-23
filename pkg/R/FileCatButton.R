@@ -24,16 +24,16 @@ DeleteFileCatButton <- function(label="Delete"){
               if (isTRUE(del)){
                 Selected <- svalue(.rqda$.FileCatWidget)
                 Encoding(Selected) <- "UTF-8"
-                catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status==1 and name=='%s'",Selected))[,1]
+                catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status==1 and name=='%s'",enc(Selected)))[,1]
                 if (length(catid) ==1){
-                  dbGetQuery(.rqda$qdacon,sprintf("update filecat set status=0 where name=='%s'",Selected))
+                  dbGetQuery(.rqda$qdacon,sprintf("update filecat set status=0 where name=='%s'",enc(Selected)))
                   ## set status in table freecode to 0
                   UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
                   tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treefile set status=0 where catid=='%s'",catid)),error=function(e){})
                   ## should delete all the related codelists
-                  UpdateFileofCatWidget() ## update the filecode of cat widget
+                  UpdateFileofCatWidget() ## update files of file cat widget
                 } else gmessage("The Category Name is not unique.",con=TRUE)
-
+                
               }
             }
           }
@@ -69,7 +69,7 @@ UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sortB
   SelectedFileCat <- svalue(.rqda$.FileCatWidget)
   if (length(SelectedFileCat)!=0){
     Encoding(SelectedFileCat) <- "UTF-8"
-    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",SelectedFileCat))[,1]
+    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",enc(SelectedFileCat)))[,1]
     Total_fid <- dbGetQuery(con,sprintf("select fid from treefile where status==1 and catid==%i",catid))
     if (nrow(Total_fid)!=0){
       items <- dbGetQuery(con,"select name,id,date from source where status==1")
@@ -81,7 +81,7 @@ UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sortB
       } else items <- NULL
     } else items <- NULL
   } else items <- NULL
-    tryCatch(Widget[] <- items,error=function(e){})
+  tryCatch(Widget[] <- items,error=function(e){})
 }
 
 UpdateFileofCatWidget2 <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sortByTime=FALSE,...)
@@ -233,6 +233,7 @@ FileCatWidgetMenu$"Delete all files of selected category"$handler <- function(h,
       dbGetQuery(.rqda$qdacon, sprintf("update coding set status=0 where fid in (%s)",paste(shQuote(fid),collapse=",")))
       dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid in (%s)",paste(shQuote(fid),collapse=",")))
       dbGetQuery(.rqda$qdacon, sprintf("update treefile set status=0 where fid in (%s)",paste(shQuote(fid),collapse=",")))
+      UpdateFileofCatWidget()
     }
   }
 }

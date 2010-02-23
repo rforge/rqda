@@ -2,6 +2,7 @@
 	* Various bugfixes: journal name with ' can be handled correctly.
 	* add icon to annotation widget.
 	* attribute should not contain ' any more.
+	* file category can handle ' correctly.
 	
 2010-02-22
 	* Various bugfixes of code name with ' in coding Tab.
