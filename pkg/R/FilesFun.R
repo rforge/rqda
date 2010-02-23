@@ -81,7 +81,8 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
   tmp@widget@widget$SetPixelsInsideWrap(5) ## so the text looks more confortable.
   assign(".openfile_gui", tmp, env = .rqda)
   Encoding(SelectedFileName) <- "unknown"
-  IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",SelectedFileName))
+  IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",
+                                                   enc(SelectedFileName)))
   content <- IDandContent$file
   Encoding(content) <- "UTF-8"
   W <- get(".openfile_gui", .rqda)
@@ -201,7 +202,7 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
       gtkWidgetModifyFont(tmp@widget@widget,font)
       assign(".openfile_gui", tmp, env = .rqda)
       Encoding(SelectedFileName) <- "unknown"
-      IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",SelectedFileName))
+      IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",enc(SelectedFileName)))
       content <- IDandContent$file
       Encoding(content) <- "UTF-8"
       W <- get(".openfile_gui", .rqda)
@@ -338,7 +339,7 @@ FileNameWidgetUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,de
     Encoding(source$name) <- "UTF-8"
     if (!is.null(FileId)){
       source <- source[source$id %in% FileId,]
-      fnames <- source$name ## when FileId is not in source$id, fnames is character(0), still works.
+      fnames <- source$name##when FileId is not in source$id, fnames is character(0), still works.
       date <- source$date
     } else{
       fnames <- source$name
@@ -361,21 +362,21 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
         selected <- svalue(.rqda$.fnames_rqda)
         ans <- dbGetQuery(.rqda$qdacon,
                           sprintf("select id from source where status==1 and name in (%s)",
-                                  paste(paste("'",selected,"'",sep=""),collapse=",")
+                                  paste(paste("'",enc(selected),"'",sep=""),collapse=",")
                                   ))$id
       } else {
-      allfid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
-      if (type!="all"){
-        fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
+        allfid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
+        if (type!="all"){
+          fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
+        }
+        if (type=="all") {
+          ans <- allfid
+        } else if (type=="coded"){
+          ans <- fid_coded
+        } else if (type=="uncoded"){
+          ans <- allfid[! (allfid %in% fid_coded)]
+        }
       }
-      if (type=="all") {
-        ans <- allfid
-      } else if (type=="coded"){
-        ans <- fid_coded
-      } else if (type=="uncoded"){
-        ans <- allfid[! (allfid %in% fid_coded)]
-      }
-    }
       ans
     }
 
@@ -384,7 +385,7 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
       selected <- svalue(.rqda$.FileofCase)
       ans <- dbGetQuery(.rqda$qdacon,
                         sprintf("select id from source where status==1 and name in (%s)",
-                                paste(paste("'",selected,"'",sep=""),collapse=",")
+                                paste(paste("'",enc(selected),"'",sep=""),collapse=",")
                                 ))$id
     } else {
       Selected <- svalue(.rqda$.CasesNamesWidget)
@@ -392,28 +393,29 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
         ans <- NULL
       } else {
         if (length(Selected)>1) {gmessage("select one file category only.",con=TRUE)
-                                  stop("more than one file categories are selected")
-                                }
-        caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",Selected))$id
-        fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
-##         caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name in (%s)",
-##                                                  paste(paste("'",Selected,"'",sep=""),collapse=",")))$id
-##         fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (%s)",
-##                                                     paste(paste("'",caseid,"'",sep=""),collapse=",")))$fid
-## roll back to rev 90
+                                 stop("more than one file categories are selected")
+                               }
+        caseid <- RQDAQuery(sprintf("select id from cases where status=1 and name='%s'",
+                                    enc(Selected)))$id
+        fidofcase <- RQDAQuery(sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
+        ##         caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name in (%s)",
+        ##                                                  paste(paste("'",Selected,"'",sep=""),collapse=",")))$id
+        ##         fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (%s)",
+        ##                                                     paste(paste("'",caseid,"'",sep=""),collapse=",")))$fid
+        ## roll back to rev 90
         allfid <-  unconditionalFun(type=type)
         ans <- intersect(fidofcase,allfid)
       }
     }
     ans
   }
-
+  
   FidOfCatFun <- function(type){
     if (type=="selected"){
       selected <- svalue(.rqda$.FileofCat)
       ans <- dbGetQuery(.rqda$qdacon,
                         sprintf("select id from source where status==1 and name in (%s)",
-                                paste(paste("'",selected,"'",sep=""),collapse=",")
+                                paste(paste("'",enc(selected),"'",sep=""),collapse=",")
                                 ))$id
     }
     allfid <- GetFileIdSets("filecategory","intersect")
@@ -424,12 +426,12 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
     }
     ans
   }
-
- bothFun <- function(type){
-  ans <- intersect(GetFileId("case",type),GetFileId("file",type))
-  ans
- }
-
+  
+  bothFun <- function(type){
+    ans <- intersect(GetFileId("case",type),GetFileId("file",type))
+    ans
+  }
+  
   condition <- match.arg(condition)
   type <- match.arg(type)
   fid <- switch(condition,
@@ -479,7 +481,7 @@ AddToFileCategory <- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
   filename <- svalue(Widget)
   Encoding(filename) <- "unknown"
-  query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in(%s) and status=1",paste("'",filename,"'",sep="",collapse=","))) ## multiple fid
+  query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in(%s) and status=1",paste("'",enc(filename),"'",sep="",collapse=","))) ## multiple fid
   fid <- query$id
   Encoding(query$file) <- "UTF-8"
   ## select a F-cat name -> F-cat id
@@ -487,7 +489,7 @@ AddToFileCategory <- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
   if (nrow(Fcat)==0){gmessage("Add File Categroy first.",con=TRUE)} else{
     Encoding(Fcat$name) <- "UTF-8"
     Selecteds <- gselect.list(Fcat$name,multiple=TRUE)
-    if (length(Selecteds)>0 || Selecteds!=""){
+    if (length(Selecteds)>0 && Selecteds!=""){
       Encoding(Selecteds) <- "UTF-8"
       for (Selected in Selecteds) {
         Fcatid <- Fcat$catid[Fcat$name %in% Selected]
@@ -504,6 +506,8 @@ AddToFileCategory <- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
           if (!success) gmessage(sprintf("Fail to write to file category of %s",Selected))
         }
       }
+    } else {
+      invisible(FALSE)
     }
   }
 }

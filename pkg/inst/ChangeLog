@@ -2,6 +2,8 @@
 	* Various bugfixes of code name with ' in coding Tab.
 	* Various bugfixes of code name with ' in code category Tab.
 	* Various bugfixes of case name with ' in Case Tab.
+	* Various bugfixes of file name with ' in Files Tab.
+	* Change backup file name format to fname.timestamp.rqda.
 
 2010-02-21
 	* Click-handler for second half of code-mark.

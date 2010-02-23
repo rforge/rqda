@@ -116,23 +116,24 @@ FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
   ans <- gbutton(label,handler=function(h,...) {
     SelectedFileCat <- svalue(.rqda$.FileCatWidget)
     if (length(SelectedFileCat)==0) {gmessage("Select a file category first.",con=TRUE)} else{
-    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",SelectedFileCat))[,1]
-    freefile <-  dbGetQuery(.rqda$qdacon,"select name, id from source where status=1")
-    if (nrow(freefile) == 0){gmessage("No files Yet.",cont=.rqda$.FileCatWidget)} else {
-    Encoding(SelectedFileCat) <- Encoding(freefile[['name']]) <- "UTF-8"
-    fileofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and catid=%i",catid))
-    if (nrow(fileofcat)!=0){
-    fileoutofcat <- subset(freefile,!(id %in% fileofcat$fid))
-  } else  fileoutofcat <- freefile
-    Selected <- gselect.list(fileoutofcat[['name']],multiple=TRUE)
-    if (Selected != ""){
-      ## Selected <- iconv(Selected,to="UTF-8") ## already Encoded as UTF-8.
-      fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
-      Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo=NA,status=1)
-      dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
-      UpdateFileofCatWidget()
-    }
-   ## CurrentFrame <- sys.frame(sys.nframe())
+      catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",enc(SelectedFileCat)))[,1]
+      freefile <-  dbGetQuery(.rqda$qdacon,"select name, id from source where status=1")
+      if (nrow(freefile) == 0){gmessage("No files Yet.",cont=.rqda$.FileCatWidget)} else {
+        Encoding(SelectedFileCat) <- Encoding(freefile[['name']]) <- "UTF-8"
+        fileofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and catid=%i",catid))
+        if (nrow(fileofcat)!=0){
+          fileoutofcat <- subset(freefile,!(id %in% fileofcat$fid))
+        } else  fileoutofcat <- freefile
+        Selected <- gselect.list(fileoutofcat[['name']],multiple=TRUE)
+        if (Selected != ""){
+          ## Selected <- iconv(Selected,to="UTF-8") ## already Encoded as UTF-8.
+          fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
+          Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo=NA,status=1)
+          dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
+          UpdateFileofCatWidget()
+        }
+        
+    ## CurrentFrame <- sys.frame(sys.nframe())
     ## sys.frame(): get the frame of n
     ## nframe(): get n of current frame
     ## The value of them depends on where they evaluated, should not placed inside RunOnSelected()
@@ -144,10 +145,10 @@ FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
     ##dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
     ##UpdateFileofCatWidget()
     ##}},enclos=CurrentFrame)
+      }
+    }
   }
-  }
-  }
-          )
+                 )
   gtkTooltips()$setTip(ans@widget@widget,"Add file(s) to the selected file category.")
   return(ans)
 }
@@ -164,9 +165,9 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
       if (isTRUE(del)){
         SelectedFileCat <- svalue(.rqda$.FileCatWidget)
         Encoding(SelectedFileCat) <- Encoding(FileOfCat)<- "UTF-8"
-        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",SelectedFileCat))[,1]
+        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",enc(SelectedFileCat)))[,1]
     for (i in FileOfCat){
-      fid <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",i))[,1]
+      fid <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",enc(i)))[,1]
       dbGetQuery(.rqda$qdacon,sprintf("update treefile set status==0 where catid==%i and fid==%i",catid,fid))
     }
         ## update .CodeofCat Widget
@@ -259,15 +260,17 @@ FileofCatWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
 FileofCatWidgetMenu$"Move To File Category ..."$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     fcatname <- svalue(.rqda$.FileCatWidget) ## should select one only
-    fcatid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where name='%s'",fcatname))$catid
+    fcatid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where name='%s'",
+                                              enc(fcatname)))$catid
     fid <- GetFileId("file","select")
-    AddToFileCategory(Widget=.rqda$.FileofCat,updateWidget=FALSE)
-    dbGetQuery(.rqda$qdacon,sprintf("update treefile set status=0 where fid in (%s) and catid='%s'",
-                                    paste(shQuote(fid),collapse=","),
-                                    fcatid))
-    .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],svalue(.rqda$.FileofCat))
+    ans <- AddToFileCategory(Widget=.rqda$.FileofCat,updateWidget=FALSE)
+    if (isTRUE(ans)) {
+      dbGetQuery(.rqda$qdacon,sprintf("update treefile set status=0 where fid in (%s) and catid='%s'",
+                                      paste(shQuote(fid),collapse=","),
+                                      fcatid))
+      .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],svalue(.rqda$.FileofCat))
+    }}
   }
-}
 FileofCatWidgetMenu$"File Memo"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     MemoWidget("File",.rqda$.FileofCat,"source")
@@ -296,6 +299,7 @@ FileofCatWidgetMenu$"Delete selected File(s)"$handler <- function(h,...){
     SelectedFile <- svalue(.rqda$.FileofCat)
     Encoding(SelectedFile) <- "UTF-8"
     for (i in SelectedFile){
+      i <- enc(i)
       fid <- dbGetQuery(.rqda$qdacon, sprintf("select id from source where name='%s'",i))$id
       dbGetQuery(.rqda$qdacon, sprintf("update source set status=0 where name='%s'",i))
       dbGetQuery(.rqda$qdacon, sprintf("update caselinkage set status=0 where fid=%i",fid))

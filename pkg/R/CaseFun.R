@@ -43,9 +43,9 @@ AddCase <- function(name,conName="qdacon",assignenv=.rqda,...) {
 AddFileToCaselinkage <- function(Widget=.rqda$.fnames_rqda){
   ## filenames -> fid -> selfirst=0; selend=nchar(filesource)
   filename <- svalue(Widget)
-  Encoding(filename) <- "unknown"
+  ## Encoding(filename) <- "unknown"
   query <- dbGetQuery(.rqda$qdacon,sprintf("select id, file from source where name in (%s) and status=1",
-  paste("'",filename,"'",sep="",collapse=",")))
+  paste("'",enc(filename),"'",sep="",collapse=",")))
   fid <- query$id
   Encoding(query$file) <- "UTF-8"
   selend <- nchar(query$file)
@@ -54,7 +54,7 @@ AddFileToCaselinkage <- function(Widget=.rqda$.fnames_rqda){
   cases <- dbGetQuery(.rqda$qdacon,"select id, name from cases where status=1")
   if (nrow(cases)!=0){
     Encoding(cases$name) <- "UTF-8"
-##    ans <- select.list(cases$name,multiple=FALSE)
+    ## ans <- select.list(cases$name,multiple=FALSE)
     CurrentFrame <- sys.frame(sys.nframe())
 
     RunOnSelected(cases$name,multiple=FALSE,enclos=CurrentFrame,expr={

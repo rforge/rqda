@@ -239,29 +239,30 @@ RQDA <- function() {
 
 
 AddHandler <- function(){
-### add handler function for GUIs
-    ## handler for Root
-    addHandlerUnrealize(.rqda$.root_rqdagui, handler = function(h,...) {
-        ## make sure is the project should be closed by issuing a confirm window.
-        val <- gconfirm("Really EXIT?\n\nYou can use RQDA() to start this program again.", parent=h$obj)
-        if(as.logical(val))
-            return(FALSE)             # destroy
-        else
-            return(TRUE)              # don't destroy
-    }
-                        )
-    ## handler for .fnames_rqda (gtable holding the file names)
-    addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
-        if (isTRUE(.rqda$SFP)) ShowFileProperty(focus=FALSE)
-       Fid <- GetFileId(,"select")
-       if (!is.null(Fid) && length(Fid)==1) {
-           names(.rqda$.fnames_rqda) <- sprintf("Selected File id is %s",Fid)
-       }})
-    add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
-    ## right click to add file to a case category
+  ## add handler function for GUIs
+  ## handler for Root
+  addHandlerUnrealize(.rqda$.root_rqdagui, handler = function(h,...) {
+    ## make sure is the project should be closed by issuing a confirm window.
+    val <- gconfirm("Really EXIT?\n\nYou can use RQDA() to start this program again.", parent=h$obj)
+    if(as.logical(val))
+      return(FALSE)             # destroy
+    else
+      return(TRUE)              # don't destroy
+  }
+                      )
+  ## handler for .fnames_rqda (gtable holding the file names)
+  addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
+    if (isTRUE(.rqda$SFP)) ShowFileProperty(focus=FALSE)
+    Fid <- GetFileId(,"select")
+    if (!is.null(Fid) && length(Fid)==1) {
+      names(.rqda$.fnames_rqda) <- sprintf("Selected File id is %s",Fid)
+    }})
+  
+  add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
+  ## right click to add file to a case category
     addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))
-    ## addhandlerdoubleclick(.rqda$.fsearch_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fsearch_rqda))
-    ## handler for .codes_rqda
+  ## addhandlerdoubleclick(.rqda$.fsearch_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fsearch_rqda))
+  ## handler for .codes_rqda
     addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
         if (is_projOpen(env=.rqda,conName="qdacon"))
             retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
