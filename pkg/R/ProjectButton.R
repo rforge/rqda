@@ -91,12 +91,15 @@ CloseProjectButton <- function(container){
     gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$ImpFilB@widget@widget,FALSE)
     gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,FALSE)
-      gtkWidgetSetSensitive(button$DelFilB@widget@widget,FALSE) 
-      gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE) 
-      gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE) 
-      gtkWidgetSetSensitive(button$FilRenB@widget@widget,FALSE) 
-      enabled(button$AddJouB) <- FALSE
-      enabled(.rqda$.JournalNamesWidget) <- FALSE
+    gtkWidgetSetSensitive(button$DelFilB@widget@widget,FALSE) 
+    gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE) 
+    gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE) 
+    gtkWidgetSetSensitive(button$FilRenB@widget@widget,FALSE) 
+    enabled(button$AddJouB) <- FALSE
+    enabled(.rqda$.JournalNamesWidget) <- FALSE
+    enabled(button$DelJouB) <- FALSE
+    enabled(button$RenJouB) <- FALSE
+    enabled(button$OpeJouB) <- FALSE
   }
                      )
   assign("cloprob",cloprob,env=button)
