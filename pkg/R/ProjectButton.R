@@ -1,5 +1,5 @@
 NewProjectButton <- function(container){
-gbutton("New Project",container=container,handler=function(h,...){
+  gbutton("New Project",container=container,handler=function(h,...){
     path=gfile(type="save",text = "Type a name for the new project and click OK.")
     if (path!=""){
       ## if path="", then click "cancel".
@@ -8,15 +8,20 @@ gbutton("New Project",container=container,handler=function(h,...){
       path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname,fixed=TRUE)
       path <- gsub("/","/ ",path,fixed=TRUE)
       svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"),fixed=TRUE)
+      gtkWidgetSetSensitive(button$cloprob@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$BacProjB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$proj_memo@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$CleProB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,TRUE)
     }
   }
-        )
+          )
 }
 
 OpenProjectButton <- function(container){
-gbutton("Open Project",container=container,handler=function(h,...){
-    path <- gfile(text = "Select a *.rqda file and click OK.",type="open",filter=list("rqda"=list(patterns = c("*.rqda")),
-                                          "All files" = list(patterns = c("*"))))
+  gbutton("Open Project",container=container,handler=function(h,...){
+    path <- gfile(text = "Select a *.rqda file and click OK.",type="open",
+                  filter=list("rqda"=list(patterns = c("*.rqda")),"All files" = list(patterns = c("*"))))
     if (!is.na(path)){
       Encoding(path) <- "UTF-8"
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
@@ -45,35 +50,89 @@ gbutton("Open Project",container=container,handler=function(h,...){
       path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname)
       path <- gsub("/","/ ",path)
       svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,50),collapse="\n"))
-      gtkWidgetSetSensitive(.rqda$cloprob@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$cloprob@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$BacProjB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$proj_memo@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$CleProB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,TRUE)
     }
   }
-        )
+          )
 }
 
 
 CloseProjectButton <- function(container){
   cloprob <- gbutton("Close Project",container=container,handler=function(h,...){
-      svalue(.rqda$.currentProj) <- "Closing ..."
-      tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.FileofCase[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.CodeCatWidget[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.CodeofCat[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.FileCatWidget[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.FileofCat[]<-NULL,error=function(e){})
-      tryCatch(.rqda$.AttrNamesWidget[] <- NULL,error=function(e){})
-      tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
-      close_proj(assignenv=.rqda)
-      svalue(.rqda$.currentProj) <- "No project is open."
-      gtkWidgetSetSensitive(.rqda$cloprob@widget@widget,FALSE)
-    }
-        )
-  assign("cloprob",cloprob,env=.rqda)
-  gtkWidgetSetSensitive(.rqda$cloprob@widget@widget,FALSE)
+    svalue(.rqda$.currentProj) <- "Closing ..."
+    tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.CasesNamesWidget[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.FileofCase[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.CodeCatWidget[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.CodeofCat[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.FileCatWidget[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.FileofCat[]<-NULL,error=function(e){})
+    tryCatch(.rqda$.AttrNamesWidget[] <- NULL,error=function(e){})
+    tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
+    close_proj(assignenv=.rqda)
+    svalue(.rqda$.currentProj) <- "No project is open."
+    gtkWidgetSetSensitive(button$cloprob@widget@widget,FALSE)
+    gtkWidgetSetSensitive(button$BacProjB@widget@widget,FALSE)
+    gtkWidgetSetSensitive(button$proj_memo@widget@widget,FALSE)
+    gtkWidgetSetSensitive(button$CleProB@widget@widget,FALSE)
+    gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,FALSE)
+  }
+                     )
+  assign("cloprob",cloprob,env=button)
+  gtkWidgetSetSensitive(button$cloprob@widget@widget,FALSE)
 }
 
+BackupProjectButton <- function(container){
+  BacProjB <- gbutton("Backup Project",container=container,handler=function(h,...){
+    backup_proj(con=.rqda$qdacon)
+  }
+                      )
+  assign("BacProjB",BacProjB,env=button)
+  gtkWidgetSetSensitive(button$BacProjB@widget@widget,FALSE)
+}
+
+
+Proj_MemoButton <- function(label="Porject Memo",container,...){
+  ## Each button a separate function -> more easy to debug, and the main function root_gui is shorter.
+  ## The memo in dataset is UTF-8
+  ## label of button
+  ## name of contaianer or TRUE
+  proj_memo <- gbutton(label, contain=container, handler=function(h,...) {
+    ProjectMemoWidget()
+  }
+                       )
+  assign("proj_memo",proj_memo,env=button)
+  gtkWidgetSetSensitive(button$proj_memo@widget@widget,FALSE)
+}
+
+
+CleanProjButton <- function(label="Clean Project",container,...){
+  CleProB <- gbutton(label, contain=container, handler=function(h,...) {
+    CleanProject(ask=FALSE)
+  }
+                     )
+  assign("CleProB",CleProB,env=button)
+  gtkWidgetSetSensitive(button$CleProB@widget@widget,FALSE)
+}
+
+CloseAllCodingsButton <- function(label="Close All Codings",container,...){
+  CloAllCodB <- gbutton(label, contain=container, handler=function(h,...) {
+    close_AllCodings()
+  }
+                        )
+  assign("CloAllCodB",CloAllCodB,env=button)
+  gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,FALSE)
+}
+
+
+####################
+## defunct functions
+####################
 ## ProjectInforButton <- function(container){
 ## gbutton("Current Project",container=container,handler=function(h,...){
 ##     if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -86,40 +145,3 @@ CloseProjectButton <- function(container){
 ##                              action=list(env=.rqda,conName="qdacon")
 ##                              )
 ## }
-
-BackupProjectButton <- function(container){
-gbutton("Backup Project",container=container,handler=function(h,...){
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      backup_proj(con=.rqda$qdacon)
-    }
-  }
-        )
-}
-
-
-Proj_MemoButton <- function(label="Porject Memo",container,...){
-#### Each button a separate function -> more easy to debug, and the main function root_gui is shorter.
-### The memo in dataset is UTF-8
-  ## label of button
-  ## name of contaianer or TRUE
-  proj_memo <- gbutton(label, contain=container, handler=function(h,...) {
-    ProjectMemoWidget()
-  }
-                       )
-}
-
-
-CleanProjButton <- function(label="Clean Project",container,...){
-  gbutton(label, contain=container, handler=function(h,...) {
-    CleanProject(ask=FALSE)
-  }
-          )
-}
-
-CloseAllCodingsButton <- function(label="Close All Codings",container,...){
-  gbutton(label, contain=container, handler=function(h,...) {
-    close_AllCodings()
-  }
-          )
-}
-
