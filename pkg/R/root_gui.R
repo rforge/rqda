@@ -225,6 +225,7 @@ RQDA <- function() {
   assign("font","Sans 11",env=.rqda)
 ##########################
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
+  enabled(.JournalNamesWidget) <- FALSE
 ##########################
 ### set the positions
   svalue(.codes_pan) <- 0.09
@@ -359,5 +360,11 @@ AddHandler <- function(){
         if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
     })
     addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) ViewJournalWidget())
+    addHandlerClicked(.rqda$.JournalNamesWidget, handler <- function(h,...) {
+     if (length(svalue(.rqda$.JournalNamesWidget))!=0){
+     enabled(button$DelJouB) <- TRUE
+     enabled(button$RenJouB) <- TRUE
+     enabled(button$OpeJouB) <- TRUE
+   }})
 }## end of AddHandler()
 

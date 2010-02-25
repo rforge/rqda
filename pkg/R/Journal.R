@@ -1,16 +1,15 @@
 AddJournalButton <- function(label="ADD"){
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      AddNewJournalFun()
+  AddJouB <- gbutton(label,handler=function(h,...) {
+        AddNewJournalFun()
     }
-  }
           )
+  assign("AddJouB",AddJouB,env=button)
+  enabled(AddJouB) <- FALSE
+  AddJouB
 }
 
 DeleteJournalButton <- function(label="Delete"){
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon") & length(svalue(.rqda$.JournalNamesWidget))!=0)
-      {
+  DelJouB <- gbutton(label,handler=function(h,...) {
         del <- gconfirm("Really delete the journal?",icon="question")
         if (isTRUE(del)){
           Selected <- svalue(.rqda$.JournalNamesWidget)
@@ -19,38 +18,37 @@ DeleteJournalButton <- function(label="Delete"){
           JournalNamesUpdate()
         }
       }
-  }
           )
+  assign("DelJouB",DelJouB,env=button)
+  enabled(DelJouB) <- FALSE
+  DelJouB
 }
 
 RenameJournalButton <- function(label="Rename")
 {
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
+  RenJouB <- gbutton(label,handler=function(h,...) {
       selected <- svalue(.rqda$.JournalNamesWidget)
-      if (length(selected)==0){
-        gmessage("Select one first.",icon="error",con=TRUE)
-      }
-      else {
         NewName <- ginput("Enter new journal name. ",text=selected, icon="info")
         if (!is.na(NewName)) {
           rename(from=selected,to=NewName,"journal")
           JournalNamesUpdate()
         }
     }
-  }
-  }
           )
+  assign("RenJouB",RenJouB,env=button)
+  enabled(RenJouB) <- FALSE
+  RenJouB
 }
 
 
 OpenJournalButton <- function(label="Open")
 {
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
+  OpeJouB <- gbutton(label,handler=function(h,...) {
       ViewJournalWidget()
-    }
   })
+  assign("OpeJouB",OpeJouB,env=button)
+  enabled(OpeJouB) <- FALSE
+  OpeJouB
 }
 
 JournalNamesUpdate <- function(Widget=.rqda$.JournalNamesWidget,decreasing=FALSE,...)
