@@ -107,8 +107,8 @@ CaseMemoButton <- function(label="Memo",...){
 }
 
 
-CaseMark_Button<-function(){
-  gbutton("Mark",
+CaseMark_Button<-function(label="Mark"){
+  gbutton(label,
           handler=function(h,...) {
            MarkCaseFun()
            UpdateFileofCaseWidget()

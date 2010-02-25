@@ -83,11 +83,11 @@ RQDA <- function() {
   .codes_button[1,2]<- DeleteCodeButton()
   .codes_button[1,3] <- FreeCode_RenameButton(label="Rename",CodeNamesWidget=.codes_rqda)
   .codes_button[1,4] <- CodeMemoButton(label="Memo")
-  .codes_button[2,3] <-  AnnotationButton("Add Anno")
+  .codes_button[2,3] <-  AnnotationButton("Anno")
   .codes_button[2,1]<- CodingMemoButton(label="C2Memo")
   ## .codes_button[2,1]<- CodingInfoButton()
   ## .codes_button[2,2]<- HL_ALLButton()
-  .codes_button[2,2]<- RetrievalButton("Retrieval")
+  .codes_button[2,2]<- RetrievalButton("Coding")
   ## .codes_button[2,3]<- ExtendButton("Retrieval")
   .codes_button[2,4]<- Unmark_Button()
   .codes_button[1:2,5]<- Mark_Button()
@@ -131,8 +131,8 @@ RQDA <- function() {
   .case_buttons[1,2] <- DeleteCaseButton()
   .case_buttons[1,3] <- Case_RenameButton()
   ##.case_buttons[1,4] <- CaseMemoButton()
-  .case_buttons[1,4] <- CaseUnMark_Button()
-  .case_buttons[1,5] <- CaseMark_Button()
+  .case_buttons[1,4] <- CaseUnMark_Button("Unlink")
+  .case_buttons[1,5] <- CaseMark_Button("Link")
   ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
 
 ########################### GUI for Attributes
