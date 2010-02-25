@@ -224,6 +224,8 @@ RQDA <- function() {
   if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))
   assign("font","Sans 11",env=.rqda)
 ##########################
+  gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
+##########################
 ### set the positions
   svalue(.codes_pan) <- 0.09
   svalue(.codecat_pan)<-0.09
@@ -256,6 +258,10 @@ AddHandler <- function(){
     Fid <- GetFileId(,"select")
     if (!is.null(Fid) && length(Fid)==1) {
       names(.rqda$.fnames_rqda) <- sprintf("Selected File id is %s",Fid)
+      gtkWidgetSetSensitive(button$DelFilB@widget@widget,TRUE) 
+      gtkWidgetSetSensitive(button$VieFilB@widget@widget,TRUE) 
+      gtkWidgetSetSensitive(button$FilMemB@widget@widget,TRUE) 
+      gtkWidgetSetSensitive(button$FilRenB@widget@widget,TRUE) 
     }})
   
   add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)

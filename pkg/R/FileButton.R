@@ -1,7 +1,6 @@
 ImportFileButton <- function(label="Import", container,...)
 {
-  gbutton(label, contain=container, handler=function(h,...){
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
+  ImpFilB <- gbutton(label, contain=container, handler=function(h,...){
       path <- gfile(type="open",filter=list("text files" = list(mime.types = c("text/plain")),
               "All files" = list(patterns = c("*"))))
       if (path!=""){
@@ -10,15 +9,14 @@ ImportFileButton <- function(label="Import", container,...)
          FileNamesUpdate()
       }
     }
-  }
           )
+  assign("ImpFilB",ImpFilB,env=button)
+  gtkWidgetSetSensitive(button$ImpFilB@widget@widget,FALSE)  
 }
 
 
 DeleteFileButton <- function(label="Delete", container,...){
-  gbutton(label,contain=container,handler=function(h,...)
-          {
-            if (is_projOpen(env=.rqda,conName="qdacon") & length(svalue(.rqda$.fnames_rqda))!=0) {
+  DelFilB <- gbutton(label,contain=container,handler=function(h,...){
               SelectedFile <- svalue(.rqda$.fnames_rqda)
               Encoding(SelectedFile) <- "UTF-8"
               ## if the project open and a file is selected, then continue the action
@@ -41,19 +39,22 @@ DeleteFileButton <- function(label="Delete", container,...){
                   ##FileNamesUpdate()
                   UpdateWidget(".fnames_rqda",from=SelectedFile,to=NULL)
               }
-            }
           },
           action=list(env=.rqda,conName="qdacon")
           )
+  assign("DelFilB",DelFilB,env=button)
+  gtkWidgetSetSensitive(button$DelFilB@widget@widget,FALSE) 
 }
 
 ViewFileButton <-  function(label="Open", container,...)
 {
-  gbutton(label,contain=container,h=function(h,...)
+  VieFilB <- gbutton(label,contain=container,h=function(h,...)
           {
             ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
           }
           )
+  assign("VieFilB",VieFilB,env=button)
+  gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE) 
 }
 ##           {
 ##             if (is_projOpen(env=.rqda,conName="qdacon")) {
@@ -82,12 +83,12 @@ ViewFileButton <-  function(label="Open", container,...)
 
 File_MemoButton <- function(label="Memo", container=.rqda$.files_button,FileWidget=.rqda$.fnames_rqda,...){
   ## memo of selected file.
-  gbutton(label, contain=container, handler=function(h,...) {
-    if (is_projOpen(env=.rqda,"qdacon")) {
+  FilMemB <- gbutton(label, contain=container, handler=function(h,...) {
       MemoWidget("File",FileWidget,"source")
-    }
   }
           )
+  assign("FilMemB",FilMemB,env=button)
+  gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE) 
 }
 
 ##     if (is_projOpen(env=.rqda,"qdacon")) {
@@ -134,9 +135,7 @@ File_MemoButton <- function(label="Memo", container=.rqda$.files_button,FileWidg
 File_RenameButton <- function(label="Rename", container=.rqda$.files_button,FileWidget=.rqda$.fnames_rqda,...)
 {
   ## rename of selected file.
-  ans <- gbutton(label, contain=container, handler=function(h,...) {
-    if (is_projOpen(env=.rqda,"qdacon")) {
-      ## if project is open, then continue
+  FilRenB <- gbutton(label, contain=container, handler=function(h,...) {
       selectedFN <- svalue(FileWidget)
       if (length(selectedFN)==0){
         gmessage("Select a file first.",icon="error",con=TRUE)
@@ -156,9 +155,10 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
         }
       }
     }
-  }
           )
-  ans
+  FilRenB
+  assign("FilRenB",FilRenB,env=button)
+  gtkWidgetSetSensitive(button$FilRenB@widget@widget,FALSE) 
 }
 
 

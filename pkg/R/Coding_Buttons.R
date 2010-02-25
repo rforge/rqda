@@ -1,5 +1,5 @@
 AddCodeButton <- function(label="Add"){
-  gbutton(label,
+  addCodB <- gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               codename <- ginput("Enter new code. ", icon="info")
@@ -11,6 +11,9 @@ AddCodeButton <- function(label="Add"){
             }
           }
           )
+ ##gtkButtonSetUseStock(addCodB@widget@widget,FALSE)
+ ##gtkButtonSetLabel(addCodB@widget@widget,"Add")
+ addCodB
 }
 
 
@@ -290,7 +293,7 @@ CodingMemoButton <- function(label="C2Memo")
 FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rqda,...)
 {
     ## rename of selected file.
-    gbutton(label,handler=function(h,...) {
+    FreCodRenB <- gbutton(label,handler=function(h,...) {
         if (is_projOpen(env=.rqda,"qdacon")) {
             ## if project is open, then continue
             selectedCodeName <- svalue(CodeNamesWidget)
@@ -312,6 +315,9 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
         }
     }
             )
+ ##gtkButtonSetUseStock(FreCodRenB@widget@widget,FALSE)
+ ##gtkButtonSetLabel(FreCodRenB@widget@widget,"Rename")
+ FreCodRenB
 }
 
 

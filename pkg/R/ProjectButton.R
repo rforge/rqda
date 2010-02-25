@@ -13,6 +13,8 @@ NewProjectButton <- function(container){
       gtkWidgetSetSensitive(button$proj_memo@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$CleProB@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$ImpFilB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,TRUE)
     }
   }
           )
@@ -55,6 +57,8 @@ OpenProjectButton <- function(container){
       gtkWidgetSetSensitive(button$proj_memo@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$CleProB@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$ImpFilB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,TRUE)
     }
   }
           )
@@ -81,6 +85,12 @@ CloseProjectButton <- function(container){
     gtkWidgetSetSensitive(button$proj_memo@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$CleProB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,FALSE)
+    gtkWidgetSetSensitive(button$ImpFilB@widget@widget,FALSE)
+    gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,FALSE)
+      gtkWidgetSetSensitive(button$DelFilB@widget@widget,FALSE) 
+      gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE) 
+      gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE) 
+      gtkWidgetSetSensitive(button$FilRenB@widget@widget,FALSE) 
   }
                      )
   assign("cloprob",cloprob,env=button)
