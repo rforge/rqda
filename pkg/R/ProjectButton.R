@@ -45,14 +45,15 @@ gbutton("Open Project",container=container,handler=function(h,...){
       path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname)
       path <- gsub("/","/ ",path)
       svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,50),collapse="\n"))
+      gtkWidgetSetSensitive(.rqda$cloprob@widget@widget,TRUE)
     }
   }
-                              )
+        )
 }
 
 
 CloseProjectButton <- function(container){
-gbutton("Close Project",container=container,handler=function(h,...){
+  cloprob <- gbutton("Close Project",container=container,handler=function(h,...){
       svalue(.rqda$.currentProj) <- "Closing ..."
       tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
       tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
@@ -66,9 +67,11 @@ gbutton("Close Project",container=container,handler=function(h,...){
       tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
       close_proj(assignenv=.rqda)
       svalue(.rqda$.currentProj) <- "No project is open."
+      gtkWidgetSetSensitive(.rqda$cloprob@widget@widget,FALSE)
     }
         )
-
+  assign("cloprob",cloprob,env=.rqda)
+  gtkWidgetSetSensitive(.rqda$cloprob@widget@widget,FALSE)
 }
 
 ## ProjectInforButton <- function(container){
