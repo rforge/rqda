@@ -11,8 +11,8 @@ AddCodeButton <- function(label="Add"){
             }
           }
           )
- ##gtkButtonSetUseStock(addCodB@widget@widget,FALSE)
- ##gtkButtonSetLabel(addCodB@widget@widget,"Add")
+ assign("addCodB",addCodB,env=button)
+ enabled(addCodB) <- FALSE
  addCodB
 }
 
@@ -42,18 +42,25 @@ DeleteCodeButton <- function(label="Delete"){
 }
 
 RetrievalButton <- function(label){
-  ans <- gbutton(label,
+  RetB <- gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
                 retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)}
             }
                  )
-  gtkTooltips()$setTip(ans@widget@widget,"Retrieve codings of the selected code.")
-  return(ans)
+  gtkTooltips()$setTip(RetB@widget@widget,"Retrieve codings of the selected code.")
+  assign("RetB",RetB,env=button)
+  #enabled(RetB) <- TRUE
+  return(RetB)
 }
 
-Mark_Button<-function(label="Mark",codeListWidget=".codes_rqda"){
-   gbutton(label, handler=function(h,...) {MarkCodeFun(codeListWidget=codeListWidget)})
+Mark_Button<-function(label="Mark",codeListWidget=".codes_rqda",name="MarCodB1"){
+   ans <- gbutton(label, handler=function(h,...) {
+                     MarkCodeFun(codeListWidget=codeListWidget)
+                          })
+ enabled(ans) <- FALSE
+ assign(name,ans,env=button)
+ return(ans)
 }
 
 
@@ -136,8 +143,11 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
               }}}}}}}}
 
 
-Unmark_Button <- function(label="Unmark",codeListWidget=.rqda$.codes_rqda){
-    gbutton("Unmark", handler=function(h,...) {UnMarkCodeFun(codeListWidget=codeListWidget)})
+Unmark_Button <- function(label="Unmark",codeListWidget=.rqda$.codes_rqda,name="UnMarB1"){
+ ans <- gbutton("Unmark", handler=function(h,...) {UnMarkCodeFun(codeListWidget=codeListWidget)})
+ enabled(ans) <- FALSE
+ assign(name,ans,env=button)
+ ans
 }
 
 UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
@@ -322,12 +332,14 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
 
 
 AnnotationButton <- function(label="Add Anno"){
-  ans <- gbutton(label,handler=function(h,...) {
+  AnnB <- gbutton(label,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       Annotation()
     }})
-  gtkTooltips()$setTip(ans@widget@widget,"Add new annotation to the open file\nat position of cursor.")
-  return(ans)
+  gtkTooltips()$setTip(AnnB@widget@widget,"Add new annotation to the open file\nat position of cursor.")
+  assign("AnnB",AnnB,env=button)
+  enabled(AnnB) <- FALSE
+  return(AnnB)
 }
 
 

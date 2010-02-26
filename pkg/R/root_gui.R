@@ -75,8 +75,6 @@ RQDA <- function() {
 ###########################
   ".codes_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Codes\n")
   ".codes_button" <- glayout(container=.codes_pan)
-  ##".codes_rqda" <- gtable("Please click Update",container=.codes_pan)
-  ##.codes_rqda[] <- NULL ;
   ".codes_rqda" <- gtable(character(0),container=.codes_pan)
   names(.codes_rqda) <- "Codes List"
   .codes_button[1,1]<- AddCodeButton()
@@ -85,12 +83,9 @@ RQDA <- function() {
   .codes_button[1,4] <- CodeMemoButton(label="Memo")
   .codes_button[2,3] <-  AnnotationButton("Anno")
   .codes_button[2,1]<- CodingMemoButton(label="C2Memo")
-  ## .codes_button[2,1]<- CodingInfoButton()
-  ## .codes_button[2,2]<- HL_ALLButton()
   .codes_button[2,2]<- RetrievalButton("Coding")
-  ## .codes_button[2,3]<- ExtendButton("Retrieval")
-  .codes_button[2,4]<- Unmark_Button()
-  .codes_button[1:2,5]<- Mark_Button()
+  .codes_button[2,4]<- Unmark_Button(name="UnMarB1")
+  .codes_button[1:2,5]<- Mark_Button(name="MarCodB1")
 
 
 ######################### GUI  for C-cat
@@ -98,8 +93,6 @@ RQDA <- function() {
   ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Code\nCategories")
   ".codecat_buttons" <- glayout(container=.codecat_pan)
   ".Ccat_PW" <- ggroup(cont=.codecat_pan,horizontal = FALSE)## parent Widget of C-cat
-  ##".CodeCatWidget" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
-  ##.CodeCatWidget[] <- NULL
   ".CodeCatWidget" <- gtable(character(0),container=.Ccat_PW,expand=TRUE,multiple=TRUE)
   names(.CodeCatWidget)<-"Code Category"
   ".CodeofCat" <- gtable("Please click Update",container=.Ccat_PW,expand=TRUE,multiple=TRUE)
@@ -110,8 +103,8 @@ RQDA <- function() {
   .codecat_buttons[2,1] <- CodeCatAddToButton("Add To")
   .codecat_buttons[2,2] <- CodeCatDropFromButton("Drop From")
   .codecat_buttons[1,4] <- CodeCatMemoButton()
-  .codecat_buttons[2,3] <- Unmark_Button(label="UnMark", codeListWidget=.rqda$.CodeofCat)
-  .codecat_buttons[2,4] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat")
+  .codecat_buttons[2,3] <- Unmark_Button(label="UnMark", codeListWidget=.rqda$.CodeofCat,name="UnMarB2")
+  .codecat_buttons[2,4] <- Mark_Button(label="Mark", codeListWidget=".CodeofCat",name="MarCodB2")
 
 
 ######################### GUI  for cases
@@ -267,18 +260,20 @@ AddHandler <- function(){
   
   add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
   ## right click to add file to a case category
-    addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))
+  addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))
   ## addhandlerdoubleclick(.rqda$.fsearch_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fsearch_rqda))
   ## handler for .codes_rqda
-    addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
+  addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
         if (is_projOpen(env=.rqda,conName="qdacon"))
             retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
           }
                           )
     add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
-    addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){ClickHandlerFun(.rqda$.codes_rqda)})
+    addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
+                        ClickHandlerFun(.rqda$.codes_rqda,buttons=c("MarCodB1","UnMarB1"))})
     ## handler for .CodeofCat
-    addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){ClickHandlerFun(.rqda$.CodeofCat)})
+    addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){
+                      ClickHandlerFun(.rqda$.CodeofCat,buttons=c("MarCodB2","UnMarB2"))})
     addhandlerdoubleclick(.rqda$.CasesNamesWidget, handler=function(h,...) MemoWidget("Case",.rqda$.CasesNamesWidget,"cases"))
 
     addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
