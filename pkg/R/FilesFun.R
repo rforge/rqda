@@ -55,91 +55,107 @@ FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreas
 
 
 ViewFileFun <- function(FileNameWidget,hightlight=TRUE){
-## FileNameWidget=.rqda$.fnames_rqda in Files Tab
-## FileNameWidget=.rqda$.FileofCat in F-CAT Tab
-  if (is_projOpen(env = .rqda, conName = "qdacon")) {
-    if (length(svalue(FileNameWidget)) == 0) {
-      gmessage("Select a file first.", icon = "error",con = TRUE)
-    } else {
-      SelectedFileName <- svalue(FileNameWidget)
-      ViewFileFunHelper(SelectedFileName,hightlight=TRUE)
-    }}}
+    ## FileNameWidget=.rqda$.fnames_rqda in Files Tab
+    ## FileNameWidget=.rqda$.FileofCat in F-CAT Tab
+    if (is_projOpen(env = .rqda, conName = "qdacon")) {
+        if (length(svalue(FileNameWidget)) == 0) {
+            gmessage("Select a file first.", icon = "error",con = TRUE)
+        } else {
+            SelectedFileName <- svalue(FileNameWidget)
+            ViewFileFunHelper(SelectedFileName,hightlight=TRUE)
+        }}}
 
 
 ViewFileFunHelper <- function(FileName,hightlight=TRUE){
-  tryCatch(dispose(.rqda$.root_edit), error = function(e) {})
-  SelectedFileName <- FileName
-  gw <- gwindow(title = SelectedFileName,parent = getOption("widgetCoordinate"), width = 600, height = 600)
-  mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-  gw@widget@widget$SetIconFromFile(mainIcon)
-  assign(".root_edit", gw, env = .rqda)
-  .root_edit <- get(".root_edit", .rqda)
-  tmp <- gtext(container=.root_edit)
-  font <- pangoFontDescriptionFromString(.rqda$font)
-  gtkWidgetModifyFont(tmp@widget@widget,font)
-  tmp@widget@widget$SetPixelsBelowLines(5) ## set the spacing
-  tmp@widget@widget$SetPixelsInsideWrap(5) ## so the text looks more confortable.
-  assign(".openfile_gui", tmp, env = .rqda)
-  Encoding(SelectedFileName) <- "unknown"
-  IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",
-                                                   enc(SelectedFileName)))
-  content <- IDandContent$file
-  Encoding(content) <- "UTF-8"
-  W <- get(".openfile_gui", .rqda)
-  add(W, content)
-  slot(W, "widget")@widget$SetEditable(FALSE)
-  markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name,freecode.color, freecode.id from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
-  anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
-  buffer <- W@widget@widget$GetBuffer()
-  if (nrow(markidx)!=0){ ## make sense only when there is coding there
-    apply(markidx[,1:3],1,function(x){
-      iter <- gtkTextBufferGetIterAtOffset(buffer, x["selfirst"]) ## index to iter
-      buffer$CreateMark(sprintf("%s.1",x["rowid"]),where=iter$iter) ## insert marks
-      iter <- gtkTextBufferGetIterAtOffset(buffer, x["selend"])
-      buffer$CreateMark(sprintf("%s.2",x["rowid"]),where=iter$iter)
-    })} ## create marks
-  if (nrow(anno)!=0){
-    apply(anno,1,function(x){
-      iter <- gtkTextBufferGetIterAtOffset(buffer, x["position"]) ## index to iter
-      buffer$CreateMark(sprintf("%s.3",x["rowid"]),where=iter$iter) ## insert marks
-    })} ## creat marks for annotation
-  if (nrow(markidx)!=0){
-    sapply(markidx[, "rowid"], FUN = function(x) {
-      code <- markidx[markidx$rowid == x, "name"]
-      Encoding(code) <- "UTF-8"
-      codeColor <- markidx[markidx$rowid == x, "color"]
-      if (is.na(codeColor)) codeColor <-  DefaultCodeColor[as.numeric(markidx[markidx$rowid == x, "id"]) %% 11+1] ## specification of default color for codemark ##c("antiquewhite1","green","aquamarine2","bisque1","brown1")
-      m1 <- buffer$GetMark(sprintf("%s.1", x))
-      iter1 <- buffer$GetIterAtMark(m1)
-      idx1 <- gtkTextIterGetOffset(iter1$iter)
-      InsertAnchor(.rqda$.openfile_gui, label = sprintf("%s<",code), index = idx1,handler=TRUE,
-                   label.col=codeColor)
-      m2 <- buffer$GetMark(sprintf("%s.2", x))
-      iter2 <- buffer$GetIterAtMark(m2)
-      idx2 <- gtkTextIterGetOffset(iter2$iter)
-      InsertAnchor(.rqda$.openfile_gui, label = sprintf(">%s",code), index = idx2,handler=TRUE,forward=FALSE)
-    }) ## end of sapply -> insert code label
-    if (hightlight){
-      idx <- sapply(markidx[, "rowid"], FUN = function(x) {
-        m1 <- buffer$GetMark(sprintf("%s.1", x))
-        iter1 <- buffer$GetIterAtMark(m1)
-        idx1 <- gtkTextIterGetOffset(iter1$iter)
-        m2 <- buffer$GetMark(sprintf("%s.2", x))
-        iter2 <- buffer$GetIterAtMark(m2)
-        idx2 <- gtkTextIterGetOffset(iter2$iter)
-        return(c(idx1,idx2))
-      })## get offset for HL.
-      idx <- t(idx)
-      HL(W, idx, fore.col = .rqda$fore.col, back.col = NULL)
-    }}
-  if (nrow(anno)!=0){
-    apply(anno,1,function(x){
-      m <- buffer$GetMark(sprintf("%s.3", x["rowid"]))
-      iter <- buffer$GetIterAtMark(m)
-      idx <- gtkTextIterGetOffset(iter$iter)
-      InsertAnnotation(index=idx,fid=IDandContent$id, rowid=x["rowid"])
-    })}
+    if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) {
+        dispose(.rqda$.root_edit)
+    }
+    ## tryCatch(dispose(.rqda$.root_edit), error = function(e) {})
+    SelectedFileName <- FileName
+    gw <- gwindow(title = SelectedFileName,parent = getOption("widgetCoordinate"), width = 600, height = 600)
+    mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+    gw@widget@widget$SetIconFromFile(mainIcon)
+    assign(".root_edit", gw, env = .rqda)
+    .root_edit <- get(".root_edit", .rqda)
+    tmp <- gtext(container=.root_edit)
+    font <- pangoFontDescriptionFromString(.rqda$font)
+    gtkWidgetModifyFont(tmp@widget@widget,font)
+    tmp@widget@widget$SetPixelsBelowLines(5) ## set the spacing
+    tmp@widget@widget$SetPixelsInsideWrap(5) ## so the text looks more confortable.
+    assign(".openfile_gui", tmp, env = .rqda)
+    Encoding(SelectedFileName) <- "unknown"
+    IDandContent <- dbGetQuery(.rqda$qdacon, sprintf("select id, file from source where name='%s'",
+                                                     enc(SelectedFileName)))
+    content <- IDandContent$file
+    Encoding(content) <- "UTF-8"
+    W <- get(".openfile_gui", .rqda)
+    add(W, content)
+    slot(W, "widget")@widget$SetEditable(FALSE)
+    markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name,freecode.color, freecode.id from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
+    anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
+    buffer <- W@widget@widget$GetBuffer()
+    if (nrow(markidx)!=0){ ## make sense only when there is coding there
+        apply(markidx[,1:3],1,function(x){
+            iter <- gtkTextBufferGetIterAtOffset(buffer, x["selfirst"]) ## index to iter
+            buffer$CreateMark(sprintf("%s.1",x["rowid"]),where=iter$iter) ## insert marks
+            iter <- gtkTextBufferGetIterAtOffset(buffer, x["selend"])
+            buffer$CreateMark(sprintf("%s.2",x["rowid"]),where=iter$iter)
+        })} ## create marks
+    if (nrow(anno)!=0){
+        apply(anno,1,function(x){
+            iter <- gtkTextBufferGetIterAtOffset(buffer, x["position"]) ## index to iter
+            buffer$CreateMark(sprintf("%s.3",x["rowid"]),where=iter$iter) ## insert marks
+        })} ## creat marks for annotation
+    if (nrow(markidx)!=0){
+        sapply(markidx[, "rowid"], FUN = function(x) {
+            code <- markidx[markidx$rowid == x, "name"]
+            Encoding(code) <- "UTF-8"
+            codeColor <- markidx[markidx$rowid == x, "color"]
+            if (is.na(codeColor)) codeColor <-  DefaultCodeColor[as.numeric(markidx[markidx$rowid == x, "id"]) %% 11+1] ## specification of default color for codemark ##c("antiquewhite1","green","aquamarine2","bisque1","brown1")
+            m1 <- buffer$GetMark(sprintf("%s.1", x))
+            iter1 <- buffer$GetIterAtMark(m1)
+            idx1 <- gtkTextIterGetOffset(iter1$iter)
+            InsertAnchor(.rqda$.openfile_gui, label = sprintf("%s<",code), index = idx1,handler=TRUE,
+                         label.col=codeColor)
+            m2 <- buffer$GetMark(sprintf("%s.2", x))
+            iter2 <- buffer$GetIterAtMark(m2)
+            idx2 <- gtkTextIterGetOffset(iter2$iter)
+            InsertAnchor(.rqda$.openfile_gui, label = sprintf(">%s",code), index = idx2,handler=TRUE,forward=FALSE)
+        }) ## end of sapply -> insert code label
+        if (hightlight){
+            idx <- sapply(markidx[, "rowid"], FUN = function(x) {
+                m1 <- buffer$GetMark(sprintf("%s.1", x))
+                iter1 <- buffer$GetIterAtMark(m1)
+                idx1 <- gtkTextIterGetOffset(iter1$iter)
+                m2 <- buffer$GetMark(sprintf("%s.2", x))
+                iter2 <- buffer$GetIterAtMark(m2)
+                idx2 <- gtkTextIterGetOffset(iter2$iter)
+                return(c(idx1,idx2))
+            })## get offset for HL.
+            idx <- t(idx)
+            HL(W, idx, fore.col = .rqda$fore.col, back.col = NULL)
+        }}
+    if (nrow(anno)!=0){
+        apply(anno,1,function(x){
+            m <- buffer$GetMark(sprintf("%s.3", x["rowid"]))
+            iter <- buffer$GetIterAtMark(m)
+            idx <- gtkTextIterGetOffset(iter$iter)
+            InsertAnnotation(index=idx,fid=IDandContent$id, rowid=x["rowid"])
+        })}
     buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
+    enabled(button$AnnB) <- TRUE
+    enabled(button$MarCodB1) <- (length(svalue(.rqda$.codes_rqda))==1)
+    enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)
+    enabled(button$MarCodB2) <- (length(svalue(.rqda$.CodeofCat))==1)
+    enabled(button$UnMarB2) <- (length(svalue(.rqda$.CodeofCat))==1)
+    addHandlerUnrealize(gw, handler = function(h,...) {
+        enabled(button$AnnB) <- FALSE
+        enabled(button$MarCodB1) <- FALSE
+        enabled(button$UnMarB1) <- FALSE
+        enabled(button$MarCodB2) <- FALSE
+        enabled(button$UnMarB2) <- FALSE
+        return(FALSE)
+    })
 }
 
 
@@ -409,7 +425,7 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
     }
     ans
   }
-  
+
   FidOfCatFun <- function(type){
     if (type=="selected"){
       selected <- svalue(.rqda$.FileofCat)
@@ -426,12 +442,12 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
     }
     ans
   }
-  
+
   bothFun <- function(type){
     ans <- intersect(GetFileId("case",type),GetFileId("file",type))
     ans
   }
-  
+
   condition <- match.arg(condition)
   type <- match.arg(type)
   fid <- switch(condition,

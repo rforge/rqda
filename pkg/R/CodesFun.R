@@ -433,37 +433,37 @@ if (!is.null(allcodes)){
 
 
 ClickHandlerFun <- function(CodeNameWidget,buttons=c("MarCodB1","UnMarB1")){
-  ## CodeNameWidget=.rqda$.codes_rqda
-  con <- .rqda$qdacon
-  SelectedCode <- currentCode <- svalue(CodeNameWidget)
-  if (length(SelectedCode)!=0) {
-    if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) { ## a file is open
-	b1 <- get(buttons[1],env=button)
-	b2 <- get(buttons[2],env=button)
-      enabled(b1) <- TRUE
-      enabled(b2) <- TRUE
-      SelectedCode <- currentCode <- enc(currentCode,encoding="UTF-8")
-      currentCid <- dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
-      names(CodeNameWidget) <- sprintf("Selected code id is %s",currentCid)
-      SelectedFile <- svalue(.rqda$.root_edit)
-      SelectedFile <- enc(SelectedFile,encoding="UTF-8")
-      currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-      ## following code: Only mark the text chuck according to the current code.
-      idx1 <-  dbGetQuery(con,sprintf("select selfirst, selend from coding where
+    ## CodeNameWidget=.rqda$.codes_rqda
+    con <- .rqda$qdacon
+    SelectedCode <- currentCode <- svalue(CodeNameWidget)
+    if (length(SelectedCode)!=0) {
+        if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) { ## a file is open
+            for (i in buttons) {
+                b <- get(i,env=button)
+                enabled(b) <- TRUE
+            }
+            SelectedCode <- currentCode <- enc(currentCode,encoding="UTF-8")
+            currentCid <- dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+            names(CodeNameWidget) <- sprintf("Selected code id is %s",currentCid)
+            SelectedFile <- svalue(.rqda$.root_edit)
+            SelectedFile <- enc(SelectedFile,encoding="UTF-8")
+            currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+            ## following code: Only mark the text chuck according to the current code.
+            idx1 <-  dbGetQuery(con,sprintf("select selfirst, selend from coding where
                                        cid==%i and fid==%i and status==1",currentCid, currentFid))
-      idx2 <- dbGetQuery(con, sprintf("select selfirst, selend from coding where fid==%i and status==1", currentFid))
-      if (nrow(idx2)>0) {
-        ClearMark(.rqda$.openfile_gui,min=0,max=max(as.numeric(idx2$selend))+2*nrow(idx2),clear.fore.col = TRUE, clear.back.col =FALSE)
-      }
-      if (nrow(idx1)>0) {
-        allidx <- unlist(idx2)
-        addidx <-  data.frame(selfirst=apply(outer(allidx,idx1$selfirst,"<="),2,sum),
-                              selend=apply(outer(allidx,idx1$selend,"<="),2,sum))
-        idx1 <- idx1+addidx
-        HL(.rqda$.openfile_gui,index=idx1,fore.col=.rqda$fore.col,back.col=NULL)
-      }
-    }# end of mark text chuck
-  }
+            idx2 <- dbGetQuery(con, sprintf("select selfirst, selend from coding where fid==%i and status==1", currentFid))
+            if (nrow(idx2)>0) {
+                ClearMark(.rqda$.openfile_gui,min=0,max=max(as.numeric(idx2$selend))+2*nrow(idx2),clear.fore.col = TRUE, clear.back.col =FALSE)
+            }
+            if (nrow(idx1)>0) {
+                allidx <- unlist(idx2)
+                addidx <-  data.frame(selfirst=apply(outer(allidx,idx1$selfirst,"<="),2,sum),
+                                      selend=apply(outer(allidx,idx1$selend,"<="),2,sum))
+                idx1 <- idx1+addidx
+                HL(.rqda$.openfile_gui,index=idx1,fore.col=.rqda$fore.col,back.col=NULL)
+            }
+        }# end of mark text chuck
+    }
 }
 
 

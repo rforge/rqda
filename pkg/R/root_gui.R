@@ -125,7 +125,7 @@ RQDA <- function() {
   .case_buttons[1,3] <- Case_RenameButton()
   ##.case_buttons[1,4] <- CaseMemoButton()
   .case_buttons[1,4] <- CaseUnMark_Button("Unlink")
-  .case_buttons[1,5] <- CaseMark_Button("Link")
+  .case_buttons[1,5] <- CaseMark_Button(" Link ")
   ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
 
 ########################### GUI for Attributes
@@ -252,12 +252,12 @@ AddHandler <- function(){
     Fid <- GetFileId(,"select")
     if (!is.null(Fid) && length(Fid)==1) {
       names(.rqda$.fnames_rqda) <- sprintf("Selected File id is %s",Fid)
-      gtkWidgetSetSensitive(button$DelFilB@widget@widget,TRUE) 
-      gtkWidgetSetSensitive(button$VieFilB@widget@widget,TRUE) 
-      gtkWidgetSetSensitive(button$FilMemB@widget@widget,TRUE) 
-      gtkWidgetSetSensitive(button$FilRenB@widget@widget,TRUE) 
+      gtkWidgetSetSensitive(button$DelFilB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$VieFilB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$FilMemB@widget@widget,TRUE)
+      gtkWidgetSetSensitive(button$FilRenB@widget@widget,TRUE)
     }})
-  
+
   add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
   ## right click to add file to a case category
   addhandlerdoubleclick(.rqda$.fnames_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fnames_rqda))

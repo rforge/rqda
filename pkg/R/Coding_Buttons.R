@@ -1,5 +1,5 @@
 AddCodeButton <- function(label="Add"){
-  addCodB <- gbutton(label,
+  AddCodB <- gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
               codename <- ginput("Enter new code. ", icon="info")
@@ -11,9 +11,9 @@ AddCodeButton <- function(label="Add"){
             }
           }
           )
- assign("addCodB",addCodB,env=button)
- enabled(addCodB) <- FALSE
- addCodB
+ assign("AddCodB",AddCodB,env=button)
+ enabled(AddCodB) <- FALSE
+ AddCodB
 }
 
 
