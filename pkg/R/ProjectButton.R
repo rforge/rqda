@@ -65,6 +65,7 @@ OpenProjectButton <- function(container){
       enabled(button$AddJouB) <- TRUE
       enabled(.rqda$.JournalNamesWidget) <- TRUE
       enabled(button$AddCodB) <- TRUE
+      enabled(.rqda$.codes_rqda) <- TRUE
     }
   }
           )
@@ -103,7 +104,14 @@ CloseProjectButton <- function(container){
     enabled(button$RenJouB) <- FALSE
     enabled(button$OpeJouB) <- FALSE
     enabled(button$AddCodB) <- FALSE
-  }
+    enabled(.rqda$.codes_rqda) <- FALSE
+    enabled(.rqda$.codes_rqda) <- FALSE
+    enabled(.rqda$RetB) <- FALSE
+    enabled(button$DelCodB) <- FALSE
+    enabled(button$codememobuton) <- FALSE
+    enabled(button$FreCodRenB) <- FALSE
+    enabled(button$c2memobutton) <- FALSE
+}
                      )
   assign("cloprob",cloprob,env=button)
   gtkWidgetSetSensitive(button$cloprob@widget@widget,FALSE)

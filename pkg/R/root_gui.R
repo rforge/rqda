@@ -33,7 +33,7 @@ RQDA <- function() {
   BackupProjectButton(container=.proj_gui)
   CleanProjButton(container=.proj_gui)
   CloseAllCodingsButton(container=.proj_gui)
-  gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
+  ##gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
 
   gseparator(con=.proj_gui)
   glabel("Path of current project:",con=.proj_gui)
@@ -53,7 +53,10 @@ RQDA <- function() {
              gtext(paste(attr(citation("RQDA")[[1]],"textVersion"),"\n\nUse citation('RQDA') to get more info."),
                    con=gwindow(title="Please cite this package."))
          })
-
+  glabel("About",
+         container=.proj_gui, handler=function(h,...){
+             browseURL("http://rqda.r-forge.r-project.org/")
+         })
 
 ########################### GUI for FILES
 ###########################
@@ -219,6 +222,8 @@ RQDA <- function() {
 ##########################
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
   enabled(.JournalNamesWidget) <- FALSE
+  enabled(.rqda$.codes_rqda) <- FALSE
+
 ##########################
 ### set the positions
   svalue(.codes_pan) <- 0.09
@@ -268,9 +273,17 @@ AddHandler <- function(){
             retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
           }
                           )
-    add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
-    addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
-                        ClickHandlerFun(.rqda$.codes_rqda,buttons=c("MarCodB1","UnMarB1"))})
+  add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
+  addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
+      ClickHandlerFun(.rqda$.codes_rqda,buttons=c("MarCodB1","UnMarB1"))
+      if (length(svalue(.rqda$.codes_rqda))==1) {
+          enabled(button$RetB) <- TRUE
+          enabled(button$DelCodB) <- TRUE
+          enabled(button$codememobuton) <- TRUE
+          enabled(button$FreCodRenB) <- TRUE
+          enabled(button$c2memobutton) <- TRUE
+      }
+  })
     ## handler for .CodeofCat
     addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){
                       ClickHandlerFun(.rqda$.CodeofCat,buttons=c("MarCodB2","UnMarB2"))})

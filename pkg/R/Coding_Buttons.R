@@ -18,7 +18,7 @@ AddCodeButton <- function(label="Add"){
 
 
 DeleteCodeButton <- function(label="Delete"){
-  gbutton(label,
+  DelCodB <- gbutton(label,
           handler=function(h,...)
           {
             if (is_projOpen(env=.rqda,conName="qdacon") &
@@ -39,6 +39,9 @@ DeleteCodeButton <- function(label="Delete"){
                                  }
           }
           )
+  assign("DelCodB",DelCodB,env=button)
+  enabled(DelCodB) <- FALSE
+  DelCodB
 }
 
 RetrievalButton <- function(label){
@@ -50,7 +53,7 @@ RetrievalButton <- function(label){
                  )
   gtkTooltips()$setTip(RetB@widget@widget,"Retrieve codings of the selected code.")
   assign("RetB",RetB,env=button)
-  #enabled(RetB) <- TRUE
+  enabled(RetB) <- FALSE
   return(RetB)
 }
 
@@ -144,10 +147,10 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda"){
 
 
 Unmark_Button <- function(label="Unmark",codeListWidget=.rqda$.codes_rqda,name="UnMarB1"){
- ans <- gbutton("Unmark", handler=function(h,...) {UnMarkCodeFun(codeListWidget=codeListWidget)})
- enabled(ans) <- FALSE
- assign(name,ans,env=button)
- ans
+    ans <- gbutton("Unmark", handler=function(h,...) {UnMarkCodeFun(codeListWidget=codeListWidget)})
+    enabled(ans) <- FALSE
+    assign(name,ans,env=button)
+    ans
 }
 
 UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
@@ -205,6 +208,8 @@ CodeMemoButton <- function(label="C-Memo",...){
   }
           )
   gtkTooltips()$setTip(codememobuton@widget@widget,"Memo for selected code.")
+  assign("codememobuton",codememobuton,env=button)
+  enabled(codememobuton) <- FALSE
   return(codememobuton)
 }
 
@@ -295,6 +300,8 @@ CodingMemoButton <- function(label="C2Memo")
         }
       }}})
   gtkTooltips()$setTip(c2memobutton@widget@widget,"Memo for a Coding.")
+  assign("c2memobutton",c2memobutton,env=button)
+  enabled(c2memobutton) <- FALSE
   return(c2memobutton)
 }
 
@@ -325,9 +332,9 @@ FreeCode_RenameButton <- function(label="Rename",CodeNamesWidget=.rqda$.codes_rq
         }
     }
             )
- ##gtkButtonSetUseStock(FreCodRenB@widget@widget,FALSE)
- ##gtkButtonSetLabel(FreCodRenB@widget@widget,"Rename")
- FreCodRenB
+    assign("FreCodRenB",FreCodRenB,env=button)
+    enabled(FreCodRenB) <- FALSE
+    FreCodRenB
 }
 
 
