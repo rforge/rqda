@@ -21,6 +21,8 @@ NewProjectButton <- function(container){
       enabled(.rqda$.SettingsGui) <- TRUE
       enabled(.rqda$.CodeCatWidget) <- TRUE
       enabled(button$AddCodCatB) <- TRUE
+      enabled(button$AddCasB) <- TRUE
+      enabled(.rqda$.CasesNamesWidget) <- TRUE
     }
   }
           )
@@ -72,6 +74,8 @@ OpenProjectButton <- function(container){
       enabled(.rqda$.SettingsGui) <- TRUE
       enabled(.rqda$.CodeCatWidget) <- TRUE
       enabled(button$AddCodCatB) <- TRUE
+      enabled(button$AddCasB) <- TRUE
+      enabled(.rqda$.CasesNamesWidget) <- TRUE
     }
   }
           )
@@ -126,7 +130,14 @@ CloseProjectButton <- function(container){
     enabled(button$CodCatRenB) <- FALSE
     enabled(button$CodCatAddToB) <- FALSE
     enabled(button$CodCatADroFromB) <- FALSE
-}
+    enabled(button$AddCasB) <- FALSE
+    enabled(button$DelCasB) <- FALSE
+    enabled(button$CasRenB) <- FALSE
+    enabled(button$CasMarB) <- FALSE
+    enabled(button$CasUnMarB) <- FALSE
+    enabled(.rqda$.CasesNamesWidget) <- FALSE
+    enabled(.rqda$.FileofCase) <- FALSE
+  }
                      )
   assign("cloprob",cloprob,env=button)
   gtkWidgetSetSensitive(button$cloprob@widget@widget,FALSE)

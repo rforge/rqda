@@ -227,7 +227,9 @@ RQDA <- function() {
   enabled(.rqda$.SettingsGui) <- FALSE
   enabled(.rqda$.CodeCatWidget) <- FALSE
   enabled(.rqda$.CodeofCat) <- FALSE
-
+  enabled(.rqda$.CasesNamesWidget) <- FALSE
+  enabled(.rqda$.FileofCase) <- FALSE
+  
 ##########################
 ### set the positions
   svalue(.codes_pan) <- 0.09
@@ -285,7 +287,6 @@ AddHandler <- function(){
           enabled(button$DelCodB) <- TRUE
           enabled(button$codememobuton) <- TRUE
           enabled(button$FreCodRenB) <- TRUE
-          enabled(button$c2memobutton) <- TRUE
       }
   })
     ## handler for .CodeofCat
@@ -296,43 +297,45 @@ AddHandler <- function(){
 
     addhandlerdoubleclick(.rqda$.CasesNamesWidget, handler=function(h,...) MemoWidget("Case",.rqda$.CasesNamesWidget,"cases"))
 
-    addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
-      ## CaseNamesUpdate(.rqda$.CasesNamesWidget)
-      con <- .rqda$qdacon
-      SelectedCase <- currentCase <- svalue(.rqda$.CasesNamesWidget)
-      if (length(SelectedCase)!=0) {
-        currentCase <- SelectedCase <- enc(SelectedCase,encoding="UTF-8")
-        currentCid <- dbGetQuery(con,sprintf("select id from cases where name=='%s'",SelectedCase))[,1]
-        SelectedFile <- tryCatch(svalue(.rqda$.root_edit)  ## use root_edit is more reliable
-                                 ,error=function(e){})
-        if (!is.null(SelectedFile)) {
-          SelectedFile <- enc(SelectedFile,encoding="UTF-8")
-          currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-          ## following code: Only mark the text chuck according to the current code.
-          tryCatch({
-            widget <- get(h$action$marktxtwidget,.rqda)
-            ## if widget is not open, then error;which means no need to highlight anything.
-            coding.idx <- RQDAQuery(sprintf("select selfirst,selend from coding where fid=%i and status==1",currentFid))
-            anno.idx <- RQDAQuery(sprintf("select position from annotation where fid=%i and status==1",currentFid))$position
-            allidx <- unlist(coding.idx,anno.idx)
-            sel_index <-  dbGetQuery(con,sprintf("select selfirst, selend from caselinkage where
+  addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
+    con <- .rqda$qdacon
+    SelectedCase <- currentCase <- svalue(.rqda$.CasesNamesWidget)
+    if (length(SelectedCase)!=0) {
+      enabled(button$DelCasB) <- TRUE
+      enabled(button$CasRenB) <- TRUE
+      enabled(.rqda$.FileofCase) <- TRUE
+      enabled(button$CasMarB) <-
+        (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))
+      currentCase <- SelectedCase <- enc(SelectedCase,encoding="UTF-8")
+      currentCid <- dbGetQuery(con,sprintf("select id from cases where name=='%s'",SelectedCase))[,1]
+      if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) {
+        SelectedFile <- svalue(.rqda$.root_edit)
+        SelectedFile <- enc(SelectedFile,encoding="UTF-8")
+        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+        ## following code: Only mark the text chuck according to the current code.
+        widget <- .rqda$.openfile_gui
+        coding.idx <- RQDAQuery(sprintf("select selfirst,selend from coding where fid=%i and status==1",currentFid))
+        anno.idx <- RQDAQuery(sprintf("select position from annotation where fid=%i and status==1",currentFid))$position
+        allidx <- unlist(coding.idx,anno.idx)
+        sel_index <-  dbGetQuery(con,sprintf("select selfirst, selend from caselinkage where
                                                    caseid==%i and fid==%i and status==1",currentCid, currentFid))
-            Maxindex <- dbGetQuery(con, sprintf("select max(selend) from caselinkage where fid==%i", currentFid))[1,1]
-            if (!is.null(allidx)) Maxindex <- Maxindex + sum(allidx<=Maxindex)
-            ClearMark(widget,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
-            if (nrow(sel_index)>0){
-              if (!is.null(allidx)){
-                sel_index[,"selfirst"] <- sapply(sel_index[,"selfirst"],FUN=function(x) x + sum(allidx <= x))
-                sel_index[,"selend"] <- sapply(sel_index[,"selend"],FUN=function(x) x + sum(allidx <= x))
-              }
-              HL(widget,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)
-            }},error=function(e){}) # end of mark text chuck
-        }
+        Maxindex <- dbGetQuery(con, sprintf("select max(selend) from caselinkage where fid==%i", currentFid))[1,1]
+        if (!is.null(allidx)) Maxindex <- Maxindex + sum(allidx<=Maxindex)
+        ClearMark(widget,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
+        if (nrow(sel_index)>0){
+          if (!is.null(allidx)){
+            sel_index[,"selfirst"] <- sapply(sel_index[,"selfirst"],FUN=function(x) x + sum(allidx <= x))
+            sel_index[,"selend"] <- sapply(sel_index[,"selend"],FUN=function(x) x + sum(allidx <= x))
+          }
+          HL(widget,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)
+          enabled(button$CasUnMarB) <-
+            (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))  
+          ## end of mark text chuck
+        }}
         UpdateFileofCaseWidget()
-      }
-    },action=list(marktxtwidget=".openfile_gui")
-      )
-
+    }
+  }
+                    )
 
   addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
       if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
@@ -377,6 +380,8 @@ AddHandler <- function(){
     addhandlerdoubleclick(.rqda$.FileofCase, handler <- function(h,...) {
         ViewFileFun(FileNameWidget=.rqda$.FileofCase)
         HL_Case()
+        enabled(button$CasUnMarB) <- TRUE
+        enabled(button$CasMarB) <- TRUE
     })
     addHandlerClicked(.rqda$.FileofCase, handler <- function(h, ...) {
         if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
