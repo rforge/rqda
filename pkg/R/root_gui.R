@@ -289,8 +289,11 @@ AddHandler <- function(){
       }
   })
     ## handler for .CodeofCat
-    addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){
-                      ClickHandlerFun(.rqda$.CodeofCat,buttons=c("MarCodB2","UnMarB2"))})
+  addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){
+      ClickHandlerFun(.rqda$.CodeofCat,buttons=c("MarCodB2","UnMarB2"))
+      if (length(svalue(.rqda$.CodeofCat))>0){enabled(button$CodCatADroFromB) <- TRUE }
+  })
+
     addhandlerdoubleclick(.rqda$.CasesNamesWidget, handler=function(h,...) MemoWidget("Case",.rqda$.CasesNamesWidget,"cases"))
 
     addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
@@ -334,6 +337,10 @@ AddHandler <- function(){
   addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
       if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
           enabled(.rqda$.CodeofCat) <- TRUE
+          enabled(button$DelCodCatB) <- TRUE
+          enabled(button$CodCatMemB) <- TRUE
+          enabled(button$CodCatRenB) <- TRUE
+          enabled(button$CodCatAddToB) <- TRUE
           catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
                                      enc(svalue(.rqda$.CodeCatWidget))
                                      )
