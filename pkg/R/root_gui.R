@@ -229,6 +229,7 @@ RQDA <- function() {
   enabled(.rqda$.CodeofCat) <- FALSE
   enabled(.rqda$.CasesNamesWidget) <- FALSE
   enabled(.rqda$.FileofCase) <- FALSE
+  enabled(.rqda$.AttrNamesWidget) <- FALSE
   
 ##########################
 ### set the positions
@@ -354,7 +355,19 @@ AddHandler <- function(){
       UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
   })
 
-  addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes"))
+  addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) {
+    MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes")}
+                        )
+  addHandlerClicked(.rqda$.AttrNamesWidget, handler=function(h,...) {
+    if (length(svalue(.rqda$.AttrNamesWidget))!=0){
+      enabled(button$DelAttB) <- TRUE
+      enabled(button$RenAttB) <- TRUE
+      enabled(button$AttMemB) <- TRUE
+      enabled(button$SetAttClsB) <- TRUE
+    }
+  }
+                    )
+  
   addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))
   add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
   addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
