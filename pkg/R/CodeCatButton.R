@@ -87,7 +87,7 @@ CodeCat_RenameButton <- function(label="Rename",Widget=.rqda$.CodeCatWidget,...)
       else {
           ## get the new file names
           NewName <- ginput("Enter new Cateory name. ", text=OldName, icon="info")
-          if (NewName!="") {
+          if (!is.na(NewName)) {
               Encoding(NewName) <- "UTF-8"
               rename(OldName,NewName,"codecat")
               UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat")
@@ -257,21 +257,19 @@ CodeCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
 ##
 CodeofCatWidgetMenu <- list()
 CodeofCatWidgetMenu$"Rename Selected Code"$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-        selectedCodeName <- svalue(.rqda$.CodeofCat)
-        if (length(selectedCodeName)==0){
-            gmessage("Select a code first.",icon="error",con=TRUE)
-        }
-        else {
-            NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
-            if (!is.na(NewCodeName)) {
-                Encoding(NewCodeName) <- Encoding(selectedCodeName) <- "UTF-8"
-                rename(selectedCodeName,NewCodeName,"freecode")
-                UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)
-                UpdateWidget(".CodeofCat",from=selectedCodeName,to=NewCodeName)
-            }
-        }
+  selectedCodeName <- svalue(.rqda$.CodeofCat)
+  if (length(selectedCodeName)==0){
+    gmessage("Select a code first.",icon="error",con=TRUE)
+  }
+  else {
+    NewCodeName <- ginput("Enter new code name. ", text=selectedCodeName, icon="info")
+    if (!is.na(NewCodeName)) {
+      Encoding(NewCodeName) <- Encoding(selectedCodeName) <- "UTF-8"
+      rename(selectedCodeName,NewCodeName,"freecode")
+      UpdateWidget(".codes_rqda",from=selectedCodeName,to=NewCodeName)
+      UpdateWidget(".CodeofCat",from=selectedCodeName,to=NewCodeName)
     }
+  }
 }
 CodeofCatWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {

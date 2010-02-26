@@ -140,7 +140,7 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
   ans <- gbutton(label,handler=function(h,...) {
     FileOfCat <- svalue(Widget)
     ## Give a confirm msg
-    del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
+    del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",length(FileOfCat)),con=TRUE,icon="question")
     if (isTRUE(del)){
       SelectedFileCat <- svalue(.rqda$.FileCatWidget)
       Encoding(SelectedFileCat) <- Encoding(FileOfCat)<- "UTF-8"
