@@ -1,68 +1,61 @@
 #################
 AddFileCatButton <- function(label="ADD"){
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      item <- ginput("Enter new File Category. ", icon="info")
-      if (!is.na(item)){
-        Encoding(item) <- "UTF-8"
-        AddTodbTable(item,"filecat",Id="catid") ## FILE CATegory
-        UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
-      }
+  AddFilCatB <- gbutton(label,handler=function(h,...) {
+    item <- ginput("Enter new File Category. ", icon="info")
+    if (!is.na(item)){
+      Encoding(item) <- "UTF-8"
+      AddTodbTable(item,"filecat",Id="catid") ## FILE CATegory
+      UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
     }
   }
-          )
+                        )
+  assign("AddFilCatB",AddFilCatB,button)
+  enabled(AddFilCatB) <- FALSE
+  AddFilCatB
 }
 
 
 DeleteFileCatButton <- function(label="Delete"){
-  gbutton(label,
-          handler=function(h,...)
-          {
-            if (is_projOpen(env=.rqda,conName="qdacon") &
-                length(svalue(.rqda$.FileCatWidget))!=0) {
-              del <- gconfirm("Really delete the File Category?",icon="question")
-              if (isTRUE(del)){
-                Selected <- svalue(.rqda$.FileCatWidget)
-                Encoding(Selected) <- "UTF-8"
-                catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status==1 and name=='%s'",enc(Selected)))[,1]
-                if (length(catid) ==1){
-                  dbGetQuery(.rqda$qdacon,sprintf("update filecat set status=0 where name=='%s'",enc(Selected)))
-                  ## set status in table freecode to 0
-                  UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
-                  tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treefile set status=0 where catid=='%s'",catid)),error=function(e){})
-                  ## should delete all the related codelists
-                  UpdateFileofCatWidget() ## update files of file cat widget
-                } else gmessage("The Category Name is not unique.",con=TRUE)
-                
-              }
-            }
-          }
-          )
+  DelFilCatB <- gbutton(label, handler=function(h,...){
+    del <- gconfirm("Really delete the File Category?",icon="question")
+    if (isTRUE(del)){
+      Selected <- svalue(.rqda$.FileCatWidget)
+      Encoding(Selected) <- "UTF-8"
+      catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status==1 and name=='%s'",enc(Selected)))[,1]
+      if (length(catid) ==1){
+        dbGetQuery(.rqda$qdacon,sprintf("update filecat set status=0 where name=='%s'",enc(Selected)))
+        ## set status in table freecode to 0
+        UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
+        tryCatch(dbGetQuery(.rqda$qdacon,sprintf("update treefile set status=0 where catid=='%s'",catid)),error=function(e){})
+        ## should delete all the related codelists
+        UpdateFileofCatWidget() ## update files of file cat widget
+      } else gmessage("The Category Name is not unique.",con=TRUE)
+    }
+  }
+                        )
+  assign("DelFilCatB",DelFilCatB,button)
+  enabled(DelFilCatB) <- FALSE
+  DelFilCatB
 }
 
 
 FileCat_RenameButton <- function(label="Rename",Widget=.rqda$.FileCatWidget,...)
 {
   ## rename of selected file cat.
-  gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,"qdacon")) {
-      ## if project is open, then continue
-      OldName <- svalue(Widget)
-      if (length(OldName)==0){
-        gmessage("Select a File Category first.",icon="error",con=TRUE)
-      }
-      else {
-        ## get the new file names
-        NewName <- ginput("Enter new Cateory name. ",text=OldName, icon="info")
-        if (NewName != "") {
-          Encoding(NewName) <- "UTF-8"
-          rename(OldName,NewName,"filecat")
-          UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
-        }
-      }
+  FilCatRenB <- gbutton(label,handler=function(h,...) {
+    OldName <- svalue(Widget)
+    ## get the new file names
+    NewName <- ginput("Enter new Cateory name. ",text=OldName, icon="info")
+    if (NewName != "") {
+      Encoding(NewName) <- "UTF-8"
+      rename(OldName,NewName,"filecat")
+      UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
     }
   }
-          )
+                      )
+  assign("FilCatRenB",FilCatRenB,button)
+  enabled(FilCatRenB) <- FALSE
+  FilCatRenB
 }
 
 UpdateFileofCatWidget <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sortByTime=FALSE,...){
@@ -103,10 +96,12 @@ UpdateFileofCatWidget2 <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sort
 
 FileCatMemoButton <- function(label="Memo"){
   ans <- gbutton(label,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-      MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
-    }})
+    MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
+    }
+                 )
   gtkTooltips()$setTip(ans@widget@widget,"Memo of file category.")
+  assign("FilCatMemB",ans,button)
+  enabled(ans) <- FALSE
   ans
 }
 
@@ -115,41 +110,28 @@ FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
 {
   ans <- gbutton(label,handler=function(h,...) {
     SelectedFileCat <- svalue(.rqda$.FileCatWidget)
-    if (length(SelectedFileCat)==0) {gmessage("Select a file category first.",con=TRUE)} else{
-      catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",enc(SelectedFileCat)))[,1]
-      freefile <-  dbGetQuery(.rqda$qdacon,"select name, id from source where status=1")
-      if (nrow(freefile) == 0){gmessage("No files Yet.",cont=.rqda$.FileCatWidget)} else {
-        Encoding(SelectedFileCat) <- Encoding(freefile[['name']]) <- "UTF-8"
-        fileofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and catid=%i",catid))
-        if (nrow(fileofcat)!=0){
-          fileoutofcat <- subset(freefile,!(id %in% fileofcat$fid))
-        } else  fileoutofcat <- freefile
-        Selected <- gselect.list(fileoutofcat[['name']],multiple=TRUE)
-        if (Selected != ""){
-          ## Selected <- iconv(Selected,to="UTF-8") ## already Encoded as UTF-8.
-          fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
-          Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo=NA,status=1)
-          dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
-          UpdateFileofCatWidget()
-        }
-        
-    ## CurrentFrame <- sys.frame(sys.nframe())
-    ## sys.frame(): get the frame of n
-    ## nframe(): get n of current frame
-    ## The value of them depends on where they evaluated, should not placed inside RunOnSelected()
-    ##RunOnSelected(fileoutofcat[['name']],multiple=TRUE,expr={
-    ##if (length(Selected)!=0){
-    ## Selected <- iconv(Selected,to="UTF-8")
-    ## fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
-    ##Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo="",status=1)
-    ##dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
-    ##UpdateFileofCatWidget()
-    ##}},enclos=CurrentFrame)
+    catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",enc(SelectedFileCat)))[,1]
+    freefile <-  dbGetQuery(.rqda$qdacon,"select name, id from source where status=1")
+    if (nrow(freefile) == 0){gmessage("No files Yet.",cont=.rqda$.FileCatWidget)} else {
+      Encoding(SelectedFileCat) <- Encoding(freefile[['name']]) <- "UTF-8"
+      fileofcat <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and catid=%i",catid))
+      if (nrow(fileofcat)!=0){
+        fileoutofcat <- subset(freefile,!(id %in% fileofcat$fid))
+      } else  fileoutofcat <- freefile
+      Selected <- gselect.list(fileoutofcat[['name']],multiple=TRUE)
+      if (Selected != ""){
+        ## Selected <- iconv(Selected,to="UTF-8") ## already Encoded as UTF-8.
+        fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
+        Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo=NA,status=1)
+        dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
+        UpdateFileofCatWidget()
       }
     }
   }
                  )
   gtkTooltips()$setTip(ans@widget@widget,"Add file(s) to the selected file category.")
+  assign("FilCatAddToB",ans,button)
+  enabled(ans) <- FALSE
   return(ans)
 }
 
@@ -157,28 +139,26 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
 {
   ans <- gbutton(label,handler=function(h,...) {
     FileOfCat <- svalue(Widget)
-    if ((NumofSelected <- length(FileOfCat)) ==0) {
-      gmessage("Please select the Files you want to delete.",con=TRUE)} else
-    {
-      ## Give a confirm msg
-      del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
-      if (isTRUE(del)){
-        SelectedFileCat <- svalue(.rqda$.FileCatWidget)
-        Encoding(SelectedFileCat) <- Encoding(FileOfCat)<- "UTF-8"
-        catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",enc(SelectedFileCat)))[,1]
-    for (i in FileOfCat){
-      fid <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",enc(i)))[,1]
-      dbGetQuery(.rqda$qdacon,sprintf("update treefile set status==0 where catid==%i and fid==%i",catid,fid))
-    }
-        ## update .CodeofCat Widget
-        ## .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],FileOfCat)
-        UpdateWidget(".FileofCat",from=FileOfCat,to=NULL)
-        ## UpdateFileofCatWidget()
+    ## Give a confirm msg
+    del <- gconfirm(sprintf("Delete %i file(s) from this category. Are you sure?",NumofSelected),con=TRUE,icon="question")
+    if (isTRUE(del)){
+      SelectedFileCat <- svalue(.rqda$.FileCatWidget)
+      Encoding(SelectedFileCat) <- Encoding(FileOfCat)<- "UTF-8"
+      catid <- dbGetQuery(.rqda$qdacon,sprintf("select catid from filecat where status=1 and name='%s'",enc(SelectedFileCat)))[,1]
+      for (i in FileOfCat){
+        fid <- dbGetQuery(.rqda$qdacon,sprintf("select id from source where status=1 and name='%s'",enc(i)))[,1]
+        dbGetQuery(.rqda$qdacon,sprintf("update treefile set status==0 where catid==%i and fid==%i",catid,fid))
       }
+      ## update .CodeofCat Widget
+      ## .rqda$.FileofCat[] <- setdiff(.rqda$.FileofCat[],FileOfCat)
+      UpdateWidget(".FileofCat",from=FileOfCat,to=NULL)
+      ## UpdateFileofCatWidget()
     }
   }
-          )
+                 )
   gtkTooltips()$setTip(ans@widget@widget,"Drop selected file(s) from file category.")
+  assign("FilCatDroFromB",ans,button)
+  enabled(ans) <- FALSE
   return(ans)
 }
 

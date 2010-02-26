@@ -230,6 +230,8 @@ RQDA <- function() {
   enabled(.rqda$.CasesNamesWidget) <- FALSE
   enabled(.rqda$.FileofCase) <- FALSE
   enabled(.rqda$.AttrNamesWidget) <- FALSE
+  enabled(.rqda$.FileCatWidget) <- FALSE
+  enabled(.rqda$.FileofCat) <- FALSE
   
 ##########################
 ### set the positions
@@ -376,16 +378,29 @@ AddHandler <- function(){
   }
                         )
   add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
+
   addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
-      UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
-  })
+    if (length(svalue(.rqda$.FileCatWidget))>0){
+    UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
+    enabled(button$DelFilCatB) <- TRUE
+    enabled(button$FilCatRenB) <- TRUE
+    enabled(button$FilCatMemB) <- TRUE
+    enabled(button$FilCatAddToB) <- TRUE
+    enabled(.rqda$.FileofCat) <- TRUE
+  }})
 
   addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat"))
     add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
     addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
-    addHandlerClicked(.rqda$.FileofCat, handler <- function(h, ...) {
-       if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("file", "selected"),focus=FALSE)
-    })
+  
+  addHandlerClicked(.rqda$.FileofCat, handler <- function(h, ...) {
+    if (length(svalue(.rqda$.FileofCat))>0){
+    enabled(button$FilCatDroFromB) <- TRUE
+    if (isTRUE(.rqda$SFP)) {
+      ShowFileProperty(Fid = GetFileId("file", "selected"),focus=FALSE)
+    }
+  }
+  })
     add3rdmousepopupmenu(.rqda$.FileofCat,FileofCatWidgetMenu)
     add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
     ## popup menu by right-click on CaseNamesWidget

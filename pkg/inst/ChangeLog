@@ -1,3 +1,6 @@
+2010-02-26
+	* all widgets are enabled only if usable.
+	
 2010-02-25
 	* rename some buttons: retrieval -> coding; add anno -> anno; mark and unmark in case tab -> link and unlink
 	* buttons on project Tab is disabled unless a project is open.

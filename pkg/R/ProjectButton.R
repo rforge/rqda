@@ -25,6 +25,8 @@ NewProjectButton <- function(container){
       enabled(.rqda$.CasesNamesWidget) <- TRUE
       enabled(.rqda$.AttrNamesWidget) <- TRUE
       enabled(button$AddAttB) <- TRUE
+      enabled(button$AddFilCatB) <- TRUE
+      enabled(.rqda$.FileCatWidget) <- TRUE
     }
   }
           )
@@ -80,6 +82,8 @@ OpenProjectButton <- function(container){
       enabled(.rqda$.CasesNamesWidget) <- TRUE
       enabled(.rqda$.AttrNamesWidget) <- TRUE
       enabled(button$AddAttB) <- TRUE
+      enabled(button$AddFilCatB) <- TRUE
+      enabled(.rqda$.FileCatWidget) <- TRUE
     }
   }
           )
@@ -147,6 +151,14 @@ CloseProjectButton <- function(container){
     enabled(button$RenAttB) <- FALSE
     enabled(button$AttMemB) <- FALSE
     enabled(button$SetAttClsB) <- FALSE
+    enabled(.rqda$.FileCatWidget) <- FALSE
+    enabled(.rqda$.FileofCat) <- FALSE
+    enabled(button$AddFilCatB) <- FALSE
+    enabled(button$DelFilCatB) <- FALSE
+    enabled(button$FilCatRenB) <- FALSE
+    enabled(button$FilCatMemB) <- FALSE
+    enabled(button$FilCatAddToB) <- FALSE
+    enabled(button$FilCatDroFromB) <- FALSE
   }
                      )
   assign("cloprob",cloprob,env=button)
