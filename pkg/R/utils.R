@@ -30,10 +30,11 @@ UpdateWidget <- function(widget,from,to=NULL){
     ## eval(parse(text=sprintf(".rqda$%s[] <- items",widget)))
     tryCatch(eval(parse(text = sprintf(".rqda$%s[] <- items", widget))),
              error = function(e) cat("warning msg from the replacement.\n"))
+    if (length(idx)>0) {
     path <-gtkTreePathNewFromString(idx)
     gtkTreeViewScrollToCell(slot(slot(get(widget,env=.rqda),"widget"),"widget"),
                             path,use.align=TRUE,row.align = 0.07)
-  }
+  }}
 }
 
 ScrollToItem <- function(widget,item=svalue(widget)){

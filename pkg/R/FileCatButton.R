@@ -46,7 +46,7 @@ FileCat_RenameButton <- function(label="Rename",Widget=.rqda$.FileCatWidget,...)
     OldName <- svalue(Widget)
     ## get the new file names
     NewName <- ginput("Enter new Cateory name. ",text=OldName, icon="info")
-    if (NewName != "") {
+    if (!is.na(NewName)) {
       Encoding(NewName) <- "UTF-8"
       rename(OldName,NewName,"filecat")
       UpdateTableWidget(Widget=.rqda$.FileCatWidget,FromdbTable="filecat")
