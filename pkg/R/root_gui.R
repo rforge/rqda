@@ -215,6 +215,7 @@ RQDA <- function() {
   assign(".FileCatWidget",.FileCatWidget,env=.rqda)
   assign(".FileofCat",.FileofCat,env=.rqda)
   assign(".currentProj",.currentProj,env=.rqda)
+  assign(".SettingsGui",.settings_gui,env=.rqda)
 
   ## cordinate of ViewFunWidget
   if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))
@@ -223,6 +224,9 @@ RQDA <- function() {
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
   enabled(.JournalNamesWidget) <- FALSE
   enabled(.rqda$.codes_rqda) <- FALSE
+  enabled(.rqda$.SettingsGui) <- FALSE
+  enabled(.rqda$.CodeCatWidget) <- FALSE
+  enabled(.rqda$.CodeofCat) <- FALSE
 
 ##########################
 ### set the positions
@@ -327,30 +331,33 @@ AddHandler <- function(){
       )
 
 
-    addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
+  addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
       if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
-      catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
-                        enc(svalue(.rqda$.CodeCatWidget))
-                        )
-                )$catid
-      if (!is.null(catid) && length(catid)==1) {
-        names(.rqda$.CodeCatWidget) <- sprintf("Selected category id is %s",catid)
-      }}
+          enabled(.rqda$.CodeofCat) <- TRUE
+          catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
+                                     enc(svalue(.rqda$.CodeCatWidget))
+                                     )
+                             )$catid
+          if (!is.null(catid) && length(catid)==1) {
+              names(.rqda$.CodeCatWidget) <- sprintf("Selected category id is %s",catid)
+          }}
       UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
-    })
-    addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes"))
-    addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))
-    add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
-    addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
-        if (is_projOpen(env=.rqda,conName="qdacon"))
-            retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
-          }
-                          )
-    add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
-    addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
-        UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
-    })
-    addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat"))
+  })
+
+  addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes"))
+  addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))
+  add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
+  addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
+      if (is_projOpen(env=.rqda,conName="qdacon"))
+          retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
+  }
+                        )
+  add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
+  addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
+      UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
+  })
+
+  addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat"))
     add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
     addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
     addHandlerClicked(.rqda$.FileofCat, handler <- function(h, ...) {

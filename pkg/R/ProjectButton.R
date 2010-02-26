@@ -18,6 +18,8 @@ NewProjectButton <- function(container){
       enabled(button$AddJouB) <- TRUE
       enabled(.rqda$.JournalNamesWidget) <- TRUE
       enabled(button$AddCodB) <- TRUE
+      enabled(.rqda$.SettingsGui) <- TRUE
+      enabled(.rqda$.CodeCatWidget) <- TRUE
     }
   }
           )
@@ -66,6 +68,8 @@ OpenProjectButton <- function(container){
       enabled(.rqda$.JournalNamesWidget) <- TRUE
       enabled(button$AddCodB) <- TRUE
       enabled(.rqda$.codes_rqda) <- TRUE
+      enabled(.rqda$.SettingsGui) <- TRUE
+      enabled(.rqda$.CodeCatWidget) <- TRUE
     }
   }
           )
@@ -106,11 +110,14 @@ CloseProjectButton <- function(container){
     enabled(button$AddCodB) <- FALSE
     enabled(.rqda$.codes_rqda) <- FALSE
     enabled(.rqda$.codes_rqda) <- FALSE
-    enabled(.rqda$RetB) <- FALSE
+    enabled(button$RetB) <- FALSE
     enabled(button$DelCodB) <- FALSE
     enabled(button$codememobuton) <- FALSE
     enabled(button$FreCodRenB) <- FALSE
     enabled(button$c2memobutton) <- FALSE
+    enabled(.rqda$.SettingsGui) <- FALSE
+    enabled(.rqda$.CodeCatWidget) <- FALSE
+    enabled(.rqda$.CodeofCat) <- FALSE
 }
                      )
   assign("cloprob",cloprob,env=button)
