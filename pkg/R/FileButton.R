@@ -165,7 +165,9 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
 AddNewFileFun <- function(){
   if (is_projOpen(env=.rqda,"qdacon")) {
     tryCatch(eval(parse(text="dispose(.rqda$.AddNewFileWidget")),error=function(e) {}) ## close the widget if open
-    gw <- gwindow(title="Add New File.",parent=getOption("widgetCoordinate"),width=600,height=400)
+    gw <- gwindow(title="Add New File.", parent=getOption("widgetCoordinate"),
+                  width = getOption("widgetSize")[1],
+                  height = getOption("widgetSize")[2])
     mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
     gw@widget@widget$SetIconFromFile(mainIcon)
     assign(".AddNewFileWidget",gw,env=.rqda)

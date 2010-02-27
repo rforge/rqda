@@ -52,49 +52,16 @@ CodeNamesWidgetUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sortByTime=T
   } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
 }
 
-mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel=""){
-  ## modified so can change fore.col and back.col easily
-  index <- sindex(widget,includeAnchor=TRUE)
-  startI <- index$startI ## start and end iter
-  endI <- index$endI
-  selected <- index$seltext
-  Encoding(selected) <- "UTF-8"
-  startN <- index$startN # translate iter pointer to number
-  endN <- index$endN
-  if (selected != ""){## only when selected text chunk is not "", apply the color scheme.
-    buffer <- slot(widget,"widget")@widget$GetBuffer()
-    if(addButton) {
-      InsertAnchor(widget,sprintf("%s<",buttonLabel),index=startN,handler=TRUE)
-      InsertAnchor(widget,sprintf(">%s",buttonLabel),index=endN + 1)
-    }
-    startIter <- buffer$GetIterAtMark(index$startMark)$iter
-    endIter <- buffer$GetIterAtMark(index$endMark)$iter
-    if (!is.null(fore.col)){  ## when col is NULL, it is skipped
-      buffer$ApplyTagByName(fore.col,startIter,endIter)## make use of property of gtext().
-    }
-    if (!is.null(back.col)){
-      buffer$ApplyTagByName(sprintf("%s.background",back.col),startIter,endIter)
-    }
-    startN <- index$startN
-    endN <- index$endN
-    startN <- startN - countAnchorsWithFileName(to=startN)
-    endN <- endN - countAnchorsWithFileName(to=endN)
-    ##startN <- startN - countAnchors(.rqda$.openfile_gui,from=0,to=startN)
-    ##endN <- endN - countAnchors(.rqda$.openfile_gui,from=0,to=endN)
-    return(list(start=startN,end=endN,text=selected))
-  }
-}
 
 markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel="",buttonCol=.rqda$codeMark.col){
   if (from != to){
     FileName <- tryCatch(svalue(.rqda$.root_edit),error=function(e){})
     if (!is.null(FileName)){
-      Encoding(FileName) <- "unknown"
-      Fid <- RQDAQuery(sprintf("select id from source where status ==1 and name='%s'",FileName))$id
+      Fid <- RQDAQuery(sprintf("select id from source where status ==1 and name='%s'",enc(FileName)))$id
       idx <- RQDAQuery(sprintf("select selfirst,selend,rowid from coding where fid=%i and status=1",Fid))
       if (nrow(idx)!=0) idx <- idx[idx$rowid!=rowid,c("selfirst","selend")] ## exclude itself
       anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",Fid))
-      allidx <- c(idx$selfirst,idx$selend,anno$position)
+      allidx <- c(idx$selfirst,anno$position)
       if (!is.null(allidx)){
         from <- from + sum(allidx <= from)
         to <- to + sum(allidx <= to)
@@ -106,8 +73,8 @@ markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL
       buffer$CreateMark(sprintf("%s.2",rowid),where=endIter)
       buffer <- slot(widget,"widget")@widget$GetBuffer()
       if(addButton) {
-        InsertAnchor(widget,sprintf("%s<",buttonLabel),index=from,handler=TRUE,label.col=buttonCol)
-        InsertAnchor(widget,sprintf(">%s",buttonLabel),index=to + 1,handler=TRUE,forward=FALSE)
+        InsertAnchor(widget,sprintf("<%s>",buttonLabel),index=from,handler=TRUE,
+                     label.col=buttonCol,markLength=to-from)
       }
       m1 <- buffer$GetMark(sprintf("%s.1", rowid))
       startIter <- buffer$GetIterAtMark(m1)$iter
@@ -165,7 +132,8 @@ sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE){
 }
 
 InsertAnchor <- function(widget,label,index,handler=FALSE,label.col="gray90",
-                         forward=TRUE){ ## forward is used only when handler is TRUE
+                         markLength=NULL)
+  { 
     lab <- gtkLabelNew(label)
     label <- gtkEventBoxNew()
     if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(label.col)$color)
@@ -173,49 +141,22 @@ InsertAnchor <- function(widget,label,index,handler=FALSE,label.col="gray90",
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     if (isTRUE(handler)){
       button_press <-function(widget,event,W){
-        Iter <- gtkTextBufferGetIterAtChildAnchor(buffer,anchor)$iter
-        Offset <- Iter$GetOffset()
-        label <- lab$GetLabel()
-        if (forward) {
-          label <- gsub("<$","",label)
-          Succeed <- FALSE
-          while (!Succeed){
-            if (! Iter$ForwardChar()) Succeed <- TRUE
-            Anchor <- Iter$getChildAnchor()
-            if (!is.null(Anchor)){
-              lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()##Anchor is event box.
-              lab <- gsub("^>","",lab)
-              if (lab==label){
-                Succeed <- TRUE
-                maxidx <- buffer$GetBounds()$end$GetOffset()
-                ClearMark(W,min=0,max=maxidx)
-                Offset2 <- Iter$GetOffset()
-                HL(W=W, index=data.frame(Offset,Offset2))
-              }}}} else {
-                label <- gsub("^>","",label)
-                Succeed <- FALSE
-                while (!Succeed){
-                  if (! Iter$BackwardChar()) Succeed <- TRUE
-                  Anchor <- Iter$getChildAnchor()
-                  if (!is.null(Anchor)){
-                    lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()
-                    lab <- gsub("<$","",lab)
-                    if (lab==label){
-                      Succeed <- TRUE
-                      maxidx <- buffer$GetBounds()$end$GetOffset()
-                      ClearMark(W,min=0,max=maxidx)
-                      Offset2 <- Iter$GetOffset()
-                      HL(W=W, index=data.frame(Offset2,Offset)) ## note the offset2 comes first
-                    }}}}
-      }
-    gSignalConnect(label, "button-press-event",button_press,data=widget)}
+        if (!is.null(markLength)){
+          Iter <- gtkTextBufferGetIterAtChildAnchor(buffer,anchor)$iter
+          Offset <- Iter$GetOffset()
+          maxidx <- buffer$GetBounds()$end$GetOffset()
+          ClearMark(W,min=0,max=maxidx)
+          HL(W=W, index=data.frame(Offset,Offset+markLength+1))
+        }}
+      gSignalConnect(label, "button-press-event",button_press,data=widget)
+    }
     iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
     anchorcreated <- buffer$createChildAnchor(iter)
     iter$BackwardChar()
     anchor <- iter$getChildAnchor()
     anchor <- gtkTextIterGetChildAnchor(iter)
     widget@widget@widget$addChildAtAnchor(label, anchor)
-}
+  }
 
 
 DeleteButton <- function(widget,label,index,direction=c("backward","forward")){
@@ -260,17 +201,14 @@ countAnchorsWithFileName <- function(to,fileName=enc(svalue(.rqda$.root_edit),en
 {
   ## the same purpose as countAnchors, but faster.
   fid <- RQDAQuery(sprintf("select id from source where status==1 and name=='%s'",fileName))$id
-  idx <- RQDAQuery(sprintf("select selfirst,selend from coding where status==1 and fid==%s",fid))
+  ## idx <- RQDAQuery(sprintf("select selfirst,selend from coding where status==1 and fid==%s",fid))
+  idx <- RQDAQuery(sprintf("select selfirst from coding where status==1 and fid==%s",fid)) ## insert one code lable only for 0.2-0
   anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",fid))$position
   allidx <- c(unlist(idx),anno)
   if (!is.null(allidx)){
-    ##if (nrow(idx)!=0){
-    ##allidx <- unlist(idx)
-    ##allidx <- allidx + rank(idx)
     allidx <- allidx + rank(allidx,tie="first")
     ans <- sum(allidx <= to) ## note the equal sign
-   ## }
-  } else ans <- 0
+   } else ans <- 0
   ans
 }
 
@@ -456,7 +394,9 @@ ClickHandlerFun <- function(CodeNameWidget,buttons=c("MarCodB1","UnMarB1")){
                 ClearMark(.rqda$.openfile_gui,min=0,max=max(as.numeric(idx2$selend))+2*nrow(idx2),clear.fore.col = TRUE, clear.back.col =FALSE)
             }
             if (nrow(idx1)>0) {
-                allidx <- unlist(idx2)
+                ##allidx <- unlist(idx2)
+                anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",currentFid))$position
+                allidx <- c(idx2[,1],anno) ## since 0.2-0, only one code label is added to file widget.
                 addidx <-  data.frame(selfirst=apply(outer(allidx,idx1$selfirst,"<="),2,sum),
                                       selend=apply(outer(allidx,idx1$selend,"<="),2,sum))
                 idx1 <- idx1+addidx
@@ -478,7 +418,9 @@ HL_CodingWithMemo <- function(){
         idx <-  RQDAQuery(sprintf("select selfirst, selend,memo from coding where fid==%i and status==1",currentFid))
         if (nrow(idx)!=0){
           ClearMark(widget,min=0,max=max(as.numeric(idx$selend))+2*nrow(idx),clear.fore.col = TRUE, clear.back.col =FALSE)
-          allidx <- unlist(idx[,c("selfirst","selend")])
+          anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",currentFid))$position
+          ## allidx <- unlist(idx[,c("selfirst","selend")])
+          allidx <- c(idx[,c("selfirst")],anno)
           addidx <-  data.frame(selfirst=apply(outer(allidx,idx$selfirst,"<="),2,sum),
                                 selend=apply(outer(allidx,idx$selend,"<="),2,sum))
           idx[,c("selfirst","selend")] <- idx[,c("selfirst","selend")] + addidx
@@ -497,7 +439,8 @@ HL_AllCodings <- function(...) {
               idx <- RQDAQuery(sprintf("select selfirst,selend from coding where fid=%i and status==1",currentFid))
               if ((N <- nrow(idx)) != 0){
               anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",currentFid))$position
-              allidx <- c(unlist(idx),anno)
+              ## allidx <- c(unlist(idx),anno)
+              allidx <- c(idx$selfirst,anno)
               allidx <- allidx + rank(allidx)
               idx <- matrix(allidx[1:(2*N)],ncol=2,byrow=FALSE)
               ClearMark(.rqda$.openfile_gui ,0 , max(allidx))
@@ -580,7 +523,7 @@ openAnnotation <- function(New=TRUE,pos,fid,rowid,AnchorPos=NULL){
   assign(".annotationContent",gtext(container=.annotation2,font.attr=c(sizes="large")),env=.rqda)
     ## prvcontent <- RQDAQuery(sprintf("select annotation from annotation where fid=%i and position=%s and status=1",fid,pos))[1,1]
     prvcontent <- RQDAQuery(sprintf("select annotation from annotation where rowid==%s and status==1",rowid))[1,1]
-  if (is.null(prvcontent)) prvcontent <- ""
+  if (is.null(prvcontent) || is.na(prvcontent)) prvcontent <- ""
   Encoding(prvcontent) <- "UTF-8"
   W <- get(".annotationContent",env=.rqda)
   add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
@@ -683,3 +626,91 @@ AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
 ##   addHandlerClicked(c2infoWidget,handler <- function(h,...){ClickHandlerFun(CodeNameWidget=c2infoWidget)})
 ## }
 ## }}}
+
+
+## InsertAnchor <- function(widget,label,index,handler=FALSE,label.col="gray90",
+##                          forward=TRUE){ ## forward is used only when handler is TRUE
+##   ## rev 233
+##     lab <- gtkLabelNew(label)
+##     label <- gtkEventBoxNew()
+##     if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(label.col)$color)
+##     label$Add(lab)
+##     buffer <- slot(widget,"widget")@widget$GetBuffer()
+##     if (isTRUE(handler)){
+##       button_press <-function(widget,event,W){
+##         Iter <- gtkTextBufferGetIterAtChildAnchor(buffer,anchor)$iter
+##         Offset <- Iter$GetOffset()
+##         label <- lab$GetLabel()
+##         if (forward) {
+##           label <- gsub("<$","",label)
+##           Succeed <- FALSE
+##           while (!Succeed){
+##             if (! Iter$ForwardChar()) Succeed <- TRUE
+##             Anchor <- Iter$getChildAnchor()
+##             if (!is.null(Anchor)){
+##               lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()##Anchor is event box.
+##               lab <- gsub("^>","",lab)
+##               if (lab==label){
+##                 Succeed <- TRUE
+##                 maxidx <- buffer$GetBounds()$end$GetOffset()
+##                 ClearMark(W,min=0,max=maxidx)
+##                 Offset2 <- Iter$GetOffset()
+##                 HL(W=W, index=data.frame(Offset,Offset2))
+##               }}}} else {
+##                 label <- gsub("^>","",label)
+##                 Succeed <- FALSE
+##                 while (!Succeed){
+##                   if (! Iter$BackwardChar()) Succeed <- TRUE
+##                   Anchor <- Iter$getChildAnchor()
+##                   if (!is.null(Anchor)){
+##                     lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()
+##                     lab <- gsub("<$","",lab)
+##                     if (lab==label){
+##                       Succeed <- TRUE
+##                       maxidx <- buffer$GetBounds()$end$GetOffset()
+##                       ClearMark(W,min=0,max=maxidx)
+##                       Offset2 <- Iter$GetOffset()
+##                       HL(W=W, index=data.frame(Offset2,Offset)) ## note the offset2 comes first
+##                     }}}}
+##       }
+##     gSignalConnect(label, "button-press-event",button_press,data=widget)}
+##     iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
+##     anchorcreated <- buffer$createChildAnchor(iter)
+##     iter$BackwardChar()
+##     anchor <- iter$getChildAnchor()
+##     anchor <- gtkTextIterGetChildAnchor(iter)
+##     widget@widget@widget$addChildAtAnchor(label, anchor)
+## }
+
+## mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel=""){
+##   ## modified so can change fore.col and back.col easily
+##   index <- sindex(widget,includeAnchor=TRUE)
+##   startI <- index$startI ## start and end iter
+##   endI <- index$endI
+##   selected <- index$seltext
+##   Encoding(selected) <- "UTF-8"
+##   startN <- index$startN # translate iter pointer to number
+##   endN <- index$endN
+##   if (selected != ""){## only when selected text chunk is not "", apply the color scheme.
+##     buffer <- slot(widget,"widget")@widget$GetBuffer()
+##     if(addButton) {
+##       InsertAnchor(widget,sprintf("%s<",buttonLabel),index=startN,handler=TRUE)
+##       InsertAnchor(widget,sprintf(">%s",buttonLabel),index=endN + 1)
+##     }
+##     startIter <- buffer$GetIterAtMark(index$startMark)$iter
+##     endIter <- buffer$GetIterAtMark(index$endMark)$iter
+##     if (!is.null(fore.col)){  ## when col is NULL, it is skipped
+##       buffer$ApplyTagByName(fore.col,startIter,endIter)## make use of property of gtext().
+##     }
+##     if (!is.null(back.col)){
+##       buffer$ApplyTagByName(sprintf("%s.background",back.col),startIter,endIter)
+##     }
+##     startN <- index$startN
+##     endN <- index$endN
+##     startN <- startN - countAnchorsWithFileName(to=startN)
+##     endN <- endN - countAnchorsWithFileName(to=endN)
+##     ##startN <- startN - countAnchors(.rqda$.openfile_gui,from=0,to=startN)
+##     ##endN <- endN - countAnchors(.rqda$.openfile_gui,from=0,to=endN)
+##     return(list(start=startN,end=endN,text=selected))
+##   }
+## }

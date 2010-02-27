@@ -110,7 +110,10 @@ MemoWidget <- function(prefix,widget,dbTable){
           if ( inherits(IsOpen,"simpleError") || IfCont){ ## if not open or the same.
               tryCatch(eval(parse(text=sprintf("dispose(.rqda$.%smemo)",prefix))),error=function(e) {})
               gw <- gwindow(title=sprintf("%s Memo:%s",prefix,Selected),
-                            parent=getOption("widgetCoordinate"),width=600,height=600)
+                            parent=getOption("widgetCoordinate"),
+                            width = getOption("widgetSize")[1],
+                            height = getOption("widgetSize")[2]
+                            )
               mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
               gw@widget@widget$SetIconFromFile(mainIcon)
               assign(sprintf(".%smemo",prefix),gw,env=.rqda)

@@ -42,7 +42,7 @@ RQDA <- function() {
   gseparator(con=.proj_gui)
   glabel("Author: <ronggui.huang@gmail.com>",container=.proj_gui)
   gseparator(con=.proj_gui)
-  glabel("License: BSD License",
+  glabel("License: BSD",
          container=.proj_gui, handler=function(h,...){
            gtext(readLines((system.file("License",package="RQDA")),warn=FALSE),
                  con=gwindow(title="License"))
@@ -216,10 +216,8 @@ RQDA <- function() {
   assign(".FileofCat",.FileofCat,env=.rqda)
   assign(".currentProj",.currentProj,env=.rqda)
   assign(".SettingsGui",.settings_gui,env=.rqda)
-
-  ## cordinate of ViewFunWidget
-  if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(380,2))
   assign("font","Sans 11",env=.rqda)
+  
 ##########################
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
   enabled(.JournalNamesWidget) <- FALSE
