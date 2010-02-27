@@ -123,8 +123,8 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
       m2 <- buffer$GetMark(sprintf("%s.2", x))
       iter2 <- buffer$GetIterAtMark(m2)
       idx2 <- gtkTextIterGetOffset(iter2$iter)
-      InsertAnchor(.rqda$.openfile_gui, label = sprintf("<%s>",code), index = idx1,handler=TRUE,
-                   label.col=codeColor,markLength=idx2-idx1)
+      InsertAnchor(.rqda$.openfile_gui, label = sprintf("<%s>",code), index = idx1, label.col=codeColor,
+                  handler=TRUE, EndMarkName=sprintf("%s.2", x))
     }) ## end of sapply -> insert code label
     if (hightlight){
       idx <- sapply(markidx[, "rowid"], FUN = function(x) {

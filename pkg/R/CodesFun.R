@@ -73,8 +73,8 @@ markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL
       buffer$CreateMark(sprintf("%s.2",rowid),where=endIter)
       buffer <- slot(widget,"widget")@widget$GetBuffer()
       if(addButton) {
-        InsertAnchor(widget,sprintf("<%s>",buttonLabel),index=from,handler=TRUE,
-                     label.col=buttonCol,markLength=to-from)
+        InsertAnchor(widget,sprintf("<%s>",buttonLabel),index=from,label.col=buttonCol,
+                     handler=TRUE, EndMarkName=sprintf("%s.2", rowid))
       }
       m1 <- buffer$GetMark(sprintf("%s.1", rowid))
       startIter <- buffer$GetIterAtMark(m1)$iter
@@ -131,9 +131,9 @@ sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE){
               startMark=startMark,endMark=endMark,seltext=selected))
 }
 
-InsertAnchor <- function(widget,label,index,handler=FALSE,label.col="gray90",
-                         markLength=NULL)
-  { 
+InsertAnchor <- function(widget,label,index,label.col="gray90", 
+                         handler=FALSE, EndMarkName=NULL) { 
+    ## EndMarkName is a gtk mark for end position of highlight
     lab <- gtkLabelNew(label)
     label <- gtkEventBoxNew()
     if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(label.col)$color)
@@ -141,12 +141,14 @@ InsertAnchor <- function(widget,label,index,handler=FALSE,label.col="gray90",
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     if (isTRUE(handler)){
       button_press <-function(widget,event,W){
-        if (!is.null(markLength)){
+        if (!is.null(EndMarkName)){
           Iter <- gtkTextBufferGetIterAtChildAnchor(buffer,anchor)$iter
           Offset <- Iter$GetOffset()
           maxidx <- buffer$GetBounds()$end$GetOffset()
           ClearMark(W,min=0,max=maxidx)
-          HL(W=W, index=data.frame(Offset,Offset+markLength+1))
+          m <- buffer$GetMark(EndMarkName)
+          Offset2 <- buffer$GetIterAtMark(m)$iter$GetOffset()
+          HL(W=W, index=data.frame(Offset,Offset2))
         }}
       gSignalConnect(label, "button-press-event",button_press,data=widget)
     }
@@ -243,7 +245,8 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
       Ncodings <- nrow(retrieval)
       title <- sprintf(ngettext(Ncodings,"%i Retrieved coding: \"%s\" from %s %s","%i Retrieved codings: \"%s\" from %s %s"),Ncodings,currentCode2,Nfiles,ngettext(Nfiles,"file","files"))
       tryCatch(eval(parse(text=sprintf("dispose(.rqda$.codingsOf%s)",currentCid))),error=function(e){})
-      .gw <- gwindow(title=title, parent=getOption("widgetCoordinate"),width=600,height=600)
+      .gw <- gwindow(title=title, parent=getOption("widgetCoordinate"),
+                     width = getOption("widgetSize")[1], height = getOption("widgetSize")[2])
       mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
       .gw@widget@widget$SetIconFromFile(mainIcon)
       assign(sprintf(".codingsOf%s",currentCid),.gw,env=.rqda)
