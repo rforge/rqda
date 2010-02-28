@@ -1,6 +1,6 @@
 2010-02-27
-	* Insert one code label instead of two. It is more clear.
-	* Minor bugfix of highligt codings in coding popup menu.
+	* Insert one code label instead of two. It is more readable.
+	* Minor bugfix of "highlight coding with memo" in coding popup menu.
 
 2010-02-26 (0.1-9 rev 233)
 	* all widgets are enabled only if usable.

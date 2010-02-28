@@ -289,7 +289,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
       iter <- buffer$getIterAtOffset(0)$iter
 
       apply(retrieval,1, function(x){
-        metaData <- sprintf("%s [%s:%s]",x[['fname']],x[['selfirst']],x[['selend']])
+        metaData <- sprintf("%s [%i:%i]",x[['fname']],as.numeric(x[['selfirst']]),as.numeric(x[['selend']]))
         ## buffer$InsertWithTagsByName(iter, metaData,"x-large","red")
         buffer$InsertWithTagsByName(iter, metaData,"red")
         anchorcreated <- buffer$createChildAnchor(iter)
@@ -346,12 +346,13 @@ ExportCodingOfOneCode <- function(file,currentCode,Fid,order=c("fname","ftime","
         cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Coding of <a id='%s'>\"%s\" from %s %s </a></b></font><hr><p align='left'>",Ncodings,currentCode,currentCode,Nfiles,ngettext(Nfiles,"file","files")),file=file,append=append)
      } else {
        cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Codings of <a id='%s'>\"%s\"</a> from %s %s.</b></font><hr><p align='left'>",Ncodings,currentCode,currentCode,Nfiles,ngettext(Nfiles,"file","files")),file=file,append=append)
-}
+      }
+      retrieval$seltext <- gsub("\\n", "<p>", retrieval$seltext)
       apply(retrieval,1, function(x){
         metaData <- sprintf("<b><font color='red'> %s [%s:%s] </font></b><br><br>",x[['fname']],x[['selfirst']],x[['selend']])
         cat(metaData,file=file,append=TRUE)
         cat(x[['seltext']],file=file,append=TRUE)
-        cat("<br><br>",file=file,append=TRUE)
+        cat(sprintf("<br><a href='#%s+b'>Back<a><br><br>",currentCode),file=file,append=TRUE)
       }
             )## end of apply
     }}}## end of export helper function
@@ -366,9 +367,10 @@ if (!is.null(allcodes)){
             cat("<HEAD><META HTTP-EQUIV='CONTENT-TYPE' CONTENT='text/html; charset=UTF-8'><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
         }
         cat(sprintf("Created by <a href='http://rqda.r-forge.r-project.org/'>RQDA</a> at %s<br><br>\n",Sys.time()),file=file,append=TRUE)
-        cat(paste("<a href='#",CodeList,"'>",CodeList,"<a>",sep="",collapse="<br>\n"),"<hr><br>",file=file,append=TRUE)
+        for (i in CodeList){
+        cat(sprintf("<a id='%s+b' href='#%s'>%s<a><br>",i,i,i),file=file,append=TRUE)
+          }
         for (i in seq_along(CodeList)){
-            ## append <- ifelse(i==1,append,TRUE)
             ExportCodingOfOneCode(file=file,currentCode=CodeList[i],Fid=Fid,order=order,append=TRUE)
         }}}}
 
