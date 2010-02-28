@@ -21,7 +21,6 @@ RQDA <- function() {
   CloseProjectButton(container=.proj_gui)
   Proj_MemoButton(label = "Project Memo", container = .proj_gui)
   ## project memo button
-  ## ProjectInforButton(container=.proj_gui)
   BackupProjectButton(container=.proj_gui)
   CleanProjButton(container=.proj_gui)
   CloseAllCodingsButton(container=.proj_gui)
@@ -107,12 +106,8 @@ RQDA <- function() {
   ".case_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Cases\n")
   ".case_buttons" <- glayout(container=.case_pan)
   ".case_PW" <- ggroup(cont=.case_pan,horizontal = FALSE)
-  ##".CasesNamesWidget" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=TRUE)
-  ##.CasesNamesWidget[] <- NULL
   ".CasesNamesWidget" <- gtable(character(0),container=.case_PW,expand=TRUE,multiple=TRUE)
   names(.CasesNamesWidget) <- "Cases"
-  ##".FileofCase" <- gtable("Please click Update",container=.case_PW,expand=TRUE,multiple=TRUE)
-  ##.FileofCase[] <- NULL;
   ".FileofCase" <- gtable(character(0),container=.case_PW,expand=TRUE,multiple=TRUE)
   names(.FileofCase)<-"Files of This Case"
   .case_buttons[1,1] <- AddCaseButton()
@@ -128,8 +123,6 @@ RQDA <- function() {
   ".attr_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Attributes\n")
   ".attr_buttons" <- glayout(container=.attr_pan)
   ".attr_PW" <- ggroup(cont=.attr_pan,horizontal = FALSE)
-  ##".AttrNamesWidget" <- gtable("Please click Update",container=.attr_PW,expand=TRUE,multiple=TRUE)
-  ##.AttrNamesWidget[] <- NULL
   ".AttrNamesWidget" <- gtable(character(0),container=.attr_PW,expand=TRUE,multiple=TRUE)
   names(.AttrNamesWidget) <- "Attributes"
   .attr_buttons[1,1] <- AddAttrButton()
@@ -144,12 +137,8 @@ RQDA <- function() {
   ".filecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="File\nCategories")
   ".filecat_buttons" <- glayout(container=.filecat_pan)
   ".Fcat_PW" <- ggroup(cont=.filecat_pan,horizontal = FALSE)## parent Widget of F-cat
-  ##".FileCatWidget" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE,multiple=TRUE)
-  ## .FileCatWidget[] <- NULL
   ".FileCatWidget" <- gtable(character(0),container=.Fcat_PW,expand=TRUE,multiple=TRUE)
   names(.FileCatWidget)<-"File Category"
-  ##".FileofCat" <- gtable("Please click Update",container=.Fcat_PW,expand=TRUE,multiple=TRUE)
-  ##.FileofCat[] <- NULL
   ".FileofCat" <- gtable(character(0),container=.Fcat_PW,expand=TRUE,multiple=TRUE)
   names(.FileofCat)<-"Files of This Category"
   .filecat_buttons[1,1] <- AddFileCatButton("Add")
@@ -172,8 +161,6 @@ RQDA <- function() {
   ".journal_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Journals\n")
   ".journal_buttons" <- glayout(container=.journal_pan)
   ".journal_PW" <- ggroup(cont=.journal_pan,horizontal = FALSE)
-  ##".JournalNamesWidget" <- gtable("Please click Update",container=.journal_PW,expand=TRUE,multiple=FALSE)
-  ##.JournalNamesWidget[] <- NULL
   ".JournalNamesWidget" <- gtable(character(0),container=.journal_PW,expand=TRUE,multiple=FALSE)
   names(.JournalNamesWidget) <- "Journals"
   .journal_buttons[1,1] <- AddJournalButton()
@@ -185,7 +172,7 @@ RQDA <- function() {
 #########################
   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings\n")
   addSettingGUI(cont=.settings_gui)
-
+  
 ######################### Put them together
 #########################
   visible(.root_rqdagui) <- TRUE
@@ -240,8 +227,9 @@ RQDA <- function() {
 
 AddHandler <- function(){
   ## add handler function for GUIs
-  ## handler for Root
+
   addHandlerUnrealize(.rqda$.root_rqdagui, handler = function(h,...) {
+    ## handler for Root
     ## make sure is the project should be closed by issuing a confirm window.
     val <- gconfirm("Really EXIT?\n\nYou can use RQDA() to start this program again.", parent=h$obj)
     if(as.logical(val)) {
@@ -309,65 +297,82 @@ AddHandler <- function(){
                         )
   
   addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
-    con <- .rqda$qdacon
-    SelectedCase <- currentCase <- svalue(.rqda$.CasesNamesWidget)
+    SelectedCase <- svalue(.rqda$.CasesNamesWidget)
     if (length(SelectedCase)!=0) {
       enabled(button$DelCasB) <- TRUE
       enabled(button$CasRenB) <- TRUE
       enabled(.rqda$.FileofCase) <- TRUE
       enabled(button$CasMarB) <-
         (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))
-      currentCase <- SelectedCase <- enc(SelectedCase,encoding="UTF-8")
-      currentCid <- dbGetQuery(con,sprintf("select id from cases where name=='%s'",SelectedCase))[,1]
+      Encoding(SelectedCase) <- "UTF-8"
+      currentCid <- RQDAQuery(sprintf("select id from cases where name=='%s'",
+                                      enc(SelectedCase)
+                                      )
+                              )[,1]
       if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) {
         SelectedFile <- svalue(.rqda$.root_edit)
-        SelectedFile <- enc(SelectedFile,encoding="UTF-8")
-        currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
+        Encoding(SelectedFile) <- "UTF-8"
+        currentFid <- RQDAQuery(sprintf(
+                                        "select id from source where name=='%s'",
+                                        enc(SelectedFile)
+                                        )
+                                )[,1]
         ## following code: Only mark the text chuck according to the current code.
-        widget <- .rqda$.openfile_gui
-        coding.idx <- RQDAQuery(sprintf("select selfirst,selend from coding where fid=%i and status==1",currentFid))
-        anno.idx <- RQDAQuery(sprintf("select position from annotation where fid=%i and status==1",currentFid))$position
+        coding.idx <- RQDAQuery(sprintf("select selfirst,selend from coding where
+                                        fid=%i and status==1",currentFid
+                                        )
+                                )
+        anno.idx <- RQDAQuery(sprintf("select position from annotation where
+                                       fid=%i and status==1",currentFid))$position
         allidx <- unlist(coding.idx,anno.idx)
-        sel_index <-  dbGetQuery(con,sprintf("select selfirst, selend from caselinkage where
-                                                   caseid==%i and fid==%i and status==1",currentCid, currentFid))
-        Maxindex <- dbGetQuery(con, sprintf("select max(selend) from caselinkage where fid==%i", currentFid))[1,1]
+        sel_index <-  RQDAQuery(sprintf("select selfirst, selend from caselinkage where
+                                                   caseid==%i and fid==%i and status==1",
+                                        currentCid, currentFid))
+        Maxindex <- RQDAQuery(sprintf("select max(selend) from caselinkage where fid==%i",
+                                      currentFid))[1,1]
         if (!is.null(allidx)) Maxindex <- Maxindex + sum(allidx<=Maxindex)
         ClearMark(widget,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
         if (nrow(sel_index)>0){
           if (!is.null(allidx)){
-            sel_index[,"selfirst"] <- sapply(sel_index[,"selfirst"],FUN=function(x) x + sum(allidx <= x))
-            sel_index[,"selend"] <- sapply(sel_index[,"selend"],FUN=function(x) x + sum(allidx <= x))
+            sel_index[,"selfirst"] <- sapply(sel_index[,"selfirst"],FUN=function(x) {
+              x + sum(allidx <= x)
+            })
+            sel_index[,"selend"] <- sapply(sel_index[,"selend"],FUN=function(x) {
+              x + sum(allidx <= x)
+            })
           }
-          HL(widget,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)
+          HL(.rqda$.openfile_gui,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)
           enabled(button$CasUnMarB) <-
             (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))  
           ## end of mark text chuck
         }}
-        UpdateFileofCaseWidget()
+      UpdateFileofCaseWidget()
     }
   }
                     )
-
+  
   addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
-      if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
-          enabled(.rqda$.CodeofCat) <- TRUE
-          enabled(button$DelCodCatB) <- TRUE
-          enabled(button$CodCatMemB) <- TRUE
-          enabled(button$CodCatRenB) <- TRUE
-          enabled(button$CodCatAddToB) <- TRUE
-          catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
-                                     enc(svalue(.rqda$.CodeCatWidget))
-                                     )
-                             )$catid
-          if (!is.null(catid) && length(catid)==1) {
-              names(.rqda$.CodeCatWidget) <- sprintf("Selected category id is %s",catid)
-          }}
-      UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
+    if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
+      enabled(.rqda$.CodeofCat) <- TRUE
+      enabled(button$DelCodCatB) <- TRUE
+      enabled(button$CodCatMemB) <- TRUE
+      enabled(button$CodCatRenB) <- TRUE
+      enabled(button$CodCatAddToB) <- TRUE
+      catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
+                                 enc(svalue(.rqda$.CodeCatWidget))
+                                 )
+                         )$catid
+      if (!is.null(catid) && length(catid)==1) {
+        names(.rqda$.CodeCatWidget) <- sprintf("Selected category id is %s",catid)
+      }}
+    UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
   })
-
+  
   addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) {
-    MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes")}
+    MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes")
+  }
                         )
+  
   addHandlerClicked(.rqda$.AttrNamesWidget, handler=function(h,...) {
     if (length(svalue(.rqda$.AttrNamesWidget))!=0){
       enabled(button$DelAttB) <- TRUE
@@ -378,56 +383,84 @@ AddHandler <- function(){
   }
                     )
   
-  addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat"))
-  add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
-  addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
-      if (is_projOpen(env=.rqda,conName="qdacon"))
-          retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
+  addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) {
+    MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
   }
                         )
+  
+  add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
+  
+  addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
+    retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
+  }
+                        )
+  
   add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
-
+  
   addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
     if (length(svalue(.rqda$.FileCatWidget))>0){
-    UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
-    enabled(button$DelFilCatB) <- TRUE
-    enabled(button$FilCatRenB) <- TRUE
-    enabled(button$FilCatMemB) <- TRUE
-    enabled(button$FilCatAddToB) <- TRUE
-    enabled(.rqda$.FileofCat) <- TRUE
-  }})
-
-  addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat"))
-    add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
-    addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.FileofCat))
+      UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
+      enabled(button$DelFilCatB) <- TRUE
+      enabled(button$FilCatRenB) <- TRUE
+      enabled(button$FilCatMemB) <- TRUE
+      enabled(button$FilCatAddToB) <- TRUE
+      enabled(.rqda$.FileofCat) <- TRUE
+    }})
+  
+  addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) {
+    MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
+  }
+                        )
+  
+  add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
+  
+  addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) {
+    ViewFileFun(FileNameWidget=.rqda$.FileofCat)
+    }
+                        )
   
   addHandlerClicked(.rqda$.FileofCat, handler <- function(h, ...) {
     if (length(svalue(.rqda$.FileofCat))>0){
-    enabled(button$FilCatDroFromB) <- TRUE
-    if (isTRUE(.rqda$SFP)) {
-      ShowFileProperty(Fid = GetFileId("file", "selected"),focus=FALSE)
+      enabled(button$FilCatDroFromB) <- TRUE
+      if (isTRUE(.rqda$SFP)) {
+        ShowFileProperty(Fid = GetFileId("file", "selected"),focus=FALSE)
+      }
     }
   }
-  })
-    add3rdmousepopupmenu(.rqda$.FileofCat,FileofCatWidgetMenu)
-    add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
-    ## popup menu by right-click on CaseNamesWidget
-    add3rdmousepopupmenu(.rqda$.FileofCase, FileofCaseWidgetMenu)
-    addhandlerdoubleclick(.rqda$.FileofCase, handler <- function(h,...) {
-        ViewFileFun(FileNameWidget=.rqda$.FileofCase)
-        HL_Case()
-        enabled(button$CasUnMarB) <- TRUE
-        enabled(button$CasMarB) <- TRUE
-    })
-    addHandlerClicked(.rqda$.FileofCase, handler <- function(h, ...) {
-        if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
-    })
-    addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) ViewJournalWidget())
-    addHandlerClicked(.rqda$.JournalNamesWidget, handler <- function(h,...) {
-     if (length(svalue(.rqda$.JournalNamesWidget))!=0){
-     enabled(button$DelJouB) <- TRUE
-     enabled(button$RenJouB) <- TRUE
-     enabled(button$OpeJouB) <- TRUE
-   }})
-}## end of AddHandler()
+                    )
+  
+  add3rdmousepopupmenu(.rqda$.FileofCat,FileofCatWidgetMenu)
+  
+  add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
+  ## popup menu by right-click on CaseNamesWidget
 
+  add3rdmousepopupmenu(.rqda$.FileofCase, FileofCaseWidgetMenu)
+
+  addhandlerdoubleclick(.rqda$.FileofCase, handler <- function(h,...) {
+    ViewFileFun(FileNameWidget=.rqda$.FileofCase)
+    HL_Case()
+    enabled(button$CasUnMarB) <- TRUE
+    enabled(button$CasMarB) <- TRUE
+  }
+                        )
+  
+  addHandlerClicked(.rqda$.FileofCase, handler <- function(h, ...) {
+    if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
+  }
+                    )
+  
+  addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) {
+    ViewJournalWidget()
+  }
+                        )
+  
+  addHandlerClicked(.rqda$.JournalNamesWidget, handler <- function(h,...) {
+    if (length(svalue(.rqda$.JournalNamesWidget))!=0){
+      enabled(button$DelJouB) <- TRUE
+      enabled(button$RenJouB) <- TRUE
+      enabled(button$OpeJouB) <- TRUE
+    }
+  }
+                    )
+  
+}## end of AddHandler()

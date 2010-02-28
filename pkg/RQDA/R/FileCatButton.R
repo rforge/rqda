@@ -118,7 +118,7 @@ FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
       if (nrow(fileofcat)!=0){
         fileoutofcat <- subset(freefile,!(id %in% fileofcat$fid))
       } else  fileoutofcat <- freefile
-      Selected <- gselect.list(fileoutofcat[['name']],multiple=TRUE)
+      Selected <- gselect.list(fileoutofcat[['name']],multiple=TRUE,x=getOption("widgetCoordinate")[1])
       if (Selected != ""){
         ## Selected <- iconv(Selected,to="UTF-8") ## already Encoded as UTF-8.
         fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]

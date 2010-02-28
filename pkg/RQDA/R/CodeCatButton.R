@@ -139,7 +139,7 @@ CodeCatAddToButton <- function(label="Add To",Widget=.rqda$.CodeCatWidget,...)
                 ## compute those not in the category, then push them to select.list()
                 codeoutofcat <- subset(freecode,!(id %in% codeofcat$cid))
             } else  codeoutofcat <- freecode
-            Selected <- gselect.list(codeoutofcat[['name']],multiple=TRUE)
+            Selected <- gselect.list(codeoutofcat[['name']],multiple=TRUE, x=getOption("widgetCoordinate")[1])
             if (length(Selected) >1 || Selected != ""){
                 ## Selected <- iconv(Selected,to="UTF-8")
                 cid <- codeoutofcat[codeoutofcat$name %in% Selected,"id"]

@@ -385,7 +385,7 @@ CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
         Selected1 <- svalue(.rqda$.codes_rqda)
         cid1 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected1))[1,1]
-        Selected2 <- gselect.list(as.character(.rqda$.codes_rqda[]))
+        Selected2 <- gselect.list(as.character(.rqda$.codes_rqda[]), x=getOption("widgetCoordinate")[1])
         if (Selected2!="" && Selected1!=Selected2) cid2 <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name=='%s'",Selected2))[1,1]
         mergeCodes(cid1,cid2)
         CodeNamesWidgetUpdate()
@@ -443,7 +443,7 @@ CodesNamesWidgetMenu$"Set Coding Mark Color"$handler <- function(h, ...) {
     cid <- codeInfo[,1]
     codeColor <- codeInfo[,2]
     if (is.na(codeColor)) title <- "Change color to..." else title <- sprintf("Change from '%s' to...",codeColor)
-    newCol <- gselect.list(colors(), multiple = FALSE, title = title)
+    newCol <- gselect.list(colors(), multiple = FALSE, title = title,, x=getOption("widgetCoordinate")[1])
     if (newCol!="" && length(newCol)!=0){
     if (!identical(codeColor,newCol)){
       RQDAQuery(sprintf("update freecode set color='%s' where id ==%i",newCol,cid))

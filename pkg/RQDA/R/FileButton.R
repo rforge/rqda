@@ -280,7 +280,7 @@ FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
 FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
   ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
 }
-FileNamesWidgetMenu$"Open Last Coded File"$handler <- function(h,...){
+FileNamesWidgetMenu$"Open Previous Coded File"$handler <- function(h,...){
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     fname <- RQDAQuery("select name from source where id in ( select fid from coding where rowid in (select max(rowid) from coding where status==1))")$name
     if (length(fname)!=0)  fname <- enc(fname,"UTF-8")
@@ -315,12 +315,12 @@ FileNamesWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$hand
       ## By default, the file names in the widget will be sorted.
     }
   }
-## FileNamesWidgetMenu$"Show ..."$"Show Last Coded File"$handler <- function(h, ...) {
-##     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-##         fname <- RQDAQuery("select name from source where id in ( select fid from coding where rowid in (select max(rowid) from coding where status==1))")$name
-##         if (length(fname)!=0)  fname <- enc(fname,"UTF-8")
-##         .rqda$.fnames_rqda[] <- fname
-##     }}
+FileNamesWidgetMenu$"Show ..."$"Show Files With Annotation"$handler <- function(h, ...) {
+  fileid <- RQDAQuery("select fid from annotation where status==1 group by fid)")$fid
+  if (length(fileid)!=0) {
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
+  } else gmessage("No file with memo.",con=TRUE)
+}
 FileNamesWidgetMenu$"Show ..."$"Show Files With Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is not null")
@@ -330,6 +330,12 @@ FileNamesWidgetMenu$"Show ..."$"Show Files With Memo"$handler <- function(h, ...
     } else gmessage("No file with memo.",con=TRUE)
     }
   }
+FileNamesWidgetMenu$"Show ..."$"Show Files Without Annotation"$handler <- function(h, ...) {
+  fileid <- RQDAQuery("select id from source where status==1 and id not in (select fid from annotation where status==1 group by fid)")$id
+  if (length(fileid)!=0) {
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
+  } else gmessage("All files have annotation.",con=TRUE)
+}
 FileNamesWidgetMenu$"Show ..."$"Show Files Without Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is null")
