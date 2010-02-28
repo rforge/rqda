@@ -56,29 +56,6 @@ ViewFileButton <-  function(label="Open", container,...)
   assign("VieFilB",VieFilB,env=button)
   gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE) 
 }
-##           {
-##             if (is_projOpen(env=.rqda,conName="qdacon")) {
-##               if (length(svalue(.rqda$.fnames_rqda))==0){gmessage("Select a file first.",icon="error",con=TRUE)}
-##               else {
-##                 tryCatch(dispose(.rqda$.root_edit),error=function(e) {})
-##                 ## notice the error handler
-##                 SelectedFileName <- svalue(.rqda$.fnames_rqda)
-##                 assign(".root_edit",gwindow(title=SelectedFileName, parent=c(370,10),width=600,height=600),env=.rqda)
-##                 .root_edit <- get(".root_edit",.rqda)
-##                 assign(".openfile_gui",gtext(container=.root_edit,font.attr=c(sizes="large")),env=.rqda)
-##                 Encoding(SelectedFileName) <- "unknown"
-##                 content<-dbGetQuery(.rqda$qdacon, sprintf("select file from source where name='%s'",SelectedFileName))[1,1]
-##                 Encoding(content) <- "UTF-8" ## so it display correct in the gtext widget
-##                 ## turn data.frame to 1-length character.
-##                 W <- get(".openfile_gui",.rqda)
-##                 add(W,content,font.attr=c(sizes="large"))
-##                 slot(W,"widget")@widget$SetEditable(FALSE)
-##                 ## make sure it is read only file in the text window.
-##               }
-##     }
-##           }
-##           )
-## }
 
 
 File_MemoButton <- function(label="Memo", container=.rqda$.files_button,FileWidget=.rqda$.fnames_rqda,...){
@@ -90,47 +67,6 @@ File_MemoButton <- function(label="Memo", container=.rqda$.files_button,FileWidg
   assign("FilMemB",FilMemB,env=button)
   gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE) 
 }
-
-##     if (is_projOpen(env=.rqda,"qdacon")) {
-##       ## if project is open, then continue
-##       selectedFN <- svalue(FileWidget) ## svalue(.fnames_rqda) is the name of selected file.
-##       if (length(selectedFN)==0){
-##         ## if no file is selected, then no need to memo.
-##         gmessage("Select a file first.",icon="error",con=TRUE)
-##       }
-##       else {
-##         tryCatch(dispose(.rqda$.filememo),error=function(e) {})
-##         ## Close the open file memo first, then open a new one
-##         ## .filememo is the container of .fmemocontent,widget for the content of memo
-##         assign(".filememo",gwindow(title=paste("File Memo",selectedFN,sep=":"),
-##                                    parent=c(370,10),width=600,height=400),env=.rqda)
-##         .filememo <- .rqda$.filememo
-##         .filememo2 <- gpanedgroup(horizontal = FALSE, con=.filememo)
-##         ## use .filememo2, so can add a save button to it.
-##         gbutton("Save memo",con=.filememo2,handler=function(h,...){
-##           ## send the new content of memo back to database
-##           newcontent <- svalue(W)
-##           Encoding(newcontent) <- "UTF-8"
-##           newcontent <- enc(newcontent) ## take care of double quote.
-##           dbGetQuery(.rqda$qdacon,sprintf("update source set memo='%s' where name='%s'",newcontent,selectedFN))
-##                                  ## have to quote the character in the sql expression
-##         }
-##                 )
-##         assign(".fmemocontent",gtext(container=.filememo2,font.attr=c(sizes="large")),env=.rqda)
-##         prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from source where name='%s'",svalue(FileWidget)))[1,1]
-##         ## [1,1]turn data.frame to 1-length character. Existing content of memo
-##         if (is.na(prvcontent)) prvcontent <- ""
-##         Encoding(prvcontent) <- "UTF-8" ## important
-##         W <- .rqda$.fmemocontent
-##         add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
-##         ## push the previous content to the widget.
-##       }
-##     }
-##   }
-##           )
-## }
-
-
 
 File_RenameButton <- function(label="Rename", container=.rqda$.files_button,FileWidget=.rqda$.fnames_rqda,...)
 {
@@ -316,7 +252,7 @@ FileNamesWidgetMenu$"Show ..."$"Show Uncoded Files Sorted by Imported time"$hand
     }
   }
 FileNamesWidgetMenu$"Show ..."$"Show Files With Annotation"$handler <- function(h, ...) {
-  fileid <- RQDAQuery("select fid from annotation where status==1 group by fid)")$fid
+  fileid <- RQDAQuery("select fid from annotation where status==1 group by fid")$fid
   if (length(fileid)!=0) {
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
   } else gmessage("No file with memo.",con=TRUE)

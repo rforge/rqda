@@ -61,7 +61,7 @@ addSettingGUI <- function(container,width=12){
                     )
                   )
 
-  ans <- gbutton("Set Font",cont = container,handler=function(h,...) setFont(default=.rqda$font))## set font for widget
+  ans <- glabel("Click to set Font",cont = container,handler=function(h,...) setFont(default=.rqda$font))## set font for widget
   gtkTooltips()$setTip(ans@widget@widget,"Set fonts for memo widgets.")
 
   SettingFL <- gformlayout(Setting, cont = container, expand=TRUE)

@@ -565,40 +565,40 @@ CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory"
 
 AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
 {
-    codename2 <- svalue(Widget)
-    codename <- enc(codename2)
-    query <- dbGetQuery(.rqda$qdacon, sprintf("select id, name from freecode where name in(%s) and status=1",
-                                              paste("'", codename, "'", sep = "", collapse = ",")))
-    cid <- query$id
-    Encoding(query$name) <- "UTF-8"
-    CodeCat <- RQDAQuery(sprintf("select name, catid from codecat where status==1 and catid not in (select catid from treecode where status=1 and cid in (%s) group by catid)", paste("'", cid, "'", sep = "", collapse = ",")))
-    if (nrow(CodeCat) == 0) {
-        gmessage("Add Code Categroy First.", con = TRUE)
-    }
-    else {
-        Encoding(CodeCat$name) <- "UTF-8"
-        Selecteds <- gselect.list(CodeCat$name, multiple = TRUE)
-        if (length(Selecteds) > 0 || Selecteds != "") {
-            Encoding(Selecteds) <- "UTF-8"
-            for (Selected in Selecteds) {
-                CodeCatid <- CodeCat$catid[CodeCat$name %in% Selected]
-                exist <- dbGetQuery(.rqda$qdacon, sprintf("select cid from treecode where status=1 and cid in (%s) and catid=%i", paste("'", cid, "'", sep = "", collapse = ","), CodeCatid)) ## this check is unnecessary
-                if (nrow(exist) != length(cid)) {
-                    DAT <- data.frame(cid = cid[!cid %in% exist$cid],
-                                      catid = CodeCatid, date = date(), dateM = date(),
-                                      memo = "", status = 1)
-                    success <- dbWriteTable(.rqda$qdacon, "treecode",
-                                            DAT, row.name = FALSE, append = TRUE)
-                    if (success && updateWidget) {
-                        UpdateCodeofCatWidget()
-                    }
-                    if (!success)
-                        gmessage(sprintf("Fail to write to code category of %s",
-                                         Selected))
-               }
-            }
+  codename2 <- svalue(Widget)
+  codename <- enc(codename2)
+  query <- dbGetQuery(.rqda$qdacon, sprintf("select id, name from freecode where name in(%s) and status=1",
+                                            paste("'", codename, "'", sep = "", collapse = ",")))
+  cid <- query$id
+  Encoding(query$name) <- "UTF-8"
+  CodeCat <- RQDAQuery(sprintf("select name, catid from codecat where status==1 and catid not in (select catid from treecode where status=1 and cid in (%s) group by catid)", paste("'", cid, "'", sep = "", collapse = ",")))
+  if (nrow(CodeCat) == 0) {
+    gmessage("Add Code Categroy First.", con = TRUE)
+  }
+  else {
+    Encoding(CodeCat$name) <- "UTF-8"
+    Selecteds <- gselect.list(CodeCat$name, multiple = TRUE,x=getOption("widgetCoordinate")[1])
+    if (length(Selecteds) > 0 && Selecteds != "") {
+      Encoding(Selecteds) <- "UTF-8"
+      for (Selected in Selecteds) {
+        CodeCatid <- CodeCat$catid[CodeCat$name %in% Selected]
+        exist <- dbGetQuery(.rqda$qdacon, sprintf("select cid from treecode where status=1 and cid in (%s) and catid=%i", paste("'", cid, "'", sep = "", collapse = ","), CodeCatid)) ## this check is unnecessary
+        if (nrow(exist) != length(cid)) {
+          DAT <- data.frame(cid = cid[!cid %in% exist$cid],
+                            catid = CodeCatid, date = date(), dateM = date(),
+                            memo = "", status = 1)
+          success <- dbWriteTable(.rqda$qdacon, "treecode",
+                                  DAT, row.name = FALSE, append = TRUE)
+          if (success && updateWidget) {
+            UpdateCodeofCatWidget()
+          }
+          if (!success)
+            gmessage(sprintf("Fail to write to code category of %s",
+                             Selected))
         }
+      }
     }
+  }
 }
 
 ## c2InfoFun <- function(){

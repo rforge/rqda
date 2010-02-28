@@ -105,33 +105,38 @@ CloseProjectButton <- function(container){
     tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
     close_proj(assignenv=.rqda)
     svalue(.rqda$.currentProj) <- "No project is open."
+    svalue(.rqda$.fnames_rqda) <- "Files"
+    gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,FALSE)
+    enabled(.rqda$.JournalNamesWidget) <- FALSE
+    enabled(.rqda$.codes_rqda) <- FALSE
+    enabled(.rqda$.SettingsGui) <- FALSE
+    enabled(.rqda$.CodeCatWidget) <- FALSE
+    enabled(.rqda$.CodeofCat) <- FALSE
+    enabled(.rqda$.CasesNamesWidget) <- FALSE
+    enabled(.rqda$.FileofCase) <- FALSE
+    enabled(.rqda$.AttrNamesWidget) <- FALSE
+    enabled(.rqda$.FileCatWidget) <- FALSE
+    enabled(.rqda$.FileofCat) <- FALSE
     gtkWidgetSetSensitive(button$cloprob@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$BacProjB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$proj_memo@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$CleProB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$ImpFilB@widget@widget,FALSE)
-    gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$DelFilB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$FilRenB@widget@widget,FALSE)
     enabled(button$AddJouB) <- FALSE
-    enabled(.rqda$.JournalNamesWidget) <- FALSE
     enabled(button$DelJouB) <- FALSE
     enabled(button$RenJouB) <- FALSE
     enabled(button$OpeJouB) <- FALSE
     enabled(button$AddCodB) <- FALSE
-    enabled(.rqda$.codes_rqda) <- FALSE
-    enabled(.rqda$.codes_rqda) <- FALSE
     enabled(button$RetB) <- FALSE
     enabled(button$DelCodB) <- FALSE
     enabled(button$codememobuton) <- FALSE
     enabled(button$FreCodRenB) <- FALSE
     enabled(button$c2memobutton) <- FALSE
-    enabled(.rqda$.SettingsGui) <- FALSE
-    enabled(.rqda$.CodeCatWidget) <- FALSE
-    enabled(.rqda$.CodeofCat) <- FALSE
     enabled(button$AddCodCatB) <- FALSE
     enabled(button$DelCodCatB) <- FALSE
     enabled(button$CodCatMemB) <- FALSE
@@ -143,16 +148,11 @@ CloseProjectButton <- function(container){
     enabled(button$CasRenB) <- FALSE
     enabled(button$CasMarB) <- FALSE
     enabled(button$CasUnMarB) <- FALSE
-    enabled(.rqda$.CasesNamesWidget) <- FALSE
-    enabled(.rqda$.FileofCase) <- FALSE
-    enabled(.rqda$.AttrNamesWidget) <- FALSE
     enabled(button$AddAttB) <- FALSE
     enabled(button$DelAttB) <- FALSE
     enabled(button$RenAttB) <- FALSE
     enabled(button$AttMemB) <- FALSE
     enabled(button$SetAttClsB) <- FALSE
-    enabled(.rqda$.FileCatWidget) <- FALSE
-    enabled(.rqda$.FileofCat) <- FALSE
     enabled(button$AddFilCatB) <- FALSE
     enabled(button$DelFilCatB) <- FALSE
     enabled(button$FilCatRenB) <- FALSE
