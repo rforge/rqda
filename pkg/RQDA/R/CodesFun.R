@@ -131,8 +131,8 @@ sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE){
               startMark=startMark,endMark=endMark,seltext=selected))
 }
 
-InsertAnchor <- function(widget,label,index,label.col="gray90", 
-                         handler=FALSE, EndMarkName=NULL) { 
+InsertAnchor <- function(widget,label,index,label.col="gray90",
+                         handler=FALSE, EndMarkName=NULL) {
     ## EndMarkName is a gtk mark for end position of highlight
     lab <- gtkLabelNew(label)
     label <- gtkEventBoxNew()
@@ -147,6 +147,7 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
           maxidx <- buffer$GetBounds()$end$GetOffset()
           ClearMark(W,min=0,max=maxidx)
           m <- buffer$GetMark(EndMarkName)
+          gtkTextMarkSetVisible(m,TRUE) ## useful when a coding end with space
           Offset2 <- buffer$GetIterAtMark(m)$iter$GetOffset()
           HL(W=W, index=data.frame(Offset,Offset2))
         }}

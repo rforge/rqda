@@ -6,13 +6,13 @@ RQDA <- function() {
                                close_proj(assignenv=.rqda)
                              }
                              )
-  
+
   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
   .root_rqdagui@widget@widget$SetIconFromFile(mainIcon)
   ## set an icon for the main programme.
-  
+
   ".nb_rqdagui" <- gnotebook(4,container=.root_rqdagui,closebuttons=FALSE)
-  
+
 ########################### GUI FOR PROJECT
 ###########################
   ".proj_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Project\n")
@@ -172,7 +172,7 @@ RQDA <- function() {
 #########################
   ".settings_gui" <- ggroup(container=.nb_rqdagui,horizontal=FALSE,label="Settings\n")
   addSettingGUI(cont=.settings_gui)
-  
+
 ######################### Put them together
 #########################
   visible(.root_rqdagui) <- TRUE
@@ -196,7 +196,7 @@ RQDA <- function() {
   assign(".currentProj",.currentProj,env=.rqda)
   assign(".SettingsGui",.settings_gui,env=.rqda)
   assign("font","Sans 11",env=.rqda)
-  
+
 ##########################
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
   enabled(.JournalNamesWidget) <- FALSE
@@ -209,7 +209,7 @@ RQDA <- function() {
   enabled(.rqda$.AttrNamesWidget) <- FALSE
   enabled(.rqda$.FileCatWidget) <- FALSE
   enabled(.rqda$.FileofCat) <- FALSE
-  
+
 ##########################
 ### set the positions
   svalue(.codes_pan) <- 0.09
@@ -239,7 +239,7 @@ AddHandler <- function(){
     }
   }
                       )
-  
+
   ## handler for .fnames_rqda (gtable holding the file names)
   addHandlerClicked(.rqda$.fnames_rqda, handler <- function(h, ...) {
     if (isTRUE(.rqda$SFP)) ShowFileProperty(focus=FALSE)
@@ -261,16 +261,16 @@ AddHandler <- function(){
     ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
   }
                         )
-  
+
   ## addhandlerdoubleclick(.rqda$.fsearch_rqda, handler <- function(h,...) ViewFileFun(FileNameWidget=.rqda$.fsearch_rqda))
-  
+
   ## handler for .codes_rqda
   addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon"))
       retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
   }
                         )
-  
+
   add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
 
   addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
@@ -295,7 +295,7 @@ AddHandler <- function(){
     MemoWidget("Case",.rqda$.CasesNamesWidget,"cases")
     }
                         )
-  
+
   addHandlerClicked(.rqda$.CasesNamesWidget,handler <- function(h,...){
     SelectedCase <- svalue(.rqda$.CasesNamesWidget)
     if (length(SelectedCase)!=0) {
@@ -331,7 +331,7 @@ AddHandler <- function(){
         Maxindex <- RQDAQuery(sprintf("select max(selend) from caselinkage where fid==%i",
                                       currentFid))[1,1]
         if (!is.null(allidx)) Maxindex <- Maxindex + sum(allidx<=Maxindex)
-        ClearMark(widget,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
+        ClearMark(.rqda$.openfile_gui,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
         if (nrow(sel_index)>0){
           if (!is.null(allidx)){
             sel_index[,"selfirst"] <- sapply(sel_index[,"selfirst"],FUN=function(x) {
@@ -343,14 +343,14 @@ AddHandler <- function(){
           }
           HL(.rqda$.openfile_gui,index=sel_index,fore.col=NULL,back.col=.rqda$back.col)
           enabled(button$CasUnMarB) <-
-            (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))  
+            (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))
           ## end of mark text chuck
         }}
       UpdateFileofCaseWidget()
     }
   }
                     )
-  
+
   addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
     if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
       enabled(.rqda$.CodeofCat) <- TRUE
@@ -367,12 +367,12 @@ AddHandler <- function(){
       }}
     UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
   })
-  
+
   addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) {
     MemoWidget("Attributes",.rqda$.AttrNamesWidget,"attributes")
   }
                         )
-  
+
   addHandlerClicked(.rqda$.AttrNamesWidget, handler=function(h,...) {
     if (length(svalue(.rqda$.AttrNamesWidget))!=0){
       enabled(button$DelAttB) <- TRUE
@@ -382,21 +382,21 @@ AddHandler <- function(){
     }
   }
                     )
-  
+
   addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) {
     MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
   }
                         )
-  
+
   add3rdmousepopupmenu(.rqda$.CodeCatWidget, CodeCatWidgetMenu)
-  
+
   addhandlerdoubleclick(.rqda$.CodeofCat,handler=function(h,...) {
     retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.CodeofCat)
   }
                         )
-  
+
   add3rdmousepopupmenu(.rqda$.CodeofCat,CodeofCatWidgetMenu)
-  
+
   addHandlerClicked(.rqda$.FileCatWidget,handler <- function(h,...){
     if (length(svalue(.rqda$.FileCatWidget))>0){
       UpdateFileofCatWidget2(con=.rqda$qdacon,Widget=.rqda$.FileofCat)
@@ -406,19 +406,19 @@ AddHandler <- function(){
       enabled(button$FilCatAddToB) <- TRUE
       enabled(.rqda$.FileofCat) <- TRUE
     }})
-  
+
   addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) {
     MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
   }
                         )
-  
+
   add3rdmousepopupmenu(.rqda$.FileCatWidget, FileCatWidgetMenu)
-  
+
   addhandlerdoubleclick(.rqda$.FileofCat, handler <- function(h,...) {
     ViewFileFun(FileNameWidget=.rqda$.FileofCat)
     }
                         )
-  
+
   addHandlerClicked(.rqda$.FileofCat, handler <- function(h, ...) {
     if (length(svalue(.rqda$.FileofCat))>0){
       enabled(button$FilCatDroFromB) <- TRUE
@@ -428,9 +428,9 @@ AddHandler <- function(){
     }
   }
                     )
-  
+
   add3rdmousepopupmenu(.rqda$.FileofCat,FileofCatWidgetMenu)
-  
+
   add3rdmousepopupmenu(.rqda$.CasesNamesWidget, CaseNamesWidgetMenu)
   ## popup menu by right-click on CaseNamesWidget
 
@@ -443,17 +443,17 @@ AddHandler <- function(){
     enabled(button$CasMarB) <- TRUE
   }
                         )
-  
+
   addHandlerClicked(.rqda$.FileofCase, handler <- function(h, ...) {
     if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
   }
                     )
-  
+
   addhandlerdoubleclick(.rqda$.JournalNamesWidget, handler <- function(h,...) {
     ViewJournalWidget()
   }
                         )
-  
+
   addHandlerClicked(.rqda$.JournalNamesWidget, handler <- function(h,...) {
     if (length(svalue(.rqda$.JournalNamesWidget))!=0){
       enabled(button$DelJouB) <- TRUE
@@ -462,5 +462,5 @@ AddHandler <- function(){
     }
   }
                     )
-  
+
 }## end of AddHandler()
