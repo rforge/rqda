@@ -1,5 +1,6 @@
 2010-02-29
 	* RQDA2tm() is moved to new package of RQDAtm.
+	* bugfix of new project button.
 	
 2010-02-27
 	* Insert one code label instead of two. It is more readable.

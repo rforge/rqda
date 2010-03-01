@@ -55,7 +55,7 @@ AddFileToCaselinkage <- function(Widget=.rqda$.fnames_rqda){
   cases <- dbGetQuery(.rqda$qdacon,"select id, name from cases where status=1")
   if (nrow(cases)!=0){
       Encoding(cases$name) <- "UTF-8"
-      Selected <- select.list(cases$name,multiple=TRUE,x=getOption("widgetCoordinate")[1])
+      Selected <- gselect.list(cases$name,multiple=TRUE,x=getOption("widgetCoordinate")[1])
       if (length(Selected)>0 && Selected!=""){
           Encoding(selected) <- "UTF-8"
           caseid <- cases$id[cases$name %in% Selected]

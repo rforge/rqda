@@ -16,19 +16,20 @@ NewProjectButton <- function(container){
       gtkWidgetSetSensitive(button$ImpFilB@widget@widget,TRUE)
       gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,TRUE)
       enabled(button$AddJouB) <- TRUE
-      enabled(.rqda$.JournalNamesWidget) <- TRUE
       enabled(button$AddCodB) <- TRUE
-      enabled(.rqda$.SettingsGui) <- TRUE
-      enabled(.rqda$.CodeCatWidget) <- TRUE
       enabled(button$AddCodCatB) <- TRUE
       enabled(button$AddCasB) <- TRUE
-      enabled(.rqda$.CasesNamesWidget) <- TRUE
-      enabled(.rqda$.AttrNamesWidget) <- TRUE
       enabled(button$AddAttB) <- TRUE
       enabled(button$AddFilCatB) <- TRUE
+      enabled(.rqda$.JournalNamesWidget) <- TRUE
+      enabled(.rqda$.codes_rqda) <- TRUE
+      enabled(.rqda$.SettingsGui) <- TRUE
+      enabled(.rqda$.CodeCatWidget) <- TRUE
+      enabled(.rqda$.CasesNamesWidget) <- TRUE
+      enabled(.rqda$.AttrNamesWidget) <- TRUE
       enabled(.rqda$.FileCatWidget) <- TRUE
-    }
   }
+}
           )
 }
 
@@ -72,17 +73,17 @@ OpenProjectButton <- function(container){
       gtkWidgetSetSensitive(button$ImpFilB@widget@widget,TRUE)
       gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,TRUE)
       enabled(button$AddJouB) <- TRUE
-      enabled(.rqda$.JournalNamesWidget) <- TRUE
       enabled(button$AddCodB) <- TRUE
+      enabled(button$AddCodCatB) <- TRUE
+      enabled(button$AddCasB) <- TRUE
+      enabled(button$AddAttB) <- TRUE
+      enabled(button$AddFilCatB) <- TRUE
+      enabled(.rqda$.JournalNamesWidget) <- TRUE
       enabled(.rqda$.codes_rqda) <- TRUE
       enabled(.rqda$.SettingsGui) <- TRUE
       enabled(.rqda$.CodeCatWidget) <- TRUE
-      enabled(button$AddCodCatB) <- TRUE
-      enabled(button$AddCasB) <- TRUE
       enabled(.rqda$.CasesNamesWidget) <- TRUE
       enabled(.rqda$.AttrNamesWidget) <- TRUE
-      enabled(button$AddAttB) <- TRUE
-      enabled(button$AddFilCatB) <- TRUE
       enabled(.rqda$.FileCatWidget) <- TRUE
     }
   }
