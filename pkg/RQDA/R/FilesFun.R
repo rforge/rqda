@@ -544,6 +544,36 @@ AddToFileCategory <- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
 }
 
 
+## library(RGtk2)
+searchWord <- function(str,widget,from=0,col="green"){
+    tview <- slot(widget,"widget")@widget
+    buffer <- tview$GetBuffer()
+    Iter0 <- buffer$GetIterAtOffset(from)$iter
+    ans <- gtkTextIterForwardSearch(Iter0,str,'GTK_TEXT_SEARCH_VISIBLE_ONLY')
+    if (ans$retval) {
+        gtkTextViewScrollToIter(tview,ans$match.start,0.47)
+        buffer$ApplyTagByName(sprintf("%s.background", col),ans$match.start, ans$match.end)
+        ans$match.end$GetOffset()
+    } else {
+        invisible(NULL)
+    }
+}
+
+SearchButton <- function(widget){
+## widget=RQDA:::.rqda$.openfile_gui)
+    assign("searchFrom",0,env=RQDA:::.rqda)
+    group <- ggroup(horizontal=FALSE, container=gwindow(width=50,height=20,title="Search a word"))
+    kwdW <- gedit("", container=group)
+    gbutton("Search", container = group,handler=function(h,...){
+        if (!is.null(RQDA:::.rqda$searchFrom)){
+            str <- svalue(h$action)
+            Encoding(str) <- "UTF-8"
+            res <- searchWord(str,widget=widget,from=RQDA:::.rqda$searchFrom)
+            assign("searchFrom",res,env=RQDA:::.rqda)
+        }},action=kwdW)
+}
+
+
 ## UncodedFileNamesUpdate <- function(FileNamesWidget = .rqda$.fnames_rqda, sort=TRUE, decreasing = FALSE){
 ## replaced by the general function of FileNameWigetUpdate() and GetFileId()
 ## ## only show the uncoded file names in the .rqda$.fnames_rqda

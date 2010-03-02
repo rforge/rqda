@@ -31,7 +31,7 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
         txt <- apply(ans,1,function(x){
             txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
             Encoding(txt) <- "UTF-8"
-            ans <- substr(txt, as.numeric(x[["index1"]]), as.numeric(x[["index2"]]))
+            ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
             ans
         })
         ans$coding <- txt

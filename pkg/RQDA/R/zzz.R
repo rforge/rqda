@@ -5,8 +5,10 @@
   if (is.null(getOption("widgetCoordinate"))) options(widgetCoordinate=c(400,2))
   if (is.null(getOption("widgetSize"))) options(widgetSize=c(550,700))
   assign("optOld",optOld,env=.rqda)  
-  cat("\nUse 'RQDA()' to start the programe.\n",fill=TRUE)
-  if (interactive()) RQDA()
+  if (interactive()) {
+     cat("\nUse 'RQDA()' to start the programe.\n",fill=TRUE)
+     RQDA()
+   }
 }
 
 .onUnload <- function(...){

@@ -185,27 +185,9 @@ FileNamesWidgetMenu$"Edit Seleted File"$handler <- function(h, ...) {
   EditFileFun()
 }
 FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
-  if (is_projOpen(env=.rqda,conName="qdacon")) {
-    content <- tryCatch(svalue(.rqda$.openfile_gui),error=function(e){NULL})
-    if (!is.null(content)) {
-        fname <- svalue(RQDA:::.rqda$.root_edit)
-        fid <- RQDAQuery(sprintf("select id from source where name=='%s' and status==1",fname))$id
-        word <- ginput("Type the word you intend to find.",con=TRUE)
-        Encoding(content) <- Encoding(word) <- "UTF-8"
-        idx1 <- gregexpr(word,content)[[1]] -1
-        idx2 <- idx1 + attr(idx1,"match.length")
-        markidx <- RQDAQuery(sprintf("select coding.selfirst,coding.selend from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",fid))
-        anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",fid))
-        allidx <- c(unlist(markidx),anno)
-        if (!is.null(allidx)){
-            idx1 <- idx1 + apply(outer(allidx,idx1,"<="),2,sum)
-            idx2 <- idx2 + apply(outer(allidx,idx2,"<="),2,sum)
-        }
-        idx <- data.frame(idx1,idx2)
-        ClearMark(.rqda$.openfile_gui,0,nchar(content),FALSE,TRUE)
-        HL(.rqda$.openfile_gui,idx,NULL,"yellow")
+    if (exists(".openfile_gui",env=.rqda) && isExtant(.rqda$.openfile_gui)) {
+        SearchButton(RQDA:::.rqda$.openfile_gui)
     }
-}
 }
 ## a=gtext("this is a test for search a.",con=T)
 ## b<-a@widget@widget$GetBuffer()

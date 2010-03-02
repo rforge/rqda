@@ -420,3 +420,12 @@ select fid from coding where cid in %s and status==1 group by fid)",not))$name
         }
   }
 }
+
+
+UpdateCoding <- function(){
+    rowid <- RQDAQuery("select rowid from coding")$rowid
+    for (i in rowid) {
+    RQDAQuery(sprintf("update coding set seltext==(select substr(source.file,coding.selfirst+1,coding.selend-coding.selfirst) 
+        from coding inner join source on coding.fid==source.id where coding.ROWID==%i) where coding.ROWID==%i",i,i))
+}}
+#UpdateCoding()

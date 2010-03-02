@@ -1,3 +1,8 @@
+2010-03-02
+	* bugfix of and(), now the returning codings are correct.
+	* Search a word in a gtext widget, e.g. searchWord().
+	* New function of UpdateCoding().
+
 2010-03-01
 	* use more informative prefix in category memo.
 	* make endMark of a coding visible when clicked.
