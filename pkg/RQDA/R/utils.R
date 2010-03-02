@@ -421,6 +421,15 @@ select fid from coding where cid in %s and status==1 group by fid)",not))$name
   }
 }
 
+FileCodedByAnd <- function(cid){
+  cid <- paste(cid,collapse=',')
+  fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
+  fidList <- by(fid,factor(fid$cid),FUN=function(x) table(x$fid))
+  fid <- lapply(fidList,names)
+  fid <- Reduce(intersect,fid)
+  if (length(fid)!=0) fid <- as.numeric(fid)
+  fid
+}
 
 UpdateCoding <- function(){
     rowid <- RQDAQuery("select rowid from coding")$rowid

@@ -2,6 +2,8 @@
 	* bugfix of and(), now the returning codings are correct.
 	* Search a word in a gtext widget, e.g. searchWord().
 	* New function of UpdateCoding().
+	* New function of FileCodedByAnd().
+	* bugfix of ClickHandlerFun().
 
 2010-03-01
 	* use more informative prefix in category memo.

@@ -382,14 +382,14 @@ ClickHandlerFun <- function(CodeNameWidget,buttons=c("MarCodB1","UnMarB1")){
     con <- .rqda$qdacon
     SelectedCode <- currentCode <- svalue(CodeNameWidget)
     if (length(SelectedCode)!=0) {
+       SelectedCode <- currentCode <- enc(currentCode,encoding="UTF-8")
+       currentCid <- dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
+       names(CodeNameWidget) <- sprintf("Selected code id is %s",currentCid)
         if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) { ## a file is open
             for (i in buttons) {
                 b <- get(i,env=button)
                 enabled(b) <- TRUE
             }
-            SelectedCode <- currentCode <- enc(currentCode,encoding="UTF-8")
-            currentCid <- dbGetQuery(con,sprintf("select id from freecode where name=='%s'",SelectedCode))[,1]
-            names(CodeNameWidget) <- sprintf("Selected code id is %s",currentCid)
             SelectedFile <- svalue(.rqda$.root_edit)
             SelectedFile <- enc(SelectedFile,encoding="UTF-8")
             currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
