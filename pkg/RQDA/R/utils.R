@@ -387,48 +387,64 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
   }}
 
 
-QueryFile <- function(or,and=NULL,not=NULL,names=TRUE){
-  or <- sprintf("(%s)",or)
-  or <- gsub("or",",",or)
-  if (!is.null(and)) {
-    and <- sprintf("(%s)", and)
-    and <- gsub("or",",",and)
-  }
-  if (!is.null(not))  {
-    not <- sprintf("(%s)",not)
-    not <- gsub("or",",",not)
-  }
-  fnamesOR <- RQDAQuery(sprintf("select name from source where status==1 and id in (
-select fid from coding where cid in %s and status==1 group by fid)",or))$name
-  if (!is.null(and)){
-    fnamesAND <- RQDAQuery(sprintf("select name from source where status==1 and id in (
-select fid from coding where cid in %s and status==1 group by fid)",and))$name
-  } else  fnamesAND <- fnamesOR
-  if (!is.null(not)) {
-    fnamesNOT <- RQDAQuery(sprintf("select name from source where status==1 and id in (
-select fid from coding where cid in %s and status==1 group by fid)",not))$name
-  } else  fnamesNOT <- NULL
-  fnames <- setdiff(intersect(fnamesOR,fnamesAND),fnamesNOT)
-  if (!is.null(fnames)){
-    fnames <- enc(fnames,"UTF-8")
-    .rqda$.fnames_rqda[] <- fnames
-    if (names) {
-      invisible(fnames)
-    }
-    else {ids <- RQDAQuery(sprintf("select id from source where name in (%s)",paste(paste("'",fnames,"'",sep=""),collapse=",")))
-          invisible(ids)
-        }
-  }
-}
-
 FileCodedByAnd <- function(cid){
   cid <- paste(cid,collapse=',')
   fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
-  fidList <- by(fid,factor(fid$cid),FUN=function(x) table(x$fid))
-  fid <- lapply(fidList,names)
-  fid <- Reduce(intersect,fid)
-  if (length(fid)!=0) fid <- as.numeric(fid)
+  fidList <- by(fid,factor(fid$cid),FUN=function(x) unique(x$fid))
+  fid <- Reduce(intersect,fidList)
+  class(fid) <- "ID"
   fid
+}
+
+FileCodedByOr <- function(cid){
+  cid <- paste(cid,collapse=',')
+  fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid in (%s)",cid))$fid
+  class(fid) <- "ID"
+  fid
+}
+
+FileCodedByNot <- function(cid){
+  cid <- paste(cid,collapse=',')
+  fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid not in (%s)",cid))$fid
+  class(fid) <- "ID"
+  fid
+}
+
+Ops.ID <- function(e1,e2){
+  switch(.Generic,
+         "&" = {ans <- intersect(e1,e2);
+                class(ans) <- "ID"
+                ans
+              },
+         "-" = {ans <- setdiff(e1, e2)
+                class(ans) <- "ID"
+                ans
+              },
+         "|" = {ans <- union(e1, e2)
+                class(ans) <- "ID"
+                ans
+              }
+         )
+}
+
+
+QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
+  fid.or <- fid.and <- fid.not <- integer(0)
+  if (!is.null(or)) fid.or <- FileCodedByOr(or)
+  if (!is.null(and)) fid.and <- FileCodedByAnd(and)
+  if (!is.null(not)) fid.or <- FileCodedByOr(not)
+  ans <- setdiff(intersect(fid.or,fid.and),fid.not)
+  class(ans) <- "ID"
+  if (names) {
+    if (length(ans)>0){
+      ans <- RQDAQuery(sprintf("select name from source where status==1 and id in (%s)", paste(ans,collapse=',')))$name
+      Encoding(ans) <- "UTF-8"
+    } else {
+      ans <- character(0)
+    }
+    .rqda$.fnames_rqda[] <- ans
+  }
+  ans
 }
 
 UpdateCoding <- function(){
