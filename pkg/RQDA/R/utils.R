@@ -104,7 +104,7 @@ MemoWidget <- function(prefix,widget,dbTable){
           if (!inherits(IsOpen,"simpleError")){ ## if a widget is open
               prvSelected <- svalue(get(sprintf(".%smemo",prefix),env=.rqda)) ## title of the memo widget
               Encoding(prvSelected) <- "UTF-8"
-              prvSelected <- sub(sprintf("^%s Memo:",prefix),"",prvSelected)
+              prvSelected <- sub(sprintf("^%s Memo: ",prefix),"",prvSelected)
               prvSelected <- iconv(prvSelected,to="UTF-8") ## previously selected codename
               IfCont <- CloseYes(currentCode=prvSelected)}
           if ( inherits(IsOpen,"simpleError") || IfCont){ ## if not open or the same.

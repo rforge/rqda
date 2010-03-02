@@ -192,7 +192,7 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
         } else {
           for (j in rowid) {
             dbGetQuery(con,sprintf("update coding set status=-1 where rowid=%i", j))
-          }
+
           ## better to get around the loop by sqlite condition expression.
           ## status=-1 to differentiate the result of delete button
           ClearMark(W,min=idx2$startN,max=idx2$endN)
@@ -202,10 +202,14 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda) {
           startN <- startIter$GetOffset()
           DeleteButton(.rqda$.openfile_gui,label=sprintf("<%s>",svalue(codeListWidget)),
                        index=startN,direction="backward")
+          endMark <- buffer$GetMark(sprintf("%s.2", j))
+          ## gtkTextMarkSetVisible(endMark,FALSE)
+          gtkTextBufferDeleteMarkByName(buffer,sprintf("%s.2", j))
           ##endIter <- buffer$GetIterAtMark(idx2$endMark)$iter
           ##endN <- endIter$GetOffset()
           ##DeleteButton(.rqda$.openfile_gui,label=sprintf(">%s",svalue(codeListWidget)),index=endN,direction="forward")
           ## even for the non-current code. can improve.
+          }
         }
       }
     }

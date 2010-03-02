@@ -207,6 +207,14 @@ FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
     }
 }
 }
+## a=gtext("this is a test for search a.",con=T)
+## b<-a@widget@widget$GetBuffer()
+## b$GetIterAtOffset(0)
+## i0=b$GetIterAtOffset(0)
+## s0=i0$iter$ForwardSearch("a","GTK_TEXT_SEARCH_VISIBLE_ONLY")
+## s0$match.start$GetOffset()
+## s0$match.end$GetOffset()
+
 FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("File",.rqda$.fnames_rqda,"source")

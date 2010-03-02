@@ -384,7 +384,7 @@ AddHandler <- function(){
                     )
 
   addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) {
-    MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
+    MemoWidget("Code Category",.rqda$.CodeCatWidget,"codecat")
   }
                         )
 
@@ -408,7 +408,7 @@ AddHandler <- function(){
     }})
 
   addhandlerdoubleclick(.rqda$.FileCatWidget, handler=function(h,...) {
-    MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
+    MemoWidget("File Category",.rqda$.FileCatWidget,"filecat")
   }
                         )
 

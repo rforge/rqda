@@ -96,7 +96,7 @@ UpdateFileofCatWidget2 <- function(con=.rqda$qdacon,Widget=.rqda$.FileofCat,sort
 
 FileCatMemoButton <- function(label="Memo"){
   ans <- gbutton(label,handler=function(h,...) {
-    MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
+    MemoWidget("File Category",.rqda$.FileCatWidget,"filecat")
     }
                  )
   gtkTooltips()$setTip(ans@widget@widget,"Memo of file category.")
@@ -201,7 +201,7 @@ FileCatDropFromButton <- function(label="DropFrom",Widget=.rqda$.FileofCat,...)
 FileCatWidgetMenu <- list()
 FileCatWidgetMenu$Memo$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
-   MemoWidget("FileCat",.rqda$.FileCatWidget,"filecat")
+   MemoWidget("File Category",.rqda$.FileCatWidget,"filecat")
    ## see CodeCatButton.R  for definition of MemoWidget
  }
 }

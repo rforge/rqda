@@ -279,6 +279,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
           iter1 <- buffer$GetIterAtMark(mark1)$iter
           idx1 <- gtkTextIterGetOffset(iter1)
           mark2 <- buffer$GetMark(sprintf("%s.2", rowid))
+          gtkTextMarkSetVisible(mark2,TRUE)
           iter2 <- buffer$GetIterAtMark(mark2)$iter
           idx2 <- gtkTextIterGetOffset(iter2)
           HL(.rqda$.openfile_gui, data.frame(idx1,idx2), fore.col = .rqda$fore.col, back.col = NULL)

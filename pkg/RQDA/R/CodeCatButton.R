@@ -192,7 +192,7 @@ CodeCatDropFromButton <- function(label="Drop From",Widget=.rqda$.CodeofCat,...)
 
 CodeCatMemoButton <- function(label="Memo",...){
     CodCatMemB <- gbutton(label,handler=function(h,...) {
-        MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
+        MemoWidget("Code Category",.rqda$.CodeCatWidget,"codecat")
         }
                           )
     assign("CodCatMemB", CodCatMemB,env=button)
@@ -238,7 +238,7 @@ CodeCatWidgetMenu$"Add New Code to Selected Category"$handler <- function(h,...)
 }
 CodeCatWidgetMenu$Memo$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
- MemoWidget("CodeCat",.rqda$.CodeCatWidget,"codecat")
+ MemoWidget("Code Category",.rqda$.CodeCatWidget,"codecat")
 }
 }
 CodeCatWidgetMenu$"Plot Selected Code Categories"$handler <- function(h,...){
@@ -273,7 +273,7 @@ CodeofCatWidgetMenu$"Rename Selected Code"$handler <- function(h, ...) {
 }
 CodeofCatWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    MemoWidget("code",.rqda$.CodeofCat,"freecode")
+    MemoWidget("Code",.rqda$.CodeofCat,"freecode")
     }
   }
 CodeofCatWidgetMenu$"Sort by created time"$handler <- function(h,...){

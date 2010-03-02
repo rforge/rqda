@@ -1,3 +1,8 @@
+2010-03-01
+	* use more informative prefix in category memo.
+	* make endMark of a coding visible when clicked.
+	* delete enMark when delete a coding.
+	
 2010-02-29
 	* RQDA2tm() is moved to new package of RQDAtm.
 	* bugfix of new project button (Thanks Steven McEachern for reporting).
