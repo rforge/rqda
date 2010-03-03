@@ -446,7 +446,9 @@ AddHandler <- function(){
                         )
 
   addHandlerClicked(.rqda$.FileofCase, handler <- function(h, ...) {
-    names(.rqda$.FileofCase) <- sprintf("Sected file id is %s",GetFileId("case","selected"))
+    if (length(svalue(.rqda$.FileofCase))>0) {
+      names(.rqda$.FileofCase) <- sprintf("Sected file id is %s",GetFileId("case","selected"))
+     }
     if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
   }
                     )

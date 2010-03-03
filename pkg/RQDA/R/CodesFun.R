@@ -502,7 +502,7 @@ DeleteAnnotationAnchorByMark <- function(markname){
 
 openAnnotation <- function(New=TRUE,pos,fid,rowid,AnchorPos=NULL){
   tryCatch(dispose(.rqda$.annotation),error=function(e) {})
-  .annotation <- gwindow(title="Annotation",parent=getOption("widgetCoordinate"),width=600,height=400)
+  .annotation <- gwindow(title="Annotation",parent=getOption("widgetCoordinate"),width = getOption("widgetSize")[1], height = getOption("widgetSize")[2])
   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
   .annotation@widget@widget$SetIconFromFile(mainIcon)
   assign(".annotation",.annotation, env=.rqda)
