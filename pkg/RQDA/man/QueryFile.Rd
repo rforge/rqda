@@ -8,22 +8,20 @@ Retrieval of file names according to their codings.
 To retrieve file names according to their codings and the relationship of codings.
 }
 \usage{
-QueryFile(or, and = NULL, not = NULL, names = TRUE)
+QueryFile(or=NULL, and = NULL, not = NULL, names = TRUE)
 }
 \arguments{
-  \item{or}{ code id.}
-  \item{and}{ code id.}
-  \item{not}{code id.}
+  \item{or}{ integer vector of code id.}
+  \item{and}{ integer vector of code id.}
+  \item{not}{integer vector of code id.}
   \item{names}{logical, returns file names when TRUE.}
 }
 \details{
-This function is experimental, and may be changed in future.
-
-For arguments of 'or', 'and' and 'not', all of them have the same form of input. Examples are 'fid1 or fid2 or fid3' or "fid1, fid2, fid3", where fid1,fid2 and fid3 are file IDs.
+Let fid.or are files coded by any code from or, fid.and are files coded by all codes of and, and fid.not are files not coded by any code of not. Then the result is \code{ setdiff(intersect(fid.or, fid.and), fid.not)}.
 }
 \value{
-A vector of file names, with the side effect of updating files widget
-with these file names.
+A vector of file id when names is FALSE. A vector of file names, with the side effect of updating files widget
+with these file names when names is TRUE.
 }
 \author{
 HUANG Ronggui
@@ -31,8 +29,8 @@ HUANG Ronggui
 
 \examples{
 \dontrun{
-QueryFile(or="1,2") ## files coded to code 1 or 2.
-QueryFile(or="1", and="2") ## files coded to code 1 and 2.
-QueryFile(or="1", not="2,3") ## files coded to code 1 but not either 2 or 2.
+QueryFile(or=1:2) ## files coded to code 1 or 2.
+QueryFile(and=1:2) ## files coded to code 1 and 2.
+QueryFile(or=1:2, not=3:4) ## files coded to code 1 or 2 but neither 3 nor 4.
 }
 }

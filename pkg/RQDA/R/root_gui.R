@@ -422,6 +422,7 @@ AddHandler <- function(){
   addHandlerClicked(.rqda$.FileofCat, handler <- function(h, ...) {
     if (length(svalue(.rqda$.FileofCat))>0){
       enabled(button$FilCatDroFromB) <- TRUE
+      names(.rqda$.FileofCat) <- sprintf("Sected file id is %s",GetFileId("filecat","selected"))
       if (isTRUE(.rqda$SFP)) {
         ShowFileProperty(Fid = GetFileId("file", "selected"),focus=FALSE)
       }
@@ -445,6 +446,7 @@ AddHandler <- function(){
                         )
 
   addHandlerClicked(.rqda$.FileofCase, handler <- function(h, ...) {
+    names(.rqda$.FileofCase) <- sprintf("Sected file id is %s",GetFileId("case","selected"))
     if (isTRUE(.rqda$SFP)) ShowFileProperty(Fid = GetFileId("case", "selected"),focus=FALSE)
   }
                     )

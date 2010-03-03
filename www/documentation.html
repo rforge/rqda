@@ -195,7 +195,7 @@ numbers of different codes give the command: GetCodingTable()
 <br><B>Q:</B>Why should I use computer-aided QDA? Is it more efficient?
 <br>A: CAQDA is time-consuming, but it makes the data analysis process more systematic, more tractable, and more transparent. It "forces" you to think hard about your data and the connection with theory (once you know the idea behind the CAQDA). Depending on the methodological paradigms, you may conduct Qualitative Comparative Analysis or examine some hypotheses (Not in the sense of statistical test of hypotheses) (See Kelle 1995 for details).
 <br><B>Q:</B> My Vista is English, but the *.rqda include Chinese, and it can not display correctly.
-<br>A: One possible reason is the font issue. You can uninstall GTK+. Launch R, set the locale to CHS by command Sys.setlocale(,"CHS"), load RGtk2 by command library(RGtk2), then R will ask if you want to install GTK+, install it. Then you can launch RQDA. It should work.
+<br>A: One possible reason is the font issue. You can uninstall GTK+. Launch R, set the locale to CHS by command Sys.setlocale(,"CHS"), load RGtk2 by command <i>library(RGtk2)</i>, then R will ask if you want to install GTK+, install it. Then you can launch RQDA. It should work.
 <br><B>Q:</B> I press the save button in the memo/journal widget, but it warns that I have not saved it yet when I try to close the widget. Why?
 <br>A: This may be due to the encoding issue. Set the appropriate locale by Sys.setlocale function. The technical aspect is that RQDA needs to convert ' into '' by gsub in order to save it in SQLite database, without proper locales, the conversion may not what you want.
 <!-- <br><B>Q:</B> Will RQDA support coding of photos in the near future?
