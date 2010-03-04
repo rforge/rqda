@@ -309,21 +309,22 @@ gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,x=4
   items
 }
 
-## intersect2 <- function(x) {
-##   if ((n<-length(x))>1) {
-##     x[[n-1]] <- intersect(x[[n]],x[[n-1]])
-##     x[n] <- NULL
-##     Recall(x)
-##   } else { x[[1]] }
-## }
-##x<-list(1:3,3:5,6:3)
-##intersect2(x)
 
 GetFileName <- function(fid=GetFileId()){
   ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from source where status=1 and id in (%s)",paste(shQuote(fid),collapse=",")))$name
   if (length(ans)>0) Encoding(ans) <- "UTF-8"
-  ans}
+  class(ans) <- c("RQDA.vector","fileName")
+  ans
+}
 
+getFiles <- function(condition = c("unconditional", "case", "filecategory", "both"),
+                     type = c("all", "coded", "uncoded", "selected"),names=TRUE) {
+  ans <- GetFileId(condition,type)
+  if (names){
+    ans <- GetFileName(ans)
+  }
+  ans
+}
 
 GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
   ## if (caseName){
@@ -335,34 +336,35 @@ GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
     ans <- dbGetQuery(.rqda$qdacon,sprintf("select caseid from caselinkage where status=1 and fid in (%s) group by caseid",paste(shQuote(fid),collapse=",")))$caseid
   }
   ## attr(ans,"caseName") <- caseName
-  ## class(ans) <- c("data.frame","CaseId")
+  class(ans) <- c("RQDA.vector","caseId")
   ans
 }
 
 GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
   ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from cases where status=1 and id in (%s)",paste(shQuote(caseId),collapse=",")))$name
   if (length(ans)>0) Encoding(ans) <- "UTF-8"
+  class(ans) <- c("RQDA.vector","caseName")
   ans
 }
 
 CaseCodedByAnd <- function(cid){
   fid <- FileCodedByAnd(cid)
   ans <- GetCaseId(fid)
-  class(ans) <- "ID"
+  class(ans) <- c("RQDA.vector","caseId")
   ans
 }
 
 CaseCodedByNot <- function(cid){
   fid <- FileCodedByNot(cid)
   ans <- GetCaseId(fid)
-  class(ans) <- "ID"
+  class(ans) <- c("RQDA.vector","caseId")
   ans
 }
 
 CaseCodedByOr <- function(cid){
   fid <- FileCodedByOr(cid)
   ans <- GetCaseId(fid)
-  class(ans) <- "ID"
+  class(ans) <- c("RQDA.vector","caseId")
   ans
 }
 
@@ -381,7 +383,9 @@ ShowSubset.CaseAttr <- function(x,...){
 ShowSubset.FileAttr <- function(x,...){
   tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
 }
-
+ShowSubset.caseName <- function(x,...){
+  tryCatch(.rqda$.CasesNamesWidget[] <- caseName, error = function(e) {})
+}
 
 ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
@@ -412,25 +416,25 @@ FileCodedByAnd <- function(cid){
   fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
   fidList <- by(fid,factor(fid$cid),FUN=function(x) unique(x$fid))
   fid <- Reduce(intersect,fidList)
-  class(fid) <- "ID"
+  class(fid) <- c("RQDA.vector","fileId")
   fid
 }
 
 FileCodedByOr <- function(cid){
   cid <- paste(cid,collapse=',')
   fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid in (%s)",cid))$fid
-  class(fid) <- "ID"
+  class(fid) <- c("RQDA.vector","fileId")
   fid
 }
 
 FileCodedByNot <- function(cid){
   cid <- paste(cid,collapse=',')
   fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid not in (%s)",cid))$fid
-  class(fid) <- "ID"
+  class(fid) <- c("RQDA.vector","fileId")
   fid
 }
 
-Ops.ID <- function(e1,e2){
+Ops.RQDA.vector <- function(e1,e2){
   cls <- class(e1)
   switch(.Generic,
          "&" = {ans <- intersect(e1,e2);
@@ -454,7 +458,7 @@ QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
   if (!is.null(and)) fid.and <- FileCodedByAnd(and)
   if (!is.null(not)) fid.or <- FileCodedByOr(not)
   ans <- setdiff(intersect(fid.or,fid.and),fid.not)
-  class(ans) <- "ID"
+  class(ans) <- c("RQDA.vector","fileId")
   if (names) {
     if (length(ans)>0){
       ans <- RQDAQuery(sprintf("select name from source where status==1 and id in (%s)", paste(ans,collapse=',')))$name
@@ -462,6 +466,7 @@ QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
     } else {
       ans <- character(0)
     }
+    class(ans) <- c("RQDA.vector","fileName")
     .rqda$.fnames_rqda[] <- ans
   }
   ans

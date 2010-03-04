@@ -110,7 +110,7 @@ AddNewFileFun <- function(){
     gw@widget@widget$SetIconFromFile(mainIcon)
     assign(".AddNewFileWidget",gw,env=.rqda)
     assign(".AddNewFileWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewFileWidget",env=.rqda)),env=.rqda)
-    AddNewFilB <- gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){
+    saveFileFun <- function() {
       ## require a title for the file
       Ftitle <- ginput("Enter the title", icon="info")
       if (!is.na(Ftitle)) {
@@ -131,8 +131,8 @@ AddNewFileFun <- function(){
           enabled(button$AddNewFilB) <- FALSE
         }
       }
-    }
-            )## end of save button
+    } ## end of saveFileFun
+    AddNewFilB <- gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){saveFileFun()})
     enabled(AddNewFilB) <- FALSE
     assign("AddNewFilB",AddNewFilB,env=button)
     tmp <- gtext(container=get(".AddNewFileWidget2",env=.rqda))
@@ -140,6 +140,14 @@ AddNewFileFun <- function(){
     gtkWidgetModifyFont(tmp@widget@widget,font) ## set the default fontsize
     assign(".AddNewFileWidgetW",tmp,env=.rqda)
     textW <- get(".AddNewFileWidgetW",env=.rqda)
+    addHandlerKeystroke(.rqda$.AddNewFileWidgetW,handler=function(h,...){
+      enabled(button$AddNewFilB) <- TRUE
+    })
+    addhandlerunrealize(.rqda$.AddNewFileWidgetW,handler=function(h,...){
+      rm("AddNewFilB",envir=button)
+      rm(".AddNewFileWidgetW",".AddNewFileWidget",".AddNewFileWidget2",envir=.rqda)
+      FALSE
+    })
   }
 }
 
@@ -149,9 +157,6 @@ FileNamesWidgetMenu <- list()
 FileNamesWidgetMenu$"Add New File ..."$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     AddNewFileFun()
-    addHandlerKeystroke(.rqda$.AddNewFileWidgetW,handler=function(h,...){
-      enabled(button$AddNewFilB) <- TRUE
-    })
   }
 }
 FileNamesWidgetMenu$"Add To Case ..."$handler <- function(h, ...) {

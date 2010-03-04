@@ -1,7 +1,8 @@
 2010-03-04
 	* new functions of CaseCodedByAnd, CaseCodeByOr, CaseCodedByNot.
 	* save button in Add new file widget is disabled by default.
-	* add new file widget is cleared after content is saved.
+	* add new file widget is cleared after content is saved, assigned obj are removed when closed.
+	* new function of getFiles().
 
 2010-03-03
 	* new functions of FileCodedByAnd, FileCodeByOr, FileCodedByNot.
