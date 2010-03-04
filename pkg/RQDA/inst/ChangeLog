@@ -3,6 +3,7 @@
 	* save button in Add new file widget is disabled by default.
 	* add new file widget is cleared after content is saved, assigned obj are removed when closed.
 	* new function of getFiles().
+	* save button in edit file widget is disabled by default.
 
 2010-03-03
 	* new functions of FileCodedByAnd, FileCodeByOr, FileCodedByNot.

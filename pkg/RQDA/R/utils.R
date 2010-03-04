@@ -340,6 +340,14 @@ GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
   ans
 }
 
+getCases <- function(fid, names=TRUE) {
+  ans <- GetCaseId(fid,nFiles=FALSE)
+  if (names){
+    ans <- GetCaseName(ans)
+  }
+  ans
+}
+
 GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
   ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from cases where status=1 and id in (%s)",paste(shQuote(caseId),collapse=",")))$name
   if (length(ans)>0) Encoding(ans) <- "UTF-8"
@@ -347,22 +355,22 @@ GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
   ans
 }
 
-CaseCodedByAnd <- function(cid){
-  fid <- FileCodedByAnd(cid)
+casesCodedByAnd <- function(cid){
+  fid <- filesCodedByAnd(cid)
   ans <- GetCaseId(fid)
   class(ans) <- c("RQDA.vector","caseId")
   ans
 }
 
-CaseCodedByNot <- function(cid){
-  fid <- FileCodedByNot(cid)
+casesCodedByNot <- function(cid){
+  fid <- filesCodedByNot(cid)
   ans <- GetCaseId(fid)
   class(ans) <- c("RQDA.vector","caseId")
   ans
 }
 
-CaseCodedByOr <- function(cid){
-  fid <- FileCodedByOr(cid)
+casesCodedByOr <- function(cid){
+  fid <- filesCodedByOr(cid)
   ans <- GetCaseId(fid)
   class(ans) <- c("RQDA.vector","caseId")
   ans
@@ -373,9 +381,10 @@ RQDAQuery <- function(sql){dbGetQuery(.rqda$qdacon,sql)}
 ShowSubset <- function(x,...){
   UseMethod("ShowSubset")
 }
-ShowSubset.default <- function(x,widget=".rqda$.fnames_rqda",...){
-  widget <- substitute(widget)
-  eval(parse(text=sprintf("%s[] <- x",widget)))
+ShowSubset.fileName <- function(x,widget=".fnames_rqda",env=.rqda,...){
+  widget <- get(widget,env=env)
+  class(x) <- NULL
+  widget[] <- x
 }
 ShowSubset.CaseAttr <- function(x,...){
   tryCatch(.rqda$.CasesNamesWidget[] <- x$case, error = function(e) {})
@@ -384,7 +393,8 @@ ShowSubset.FileAttr <- function(x,...){
   tryCatch(.rqda$.fnames_rqda[] <- x$file, error = function(e) {})
 }
 ShowSubset.caseName <- function(x,...){
-  tryCatch(.rqda$.CasesNamesWidget[] <- caseName, error = function(e) {})
+   class(x) <- NULL
+   .rqda$.CasesNamesWidget[] <- x
 }
 
 ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
@@ -411,7 +421,7 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
   }}
 
 
-FileCodedByAnd <- function(cid){
+filesCodedByAnd <- function(cid){
   cid <- paste(cid,collapse=',')
   fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
   fidList <- by(fid,factor(fid$cid),FUN=function(x) unique(x$fid))
@@ -420,14 +430,14 @@ FileCodedByAnd <- function(cid){
   fid
 }
 
-FileCodedByOr <- function(cid){
+filesCodedByOr <- function(cid){
   cid <- paste(cid,collapse=',')
   fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid in (%s)",cid))$fid
   class(fid) <- c("RQDA.vector","fileId")
   fid
 }
 
-FileCodedByNot <- function(cid){
+filesCodedByNot <- function(cid){
   cid <- paste(cid,collapse=',')
   fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid not in (%s)",cid))$fid
   class(fid) <- c("RQDA.vector","fileId")
@@ -454,9 +464,9 @@ Ops.RQDA.vector <- function(e1,e2){
 
 QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
   fid.or <- fid.and <- fid.not <- integer(0)
-  if (!is.null(or)) fid.or <- FileCodedByOr(or)
-  if (!is.null(and)) fid.and <- FileCodedByAnd(and)
-  if (!is.null(not)) fid.or <- FileCodedByOr(not)
+  if (!is.null(or)) fid.or <- filesCodedByOr(or)
+  if (!is.null(and)) fid.and <- filesCodedByAnd(and)
+  if (!is.null(not)) fid.or <- filesCodedByOr(not)
   ans <- setdiff(intersect(fid.or,fid.and),fid.not)
   class(ans) <- c("RQDA.vector","fileId")
   if (names) {

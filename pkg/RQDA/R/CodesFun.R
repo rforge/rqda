@@ -52,6 +52,39 @@ CodeNamesWidgetUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sortByTime=T
   } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
 }
 
+mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel=""){
+  ## modified so can change fore.col and back.col easily
+  index <- sindex(widget,includeAnchor=TRUE)
+  startI <- index$startI ## start and end iter
+  endI <- index$endI
+  selected <- index$seltext
+  Encoding(selected) <- "UTF-8"
+  startN <- index$startN # translate iter pointer to number
+  endN <- index$endN
+  if (selected != ""){## only when selected text chunk is not "", apply the color scheme.
+    buffer <- slot(widget,"widget")@widget$GetBuffer()
+    if(addButton) {
+      InsertAnchor(widget,sprintf("%s<",buttonLabel),index=startN,handler=TRUE)
+      InsertAnchor(widget,sprintf(">%s",buttonLabel),index=endN + 1)
+    }
+    startIter <- buffer$GetIterAtMark(index$startMark)$iter
+    endIter <- buffer$GetIterAtMark(index$endMark)$iter
+    if (!is.null(fore.col)){  ## when col is NULL, it is skipped
+      buffer$ApplyTagByName(fore.col,startIter,endIter)## make use of property of gtext().
+    }
+    if (!is.null(back.col)){
+      buffer$ApplyTagByName(sprintf("%s.background",back.col),startIter,endIter)
+    }
+    startN <- index$startN
+    endN <- index$endN
+    startN <- startN - countAnchorsWithFileName(to=startN)
+    endN <- endN - countAnchorsWithFileName(to=endN)
+    ##startN <- startN - countAnchors(.rqda$.openfile_gui,from=0,to=startN)
+    ##endN <- endN - countAnchors(.rqda$.openfile_gui,from=0,to=endN)
+    return(list(start=startN,end=endN,text=selected))
+  }
+}
+
 
 markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel="",buttonCol=.rqda$codeMark.col){
   if (from != to){
@@ -689,35 +722,4 @@ AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
 ##     widget@widget@widget$addChildAtAnchor(label, anchor)
 ## }
 
-## mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel=""){
-##   ## modified so can change fore.col and back.col easily
-##   index <- sindex(widget,includeAnchor=TRUE)
-##   startI <- index$startI ## start and end iter
-##   endI <- index$endI
-##   selected <- index$seltext
-##   Encoding(selected) <- "UTF-8"
-##   startN <- index$startN # translate iter pointer to number
-##   endN <- index$endN
-##   if (selected != ""){## only when selected text chunk is not "", apply the color scheme.
-##     buffer <- slot(widget,"widget")@widget$GetBuffer()
-##     if(addButton) {
-##       InsertAnchor(widget,sprintf("%s<",buttonLabel),index=startN,handler=TRUE)
-##       InsertAnchor(widget,sprintf(">%s",buttonLabel),index=endN + 1)
-##     }
-##     startIter <- buffer$GetIterAtMark(index$startMark)$iter
-##     endIter <- buffer$GetIterAtMark(index$endMark)$iter
-##     if (!is.null(fore.col)){  ## when col is NULL, it is skipped
-##       buffer$ApplyTagByName(fore.col,startIter,endIter)## make use of property of gtext().
-##     }
-##     if (!is.null(back.col)){
-##       buffer$ApplyTagByName(sprintf("%s.background",back.col),startIter,endIter)
-##     }
-##     startN <- index$startN
-##     endN <- index$endN
-##     startN <- startN - countAnchorsWithFileName(to=startN)
-##     endN <- endN - countAnchorsWithFileName(to=endN)
-##     ##startN <- startN - countAnchors(.rqda$.openfile_gui,from=0,to=startN)
-##     ##endN <- endN - countAnchors(.rqda$.openfile_gui,from=0,to=endN)
-##     return(list(start=startN,end=endN,text=selected))
-##   }
-## }
+

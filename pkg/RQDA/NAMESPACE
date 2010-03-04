@@ -1,14 +1,14 @@
 export(and, CleanProject,CrossCode,CrossTwo,ExportCoding,
-       CaseCodedByAnd, CaseCodedByOr,CaseCodedByNot,
-       FileCodedByAnd, FileCodedByOr,FileCodedByNot,
+       casesCodedByAnd, casesCodedByOr,casesCodedByNot,
+       filesCodedByAnd, filesCodedByOr,filesCodedByNot,
        gselect.list,GetAttr,GetCaseId,GetCaseName,
-       getFiles,
+       getCases, getFiles,
        GetCodingTable,GetFileId,GetFileIdSets,GetFileName,
        list.deleted,pdelete,QueryFile,relation,retrieval,RQDA,RQDAQuery,
        SearchFiles,ShowSubset,SummaryCoding,undelete,write.FileList)
 S3method(Ops,RQDA.vector)
 S3method(print,SummaryCoding)
-S3method(ShowSubset,default)
+S3method(ShowSubset,fileName)
 S3method(ShowSubset,CaseAttr)
 S3method(ShowSubset, caseName)
 S3method(ShowSubset,FileAttr)

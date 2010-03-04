@@ -184,7 +184,7 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
       gw@widget@widget$SetIconFromFile(mainIcon)
       assign(".root_edit",gw,env=.rqda)
       assign(".root_edit2",gpanedgroup(horizontal = FALSE, con=.rqda$.root_edit),env=.rqda)
-      gbutton("Save File",con=.rqda$.root_edit2,handler=function(h,...){
+      EdiFilB <- gbutton("Save File",con=.rqda$.root_edit2,handler=function(h,...){
         content <-  svalue(.rqda$.openfile_gui)
         RQDAQuery(sprintf("update source set file='%s', dateM='%s' where name='%s'",
                           enc(content,"UTF-8"),date(),enc(svalue(.rqda$.root_edit),"UTF-8"))) ## update source table
@@ -222,7 +222,10 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
             }
           })## end of apply
         }
-      })## end of save memo button
+        enabled(button$EdiFilB) <- FALSE
+      })## end of save button
+      assign("EdiFilB",EdiFilB,env=button)
+      enabled(EdiFilB) <- FALSE
       tmp <- gtext(container=.rqda$.root_edit2)
       font <- pangoFontDescriptionFromString(.rqda$font)
       gtkWidgetModifyFont(tmp@widget@widget,font)
@@ -264,7 +267,17 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
           gtkTextMarkSetVisible(mark,TRUE)
         }) ## end of apply
       }
-  }}}
+      addHandlerKeystroke(.rqda$.openfile_gui,handler=function(h,...){
+        enabled(button$EdiFilB) <- TRUE
+      })
+      addhandlerunrealize(.rqda$.openfile_gui,handler=function(h,...){
+        rm("EdiFilB",envir=button)
+        rm(".root_edit",".root_edit2",".openfile_gui",envir=.rqda)
+        FALSE
+      })
+    } ## end of else
+  }
+}
 
 
 write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...){

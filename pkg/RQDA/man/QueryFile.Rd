@@ -5,7 +5,7 @@
 Retrieval of file names according to their codings.
 }
 \description{
-To retrieve file names according to their codings and the relationship of codings.
+To retrieve file names according to their codings.
 }
 \usage{
 QueryFile(or=NULL, and = NULL, not = NULL, names = TRUE)
@@ -18,6 +18,8 @@ QueryFile(or=NULL, and = NULL, not = NULL, names = TRUE)
 }
 \details{
 Let fid.or are files coded by any code from or, fid.and are files coded by all codes of and, and fid.not are files not coded by any code of not. Then the result is \code{ setdiff(intersect(fid.or, fid.and), fid.not)}.
+
+This function is succeeded by \code{\link{filesCodedByAnd}}, \code{\link{filesCodedByOr}}, \code{\link{filesCodedByNot}} and their operators.
 }
 \value{
 A vector of file id when names is FALSE. A vector of file names, with the side effect of updating files widget
