@@ -129,12 +129,23 @@ AddNewFileFun <- function(){
           svalue(textW) <- "" ## clear the content.
           FileNamesUpdate()
           enabled(button$AddNewFilB) <- FALSE
+          enabled(button$AddNewFilB2) <- FALSE
         }
       }
     } ## end of saveFileFun
-    AddNewFilB <- gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){saveFileFun()})
+    
+    gl <- glayout(homogeneous=T,con=get(".AddNewFileWidget2",env=.rqda))
+    AddNewFilB <- gbutton("Save To Project", handler=function(h,...){saveFileFun()})
     enabled(AddNewFilB) <- FALSE
     assign("AddNewFilB",AddNewFilB,env=button)
+    AddNewFilB2 <- gbutton("Save and close", handler=function(h,...){
+      saveFileFun()
+      dispose(.rqda$.AddNewFileWidget)
+    })
+    enabled(AddNewFilB2) <- FALSE
+    assign("AddNewFilB2",AddNewFilB2,env=button)
+    gl[1,1] <- AddNewFilB
+    gl[1,2] <- AddNewFilB2
     tmp <- gtext(container=get(".AddNewFileWidget2",env=.rqda))
     font <- pangoFontDescriptionFromString(.rqda$font)
     gtkWidgetModifyFont(tmp@widget@widget,font) ## set the default fontsize
@@ -142,6 +153,7 @@ AddNewFileFun <- function(){
     textW <- get(".AddNewFileWidgetW",env=.rqda)
     addHandlerKeystroke(.rqda$.AddNewFileWidgetW,handler=function(h,...){
       enabled(button$AddNewFilB) <- TRUE
+      enabled(button$AddNewFilB2) <- TRUE
     })
     addhandlerunrealize(.rqda$.AddNewFileWidgetW,handler=function(h,...){
       rm("AddNewFilB",envir=button)

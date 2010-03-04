@@ -161,6 +161,7 @@ GetCodingTable <- function(){
    ## if (!all (all.equal(Codings$cid,Codings$cid2),all.equal(Codings$fid,Codings$fid2))){
    ##   stop("Errors!") ## check to make sure the sql is correct
    ## }
+    class(Codings) <- "codingTable"
     Codings
   } else cat("Open a project first.\n")
 }

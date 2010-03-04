@@ -7,12 +7,12 @@ Give a summary of coding of current project.
 }
 \usage{
 SummaryCoding(byFile = FALSE, ...)
-\method{print}{SummaryCoding}
+\method{print}{SummaryCoding}(x, ...)
 }
 \arguments{
   \item{byFile}{When it is FALSE, return the summary of current project. 
 When it is TRUE, return the summary of coding for each coded file.}
-%  \item{x}{An object returned by \code{SummaryCoding}.}
+  \item{x}{An object returned by \code{SummaryCoding}.}
   \item{\dots}{Other possible arguments.}
 }
 %\details{

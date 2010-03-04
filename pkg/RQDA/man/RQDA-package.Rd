@@ -30,6 +30,10 @@ The position of ViewFile widget can be controlled by "widgetCoordinate"
 options, with default value c(400,2). You can change it by
 options("widgetCoordinate"=c(x,y)), where x and y is integer specifying the
 position.
+
+The size of many widgets (e.g. ViewFile widgets) can be controlled by "widgetSize"
+options, with default value c(550,700). You can change it by
+options("widgetSize"=c(x,y)), where x and y is integer specifying width and height.
 }
 \author{
   Huang Ronggui
@@ -37,11 +41,9 @@ position.
   Maintainer: Huang <ronggui.huang@gmail.com>
 }
 
-%%\references{
-%% reference here
-%%}
-%%~~ Optionally other standard keywords, one per line, from file KEYWORDS ~~
-%%~~ in the R documentation directory ~~
+\references{
+Kelle, U. (ed). 1995. "Computer-aided qualitative data analysis: theory, methods and practice." Sage Publications.
+}
 \keyword{ package }
 \examples{
 \dontrun{library(RQDA)
