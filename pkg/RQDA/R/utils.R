@@ -339,10 +339,30 @@ GetCaseId <- function(fid=GetFileId(),nFiles=FALSE){
   ans
 }
 
-
 GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
   ans <-  dbGetQuery(.rqda$qdacon,sprintf("select name from cases where status=1 and id in (%s)",paste(shQuote(caseId),collapse=",")))$name
   if (length(ans)>0) Encoding(ans) <- "UTF-8"
+  ans
+}
+
+CaseCodedByAnd <- function(cid){
+  fid <- FileCodedByAnd(cid)
+  ans <- GetCaseId(fid)
+  class(ans) <- "ID"
+  ans
+}
+
+CaseCodedByNot <- function(cid){
+  fid <- FileCodedByNot(cid)
+  ans <- GetCaseId(fid)
+  class(ans) <- "ID"
+  ans
+}
+
+CaseCodedByOr <- function(cid){
+  fid <- FileCodedByOr(cid)
+  ans <- GetCaseId(fid)
+  class(ans) <- "ID"
   ans
 }
 
@@ -411,22 +431,22 @@ FileCodedByNot <- function(cid){
 }
 
 Ops.ID <- function(e1,e2){
+  cls <- class(e1)
   switch(.Generic,
          "&" = {ans <- intersect(e1,e2);
-                class(ans) <- "ID"
+                class(ans) <- cls
                 ans
               },
          "-" = {ans <- setdiff(e1, e2)
-                class(ans) <- "ID"
+                class(ans) <- cls
                 ans
               },
          "|" = {ans <- union(e1, e2)
-                class(ans) <- "ID"
+                class(ans) <- cls
                 ans
               }
          )
 }
-
 
 QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
   fid.or <- fid.and <- fid.not <- integer(0)

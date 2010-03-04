@@ -1,5 +1,6 @@
 export(and, CleanProject,CrossCode,CrossTwo,ExportCoding,
        FileCodedByAnd, FileCodedByOr,FileCodedByNot,
+       CaseCodedByAnd, CaseCodedByOr,CaseCodedByNot,
        gselect.list,GetAttr,GetCaseId,GetCaseName,
        GetCodingTable,GetFileId,GetFileIdSets,GetFileName,
        list.deleted,pdelete,QueryFile,relation,retrieval,RQDA,RQDAQuery,

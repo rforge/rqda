@@ -100,15 +100,17 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
 
 AddNewFileFun <- function(){
   if (is_projOpen(env=.rqda,"qdacon")) {
-    tryCatch(eval(parse(text="dispose(.rqda$.AddNewFileWidget")),error=function(e) {}) ## close the widget if open
-    gw <- gwindow(title="Add New File.", parent=getOption("widgetCoordinate"),
+    if (exists(".AddNewFileWidget",env=.rqda) && isExtant(.rqda$.AddNewFileWidget)) {
+      dispose(.rqda$.AddNewFileWidget)
+    } ## close the widget if open
+    gw <- gwindow(title="Add a new file", parent=getOption("widgetCoordinate"),
                   width = getOption("widgetSize")[1],
                   height = getOption("widgetSize")[2])
     mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
     gw@widget@widget$SetIconFromFile(mainIcon)
     assign(".AddNewFileWidget",gw,env=.rqda)
     assign(".AddNewFileWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewFileWidget",env=.rqda)),env=.rqda)
-    gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){
+    AddNewFilB <- gbutton("Save To Project",con=get(".AddNewFileWidget2",env=.rqda),handler=function(h,...){
       ## require a title for the file
       Ftitle <- ginput("Enter the title", icon="info")
       if (!is.na(Ftitle)) {
@@ -123,16 +125,19 @@ AddNewFileFun <- function(){
         ans <- dbGetQuery(.rqda$qdacon,sprintf("insert into source (name, file, id, status,date,owner )
                              values ('%s', '%s',%i, %i, '%s', '%s')",
                                                Ftitle,content, nextid, 1,date(),.rqda$owner))
-        ## write to the data-base ## what is ans?
-        ## rm(.AddNewFileWidget,.AddNewFileWidget2,env=.rqda)
-        ## delete .rqda$.AddNewFileWidget and .rqda$.AddNewFileWidget2
-        gmessage("Succeed.",con=T)
-        FileNamesUpdate()
-      }}
+        if (is.null(ans)){
+          svalue(textW) <- "" ## clear the content.
+          FileNamesUpdate()
+          enabled(button$AddNewFilB) <- FALSE
+        }
+      }
+    }
             )## end of save button
+    enabled(AddNewFilB) <- FALSE
+    assign("AddNewFilB",AddNewFilB,env=button)
     tmp <- gtext(container=get(".AddNewFileWidget2",env=.rqda))
     font <- pangoFontDescriptionFromString(.rqda$font)
-    gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
+    gtkWidgetModifyFont(tmp@widget@widget,font) ## set the default fontsize
     assign(".AddNewFileWidgetW",tmp,env=.rqda)
     textW <- get(".AddNewFileWidgetW",env=.rqda)
   }
@@ -142,10 +147,13 @@ AddNewFileFun <- function(){
 ## pop-up menu of add to case and F-cat from Files Tab
 FileNamesWidgetMenu <- list()
 FileNamesWidgetMenu$"Add New File ..."$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+  if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     AddNewFileFun()
-    }
+    addHandlerKeystroke(.rqda$.AddNewFileWidgetW,handler=function(h,...){
+      enabled(button$AddNewFilB) <- TRUE
+    })
   }
+}
 FileNamesWidgetMenu$"Add To Case ..."$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
       AddFileToCaselinkage()

@@ -1,3 +1,12 @@
+2010-03-04
+	* new functions of CaseCodedByAnd, CaseCodeByOr, CaseCodedByNot.
+	* save button in Add new file widget is disabled by default.
+	* add new file widget is cleared after content is saved.
+
+2010-03-03
+	* new functions of FileCodedByAnd, FileCodeByOr, FileCodedByNot.
+	* new function of Ops.ID().
+	
 2010-03-02
 	* bugfix of and(), now the returning codings are correct.
 	* Search a word in a gtext widget, e.g. searchWord().
