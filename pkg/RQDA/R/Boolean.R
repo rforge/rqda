@@ -40,7 +40,18 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
     } else NULL
 }
 
-##a<- GetCodingTable()
-##c1 <- subset(a,cid==6)
-##c2 <- subset(a,cid==24)
-##and(c1,c2,T)
+andByCid <- function(cid1,cid2,showCoding=FALSE, method= c("overlap","exact","inclusion")){
+  if (isIdCurrent(.rqda$qdacon)) {
+    CT1 <- RQDAQuery(sprintf("select coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid1))
+    if (nrow(CT1) != 0) {
+      Encoding(CT1$codename) <- Encoding(CT1$filename) <- "UTF-8"
+    }
+    CT2 <- RQDAQuery(sprintf("select coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid2))
+    if (nrow(CT2) != 0) {
+      Encoding(CT2$codename) <- Encoding(CT2$filename) <- "UTF-8"
+    }
+    if (nrow(CT1) != 0 && nrow(CT2) != 0){
+      ans <- and(CT1,CT2,showCoding,method)
+      ans} else NULL
+  }
+}

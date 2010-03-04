@@ -1,27 +1,24 @@
 \name{Ops.RQDA.vector}
-\alias{Ops}
+\alias{\%and\%}
+\alias{\%or\%}
+\alias{\%not\%}
 \title{ Binary operations of RQDA.vector}
 \description{
   Binary operations of RQDA.vector
 }
-%\usage{
-%}
-%\arguments{
-%  \item{e1}{an object of class RQDA.vector.}
-%  \item{e2}{an object of class RQDA.vector.}
-%}
+\usage{
+e1 \%and\% e2
+e1 \%or\% e2
+e1 \%not\% e2
+}
+\arguments{
+  \item{e1}{an object of class RQDA.vector.}
+  \item{e2}{an object of class RQDA.vector.}
+}
 \details{
-Typical usage is as follows:
-\preformatted{
-    e1 & e2
-    e1 | e2
-    e1 - e2
-          }
-e1 and e2 are objects of class "RQDA.vector" includes classes of "fileId", "fileName", "caseId", "caseName".
+e1 and e2 are objects of class "RQDA.vector" includes classes of "fileId", "fileName", "caseId", "caseName". e1 and e2 must be the same class.
 
-"&" is the \code{\link{intersect}} of e1 and e2. "|" is the \code{\link{union}} of e1 and e2. "-" is the defined as \code{setdiff(e1, e2)}.
-
-e1 and e2 must be the same class.
+"&and&" is the \code{\link{intersect}} of e1 and e2. "%or%" is the \code{\link{union}} of e1 and e2. "%not%" is the defined as \code{setdiff(e1, e2)}.
 }
 \value{
 a vector with the same class of e1 and e2.
@@ -30,8 +27,8 @@ a vector with the same class of e1 and e2.
 \seealso{ \code{\link{intersect}}, \code{\link{union}}, \code{\link{setdiff}}}
 \examples{
 \dontrun{
-getFiles(1:2) & getFiles(3) ## coded by 1 and 2 as well as 3
-getFiles(1:2) | getFiles(3) ## coded by 1 and 2 or 3
-getFiles(1:2) - getFiles(3) ## coded by 1 and 2 but not 3
+filesCodeByAnd(1:2) %and% filesCodeByAnd(3) ## coded by 1 and 2 as well as 3
+filesCodeByAnd(1:2) %or% filesCodeByAnd(3) ## coded by 1 and 2 or 3
+filesCodeByAnd(1:2) %not% filesCodeByAnd(3) ## coded by 1 and 2 but not 3
 }
 }

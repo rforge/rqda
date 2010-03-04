@@ -445,22 +445,40 @@ filesCodedByNot <- function(cid){
   fid
 }
 
-Ops.RQDA.vector <- function(e1,e2){
-  cls <- class(e1)
-  switch(.Generic,
-         "&" = {ans <- intersect(e1,e2);
-                class(ans) <- cls
-                ans
-              },
-         "-" = {ans <- setdiff(e1, e2)
-                class(ans) <- cls
-                ans
-              },
-         "|" = {ans <- union(e1, e2)
-                class(ans) <- cls
-                ans
-              }
-         )
+"%and%" <- function(e1,e2){
+  UseMethod("%and%")
+}
+
+"%or%" <- function(e1,e2){
+  UseMethod("%or%")
+}
+
+"%not%" <- function(e1,e2){
+  UseMethod("%not%")
+}
+
+"%and%.RQDA.vector" <- function(e1,e2)
+{
+cls <- class(e1)
+ans <- intersect(e1,e2)
+class(ans) <- cls
+ans
+}
+
+"%not%.RQDA.vector" <- function(e1,e2)
+{
+cls <- class(e1)
+ans <- setdiff(e1, e2)
+class(ans) <- cls
+ans
+}
+
+"%or%.RQDA.vector" <- function(e1,e2)
+{
+cls <- class(e1)
+ans <- union(e1, e2)
+class(ans) <- cls
+ans
 }
 
 QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
