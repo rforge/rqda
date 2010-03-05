@@ -161,7 +161,7 @@ GetCodingTable <- function(){
    ## if (!all (all.equal(Codings$cid,Codings$cid2),all.equal(Codings$fid,Codings$fid2))){
    ##   stop("Errors!") ## check to make sure the sql is correct
    ## }
-    class(Codings) <- "codingTable"
+    class(Codings) <- c("codingTable","data.frame")
     Codings
   } else cat("Open a project first.\n")
 }
@@ -504,7 +504,7 @@ QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
 UpdateCoding <- function(){
     rowid <- RQDAQuery("select rowid from coding")$rowid
     for (i in rowid) {
-    RQDAQuery(sprintf("update coding set seltext==(select substr(source.file,coding.selfirst+1,coding.selend-coding.selfirst) 
+    RQDAQuery(sprintf("update coding set seltext==(select substr(source.file,coding.selfirst+1,coding.selend-coding.selfirst)
         from coding inner join source on coding.fid==source.id where coding.ROWID==%i) where coding.ROWID==%i",i,i))
 }}
 #UpdateCoding()
