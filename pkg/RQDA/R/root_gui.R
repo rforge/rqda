@@ -358,6 +358,8 @@ AddHandler <- function(){
       enabled(button$CodCatMemB) <- TRUE
       enabled(button$CodCatRenB) <- TRUE
       enabled(button$CodCatAddToB) <- TRUE
+      enabled(button$MarCodB2) <- FALSE
+      enabled(button$UnMarB2) <- FALSE
       catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
                                  enc(svalue(.rqda$.CodeCatWidget))
                                  )

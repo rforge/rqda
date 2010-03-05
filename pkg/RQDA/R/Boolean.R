@@ -68,7 +68,7 @@ getCodingsByOne <- function(cid){
 }
 
 "%and%.codingsByOne" <- function(e1,e2){
-    and(e1, e2, showCoding=TRUE, method= c("overlap","exact","inclusion"))
+    and(e1, e2, showCoding=TRUE, method= getOption("andMethod"))
 }
 
 summary.codingsByOne <- function (x)
