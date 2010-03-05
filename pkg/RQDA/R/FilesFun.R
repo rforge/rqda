@@ -484,7 +484,8 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
                 filecategory=FidOfCatFun(type=type),
                 both=bothFun(type=type)
                 )
-  if (!is.null(fid)) class(fid) <- c("RQDA.vector","fileId")
+  if (is.null(fid)) fid <- integer(0)
+  class(fid) <- c("RQDA.vector","fileId")
   fid
 }
 
@@ -519,6 +520,7 @@ GetFileIdSets <- function(set=c("case","filecategory"),relation=c("union","inter
       }
     }
   } ## end of set=="filecategory"
+  if (is.null(ans)) ans <- integer(0)
   class(ans) <- c("RQDA.vector","fileId")
   ans
 }
