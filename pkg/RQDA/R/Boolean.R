@@ -19,7 +19,7 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
             rs <- ridx[seq(from=2,to=length(ridx),by=2)] ## second row index
             index1 <- idx[seq(from=1,to=length(idx),by=2)]
             index2 <- idx[seq(from=2,to=length(idx),by=2)]
-            ans <- cbind(CT1[rf,c("fid","filename")],index1=index1,index2=index2)
+            ans <- cbind(CT1[rf,c("rowid","fid","filename")],index1=index1,index2=index2)
             ans
         }}
 
@@ -43,7 +43,7 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
 
 andByCid <- function(cid1,cid2,showCoding=FALSE, method= c("overlap","exact","inclusion")){
   if (isIdCurrent(.rqda$qdacon)) {
-    CT1 <- RQDAQuery(sprintf("select coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid1))
+    CT1 <- RQDAQuery(sprintf("select coding.rowid as rowid, coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid1))
     if (nrow(CT1) != 0) {
       Encoding(CT1$codename) <- Encoding(CT1$filename) <- "UTF-8"
     }
@@ -59,7 +59,7 @@ andByCid <- function(cid1,cid2,showCoding=FALSE, method= c("overlap","exact","in
 
 getCodingsByOne <- function(cid){
     if (length(cid)!=1) stop("cid should be length-1 integer vector.")
-    ct <- RQDAQuery(sprintf("select coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.seltext as coding, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid))
+    ct <- RQDAQuery(sprintf("select coding.rowid as rowid, coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.seltext as coding, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid))
     if (nrow(ct) != 0) {
         Encoding(ct$codename) <- Encoding(ct$filename) <- Encoding(ct$coding) <- "UTF-8"
     }
@@ -73,6 +73,24 @@ getCodingsByOne <- function(cid){
 
 summary.codingsByOne <- function (x)
 {
+    ComputeCallbackFun <- function(FileName,rowid){
+        CallBackFUN <- function(widget,event,...){
+            ViewFileFunHelper(FileName,hightlight=FALSE)
+            textView <- .rqda$.openfile_gui@widget@widget
+            buffer <- textView$GetBuffer()
+            mark1 <- gtkTextBufferGetMark(buffer,sprintf("%s.1",rowid))
+            gtkTextViewScrollToMark(textView,mark1,0)
+            iter1 <- buffer$GetIterAtMark(mark1)$iter
+            idx1 <- gtkTextIterGetOffset(iter1)
+            mark2 <- buffer$GetMark(sprintf("%s.2", rowid))
+            gtkTextMarkSetVisible(mark2,TRUE)
+            iter2 <- buffer$GetIterAtMark(mark2)$iter
+            idx2 <- gtkTextIterGetOffset(iter2)
+            HL(.rqda$.openfile_gui, data.frame(idx1,idx2), fore.col = .rqda$fore.col, back.col = NULL)
+        }
+        CallBackFUN
+    }
+
     if (nrow(x) == 0)
         gmessage("No Codings.", con = TRUE)
     else {
@@ -100,6 +118,17 @@ summary.codingsByOne <- function (x)
         apply(x, 1, function(x) {
             metaData <- sprintf("%s [%i:%i]", x[["filename"]],as.numeric(x[["index1"]]), as.numeric(x[["index2"]]))
             buffer$InsertWithTagsByName(iter, metaData, "red")
+            anchorcreated <- buffer$createChildAnchor(iter)
+            iter$BackwardChar()
+            anchor <- iter$getChildAnchor()
+            lab <- gtkLabelNew("Back")
+            widget <- gtkEventBoxNew()
+            widget$Add(lab)
+            gSignalConnect(widget, "button-press-event",
+                           ComputeCallbackFun(x[["filename"]],as.numeric(x[["rowid"]])))
+            .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
+            widget$showAll()
+            iter$ForwardChar()
             buffer$insert(iter, "\n")
             buffer$InsertWithTagsByName(iter, x[["coding"]])
             buffer$insert(iter, "\n\n")
