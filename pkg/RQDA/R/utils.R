@@ -471,7 +471,7 @@ codedByTwo <- function(FUN, codeList=NULL, print=TRUE,...){
                                                                    cidList))
         for (i in 1:length(cidList)){
             for (j in i:length(cidList)){
-                ans[i,j] <- length(do.call(FUN, list(cid=cidList[c(i,j)])))
+                ans[i,j] <- length(do.call(FUN, list(cidList[c(i,j)])))
             }
         }
         if (print) {print(ans,na.print="")}
