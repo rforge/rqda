@@ -357,22 +357,28 @@ GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
 }
 
 casesCodedByAnd <- function(cid){
-  fid <- filesCodedByAnd(cid)
-  ans <- GetCaseId(fid)
-  class(ans) <- c("RQDA.vector","caseId")
-  ans
+    fid <- filesCodedByAnd(cid)
+    if (length(fid)!=0) {
+        ans <- GetCaseId(fid)
+    } else ans <- integer(0)
+    class(ans) <- c("RQDA.vector","caseId")
+    ans
 }
 
 casesCodedByNot <- function(cid){
   fid <- filesCodedByNot(cid)
-  ans <- GetCaseId(fid)
+  if (length(fid)!=0) {
+      ans <- GetCaseId(fid)
+  } else ans <- integer(0)
   class(ans) <- c("RQDA.vector","caseId")
   ans
 }
 
 casesCodedByOr <- function(cid){
   fid <- filesCodedByOr(cid)
-  ans <- GetCaseId(fid)
+  if (length(fid)!=0) {
+      ans <- GetCaseId(fid)
+  } else ans <- integer(0)
   class(ans) <- c("RQDA.vector","caseId")
   ans
 }
@@ -423,62 +429,91 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
 
 
 filesCodedByAnd <- function(cid){
-  cid <- paste(cid,collapse=',')
-  fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
-  fidList <- by(fid,factor(fid$cid),FUN=function(x) unique(x$fid))
-  fid <- Reduce(intersect,fidList)
-  class(fid) <- c("RQDA.vector","fileId")
-  fid
+    cid <- paste(cid,collapse=',')
+    fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
+    if (nrow(fid)>0) {
+        fidList <- by(fid,factor(fid$cid),FUN=function(x) unique(x$fid))
+        fid <- Reduce(intersect,fidList)
+    } else {fid <- integer(0)}
+    class(fid) <- c("RQDA.vector","fileId")
+    fid
 }
 
 filesCodedByOr <- function(cid){
-  cid <- paste(cid,collapse=',')
-  fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid in (%s)",cid))$fid
-  class(fid) <- c("RQDA.vector","fileId")
-  fid
+    cid <- paste(cid,collapse=',')
+    fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid in (%s)",cid))$fid
+    if (length(fid)==0) {fid <- integer(0)}
+    class(fid) <- c("RQDA.vector","fileId")
+    fid
 }
 
 filesCodedByNot <- function(cid){
-  cid <- paste(cid,collapse=',')
-  fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid not in (%s)",cid))$fid
-  class(fid) <- c("RQDA.vector","fileId")
-  fid
+    cid <- paste(cid,collapse=',')
+    fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid not in (%s)",cid))$fid
+    if (length(fid)==0) {fid <- integer(0)}
+    class(fid) <- c("RQDA.vector","fileId")
+    fid
 }
 
+codedByTwo <- function(FUN, codeList=NULL, print=TRUE,...){
+    ## codeList is character vector of codes.
+    FUN <- match.fun(FUN)
+    Cid_Name <- RQDAQuery("select id, name from freecode where status==1")
+    if (is.null(codeList)) {
+        codeList <- gselect.list(Cid_Name$name,multiple=TRUE)
+    }
+    if (length(codeList)<2) {
+        stop("The codeList should be a vector of length 2 or abvoe.")
+    } else {
+        cidList <- Cid_Name$id[match(codeList, Cid_Name$name)]
+        ans <- matrix(nrow=length(codeList), ncol=length(codeList),dimnames=list(
+                                                                   sprintf("%s(%s)", codeList,cidList),
+                                                                   cidList))
+        for (i in 1:length(cidList)){
+            for (j in i:length(cidList)){
+                ans[i,j] <- do.call(FUN, list(cid=cidList[c(i,j)]))
+            }
+        }
+        if (print) {print(ans,na.print="")}
+        invisible(ans)
+    }
+}
+
+
 "%and%" <- function(e1,e2){
-  UseMethod("%and%")
+    UseMethod("%and%")
 }
 
 "%or%" <- function(e1,e2){
-  UseMethod("%or%")
+    UseMethod("%or%")
 }
 
 "%not%" <- function(e1,e2){
-  UseMethod("%not%")
+    UseMethod("%not%")
 }
 
 "%and%.RQDA.vector" <- function(e1,e2)
 {
-cls <- class(e1)
-ans <- intersect(e1,e2)
-class(ans) <- cls
-ans
+    cls <- class(e1)
+    ans <- intersect(e1,e2)
+    class(ans) <- cls
+    ans
 }
 
 "%not%.RQDA.vector" <- function(e1,e2)
 {
-cls <- class(e1)
-ans <- setdiff(e1, e2)
-class(ans) <- cls
-ans
+    cls <- class(e1)
+    ans <- setdiff(e1, e2)
+    class(ans) <- cls
+    ans
 }
 
 "%or%.RQDA.vector" <- function(e1,e2)
 {
-cls <- class(e1)
-ans <- union(e1, e2)
-class(ans) <- cls
-ans
+    cls <- class(e1)
+    ans <- union(e1, e2)
+    class(ans) <- cls
+    ans
 }
 
 QueryFile <- function(or=NULL,and=NULL,not=NULL,names=TRUE){
