@@ -36,6 +36,7 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
         })
         ans$coding <- txt
     }
+        class(ans) <- c("codingsByOne","data.frame")
         ans
     } else NULL
 }
@@ -54,4 +55,55 @@ andByCid <- function(cid1,cid2,showCoding=FALSE, method= c("overlap","exact","in
       ans <- and(CT1,CT2,showCoding,method)
       ans} else NULL
   }
+}
+
+getCodingsByOne <- function(cid){
+    if (length(cid)!=1) stop("cid should be length-1 integer vector.")
+    ct <- RQDAQuery(sprintf("select coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.seltext as coding, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid))
+    if (nrow(ct) != 0) {
+        Encoding(ct$codename) <- Encoding(ct$filename) <- Encoding(ct$coding) <- "UTF-8"
+    }
+    class(ct) <- c("codingsByOne","data.frame")
+    ct
+}
+
+"%and%.codingsByOne" <- function(e1,e2){
+    and(e1, e2, showCoding=TRUE, method= c("overlap","exact","inclusion"))
+}
+
+summary.codingsByOne <- function (x)
+{
+    if (nrow(x) == 0)
+        gmessage("No Codings.", con = TRUE)
+    else {
+        fid <- unique(x$fid)
+        Nfiles <- length(fid)
+        Ncodings <- nrow(x)
+        title <- sprintf(ngettext(Ncodings, "%i coding from %s %s",
+                                  "%i codings from %s %s"), Ncodings,
+                         Nfiles, ngettext(Nfiles, "file", "files"))
+        tryCatch(eval(parse(text = sprintf("dispose(.rqda$.codingsOf%s)",
+                            "codingsByone"))), error = function(e) {
+                            })
+        .gw <- gwindow(title = title, parent = getOption("widgetCoordinate"),
+                       width = getOption("widgetSize")[1], height = getOption("widgetSize")[2])
+        mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+        .gw@widget@widget$SetIconFromFile(mainIcon)
+        assign(sprintf(".codingsOf%s","codingsByone"), .gw, env = .rqda)
+        .retreivalgui <- gtext(container = .gw)
+        font <- pangoFontDescriptionFromString(.rqda$font)
+        gtkWidgetModifyFont(.retreivalgui@widget@widget,font)
+        .retreivalgui@widget@widget$SetPixelsBelowLines(5)
+        .retreivalgui@widget@widget$SetPixelsInsideWrap(5)
+        buffer <- .retreivalgui@widget@widget$GetBuffer()
+        iter <- buffer$getIterAtOffset(0)$iter
+        apply(x, 1, function(x) {
+            metaData <- sprintf("%s [%i:%i]", x[["filename"]],as.numeric(x[["index1"]]), as.numeric(x[["index2"]]))
+            buffer$InsertWithTagsByName(iter, metaData, "red")
+            buffer$insert(iter, "\n")
+            buffer$InsertWithTagsByName(iter, x[["coding"]])
+            buffer$insert(iter, "\n\n")
+        })
+        buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter)
+    }
 }

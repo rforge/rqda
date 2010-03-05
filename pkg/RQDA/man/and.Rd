@@ -26,6 +26,9 @@ and(CT1, CT2, showCoding = FALSE, method = c("overlap", "exact", "inclusion"))
 \details{
   When the relation of two coding is element of method argument, then
   the overlapping coding is the result of the and operator.
+
+  columns of "index1", "index2","fid","filename" from CT1 and CT2 are
+  used by this function.
 }
 \value{
   a data frame if there is overlapping coding. Otherwise, it is NULL.
