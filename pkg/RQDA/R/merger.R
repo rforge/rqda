@@ -7,6 +7,7 @@ mergeCodes <- function(cid1,cid2){ ## cid1 and cid2 are two code IDs.
       Relations <- apply(Exist[c("selfirst","selend")],1,FUN=function(x) relation(x,c(From$selfirst,From$selend)))
       ## because apply convert data to an array, and Exist containts character -> x is charater rather than numeric
       Exist$Relation <- sapply(Relations,FUN=function(x) x$Relation) ## add Relation to the data frame as indicator.
+      ## possible bugs: should handle exact explicitely.
       if (!any(Exist$Relation=="exact")){
         ## if they are axact, do nothing; -> if they are not exact, do something. The following lines record meta info.
         Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)

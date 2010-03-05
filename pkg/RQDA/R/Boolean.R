@@ -146,7 +146,10 @@ or <- function(CT1,CT2)
             Relations <- apply(Exist[c("index1","index2")],1,FUN=function(x) relation(x,c(From$index1,From$index2)))
             ## because apply convert data to an array, and Exist containts character -> x is charater rather than numeric
             Exist$Relation <- sapply(Relations,FUN=function(x) x$Relation) ## add Relation to the data frame as indicator.
-            if (!any(Exist$Relation=="exact")){
+            if (any(Exist$Relation=="exact")) {
+                ans <- Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
+                ## end of handling exact
+            } else {
                 ## if they are axact, do nothing; -> if they are not exact, do something. The following lines record meta info.
                 Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
                 Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
@@ -154,7 +157,9 @@ or <- function(CT1,CT2)
                 if (all(Exist$Relation=="proximity")){ ## if there are no overlap in any kind, just write to database
                     ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
                                  Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE])
-                } else { ## if not proximate, pass to else branch.
+                    ## end of handling proximity
+                } else {
+                    ## if not proximate, pass to else branch.
                     del1 <- (Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
                     ## ==2 -> take care of NA. Here 2 means From according to how Relations is returned.
                     del2 <- Exist$Relation =="overlap"
@@ -167,7 +172,7 @@ or <- function(CT1,CT2)
                         ans <- data.frame(rowid=From$rowid,fid=From$fid,filename=From$filename,
                                           index1=Sel[1],index2=Sel[2],coding=substr(tt,Sel[1],Sel[2]))
                     }
-                }
+                } ## end of handling overlapping and inclusion
             }
         }
         ans
