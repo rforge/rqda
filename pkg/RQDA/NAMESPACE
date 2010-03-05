@@ -9,6 +9,7 @@ export("%and%","%or%","%not%",and, CleanProject,CrossCode,CrossTwo,ExportCoding,
 S3method("%and%",RQDA.vector)
 S3method("%and%",codingsByOne)
 S3method("%or%",RQDA.vector)
+S3method("%or%",codingsByOne)
 S3method("%not%",RQDA.vector)
 S3method(print,SummaryCoding)
 S3method(ShowSubset,fileName)

@@ -136,3 +136,62 @@ summary.codingsByOne <- function (x)
         buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter)
     }
 }
+
+or <- function(CT1,CT2)
+{
+    orHelperFUN <- function(From,Exist){ ## from and exist are data frame of codings.
+        if (nrow(Exist)==0){## just write to the new code if there is no coding related to that code.
+            ans <- From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
+        } else {
+            Relations <- apply(Exist[c("index1","index2")],1,FUN=function(x) relation(x,c(From$index1,From$index2)))
+            ## because apply convert data to an array, and Exist containts character -> x is charater rather than numeric
+            Exist$Relation <- sapply(Relations,FUN=function(x) x$Relation) ## add Relation to the data frame as indicator.
+            if (!any(Exist$Relation=="exact")){
+                ## if they are axact, do nothing; -> if they are not exact, do something. The following lines record meta info.
+                Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
+                Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
+                Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
+                if (all(Exist$Relation=="proximity")){ ## if there are no overlap in any kind, just write to database
+                    ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
+                                 Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE])
+                } else { ## if not proximate, pass to else branch.
+                    del1 <- (Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
+                    ## ==2 -> take care of NA. Here 2 means From according to how Relations is returned.
+                    del2 <- Exist$Relation =="overlap"
+                    ## if overlap or inclusion [Exist nested in From] -> delete codings in Exist
+                    del <- (del1 | del2) ## index of rows in Exist that should be deleted.
+                    if (any(del)){
+                        tt <-   dbGetQuery(.rqda$qdacon,sprintf("select file from source where id=='%i'", From$fid))[1,1]
+                        Encoding(tt) <- "UTF-8"  ## fulltext of the file
+                        Sel <- c(min(Exist$Start[del]), max(Exist$End[del])) ## index to get the new coding
+                        ans <- data.frame(rowid=From$rowid,fid=From$fid,filename=From$filename,
+                                          index1=Sel[1],index2=Sel[2],coding=substr(tt,Sel[1],Sel[2]))
+                    }
+                }
+            }
+        }
+        ans
+    } ## end of helper function.
+
+    if (any(c(nrow(CT1),nrow(CT2))==0)) stop("One code has empty coding.")
+    if (nrow(CT1) >= nrow(CT2)) {
+        FromDat <- CT2
+        ToDat <- CT1
+    } else {
+        FromDat <- CT1
+        ToDat <- CT2
+    }
+    ans.or <- vector("list",nrow(FromDat))
+    for (i in seq_len(nrow(FromDat))) {
+        x <- FromDat[i,,drop=FALSE]
+        Exist <- ToDat[ToDat$fid==x$fid,]
+        ans.or[[i]] <- orHelperFUN(From=x,Exist=Exist)
+    }
+    ans <- do.call(rbind,ans.or)
+    class(ans) <- c("codingsByOne","data.frame")
+    ans
+}
+
+"%or%.codingsByOne" <- function(e1,e2){
+    or(e1, e2)
+}
