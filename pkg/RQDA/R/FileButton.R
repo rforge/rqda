@@ -160,6 +160,7 @@ AddNewFileFun <- function(){
       rm(".AddNewFileWidgetW",".AddNewFileWidget",".AddNewFileWidget2",envir=.rqda)
       FALSE
     })
+    svalue(.rqda$.AddNewFileWidget2) <- 0.03999
   }
 }
 

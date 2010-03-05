@@ -27,8 +27,8 @@ a vector with the same class of e1 and e2.
 \seealso{ \code{\link{intersect}}, \code{\link{union}}, \code{\link{setdiff}}}
 \examples{
 \dontrun{
-filesCodeByAnd(1:2) %and% filesCodeByAnd(3) ## coded by 1 and 2 as well as 3
-filesCodeByAnd(1:2) %or% filesCodeByAnd(3) ## coded by 1 and 2 or 3
-filesCodeByAnd(1:2) %not% filesCodeByAnd(3) ## coded by 1 and 2 but not 3
+filesCodeByAnd(1:2) \%and\% filesCodeByAnd(3) ## coded by 1 and 2 as well as 3
+filesCodeByAnd(1:2) \%or\% filesCodeByAnd(3) ## coded by 1 and 2 or 3
+filesCodeByAnd(1:2) \%not\% filesCodeByAnd(3) ## coded by 1 and 2 but not 3
 }
 }
