@@ -230,9 +230,11 @@ not <- function(CT1,CT2,showCoding=FALSE){
       }
     }
     if (length(ridx) >=2){
+      idx <- unlist(idx)
       index1 <- idx[seq(from=1,to=length(idx),by=2)]
       index2 <- idx[seq(from=2,to=length(idx),by=2)]
       ans <- cbind(CT1[ridx,c("rowid","fid","filename")],index1=index1,index2=index2)
+      ans <- unique(ans) ## can improve the above code to get rid of unique
       ans
     }
   }
@@ -256,5 +258,5 @@ not <- function(CT1,CT2,showCoding=FALSE){
 }
 
 "%not%.codingsByOne" <- function(e1,e2){
-  not(e1, e2)
+  not(e1, e2, show=TRUE)
 }

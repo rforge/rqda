@@ -390,7 +390,11 @@ casesCodedByOr <- function(cid){
   ans
 }
 
-RQDAQuery <- function(sql){dbGetQuery(.rqda$qdacon,sql)}
+RQDAQuery <- function(sql){
+if (is_projOpen()) {
+dbGetQuery(.rqda$qdacon,sql)
+} else (cat("open a project first\n."))
+}
 
 ShowSubset <- function(x,...){
   UseMethod("ShowSubset")
