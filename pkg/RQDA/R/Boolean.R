@@ -134,63 +134,31 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
 
 or_helper <- function(CT1,CT2){
   ## CT1 and CT2 is from GetCodingTable,each for one code and one file only
-  ridx <- vector()
-  ridx2 <- vector()
-  idx <- vector()
-  idx2 <- vector()
-  for (i in 1:nrow(CT1)) {
-    for (j in 1:nrow(CT2)){
-      rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
-      if (rel$Relation=="proximity"){
-        ridx <- c(ridx,i)
-        ridx2 <- c(ridx2,j)
-        idx <- c(idx,CT1[i,c("index1","index2"),drop=TRUE])
-        idx2 <- c(idx2,CT2[j,c("index1","index2"),drop=TRUE])
-      } ## end proximity
-      if (rel$Relation=="inclusion"){
-        ii <- c(rel$WhichMin,rel$WhichMax)
-        iii <- ii[!is.na(ii)][1]
-        if (iii==1) {
-        ridx <- c(ridx,i)
-        idx <- c(idx,rel$UnionIndex)
-         }
-         if (iii==2){
-        ridx2 <- c(ridx2,j)
-        idx2 <- c(idx2,rel$UnionIndex)
-      }
-      }
-      if (rel$Relation=="exact"){
-        ridx <- c(ridx,i)
-        idx <- c(idx,CT1[i,c("index1","index2"),drop=TRUE])
-      }
-      if (rel$Relation=="overlap"){
-        ridx <- c(ridx,i)
-        idx <- c(idx,rel$UnionIndex)
+  if (nrow(CT1)!=0 && nrow(CT2)!=0) {
+    ct <- CT1[0,]
+    for (i in 1:nrow(CT1)) {
+      rel <- apply(CT2,1,function(x){
+        relation(as.numeric(CT1[i,c("index1","index2")]),
+                 as.numeric(x[c("index1","index2")]))
+      })
+      Relation <-  sapply(rel,function(x) x$Relation)
+      if (all(sapply(rel,function(x) x$Relation)=="promixity")){
+        ct <- rbind(ct,CT1[i,]) ## all proximity, add to CT2
+      } else {
+        np.idx <- which(Relation!="proximity")
+        if (length(np.idx)>0) {
+          nidx <- t(sapply(rel[np.idx],function(x) x$UnionIndex))
+          CT2[np.idx,c("index1","index2")] <- nidx
+        }
       }
     }
+    ans <- rbind(CT2,ct)
+  } else {
+    if (nrow(CT1)==0) ans <- CT2
+    if (nrow(CT2)==0) ans <- CT1
   }
-  if (length(ridx) >=1){
-    idx <- unlist(idx)
-    index1 <- idx[seq(from=1,to=length(idx),by=2)]
-    index2 <- idx[seq(from=2,to=length(idx),by=2)]
-    ans1 <- cbind(CT1[ridx,c("rowid","fid","filename")],index1=index1,index2=index2)
-  } else {
-   ans1 <- data.frame("rowid"=integer(0),"fid"=integer(0),
-                      "filename"=character(0), "index1"=integer(0),
-                      "index2"=integer(0), "coding"=character(0))
-}
-  if (length(ridx2) >=1){
-    idx2 <- unlist(idx2)
-    index1 <- idx2[seq(from=1,to=length(idx2),by=2)]
-    index2 <- idx2[seq(from=2,to=length(idx2),by=2)]
-    ans2 <- cbind(CT2[ridx2,c("rowid","fid","filename")],index1=index1,index2=index2)
-  } else {
-    ans2 <- data.frame("rowid"=integer(0),"fid"=integer(0),
-                      "filename"=character(0), "index1"=integer(0),
-                      "index2"=integer(0), "coding"=character(0))
- }
- ans <- rbind(ans1,ans2) 
- ans
+  ans <- ans[,c("rowid","fid","filename","index1","index2")]
+  ans
 }
 
 
