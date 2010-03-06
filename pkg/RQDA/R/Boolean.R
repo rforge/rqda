@@ -71,7 +71,7 @@ getCodingsByOne <- function(cid){
     and(e1, e2, showCoding=TRUE, method= getOption("andMethod"))
 }
 
-summary.codingsByOne <- function (x)
+summary.codingsByOne <- function (object,...)
 {
     ComputeCallbackFun <- function(FileName,rowid){
         CallBackFUN <- function(widget,event,...){
@@ -91,12 +91,12 @@ summary.codingsByOne <- function (x)
         CallBackFUN
     }
 
-    if (nrow(x) == 0)
-        gmessage("No Codings.", con = TRUE)
+    if (nrow(object) == 0)
+      gmessage("No Codings.", con = TRUE)
     else {
-        fid <- unique(x$fid)
+        fid <- unique(object$fid)
         Nfiles <- length(fid)
-        Ncodings <- nrow(x)
+        Ncodings <- nrow(object)
         title <- sprintf(ngettext(Ncodings, "%i coding from %s %s",
                                   "%i codings from %s %s"), Ncodings,
                          Nfiles, ngettext(Nfiles, "file", "files"))
@@ -115,7 +115,7 @@ summary.codingsByOne <- function (x)
         .retreivalgui@widget@widget$SetPixelsInsideWrap(5)
         buffer <- .retreivalgui@widget@widget$GetBuffer()
         iter <- buffer$getIterAtOffset(0)$iter
-        apply(x, 1, function(x) {
+        apply(object, 1, function(x) {
             metaData <- sprintf("%s [%i:%i]", x[["filename"]],as.numeric(x[["index1"]]), as.numeric(x[["index2"]]))
             buffer$InsertWithTagsByName(iter, metaData, "red")
             anchorcreated <- buffer$createChildAnchor(iter)

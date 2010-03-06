@@ -357,19 +357,26 @@ GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
 }
 
 casesCodedByAnd <- function(cid){
-    fid <- filesCodedByAnd(cid)
-    if (length(fid)!=0) {
-        ans <- GetCaseId(fid)
-    } else ans <- integer(0)
-    class(ans) <- c("RQDA.vector","caseId")
-    ans
+  ## cid can be splitted across files, but still on the same case
+  cid <- paste(cid,collapse=',')
+  fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
+  if (nrow(fid)>0) {
+    fidUnique <- unique(fid$fid)
+    fidUnique <- paste(fidUnique,collapse=',')
+    case <- RQDAQuery(sprintf("select fid, caseid from caselinkage where status==1 and fid in (%s)",fidUnique))
+    codes <- tapply(case$fid, case$caseid,FUN=function(x) unique(fid[fid$fid %in% unique(x),]$cid))
+    ans <- sapply(codes,length)
+    ans <- as.numeric(names(ans)[ans==length(cid)])
+  }
+  class(ans) <- c("RQDA.vector","caseId")
+  ans
 }
 
 casesCodedByNot <- function(cid){
-  fid <- filesCodedByNot(cid)
-  if (length(fid)!=0) {
-      ans <- GetCaseId(fid)
-  } else ans <- integer(0)
+  fid <- filesCodedByOr(cid)
+  codedcaseId <- GetCaseId(fid)
+  allcaseid <- GetCaseId(GetFileId("uncodition","coded"))
+  ans <- setdiff(allcaseid,codedcaseid)
   class(ans) <- c("RQDA.vector","caseId")
   ans
 }
@@ -448,8 +455,9 @@ filesCodedByOr <- function(cid){
 }
 
 filesCodedByNot <- function(cid){
-    cid <- paste(cid,collapse=',')
-    fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid not in (%s)",cid))$fid
+    codedfid <- filesCodedByOr(cid)
+    allfid <- RQDAQuery("select fid from coding where status==1 group by fid")$fid
+    fid <- setdiff(allfid,codedfid)
     if (length(fid)==0) {fid <- integer(0)}
     class(fid) <- c("RQDA.vector","fileId")
     fid
