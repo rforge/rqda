@@ -76,47 +76,55 @@ summary.codingsByOne <- function (object,...)
 }
 
 
-and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion")){
-    ## CT1 and CT2 is from GetCodingTable
-    ## for one code and one file only
-
-    and_helper <- function(CT1,CT2){
-        ridx <- vector()
-        idx <- vector()
-        for (i in 1:nrow(CT1)) {
-            for (j in 1:nrow(CT2)){
-                rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
-                if (rel$Relation %in% method){
-                    ridx <- c(ridx,i,j)
-                    idx <- c(idx,rel$OverlapIndex)
-                }
-            }
-        }
-        if (length(ridx) >=2){
-            rf <- ridx[seq(from=1,to=length(ridx),by=2)] ## row index for CT1
-            rs <- ridx[seq(from=2,to=length(ridx),by=2)] ## row index for CT2
-            index1 <- idx[seq(from=1,to=length(idx),by=2)]
-            index2 <- idx[seq(from=2,to=length(idx),by=2)]
-            ans <- cbind(CT1[rf,c("rowid","fid","filename")],index1=index1,index2=index2)
-            ans
-        }}
-
-    fid <- intersect(CT1$fid,CT2$fid)
-    if (length(fid)>0) {
-        ans <- lapply(fid,FUN=function(x) and_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x)))
-        ans <- do.call(rbind,ans)
-        if (showCoding && !is.null(ans)){
-        txt <- apply(ans,1,function(x){
-            txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
-            Encoding(txt) <- "UTF-8"
-            ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
-            ans
-        })
-        ans$coding <- txt
+and_helper <- function(CT1,CT2,method){
+  ## CT1 and CT2 is from GetCodingTable,each for one code and one file only
+  ridx <- vector()
+  idx <- vector()
+  for (i in 1:nrow(CT1)) {
+    for (j in 1:nrow(CT2)){
+      rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
+      if (rel$Relation %in% method){
+        ridx <- c(ridx,i,j)
+        idx <- c(idx,rel$OverlapIndex)
+      }
     }
-        class(ans) <- c("codingsByOne","data.frame")
+  }
+  if (length(ridx) >=2){
+    rf <- ridx[seq(from=1,to=length(ridx),by=2)] ## row index for CT1
+    rs <- ridx[seq(from=2,to=length(ridx),by=2)] ## row index for CT2
+    index1 <- idx[seq(from=1,to=length(idx),by=2)]
+    index2 <- idx[seq(from=2,to=length(idx),by=2)]
+    ans <- cbind(CT1[rf,c("rowid","fid","filename")],index1=index1,index2=index2)
+    ans
+  }
+}
+
+
+and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion")){
+  ## CT1 and CT2 is from GetCodingTable,each for one code only
+  fid <- intersect(CT1$fid,CT2$fid)
+  if (length(fid)>0) {
+    ans <- lapply(fid,FUN=function(x) {
+      and_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x),method=method)
+    }
+      )
+    ans <- do.call(rbind,ans)
+    if (showCoding && !is.null(ans)){
+      txt <- apply(ans,1,function(x){
+        txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
+        Encoding(txt) <- "UTF-8"
+        ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
         ans
-    } else NULL
+      })
+      ans$coding <- txt
+    }
+  } else {
+    ans <- data.frame("rowid"=integer(0),"fid"=integer(0),
+                      "filename"=character(0), "index1"=integer(0),
+                      "index2"=integer(0), "coding"=character(0))
+  }
+  class(ans) <- c("codingsByOne","data.frame")
+  ans
 }
 
 
@@ -124,121 +132,171 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
     and(e1, e2, showCoding=TRUE, method= getOption("andMethod"))
 }
 
+or_helper <- function(CT1,CT2){
+  ## CT1 and CT2 is from GetCodingTable,each for one code and one file only
+  ridx <- vector()
+  ridx2 <- vector()
+  idx <- vector()
+  idx2 <- vector()
+  for (i in 1:nrow(CT1)) {
+    for (j in 1:nrow(CT2)){
+      rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
+      if (rel$Relation=="proximity"){
+        ridx <- c(ridx,i)
+        ridx2 <- c(ridx2,j)
+        idx <- c(idx,CT1[i,c("index1","index2"),drop=TRUE])
+        idx2 <- c(idx2,CT2[j,c("index1","index2"),drop=TRUE])
+      } ## end proximity
+      if (rel$Relation=="inclusion"){
+        ii <- c(rel$WhichMin,rel$WhichMax)
+        iii <- ii[!is.na(ii)][1]
+        if (iii==1) {
+        ridx <- c(ridx,i)
+        idx <- c(idx,rel$UnionIndex)
+         }
+         if (iii==2){
+        ridx2 <- c(ridx2,j)
+        idx2 <- c(idx2,rel$UnionIndex)
+      }
+      }
+      if (rel$Relation=="exact"){
+        ridx <- c(ridx,i)
+        idx <- c(idx,CT1[i,c("index1","index2"),drop=TRUE])
+      }
+      if (rel$Relation=="overlap"){
+        ridx <- c(ridx,i)
+        idx <- c(idx,rel$UnionIndex)
+      }
+    }
+  }
+  if (length(ridx) >=1){
+    idx <- unlist(idx)
+    index1 <- idx[seq(from=1,to=length(idx),by=2)]
+    index2 <- idx[seq(from=2,to=length(idx),by=2)]
+    ans1 <- cbind(CT1[ridx,c("rowid","fid","filename")],index1=index1,index2=index2)
+  } else {
+   ans1 <- data.frame("rowid"=integer(0),"fid"=integer(0),
+                      "filename"=character(0), "index1"=integer(0),
+                      "index2"=integer(0), "coding"=character(0))
+}
+  if (length(ridx2) >=1){
+    idx2 <- unlist(idx2)
+    index1 <- idx2[seq(from=1,to=length(idx2),by=2)]
+    index2 <- idx2[seq(from=2,to=length(idx2),by=2)]
+    ans2 <- cbind(CT2[ridx2,c("rowid","fid","filename")],index1=index1,index2=index2)
+  } else {
+    ans2 <- data.frame("rowid"=integer(0),"fid"=integer(0),
+                      "filename"=character(0), "index1"=integer(0),
+                      "index2"=integer(0), "coding"=character(0))
+ }
+ ans <- rbind(ans1,ans2) 
+ ans
+}
 
-or <- function(CT1,CT2)
-{
-    orHelperFUN <- function(From,Exist){ ## from and exist are data frame of codings.
-        if (nrow(Exist)==0){## just write to the new code if there is no coding related to that code.
-            ans <- From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
-        } else {
-            Relations <- apply(Exist[c("index1","index2")],1,FUN=function(x) relation(x,c(From$index1,From$index2)))
-            ## because apply convert data to an array, and Exist containts character -> x is charater rather than numeric
-            Exist$Relation <- sapply(Relations,FUN=function(x) x$Relation) ## add Relation to the data frame as indicator.
-            if (any(Exist$Relation=="exact")) {
-                ans <- Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
-                ## end of handling exact
-            } else {
-                ## if they are axact, do nothing; -> if they are not exact, do something. The following lines record meta info.
-                Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
-                Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
-                Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
-                if (all(Exist$Relation=="proximity")){ ## if there are no overlap in any kind, just write to database
-                    ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
-                                 Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE])
-                    ## end of handling proximity
-                } else {
-                    ## if not proximate, pass to else branch.
-                    del1 <- (Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
-                    ## ==2 -> take care of NA. Here 2 means From according to how Relations is returned.
-                    del2 <- Exist$Relation =="overlap"
-                    ## if overlap or inclusion [Exist nested in From] -> delete codings in Exist
-                    del <- (del1 | del2) ## index of rows in Exist that should be deleted.
-                    if (any(del)){
-                        tt <-   dbGetQuery(.rqda$qdacon,sprintf("select file from source where id=='%i'", From$fid))[1,1]
-                        Encoding(tt) <- "UTF-8"  ## fulltext of the file
-                        Sel <- c(min(Exist$Start[del]), max(Exist$End[del])) ## index to get the new coding
-                        ans <- data.frame(rowid=From$rowid,fid=From$fid,filename=From$filename,
-                                          index1=Sel[1],index2=Sel[2],coding=substr(tt,Sel[1],Sel[2]))
-                    }
-                } ## end of handling overlapping and inclusion
-            }
-        }
+
+or <- function(CT1,CT2,showCoding=FALSE){
+## older version is in rev 274
+  fid <- intersect(CT1$fid,CT2$fid)
+  if (length(fid)>0) {
+    ans <- lapply(fid,FUN=function(x) or_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x)))
+    ans <- do.call(rbind,ans)
+    if (showCoding && !is.null(ans)){
+      txt <- apply(ans,1,function(x){
+        txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
+        Encoding(txt) <- "UTF-8"
+        ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
         ans
-    } ## end of helper function.
-
-    if (any(c(nrow(CT1),nrow(CT2))==0)) stop("One code has empty coding.")
-    if (nrow(CT1) >= nrow(CT2)) {
-        FromDat <- CT2
-        ToDat <- CT1
-    } else {
-        FromDat <- CT1
-        ToDat <- CT2
+      })
+      ans$coding <- txt
     }
-    ans.or <- vector("list",nrow(FromDat))
-    for (i in seq_len(nrow(FromDat))) {
-        x <- FromDat[i,,drop=FALSE]
-        Exist <- ToDat[ToDat$fid==x$fid,]
-        ans.or[[i]] <- orHelperFUN(From=x,Exist=Exist)
-    }
-    ans <- do.call(rbind,ans.or)
-    class(ans) <- c("codingsByOne","data.frame")
-    ans
+  } else {
+    ans <- data.frame("rowid"=integer(0),"fid"=integer(0),
+                      "filename"=character(0), "index1"=integer(0),
+                      "index2"=integer(0), "coding"=character(0))
+  }
+  class(ans) <- c("codingsByOne","data.frame")
+  ans
 }
 
 
 "%or%.codingsByOne" <- function(e1,e2){
-    or(e1, e2)
+  or(e1, e2,showCoding=TRUE)
 }
+
+not_helper <- function(CT1,CT2){
+  ## CT1 and CT2 is coings for one code and one file.
+  ridx <- vector()
+  idx <- vector()
+  if (nrow(CT1)!=0) { ## if1
+    if (nrow(CT2)==0) {
+      ridx <- c(ridx,nrow(CT1))
+      idx <- c(idx,unlist(as.data.frame(t(CT1[,c("index1","index2")]))))
+    } else { ## else1
+      for (i in 1:nrow(CT1)) {
+        relAll <- apply(CT2,1,function(x)
+                        relation(CT1[i,c("index1","index2"),drop=TRUE],
+                                 as.numeric(x[c("index1","index2")]))
+                        ) ## end of apply
+        Relation <- sapply(relAll,function(x) x$Relation)
+        if (all(Relation=="exact")) {
+          ## do nothing
+        } else { ## else2 
+          if (all(Relation=="proximity")){
+            ridx <- c(ridx,i)
+            idx <- c(idx, CT1[i,c("index1","index2"),drop=TRUE])
+          } else { ## else3
+            in.over <- Relation %in% c("inclusion", "overlap") ## index of overlap and inclusion
+            rel.in.over <- relAll[in.over]
+            nested <- sapply(rel.in.over,function(x){
+              if (x$Relation=="inclusion") {
+                ans <- (!is.na(x$WhichMin) &&  !is.na(x$WhichMax) &&
+                        x$WhichMin==2 &&  x$WhichMax==2)
+              } else {
+                ans <- FALSE
+              }
+              ans
+            }
+                             ) ## end of sapply
+            if (any(nested)) {
+              ## do nothing
+            } else {## else4
+              over <- Relation %in% c("overlap")
+              if (sum(over)>2) stop("the same text is coded twice by the same code.")
+
+              for (j in which(over)) {
+                if (!is.na(relAll[[j]]$WhichMin) &&  relAll[[j]]$WhichMin==2){
+                  CT1[i,"index1"] <- relAll[[j]]$OverlapIndex[2]
+                }
+                if (!is.na(relAll[[j]]$WhichMin) &&  relAll[[j]]$WhichMin==1){
+                  CT1[i,"index2"] <- relAll[[j]]$OverlapIndex[1]
+                }
+              } ## end for j
+              
+              inidx<- Relation %in% c("inclusion")
+              ans <- sapply(relAll[inidx],function(x) x$OverlapIndex)
+              ans <- sort(unlist(c(CT1[i,c("index1","index2"),drop=TRUE],ans)))
+              ridx <- c(ridx,rep(i,length(ans)/2))
+              idx <- c(idx,ans)
+            }## else4
+          } ## else3
+        } ## else 2
+      } ## end of for i
+    } ## end else1
+  }## if1
+  
+  if (length(ridx) >=1){
+    idx <- unlist(idx)
+    index1 <- idx[seq(from=1,to=length(idx),by=2)]
+    index2 <- idx[seq(from=2,to=length(idx),by=2)]
+    ans <- cbind(CT1[ridx,c("rowid","fid","filename")],index1=index1,index2=index2)
+    ## ans <- unique(ans)
+    ans
+  }
+  
+}## end of fun
 
 
 not <- function(CT1,CT2,showCoding=FALSE){
-  
-  not_helper <- function(CT1,CT2){
-    ridx <- vector()
-    idx <- vector()
-    for (i in 1:nrow(CT1)) {
-      for (j in 1:nrow(CT2)){
-        rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
-        if (rel$Relation=="proximity"){
-          ridx <- c(ridx,i)
-          idx <- c(idx,CT1[i,c("index1","index2")])
-        } else if (rel$Relation=="overlap") {
-          ridx <- c(ridx,i)
-          index <- sort(c(rel$OverlapIndex,rel$UnionIndex))
-          if (rel$WhichMin==1) idx <- c(idx,index[1:2])
-          if (rel$WhichMin==2) idx <- c(idx,index[3:4])
-        } else if (rel$Relation=="inclusion"){
-          if ((!is.na(rel$WhichMin) && rel$WhichMin==1) &&
-              (!is.na(rel$WhichMax) && rel$WhichMax==1)
-              ) {
-            ridx <- c(ridx,i,i)
-            idx <- c(idx,sort(c(rel$OverlapIndex,rel$UnionIndex)))
-          }
-          if ((!is.na(rel$WhichMin) && rel$WhichMin==1) &&
-              is.na(rel$WhichMax)
-              ) {
-            ridx <- c(ridx,i)
-            idx <- c(idx,sort(c(rel$OverlapIndex,rel$UnionIndex))[1:2])
-          }
-          if (is.na(rel$WhichMin) &&
-              (!is.na(rel$WhichMax) && rel$WhichMax==1)
-              ) {
-            ridx <- c(ridx,i)
-            idx <- c(idx,sort(c(rel$OverlapIndex,rel$UnionIndex))[3:4])
-          } ## no need to test exact.
-        }
-      }
-    }
-    if (length(ridx) >=2){
-      idx <- unlist(idx)
-      index1 <- idx[seq(from=1,to=length(idx),by=2)]
-      index2 <- idx[seq(from=2,to=length(idx),by=2)]
-      ans <- cbind(CT1[ridx,c("rowid","fid","filename")],index1=index1,index2=index2)
-      ans <- unique(ans) ## can improve the above code to get rid of unique
-      ans
-    }
-  }
-  
   fid <- intersect(CT1$fid,CT2$fid)
   if (length(fid)>0) {
     ans <- lapply(fid,FUN=function(x) not_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x)))
@@ -252,11 +310,16 @@ not <- function(CT1,CT2,showCoding=FALSE){
       })
       ans$coding <- txt
     }
-    class(ans) <- c("codingsByOne","data.frame")
-    ans
-  } else NULL
+  } else {
+    ans <- data.frame("rowid"=integer(0),"fid"=integer(0),
+                      "filename"=character(0), "index1"=integer(0),
+                      "index2"=integer(0), "coding"=character(0))
+  }
+  class(ans) <- c("codingsByOne","data.frame")
+  ans
 }
 
 "%not%.codingsByOne" <- function(e1,e2){
   not(e1, e2, show=TRUE)
 }
+
