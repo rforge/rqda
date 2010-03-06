@@ -376,7 +376,7 @@ casesCodedByNot <- function(cid){
   fid <- filesCodedByOr(cid)
   codedcaseId <- GetCaseId(fid)
   allcaseid <- GetCaseId(GetFileId("unconditional","coded"))
-  ans <- setdiff(allcaseid,codedcaseid)
+  ans <- setdiff(allcaseid,codedcaseId)
   class(ans) <- c("RQDA.vector","caseId")
   ans
 }
