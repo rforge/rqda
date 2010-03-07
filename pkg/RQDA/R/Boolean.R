@@ -1,8 +1,9 @@
-getCodingsByOne <- function(cid){
+getCodingsByOne <- function(cid, fid=NULL){
     if (length(cid)!=1) stop("cid should be length-1 integer vector.")
     ct <- RQDAQuery(sprintf("select coding.rowid as rowid, coding.cid, coding.fid, freecode.name as codename, source.name as filename, coding.selfirst as index1, coding.selend as index2, coding.seltext as coding, coding.selend - coding.selfirst as CodingLength from coding left join freecode on (coding.cid=freecode.id) left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1 and coding.cid=%s",cid))
     if (nrow(ct) != 0) {
         Encoding(ct$codename) <- Encoding(ct$filename) <- Encoding(ct$coding) <- "UTF-8"
+     if (!is.null(fid)) ct <- ct[ct$fid %in% fid,]
     }
     class(ct) <- c("codingsByOne","data.frame")
     ct
@@ -119,7 +120,9 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
       })
       ans$coding <- txt
     }
-  } else {
+  }
+
+  if ((length(fid)==0) || is.null(ans)){
     ans <- data.frame("rowid"=integer(0),"fid"=integer(0),
                       "filename"=character(0), "index1"=integer(0),
                       "index2"=integer(0), "coding"=character(0))
@@ -305,7 +308,7 @@ not_helper <- function(CT1,CT2){
 
 
 not <- function(CT1,CT2,showCoding=FALSE){
-  fid <- intersect(CT1$fid,CT2$fid)
+  fid <- unique(CT1$fid)
   if (length(fid)>0) {
     ans <- lapply(fid,FUN=function(x) not_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x)))
     ans <- do.call(rbind,ans)
