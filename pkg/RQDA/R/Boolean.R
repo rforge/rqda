@@ -32,6 +32,7 @@ summary.codingsByOne <- function (object,...)
     if (nrow(object) == 0)
       gmessage("No Codings.", con = TRUE)
     else {
+        object <-object[order(object$fid,object$index1,object$index2),]
         fid <- unique(object$fid)
         Nfiles <- length(fid)
         Ncodings <- nrow(object)
@@ -149,9 +150,24 @@ or <- function(CT1,CT2) {
         Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
         Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
         if (all(Exist$Relation=="proximity")){
-          ## if there are no overlap in any kind, the result is From+Exist
-          ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
-                       Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE])
+          ## take care of proximity with distance of 0.
+          ## (a not b) or (b) == a
+          dis <- sapply(Relations,function(x) x$Distance)
+          if (all(dis>0)) {          
+            ## if there are no overlap in any kind, the result is From+Exist
+            ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
+                         Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE])
+          } else {
+            idx0 <- which(dis==0)
+            index3 <- unlist(c(From[,c("index1","index2")],Exist[idx0,c("index1","index2")]))
+            From["coding"] <- paste(Exist$coding[idx0][rank(Exist$index1[idx0])],collapse="")
+            From["index1"] <- min(index3)
+            From["index2"] <- max(index3)
+            ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
+                         Exist[which(dis>0),
+                               c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
+                         )
+          }
           ## end of handling proximity
         } else {
           ## if not proximate, pass to else branch.
@@ -208,7 +224,7 @@ or <- function(CT1,CT2) {
   ans <- do.call(rbind,ans)
   class(ans) <- c("codingsByOne","data.frame")
   ans
-  }
+}
 
 
 "%or%.codingsByOne" <- function(e1,e2){
