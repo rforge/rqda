@@ -1,8 +1,7 @@
 \name{codedByTwo}
 \alias{codedByTwo}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Show the relationship between *codedBy using a matrix.
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~

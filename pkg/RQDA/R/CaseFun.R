@@ -57,7 +57,7 @@ AddFileToCaselinkage <- function(Widget=.rqda$.fnames_rqda){
       Encoding(cases$name) <- "UTF-8"
       Selected <- gselect.list(cases$name,multiple=TRUE,x=getOption("widgetCoordinate")[1])
       if (length(Selected)>0 && Selected!=""){
-          Encoding(selected) <- "UTF-8"
+          Encoding(Selected) <- "UTF-8"
           caseid <- cases$id[cases$name %in% Selected]
           for (i in caseid) {
               exist <- RQDAQuery(sprintf("select fid from caselinkage where status=1 and fid in (%s) and caseid==%i",paste("'",fid,"'",sep="",collapse=","),i))

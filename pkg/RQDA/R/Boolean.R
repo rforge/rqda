@@ -132,63 +132,87 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
     and(e1, e2, showCoding=TRUE, method= getOption("andMethod"))
 }
 
-or_helper <- function(CT1,CT2){
-  ## CT1 and CT2 is from GetCodingTable,each for one code and one file only
-  if (nrow(CT1)!=0 && nrow(CT2)!=0) {
-    ct <- CT1[0,]
-    for (i in 1:nrow(CT1)) {
-      rel <- apply(CT2,1,function(x){
-        relation(as.numeric(CT1[i,c("index1","index2")]),
-                 as.numeric(x[c("index1","index2")]))
-      })
-      Relation <-  sapply(rel,function(x) x$Relation)
-      if (all(sapply(rel,function(x) x$Relation)=="promixity")){
-        ct <- rbind(ct,CT1[i,]) ## all proximity, add to CT2
-      } else {
-        np.idx <- which(Relation!="proximity")
-        if (length(np.idx)>0) {
-          nidx <- t(sapply(rel[np.idx],function(x) x$UnionIndex))
-          CT2[np.idx,c("index1","index2")] <- nidx
-        }
+or <- function(CT1,CT2) {
+  ## revised from mergeCodes() again.
+  ## may use temp database table to do it.
+  orHelperFUN <- function(From,Exist){ ## from and exist are data frame of codings.
+    if (nrow(Exist)==0){## just write to the new code if there is no coding related to that code.
+      ans <- From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
+    } else {
+      Relations <- apply(Exist[c("index1","index2")],1,FUN=function(x) relation(x,c(From$index1,From$index2)))
+      ## because apply convert data to an array, and Exist containts character -> x is charater rather than numeric
+      Exist$Relation <- sapply(Relations,FUN=function(x) x$Relation) ## add Relation to the data frame as indicator.
+      if (!any(Exist$Relation=="exact")) {
+        ## if they are axact, do nothing;
+        ## if they are not exact, do something. The following lines record meta info
+        Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
+        Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
+        Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
+        if (all(Exist$Relation=="proximity")){
+          ## if there are no overlap in any kind, the result is From+Exist
+          ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
+                       Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE])
+          ## end of handling proximity
+        } else {
+          ## if not proximate, pass to else branch.
+          del1 <- (Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
+          ## ==2 -> take care of NA. Here 2 means From according to how Relations is returned.
+          del2 <- Exist$Relation =="overlap"
+          ## if overlap or inclusion [Exist nested in From] -> delete codings in Exist
+          del <- (del1 | del2) ## index of rows in Exist that should be deleted.
+          if (any(del)){
+            ExistN <- Exist[-which(del),c("rowid","fid","filename","index1","index2","coding")]
+            ## delete codings
+            tt <-   RQDAQuery(sprintf("select file from source where id=='%i'", From$fid))[1,1]
+            Encoding(tt) <- "UTF-8"  ## fulltext of the file
+            Sel <- c(min(Exist$Start[del]), max(Exist$End[del])) ## index to get the new coding
+            ans <- rbind(ExistN,
+                         data.frame(rowid=From$rowid,fid=From$fid,filename=From$filename,
+                                    index1=Sel[1],index2=Sel[2],coding=substr(tt,Sel[1],Sel[2])
+                                    )
+                         )
+          }
+        } ## end of handling overlapping and inclusion
       }
     }
-    ans <- rbind(CT2,ct)
+    ans
+  } ## end of helper function.
+  
+  if (any(c(nrow(CT1),nrow(CT2))==0)) stop("One code has empty coding.")
+  CT1 <- CT1[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
+  CT2 <- CT2[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
+  if (nrow(CT1) >= nrow(CT2)) {
+    FromDat <- CT2
+    ToDat <- CT1
   } else {
-    if (nrow(CT1)==0) ans <- CT2
-    if (nrow(CT2)==0) ans <- CT1
+    FromDat <- CT1
+    ToDat <- CT2
   }
-  ans <- ans[,c("rowid","fid","filename","index1","index2")]
-  ans
-}
-
-
-or <- function(CT1,CT2,showCoding=FALSE){
-## older version is in rev 274
-  fid <- intersect(CT1$fid,CT2$fid)
-  if (length(fid)>0) {
-    ans <- lapply(fid,FUN=function(x) or_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x)))
-    ans <- do.call(rbind,ans)
-    if (showCoding && !is.null(ans)){
-      txt <- apply(ans,1,function(x){
-        txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
-        Encoding(txt) <- "UTF-8"
-        ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
-        ans
-      })
-      ans$coding <- txt
-    }
-  } else {
-    ans <- data.frame("rowid"=integer(0),"fid"=integer(0),
-                      "filename"=character(0), "index1"=integer(0),
-                      "index2"=integer(0), "coding"=character(0))
-  }
+  
+  fidUnique <- unique(FromDat$fid)
+  Nf <- length(fidUnique)
+  ans <- vector("list",Nf+1)
+  for (j in 1:Nf) {
+    From <- FromDat[FromDat$fid==fidUnique[j],]
+    for (i in seq_len(nrow(From))) {
+      x <- From[i,,drop=FALSE]
+      if (i==1) {
+        Exist <- ToDat[ToDat$fid==fidUnique[j],]
+        ## use original data only for the first
+      }
+      Exist <- orHelperFUN(From=x,Exist=Exist) ## use the result to update Exist
+    }## end of i
+    ans[[j]] <- Exist
+  } ## and of j
+  ans[[j+1]] <- ToDat[!ToDat$fid %in% fidUnique,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
+  ans <- do.call(rbind,ans)
   class(ans) <- c("codingsByOne","data.frame")
   ans
-}
+  }
 
 
 "%or%.codingsByOne" <- function(e1,e2){
-  or(e1, e2,showCoding=TRUE)
+  or(e1, e2)
 }
 
 not_helper <- function(CT1,CT2){

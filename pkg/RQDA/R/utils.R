@@ -358,6 +358,7 @@ GetCaseName <- function(caseId=GetCaseId(nFiles=FALSE)){
 
 casesCodedByAnd <- function(cid){
   ## cid can be splitted across files, but still on the same case
+  Ncid <- length(cid)
   cid <- paste(cid,collapse=',')
   fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
   if (nrow(fid)>0) {
@@ -366,7 +367,7 @@ casesCodedByAnd <- function(cid){
     case <- RQDAQuery(sprintf("select fid, caseid from caselinkage where status==1 and fid in (%s)",fidUnique))
     codes <- tapply(case$fid, case$caseid,FUN=function(x) unique(fid[fid$fid %in% unique(x),]$cid))
     ans <- sapply(codes,length)
-    ans <- as.numeric(names(ans)[ans==length(cid)])
+    ans <- as.numeric(names(ans)[ans==Ncid])
   }
   class(ans) <- c("RQDA.vector","caseId")
   ans
