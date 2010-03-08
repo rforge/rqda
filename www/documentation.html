@@ -158,7 +158,7 @@ numbers of different codes give the command: GetCodingTable()
 <br>For more commands use: help(package="RQDA")
 <p> Contributed by Amman Madan (amman@iitk.ac.in)
 
-<p><b>9.2 Simple Boolean search</b>
+<p><b>9.2 Boolean search</b>
 <p> To do complex <b>Boolean search</b>, programming is needed. More programming is under way now.
 <p> To retreive coding by cid 1 and cid 2, you can run the following command (since rev 171):
 <i>
@@ -167,6 +167,14 @@ numbers of different codes give the command: GetCodingTable()
 <br> c2 <- subset(b,cid==2)
 <br> and(c1,c2,show=TRUE)
 </i>
+<p>Since rev 280 (RC for RQDA 0.2-0), boolean operations are simplied by functions of %and%, %or% and %not%. To retreive codings coded by cid 1 and cid 2, you can run:
+<i>summary(getCodingsByOne(1) %and% getCodingsByOne(1))</i>
+<p>To retreive codings coded by cid 1 but not cid 2, you can run:
+<i>summary(getCodingsByOne(1) %not% getCodingsByOne(1))</i>
+<p>You can do more complex operation as well. For example, to retreive codings coded by cid 1 and cid 2, plus codings coded by cid 3 but not cid 4. You can run:
+<i>summary((getCodingsByOne(1) %and% getCodingsByOne(1)) %or% getCodingsByOne(3) %not% getCodingsByOne(4) )</i>
+
+<p>These operations apply to file ids, file names, case ids, case names, all of which are objects with class "RQDA.vector".
 
 <p><b>10. Settings</b>
 <p>"Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
