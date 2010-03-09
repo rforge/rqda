@@ -5,7 +5,7 @@ Show the relationship between *codedBy using a matrix.
 }
 \description{It returns the number of files or cases coded by two code in a matrix form.}
 \usage{
-codedByTwo(FUN, codeList = NULL, print = TRUE, ...)
+nCodedByTwo(FUN, codeList = NULL, print = TRUE, ...)
 }
 \arguments{
   \item{FUN}{a function. It is usually a function from filesCodeBy* and casesCodedBy*.}

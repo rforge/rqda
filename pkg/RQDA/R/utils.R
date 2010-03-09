@@ -468,7 +468,7 @@ filesCodedByNot <- function(cid){
     fid
 }
 
-codedByTwo <- function(FUN, codeList=NULL, print=TRUE,...){
+nCodedByTwo <- function(FUN, codeList=NULL, print=TRUE,...){
     ## codeList is character vector of codes.
     FUN <- match.fun(FUN)
     Cid_Name <- RQDAQuery("select id, name from freecode where status==1")
