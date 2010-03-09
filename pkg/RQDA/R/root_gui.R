@@ -196,6 +196,7 @@ RQDA <- function() {
   assign(".currentProj",.currentProj,env=.rqda)
   assign(".SettingsGui",.settings_gui,env=.rqda)
   assign("font","Sans 11",env=.rqda)
+  assign("codingTable","coding",env=.rqda)
 
 ##########################
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
