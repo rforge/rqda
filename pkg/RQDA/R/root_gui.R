@@ -196,7 +196,6 @@ RQDA <- function() {
   assign(".currentProj",.currentProj,env=.rqda)
   assign(".SettingsGui",.settings_gui,env=.rqda)
   assign("font","Sans 11",env=.rqda)
-  assign("codingTable","coding",env=.rqda)
 
 ##########################
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
@@ -268,7 +267,7 @@ AddHandler <- function(){
   ## handler for .codes_rqda
   addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon"))
-      retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda,codingTable=.rqda$codingTable)
+      retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
   }
                         )
 

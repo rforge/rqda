@@ -75,7 +75,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
         W <- .rqda$.openfile_gui
         con <- .rqda$qdacon
         codeListWidget <- get(codeListWidget,env=.rqda)
-        idx <- sindex(.rqda$.openfile_gui,includeAnchor=FALSE)
+        idx <- sindex(.rqda$.openfile_gui,includeAnchor=FALSE,codingTable=codingTable)
         ans <- list(start=idx$startN,end=idx$endN,text=idx$seltext)
         if (ans$start != ans$end){ ## when selected no text, makes on sense to do anything.
           SelectedCode <- svalue(codeListWidget)
@@ -91,10 +91,10 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
             SelectedFile <- enc(SelectedFile,encoding="UTF-8")
             currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",SelectedFile))[,1]
             ## Exist <-  dbGetQuery(con,sprintf("select rowid, selfirst, selend from coding where cid==%i and fid=%i and status=1",currentCid,currentFid))
-            Exist1 <-  RQDAQuery(sprintf("select %s.rowid, selfirst, selend,freecode.name from coding, freecode where cid==%i and fid=%i and %s.status=1 and cid==freecode.id",codingTable, currentCid,currentFid,codingTable))
+            Exist1 <-  RQDAQuery(sprintf("select %s.rowid, selfirst, selend,freecode.name from %s, freecode where cid==%i and fid=%i and %s.status=1 and cid==freecode.id",codingTable, codingTable,currentCid,currentFid,codingTable))
             DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=ans$text,selfirst=ans$start,selend=ans$end,status=1,owner=.rqda$owner,date=date(),memo=NA)
             if (nrow(Exist1)==0){
-              rowid <- NextRowId("coding")
+              rowid <- NextRowId(codingTable)
               success <- dbWriteTable(.rqda$qdacon,codingTable,DAT,row.name=FALSE,append=TRUE)
               if (success){
                 markRange(widget=.rqda$.openfile_gui,from=ans$start,to=ans$end,rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode,buttonCol=codeCol,codingTable=codingTable)} else{gmessage("Fail to write to database.")}
@@ -164,8 +164,8 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda,codingTable="coding")
     con <- .rqda$qdacon
     W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
     ## get the widget for file display. If it does not exist, then return NULL.
-    idx1 <- tryCatch(sindex(W,includeAnchor=FALSE),error=function(e) {})
-    idx2 <- tryCatch(sindex(W,includeAnchor=TRUE),error=function(e) {})
+    idx1 <- tryCatch(sindex(W,includeAnchor=FALSE,codingTable=codingTable),error=function(e) {})
+    idx2 <- tryCatch(sindex(W,includeAnchor=TRUE,codingTable=codingTable),error=function(e) {})
     ## if the not file is open, unmark doesn't work.
     if (!is.null(idx1)) {
       ## codeListWidget <- get(codeListWidget,env=.rqda)

@@ -66,7 +66,7 @@ ViewFileFun <- function(FileNameWidget,hightlight=TRUE){
         }}}
 
 
-ViewFileFunHelper <- function(FileName,hightlight=TRUE){
+ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingTable){
   if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) {
     dispose(.rqda$.root_edit)
   }
@@ -93,7 +93,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE){
   W <- get(".openfile_gui", .rqda)
   add(W, content)
   slot(W, "widget")@widget$SetEditable(FALSE)
-  markidx <- dbGetQuery(.rqda$qdacon,sprintf("select coding.rowid,coding.selfirst,coding.selend,freecode.name,freecode.color, freecode.id from coding,freecode where coding.fid=%i and coding.status=1 and freecode.id==coding.cid and freecode.status==1",IDandContent$id))
+  markidx <- RQDAQuery(sprintf("select %s.rowid,selfirst,selend,freecode.name,freecode.color, freecode.id from %s,freecode where fid=%i and %s.status=1 and freecode.id==cid and freecode.status==1",codingTable,codingTable, IDandContent$id,codingTable))
   anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
   buffer <- W@widget@widget$GetBuffer()
   if (nrow(markidx)!=0){ ## make sense only when there is coding there

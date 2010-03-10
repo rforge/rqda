@@ -52,9 +52,9 @@ CodeNamesWidgetUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sortByTime=T
   } else gmessage("Cannot update Code List in the Widget. Project is closed already.\n",con=TRUE)
 }
 
-mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel=""){
+mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,buttonLabel="",codingTable="coding"){
   ## modified so can change fore.col and back.col easily
-  index <- sindex(widget,includeAnchor=TRUE)
+  index <- sindex(widget,includeAnchor=TRUE,codingTable=codingTable)
   startI <- index$startI ## start and end iter
   endI <- index$endI
   selected <- index$seltext
@@ -77,8 +77,8 @@ mark <- function(widget,fore.col=.rqda$fore.col,back.col=NULL,addButton=FALSE,bu
     }
     startN <- index$startN
     endN <- index$endN
-    startN <- startN - countAnchorsWithFileName(to=startN)
-    endN <- endN - countAnchorsWithFileName(to=endN)
+    startN <- startN - countAnchorsWithFileName(to=startN,codingTable=codingTable)
+    endN <- endN - countAnchorsWithFileName(to=endN,codingTable=codingTable)
     ##startN <- startN - countAnchors(.rqda$.openfile_gui,from=0,to=startN)
     ##endN <- endN - countAnchors(.rqda$.openfile_gui,from=0,to=endN)
     return(list(start=startN,end=endN,text=selected))
@@ -144,7 +144,7 @@ HL <- function(W,index,fore.col=.rqda$fore.col,back.col=NULL){
         )
 }
 
-sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE){
+sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE,codingTable="coding"){
   buffer <- slot(widget,"widget")@widget$GetBuffer()
   bounds = buffer$GetSelectionBounds()
   startI = bounds$start ## start and end iter
@@ -155,8 +155,8 @@ sindex <- function(widget=.rqda$.openfile_gui,includeAnchor=TRUE){
   startN <- gtkTextIterGetOffset(startI) # translate iter pointer to number
   endN <- gtkTextIterGetOffset(endI)
   if (!includeAnchor) {
-    startN <- startN - countAnchorsWithFileName(to=startN)
-    endN <- endN - countAnchorsWithFileName(to=endN)
+    startN <- startN - countAnchorsWithFileName(to=startN,codingTable=codingTable)
+    endN <- endN - countAnchorsWithFileName(to=endN,codingTable=codingTable)
     ##startN <- startN - countAnchors(widget,from=0,to=startN)
     ##endN <- endN - countAnchors(widget,from=0,to=endN)
   }
@@ -233,7 +233,7 @@ countAnchors <- function(widget=.rqda$.openfile_gui,to,from=0){
 ## g<-gtext("testing widget of text.",con=T)
 ## InsertAnchor(g,"button",8)
 
-countAnchorsWithFileName <- function(to,fileName=enc(svalue(.rqda$.root_edit),encoding="UTF-8",codingTable="coding"))
+countAnchorsWithFileName <- function(to,fileName=enc(svalue(.rqda$.root_edit),encoding="UTF-8"),codingTable="coding")
 {
   ## the same purpose as countAnchors, but faster.
   fid <- RQDAQuery(sprintf("select id from source where status==1 and name=='%s'",fileName))$id
@@ -268,9 +268,9 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
                     ftime="order by source.id",
                     ctime="")
     if (is.null(Fid)){
-      retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend, seltext,%s.rowid, source.name,source.id from %s,source where %s.status==1 and cid=%i and source.id=coding.fid %s",codingTable,codingTable,codingTable,currentCid,order))
+      retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend, seltext,%s.rowid, source.name,source.id from %s,source where %s.status==1 and cid=%i and source.id=fid %s",codingTable,codingTable,codingTable,currentCid,order))
     } else {
-      retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend, seltext, %s.rowid,source.name,source.id from %s,source where %s.status==1 and cid=%i and source.id=coding.fid and coding.fid in (%s) %s",codingTable, codingTable, codingTable, currentCid, paste(Fid,collapse=","), order))
+      retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend, seltext, %s.rowid,source.name,source.id from %s,source where %s.status==1 and cid=%i and source.id=fid and fid in (%s) %s",codingTable, codingTable, codingTable, currentCid, paste(Fid,collapse=","), order))
     }
     if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",con=TRUE) else {
       fid <- unique(retrieval$fid)

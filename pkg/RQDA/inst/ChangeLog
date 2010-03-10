@@ -1,8 +1,7 @@
 2010-03-10
 	* add codingTable argument to markRange, retrieval,ExportCoding, ClickHandlerFun, HL_CodingWithMemo, HL_AllCodings,CodeWithCoding.
 	* upgrade RQDATables to version 0.2.0.
-	* mark and unmark buttons take care of different coding tables.
-	* click hanlder of codes and codes of category take case of different coding tables.
+	* mark, unmark,coding buttons, click handler of codes and ViewFileFun take care of different coding tables.
 
 2010-03-09
 	* rename codedByTwo to nCodedByTwo.
