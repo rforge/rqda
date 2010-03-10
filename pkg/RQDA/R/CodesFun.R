@@ -589,8 +589,9 @@ Annotation <- function(...){
     }
   }}
 
-CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory","both")){
-    if (is_projOpen(env=.rqda,conName="qdacon"),codingTable="coding") {
+CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory","both"),
+                           codingTable="coding"){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
         condition <- match.arg(condition)
         fid <- GetFileId(condition,"coded")
         if (length(fid)!=0){

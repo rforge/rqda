@@ -1,9 +1,33 @@
+2010-03-10
+	* add codingTable argument to markRange, retrieval,ExportCoding, ClickHandlerFun, HL_CodingWithMemo, HL_AllCodings,CodeWithCoding.
+	* upgrade RQDATables to version 0.2.0.
+	* mark and unmark buttons take care of different coding tables.
+	* click hanlder of codes and codes of category take case of different coding tables.
+
+2010-03-09
+	* rename codedByTwo to nCodedByTwo.
+	
+2010-03-07
+	* bugfixes of or operation on codings.
+	
+2010-03-06
+	* bugfixes of not operation on codings.
+
+2010-03-05
+	* new function of getCodingsByOne.
+	* file Id, file name etc. have a class (e.g. RQDA.vector).
+	* new functions of %and%, %or%, %not% and methods for RQDA.vector,and codingsByOne.
+	* bugfix of CrossCode, now it returns correct colnames and rownames.
+	* new function of codedByTwo.
+
+	
 2010-03-04
 	* new functions of CaseCodedByAnd, CaseCodeByOr, CaseCodedByNot.
 	* save button in Add new file widget is disabled by default.
 	* add new file widget is cleared after content is saved, assigned obj are removed when closed.
 	* new function of getFiles().
 	* save button in edit file widget is disabled by default.
+	* add various Rd files.
 
 2010-03-03
 	* new functions of FileCodedByAnd, FileCodeByOr, FileCodedByNot.

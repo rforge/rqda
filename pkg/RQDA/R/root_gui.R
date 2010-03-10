@@ -268,14 +268,14 @@ AddHandler <- function(){
   ## handler for .codes_rqda
   addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
     if (is_projOpen(env=.rqda,conName="qdacon"))
-      retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
+      retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda,codingTable=.rqda$codingTable)
   }
                         )
 
   add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
 
   addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
-    ClickHandlerFun(.rqda$.codes_rqda,buttons=c("MarCodB1","UnMarB1"))
+    ClickHandlerFun(.rqda$.codes_rqda,buttons=c("MarCodB1","UnMarB1"),codingTable=.rqda$codingTable)
     if (length(svalue(.rqda$.codes_rqda))==1) {
       enabled(button$RetB) <- TRUE
       enabled(button$DelCodB) <- TRUE
@@ -287,7 +287,7 @@ AddHandler <- function(){
 
   ## handler for .CodeofCat
   addHandlerClicked(.rqda$.CodeofCat,handler <- function(h,...){
-    ClickHandlerFun(.rqda$.CodeofCat,buttons=c("MarCodB2","UnMarB2"))
+    ClickHandlerFun(.rqda$.CodeofCat,buttons=c("MarCodB2","UnMarB2"),codingTable=.rqda$codingTable)
     if (length(svalue(.rqda$.CodeofCat))>0){enabled(button$CodCatADroFromB) <- TRUE }
   }
                     )

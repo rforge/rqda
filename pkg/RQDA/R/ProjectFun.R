@@ -57,12 +57,17 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       dbGetQuery(con,"create table coding  (cid integer, fid integer,seltext text,
                                             selfirst real, selend real, status integer,
                                             owner text, date text, memo text)")
+      if (dbExistsTable(con,"coding2")) dbRemoveTable(con, "coding2")
+      ## second coding
+      dbGetQuery(con,"create table coding2  (cid integer, fid integer,seltext text,
+                                            selfirst real, selend real, status integer,
+                                            owner text, date text, memo text)")
       if (dbExistsTable(con,"project")) dbRemoveTable(con, "project")
       ##dbGetQuery(con,"create table project  (encoding text, databaseversion text, date text,dateM text,
       ##                                       memo text,BOM integer)")
       dbGetQuery(con,"create table project  (databaseversion text, date text,dateM text,
                                              memo text,about text)")
-      dbGetQuery(con,sprintf("insert into project (databaseversion,date,about,memo) values ('0.1.9','%s',
+      dbGetQuery(con,sprintf("insert into project (databaseversion,date,about,memo) values ('0.2.0','%s',
                             'Database created by RQDA (http://rqda.r-forge.r-project.org/)','')",date()))
       if (dbExistsTable(con,"cases")) dbRemoveTable(con, "cases")
       dbGetQuery(con,"create table cases  (name text, memo text,
@@ -144,6 +149,13 @@ UpgradeTables <- function(){
   if (currentVersion=="0.1.8"){
     dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.9'")
     RQDAQuery("alter table freecode add column color text")
+  }
+  if (currentVersion<"0.2.0"){
+    if (dbExistsTable(.rqda$qdacon,"coding2")) dbRemoveTable(.rqda$qdacon, "coding2")
+    dbGetQuery(.rqda$qdacon,"create table coding2  (cid integer, fid integer,seltext text,
+                                            selfirst real, selend real, status integer,
+                                            owner text, date text, memo text)")
+    dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.2.0'")
   }
 }
 
