@@ -7,11 +7,12 @@ Return codings of one code.
 get codings of a code.
 }
 \usage{
-getCodingsByOne(cid, fid=NULL)
+getCodingsByOne(cid, fid=NULL,codingTable=c("coding","coding2"))
 }
 \arguments{
   \item{cid}{code id, an integer.}
   \item{fid}{file id, an integer vector.}
+  \item{codingTable}{name of coding table.}
 }
 \details{
 It gets codings of a code with cid from files which are specified by fid.

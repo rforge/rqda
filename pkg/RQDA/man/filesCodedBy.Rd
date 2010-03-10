@@ -9,15 +9,15 @@ Get files coded by specific codes, by specifying the code IDs.
 Files coded by a specific set of codes.
 }
 \usage{
-filesCodedByAnd(cid)
+filesCodedByAnd(cid,,codingTable=c("coding","coding2"))
 
-filesCodedByOr(cid)
+filesCodedByOr(cid,codingTable=c("coding","coding2"))
 
-filesCodedByNot(cid)
+filesCodedByNot(cid,codingTable=c("coding","coding2"))
 }
 \arguments{
-  \item{cid}{an integer vector of code IDs.
-}
+  \item{cid}{an integer vector of code IDs.}
+ \item{codingTable}{name of coding table.}
 }
 \details{
 \code{filesCodedByAnd} returns file IDs which are coded by all codes from cid.

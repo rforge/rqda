@@ -440,9 +440,9 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
   }}
 
 
-filesCodedByAnd <- function(cid){
+filesCodedByAnd <- function(cid, codingTable=c("coding","coding2")){
     cid <- paste(cid,collapse=',')
-    fid <- RQDAQuery(sprintf("select fid,cid from coding where status==1 and cid in (%s)",cid))
+    fid <- RQDAQuery(sprintf("select fid,cid from %s where status==1 and cid in (%s)",codingTable, cid))
     if (nrow(fid)>0) {
         fidList <- by(fid,factor(fid$cid),FUN=function(x) unique(x$fid))
         fid <- Reduce(intersect,fidList)
@@ -451,17 +451,17 @@ filesCodedByAnd <- function(cid){
     fid
 }
 
-filesCodedByOr <- function(cid){
+filesCodedByOr <- function(cid, codingTable=c("coding","coding2")){
     cid <- paste(cid,collapse=',')
-    fid <- RQDAQuery(sprintf("select fid from coding where status==1 and cid in (%s)",cid))$fid
+    fid <- RQDAQuery(sprintf("select fid from %s where status==1 and cid in (%s)",codingTable, cid))$fid
     if (length(fid)==0) {fid <- integer(0)}
     class(fid) <- c("RQDA.vector","fileId")
     fid
 }
 
-filesCodedByNot <- function(cid){
+filesCodedByNot <- function(cid, codingTable=c("coding","coding2")){
     codedfid <- filesCodedByOr(cid)
-    allfid <- RQDAQuery("select fid from coding where status==1 group by fid")$fid
+    allfid <- RQDAQuery(sprintf("select fid from %s where status==1 group by fid",codingTable))$fid
     fid <- setdiff(allfid,codedfid)
     if (length(fid)==0) {fid <- integer(0)}
     class(fid) <- c("RQDA.vector","fileId")
