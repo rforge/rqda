@@ -35,7 +35,7 @@ addSettingGUI <- function(container,width=12){
                                 items=c(.rqda$back.col,colorsList)
                                 ),
                            list(name = "codingTable",
-                                label = "Name of coding table",
+                                label = "Current coding table",
                                 type = "gcombobox",
                                 items=c(.rqda$codingTable,"coding2")
                                 ),

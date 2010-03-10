@@ -1,5 +1,5 @@
-\name{codedByTwo}
-\alias{codedByTwo}
+\name{nCodedByTwo}
+\alias{nCodedByTwo}
 \title{
 Show the relationship between *codedBy using a matrix.
 }

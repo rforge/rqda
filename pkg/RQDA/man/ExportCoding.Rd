@@ -25,7 +25,7 @@ Specify the order of retrieved codings. see details for the meanings.
   \item{append}{
 Logical, when TRUE the exported codings are appended to the existing file (if exists); otherwise, it overwrites the existing file.
 }
-  \item{codingTable}{name of sqlite data table where codings are stored.}
+  \item{codingTable}{name of sqlite data table where codings are stored. It should be either "coding" or "coding2"}
 }
 \details{
 "fname" means order the codings by file names, "ftime" by file imported time, and "ctime" by time of coding.

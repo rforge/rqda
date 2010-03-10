@@ -206,7 +206,27 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
             }
           })## update the coding table (seltext,selfirst, selend), on the rowid (use rowid to name the marks)
         }
-        if (nrow(mark_idx_case)!=0){ ## only manipulate the coding when there is one.
+        
+        if (nrow(mark_indexS)!=0){ ## only manipulate coding2
+          idxS <- apply(mark_indexS, 1, FUN = function(x) {
+            m1 <- buffer$GetMark(sprintf("%s.1S", x[3]))
+            iter1 <- buffer$GetIterAtMark(m1)
+            idx1 <- gtkTextIterGetOffset(iter1$iter)
+            m2 <- buffer$GetMark(sprintf("%s.2S", x[3]))
+            iter2 <- buffer$GetIterAtMark(m2)
+            idx2 <- gtkTextIterGetOffset(iter2$iter)
+            ans <- c(selfirst = idx1, selend = idx2,x[3])## matrix of 3x N (N=nrow(mark_index))
+          }) ## end of apply
+          apply(idxS,2,FUN=function(x){
+            if (x[1]==x[2])  RQDAQuery(sprintf("update coding2 set status=0 where rowid=%i",x[3])) else {
+              Encoding(content) <- "UTF-8"
+              RQDAQuery(sprintf("update coding2 set seltext='%s',selfirst=%i, selend=%i where rowid=%i",
+                                enc(substr(content,x[1],x[2]),"UTF-8"),x[1],x[2],x[3]))
+            }
+          })
+        } ## end of updating coding2
+        
+        if (nrow(mark_idx_case)!=0){
           idx_case <- apply(mark_idx_case, 1, FUN = function(x) {
             m1 <- buffer$GetMark(sprintf("c%s.1", x["rowid"]))
             iter1 <- buffer$GetIterAtMark(m1)
@@ -224,6 +244,7 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
         }
         enabled(button$EdiFilB) <- FALSE
       })## end of save button
+      
       assign("EdiFilB",EdiFilB,env=button)
       enabled(EdiFilB) <- FALSE
       tmp <- gtext(container=.rqda$.root_edit2)
@@ -253,6 +274,17 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
           ## gtkTextMarkSetVisible(mark,TRUE)                   ## set itvisible
         }) ## end of apply
       }
+
+      mark_indexS <- dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend,rowid from coding2 where fid=%i and status=1",IDandContent$id))
+      if (nrow(mark_indexS)!=0){
+        apply(mark_indexS,1,function(x){
+          iter <- gtkTextBufferGetIterAtOffset(buffer, x[1]) ## index to iter
+          mark <- buffer$CreateMark(sprintf("%s.1S",x[3]),where=iter$iter)
+          iter <- gtkTextBufferGetIterAtOffset(buffer, x[2]) ## index to iter
+          mark <- buffer$CreateMark(sprintf("%s.2S",x[3]),where=iter$iter)
+        }) ## end of apply
+      }
+      
       mark_idx_case<- dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend,rowid from caselinkage where fid=%i and status=1",
                                                       IDandContent$id))
       if (nrow(mark_idx_case)!=0){
