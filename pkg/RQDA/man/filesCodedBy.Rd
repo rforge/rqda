@@ -9,7 +9,7 @@ Get files coded by specific codes, by specifying the code IDs.
 Files coded by a specific set of codes.
 }
 \usage{
-filesCodedByAnd(cid,,codingTable=c("coding","coding2"))
+filesCodedByAnd(cid,codingTable=c("coding","coding2"))
 
 filesCodedByOr(cid,codingTable=c("coding","coding2"))
 

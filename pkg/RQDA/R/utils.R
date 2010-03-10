@@ -556,3 +556,20 @@ UpdateCoding <- function(){
         from coding inner join source on coding.fid==source.id where coding.ROWID==%i) where coding.ROWID==%i",i,i))
 }}
 #UpdateCoding()
+
+
+filesByCodes <- function(codingTable=c("coding","coding2")){
+  if (codingTable=="coding"){
+    ans <- RQDAQuery("select coding.fid as fid, freecode.name as codename, source.name as filename from coding left join freecode on (coding.cid=freecode.id)left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1")
+  }
+  if (codingTable=="coding2"){
+    ans <- RQDAQuery("select coding2.fid as fid, freecode.name as codename, source.name as filename from coding2 left join freecode on (coding2.cid=freecode.id)left join source on (coding2.fid=source.id) where coding2.status==1 and source.status=1 and freecode.status=1")
+  }
+  if (nrow(ans)!=0){
+    Encoding(ans$codename) <- Encoding(ans$filename) <- "UTF-8"
+    ans$codedBy <- 1
+    ansWide <- reshape(ans,idvar="fid",timevar="codename",v.name="codedBy",direct="wide")
+    ansWide[is.na(ansWide)] <- 0
+  }
+  ansWide
+}

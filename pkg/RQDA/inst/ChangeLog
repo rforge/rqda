@@ -3,6 +3,7 @@
 	* upgrade RQDATables to version 0.2.0.
 	* mark, unmark,coding buttons, click handler of codes and ViewFileFun take care of different coding tables.
 	* "Editing file" updates coding2 now.
+	* New function filesByCodes.
 
 2010-03-09
 	* rename codedByTwo to nCodedByTwo.

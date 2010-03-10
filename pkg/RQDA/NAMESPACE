@@ -1,6 +1,6 @@
 export("%and%","%or%","%not%",and, CleanProject,
        CrossCode,CrossTwo,ExportCoding,
-       casesCodedByAnd, casesCodedByOr,casesCodedByNot,
+       casesCodedByAnd, casesCodedByOr,casesCodedByNot, filesByCodes,
        filesCodedByAnd, filesCodedByOr,filesCodedByNot,
        gselect.list,GetAttr,GetCaseId,GetCaseName,
        getCases, getCodingsByOne, getFiles,
