@@ -2,9 +2,9 @@
 \alias{\%and\%}
 \alias{\%or\%}
 \alias{\%not\%}
-\title{ Binary operations of some classes of RQDA objects, such as RQDA.vector and codingsByOne.}
+\title{ Binary operations of some types of RQDA objects}
 \description{
-  Binary operations of RQDA.vector
+  Binary operations of RQDA.vector or codingsByOne.
 }
 \usage{
 e1 \%and\% e2

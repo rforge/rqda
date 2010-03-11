@@ -17,7 +17,7 @@ Date: \tab 2010-02-28\cr
 Depends: \tab R (>= 2.8.0), DBI, RSQLite, gWidgets (>= 0.0-31),
 gWidgetsRGtk2 (>= 0.0-36), igraph \cr
 Imports: \tab RGtk2 (>= 2.12.12), methods \cr
-Suggests: \tab tm, tcltk \cr
+Suggests: \tab vcd, tcltk \cr
 License: \tab New style BSD License\cr
 LazyLoad: \tab yes\cr
 URL: \tab \url{http://rqda.r-forge.r-project.org/} \cr
