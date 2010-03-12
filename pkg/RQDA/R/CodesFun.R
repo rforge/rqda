@@ -473,21 +473,24 @@ HL_CodingWithMemo <- function(codingTable="coding"){
     }}}
 
 HL_AllCodings <- function(codingTable="coding") {
-            if (is_projOpen(env=.rqda,conName="qdacon")) {
-              SelectedFile <- tryCatch(svalue(.rqda$.root_edit),error=function(e){NULL})
-              if (!is.null(SelectedFile)) {
-              SelectedFile <- enc(SelectedFile,"UTF-8")
-              currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",SelectedFile))[,1]
-              idx <- RQDAQuery(sprintf("select selfirst,selend from %s where fid=%i and status==1",codingTable,currentFid))
-              if ((N <- nrow(idx)) != 0){
-              anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",currentFid))$position
-              ## allidx <- c(unlist(idx),anno)
-              allidx <- c(idx$selfirst,anno)
-              allidx <- allidx + rank(allidx)
-              idx <- matrix(allidx[1:(2*N)],ncol=2,byrow=FALSE)
-              ClearMark(.rqda$.openfile_gui ,0 , max(allidx))
-              HL(.rqda$.openfile_gui,index=idx)
-              }}}}
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        SelectedFile <- tryCatch(svalue(.rqda$.root_edit),error=function(e){NULL})
+        if (!is.null(SelectedFile)) {
+            currentFid <-  RQDAQuery(sprintf("select id from source where name=='%s'",enc(SelectedFile,"UTF-8")))[,1]
+            idx <- RQDAQuery(sprintf("select selfirst,selend from %s where fid=%i and status==1",codingTable,currentFid))
+            if ((N <- nrow(idx)) != 0){
+                anno <- RQDAQuery(sprintf("select position from annotation where status==1 and fid==%s",currentFid))$position
+                idx1 <- c(idx$selfirst,anno)
+                idx1 <- idx1 + rank(idx1)
+                idx2 <- c(idx$selend,anno)
+                idx2 <- idx2 + rank(idx2)
+                idx <-data.frame(idx1,idx2)
+                ClearMark(.rqda$.openfile_gui ,0 , max(idx2))
+                HL(.rqda$.openfile_gui,index=idx)
+            }
+        }
+    }
+}
 
 
 ##addAnnoTable <- function(){
