@@ -108,6 +108,12 @@ CloseProjectButton <- function(container){
     svalue(.rqda$.currentProj) <- "No project is open."
     names(.rqda$.fnames_rqda) <- "Files"
     names(.rqda$.codes_rqda) <- "Codes List"
+    names(.rqda$.CodeCatWidget)<-"Code Category"
+    names(.rqda$.CodeofCat)<-"Codes of This Category"
+    names(.rqda$.CasesNamesWidget) <- "Cases"
+    names(.rqda$.FileofCase)<-"Files of This Case"
+    names(.rqda$.FileCatWidget)<-"File Category"
+    names(.rqda$.FileofCat)<-"Files of This Category"
     gtkWidgetSetSensitive(RQDA:::.rqda$.fnames_rqda@widget@widget,FALSE)
     enabled(.rqda$.JournalNamesWidget) <- FALSE
     enabled(.rqda$.codes_rqda) <- FALSE
