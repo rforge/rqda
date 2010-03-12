@@ -108,14 +108,29 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
                 Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
                 Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
                 if (all(Exist$Relation=="proximity")){
-                  rowid <- NextRowId(codingTable)
-                  success <- dbWriteTable(.rqda$qdacon,codingTable,DAT,row.name=FALSE,append=TRUE)
-                  if (success){
-                    markRange(widget=.rqda$.openfile_gui,from=ans$start,to=ans$end,rowid=rowid,addButton=TRUE,buttonLabel=SelectedCode,buttonCol=codeCol,codingTable=codingTable)
-                  } else {
-                    gmessage("Fail to write to database.")
-                  }
-                  ## if there are no overlap in any kind, just write to database; otherwise, pass to else{}.
+                    dis <- sapply(Relations,function(x) x$Distance)
+                    if (all(dis) > 0) {
+                        rowid <- NextRowId(codingTable)
+                        success <- dbWriteTable(.rqda$qdacon,codingTable,DAT,row.name=FALSE,append=TRUE)
+                        if (success){
+                            markRange(widget=.rqda$.openfile_gui,from=ans$start,to=ans$end,rowid=rowid,addButton=TRUE,
+                                      buttonLabel=SelectedCode,buttonCol=codeCol,codingTable=codingTable)
+                        } else {gmessage("fail to write to data base.",con=TRUE)}
+                    } else {
+                        gmessage("there is adjacent coding, please uncode it first.",con=TRUE)
+                        ## idx0 <- which(dis==0)
+                        ## index3 <- unlist(c(DAT[,c("selfirst","selend")], Exist[idx0,c("selfirst","selend")]))
+                        ## DAT[1,"selfirst"] <- min(index3)
+                        ## DAT[1,"selend"] <- max(index3)
+                        ## txt<-RQDAQuery(sprintf("select substr(file,%i,%i) as seltext from source where id==%s",
+                        ##                        min(index3)+1,max(index3)-min(index3),currentFid))$seltext
+                        ## Encoding(txt) <- "UTF-8"
+                        ## DAT["seltext"] <- txt
+                        ## RQDAQuery(sprintf("update coding set status==-1 where rowid in (%s)",
+                        ##                   paste(paste("'",Exist[idx0,"rowid",drop=TRUE],"'",sep=""),collapse=",")))
+                        ## success <- dbWriteTable(.rqda$qdacon,codingTable,DAT,row.name=FALSE,append=TRUE)
+                    }
+                    ## if there are no overlap in any kind, just write to database; otherwise, pass to else{}.
                 } else {
                   del1 <-(Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
                   ## if overlap or inclusion [old nested in new]

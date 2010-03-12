@@ -16,7 +16,8 @@ relation(index1, index2)
 \details{
 The relation between two codings can be any of inclusion, overlap, exact
 (special case of inclusion and overlap) and proximity (Neither overlap
-nor inclusion).
+nor inclusion). It should be noted that two adjacent codings are
+regarded as proximity with distance of 0.
 }
 \value{
   A 6-element list:
