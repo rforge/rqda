@@ -1,3 +1,12 @@
+2010-03-19
+	* rename many functions accoding to cam names (first is lowercase).
+	* rename Rd files accordingly.
+	
+2010-03-12
+	* names of widgets are set to default when project is closed.
+	* bugfix of HL_AllCodings.
+	* throws an error if add an adjacent coding.
+	
 2010-03-10
 	* add codingTable argument to markRange, retrieval,ExportCoding, ClickHandlerFun, HL_CodingWithMemo, HL_AllCodings,CodeWithCoding, filesCodingBy*, getCodingsByOne.
 	* upgrade RQDATables to version 0.2.0.

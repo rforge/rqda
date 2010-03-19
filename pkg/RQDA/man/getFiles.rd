@@ -1,16 +1,18 @@
 \name{getFiles}
 \alias{GetFileId}
+\alias{getFileIds}
 \alias{GetFileName}
+\alias{getFileNames}
 \alias{getFiles}
 \title{ Get the ids or names of files list }
 \description{
   Get the ids or names of files list.
 }
 \usage{
-GetFileId(condition = c("unconditional", "case", "filecategory","both"), 
+getFileIds(condition = c("unconditional", "case", "filecategory","both"), 
           type = c("all", "coded", "uncoded","selected"))
 
-GetFileName(fid = GetFileId())
+getFileNames(fid = GetFileId())
 
 getFiles(condition = c("unconditional", "case", "filecategory", "both"),
          type = c("all", "coded", "uncoded", "selected"), names = TRUE) 

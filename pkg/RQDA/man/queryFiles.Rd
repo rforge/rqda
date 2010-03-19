@@ -1,6 +1,7 @@
-\name{QueryFile}
+\name{queryFiles}
 \Rdversion{1.1}
 \alias{QueryFile}
+\alias{queryFiles}
 \title{
 Retrieval of file names according to their codings.
 }
@@ -8,7 +9,7 @@ Retrieval of file names according to their codings.
 To retrieve file names according to their codings.
 }
 \usage{
-QueryFile(or=NULL, and = NULL, not = NULL, names = TRUE)
+queryFiles(or=NULL, and = NULL, not = NULL, names = TRUE)
 }
 \arguments{
   \item{or}{ integer vector of code id.}

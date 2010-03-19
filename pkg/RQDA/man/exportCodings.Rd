@@ -1,6 +1,7 @@
-\name{ExportCoding}
+\name{exportCodings}
 \Rdversion{1.1}
 \alias{ExportCoding}
+\alias{exportCodings}
 \title{
 Export codings to a HTML file.
 }
@@ -8,7 +9,7 @@ Export codings to a HTML file.
 To export retrieved codings to a HTML file.
 }
 \usage{
-ExportCoding(file = "Exported Codings.html", Fid = NULL,
+exportCodings(file = "Exported Codings.html", Fid = NULL,
              order = c("fname", "ftime", "ctime"), append = FALSE,
              codingTable="coding")
 }

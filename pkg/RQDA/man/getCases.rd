@@ -1,7 +1,9 @@
 \name{getCases}
 \Rdversion{1.1}
 \alias{GetCaseId}
+\alias{getCaseIds}
 \alias{GetCaseName}
+\alias{getCaseNames}
 \alias{getCases}
 \title{
 Get the Case ID and Case Name.
@@ -10,9 +12,9 @@ Get the Case ID and Case Name.
 Return cases  IDs or names which a set of files belong to.
 }
 \usage{
-GetCaseId(fid = GetFileId(), nFiles = FALSE)
+getCaseIds(fid = GetFileId(), nFiles = FALSE)
 
-GetCaseName(caseId = GetCaseId(nFiles = FALSE))
+getCaseNames(caseId = GetCaseId(nFiles = FALSE))
 
 getCases(fid, names = TRUE) 
 }

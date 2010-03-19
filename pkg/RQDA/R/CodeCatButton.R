@@ -206,9 +206,9 @@ plotCodeCategory <-function(parent=NULL){
     ans <- RQDAQuery(sprintf("select codecat.name as parent,freecode.name as child from treecode, codecat,freecode
 where treecode.status==1 and codecat.status==1 and freecode.status==1
 and treecode.catid==codecat.catid and freecode.id=treecode.cid and codecat.name in (%s)",paste(shQuote(parent),collapse=",")))
-    g <- graph.data.frame(ans)
-    tryCatch(tkplot(g,vertex.label=V(g)$name),error=function(e){
-        plot(g,vertex.label=V(g)$name)
+    g <- igraph:::graph.data.frame(ans)
+    tryCatch(igraph:::tkplot(g,vertex.label=igraph:::V(g)$name),error=function(e){
+        igraph:::plot.igraph(g,vertex.label=igraph:::V(g)$name)
     })
 }
 
