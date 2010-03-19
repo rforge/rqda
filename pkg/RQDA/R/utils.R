@@ -166,6 +166,7 @@ GetCodingTable <- function(){
   } else cat("Open a project first.\n")
 }
 
+summaryCodings <- 
 SummaryCoding <- function(byFile=FALSE,...){
   if ( isIdCurrent(.rqda$qdacon)) {
     Codings <- GetCodingTable()

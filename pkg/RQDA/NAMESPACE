@@ -8,7 +8,7 @@ export("%and%","%or%","%not%",and, CleanProject,
        getCodingTable,getFileIds,getFileIdSets,getFileNames,
        list.deleted,nCodedByTwo,
        pdelete,queryFiles,relation,retrieval,RQDA,RQDAQuery,
-       SearchFiles,ShowSubset,SummaryCoding,undelete,write.FileList)
+       SearchFiles,ShowSubset,summaryCodings,undelete,write.FileList)
 S3method("%and%",RQDA.vector)
 S3method("%and%",codingsByOne)
 S3method("%or%",RQDA.vector)
