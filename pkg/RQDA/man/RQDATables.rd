@@ -37,7 +37,7 @@
     caseID:\tab corresponding case id of a variable value.\cr 
     date:\tab created date of a case attribute record.\cr 
     dateM:\tab not used currently.\cr 
-    owner:\tab creater of the case attribute record.\cr 
+    owner:\tab creator of the case attribute record.\cr 
   }
   
   Table "caselinkage" contatins information about the relationship
@@ -90,12 +90,13 @@
 
   Table "fileAttr" contatins information about attributes of files.
   \tabular{ll}{
-    variable:\tab . \cr 
-    value:\tab . \cr 
-    fileID:\tab . \cr 
-    date:\tab . \cr 
-    dateM:\tab . \cr 
-    owner:\tab . \cr 
+    variable:\tab charater, name of file attribute, coresponding to name in
+    attributes table \cr 
+    value:\tab value of the file attribute. \cr 
+    fileID:\tab corresponding file id of the attribute. \cr 
+    date:\tab created date of the file attribute.\cr 
+    dateM:\tab not used currently. \cr 
+    owner:\tab creator of the file attribute. \cr 
   }
   
   Table "filecat" contains information on the file categorization.
