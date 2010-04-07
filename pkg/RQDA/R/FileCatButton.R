@@ -273,6 +273,7 @@ FileofCatWidgetMenu$"Search Files Within Categroy"$handler <- function(h,...)
           tryCatch(SearchFiles(sprintf("(%s) and id in (%s)",pattern,paste(shQuote(fid),collapse=",")),
                                Widget=".FileofCat",is.UTF8=TRUE),
                    error=function(e) gmessage("Error~~~."),con=TRUE)
+          assign("lastsearch",pattern,env=.rqda)
       }
   }
 }

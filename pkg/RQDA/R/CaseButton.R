@@ -342,6 +342,7 @@ FileofCaseWidgetMenu$"Search Files within Seleted Case"$handler <- function(h, .
         if (!is.na(pattern)){
             Fid <- GetFileId("case")
             tryCatch(SearchFiles(pattern,Fid=Fid,Widget=".FileofCase",is.UTF8=TRUE),error=function(e) gmessage("Error~~~."),con=TRUE)
+            assign("lastsearch",pattern,env=.rqda)
         }
     }
 }
