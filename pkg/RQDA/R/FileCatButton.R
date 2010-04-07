@@ -267,7 +267,8 @@ FileofCatWidgetMenu$"Search Files Within Categroy"$handler <- function(h,...)
 {
   if (is_projOpen(env=.rqda,conName="qdacon")) {
       fid <- GetFileId(condition="filecategory",type="all")
-      pattern <- ginput("Please input a search pattern.",text="file like '%%'")
+      pattern <- ifelse(is.null(.rqda$lastsearch),"file like '%%'",.rqda$lastsearch)
+      pattern <- ginput("Please input a search pattern.",text=pattern)
       if (!is.na(pattern) && length(fid)!=0){
           tryCatch(SearchFiles(sprintf("(%s) and id in (%s)",pattern,paste(shQuote(fid),collapse=",")),
                                Widget=".FileofCat",is.UTF8=TRUE),
