@@ -65,13 +65,13 @@
   
   Table "codecat" contatins information about upper-level of code list.
   \tabular{ll}{
-    name:\tab . \cr 
-    cid:\tab . \cr 
-    catid:\tab . \cr 
-    owner:\tab . \cr 
-    date:\tab . \cr 
-    dateM:\tab . \cr 
-    memo:\tab . \cr 
+    name:\tab name of code category. \cr 
+    cid:\tab not used currently. \cr 
+    catid:\tab id of code category. \cr 
+    owner:\tab creator of code category. \cr 
+    date:\tab date of creation of code category. \cr 
+    dateM:\tab not used currently. \cr 
+    memo:\tab code category memo. \cr 
     status:\tab 1 for standard status and 0 for temporarily deleted record. \cr 
   }
   
@@ -115,12 +115,12 @@
 
   Table "freecode" contains information on the codes list.
   \tabular{ll}{
-    name :\tab \cr 
-    memo :\tab \cr 
-    owner :\tab \cr 
-    date :\tab \cr 
-    dateM :\tab \cr 
-    id :\tab \cr 
+    name :\tab code name.\cr 
+    memo :\tab code memo.\cr 
+    owner :\tab creator of a code.\cr 
+    date :\tab date of creation of a code.\cr 
+    dateM :\tab not used currently.\cr 
+    id :\tab code id.\cr 
     status :\tab 1 for standard status and 0 for temporarily deleted record.\cr
     color:\tab color for code marker (added in version 0.19)\cr
   }
@@ -132,11 +132,11 @@
   Table "journal" contatins information about field work
   journal. Journal titles are held in widget of ".JournalNamesWidget".
   \tabular{ll}{
-    name:\tab name of a journal \cr 
-    journal:\tab content of a journal \cr 
-    date:\tab created date of a journal\cr 
-    dateM:\tab not used currently \cr 
-    owner:\tab owner of a journal\cr 
+    name:\tab name of a journal. \cr 
+    journal:\tab content of a journal. \cr 
+    date:\tab created date of a journal.\cr 
+    dateM:\tab not used currently. \cr 
+    owner:\tab owner of a journal.\cr 
     status:\tab 1 for standard status and 0 for temporarily deleted journal. \cr 
   }
   
@@ -169,12 +169,12 @@
   (relationship between codes and the codecat). They are held in widget
   of ".CodeCatWidget". Codes of specific category are held in widget of ".CodeofCat".
   \tabular{ll}{
-    cid:\tab . \cr 
-    catid:\tab . \cr 
-    date:\tab . \cr 
-    dateM:\tab . \cr 
-    memo:\tab . \cr 
-    status:\tab . \cr 
+    cid:\tab code id. \cr 
+    catid:\tab code category id. \cr 
+    date:\tab date of creation of a code categorization. \cr 
+    dateM:\tab not used currently. \cr 
+    memo:\tab not used currently. \cr 
+    status:\tab 1 for standard status and 0 for temporarily deleted file. \cr 
   }
 
   Table "treefile" contatins information about file categorization
