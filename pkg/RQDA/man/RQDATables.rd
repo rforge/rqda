@@ -43,14 +43,14 @@
   Table "caselinkage" contatins information about the relationship
   between case and files of case.
   \tabular{ll}{
-    caseid:\tab . \cr 
-    fid:\tab . \cr 
-    selfirst:\tab . \cr 
-    selend:\tab . \cr 
+    caseid:\tab case id. \cr 
+    fid:\tab file id. \cr 
+    selfirst:\tab beginning position of a text segment associated with a case. \cr 
+    selend:\tab  ending position of a text segment associated with a case.. \cr 
     status:\tab 1 for standard status and 0 for temporarily deleted record. \cr 
-    owner:\tab . \cr 
-    date:\tab . \cr 
-    memo:\tab . \cr 
+    owner:\tab creator of the case linkage. \cr 
+    date:\tab date of a created case linkage. \cr 
+    memo:\tab not used currently. \cr 
   }
   
   Table "cases" contatins information about case list.
