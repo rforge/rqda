@@ -230,9 +230,15 @@ SearchFiles <- function(pattern,content=FALSE,Fid=NULL,Widget=NULL,is.UTF8=FALSE
     } else cat("Open a project first.\n")
 }
 
-RunOnSelected <- function(x,multiple=TRUE,expr,enclos,title=NULL,...){
+RunOnSelected <- function(x,multiple=TRUE,expr,enclos=parent.frame(),title=NULL,
+                          hpos = ifelse(is.null(getOption("widgetCoordinate")[1]),
+                            420,getOption("widgetCoordinate")[1]),
+                          vpos = ifelse(is.null(getOption("widgetCoordinate")[2]),
+                            2,getOption("widgetCoordinate")[2]),
+                          ...){
+  ## expr used the return of Selected as an argument
   if (is.null(title)) title <- ifelse(multiple,"Select one or more","Select one")
-  g <- gwindow(title=title,wid=250,heigh=600,parent=c(395, 10))
+  g <- gwindow(title=title,wid=250,heigh=600,parent=c(hpos, vpos))
   x1<-ggroup(FALSE,con=g)
   ##x1@widget@widget$parent$parent$parent$SetTitle(title)
   ##x1@widget@widget$parent$parent$parent$SetDefaultSize(200, 500)
@@ -243,12 +249,12 @@ RunOnSelected <- function(x,multiple=TRUE,expr,enclos,title=NULL,...){
   gbutton("OK",con=x1,handler=function(h,...){
     Selected <- svalue(x2)
     if (Selected!=""){
-    eval(h$action$expr,env=pairlist(Selected=Selected),enclos=h$action$enclos)
-    ## evaluate expr in env
-    ## Variable Selected will be found in env
-    ## because env is parilist and there are variables not there, which will be found in enclos.
-    dispose(g)
-   } else gmessage("Select before Click OK.\n",con=TRUE,icon="error")
+      eval(h$action$expr,env=pairlist(Selected=Selected),enclos=h$action$enclos)
+      ## evaluate expr in env
+      ## Variable Selected will be found in env
+      ## because env is parilist and there are variables not there, which will be found in enclos.
+      dispose(g)
+    } else gmessage("Select before Click OK.\n",con=TRUE,icon="error")
   },
           action=list(expr=substitute(expr),enclos=enclos)
           )
