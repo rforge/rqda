@@ -11,7 +11,7 @@ ImportFileButton <- function(label="Import", container,...)
     }
           )
   assign("ImpFilB",ImpFilB,env=button)
-  gtkWidgetSetSensitive(button$ImpFilB@widget@widget,FALSE)  
+  gtkWidgetSetSensitive(button$ImpFilB@widget@widget,FALSE)
 }
 
 
@@ -43,7 +43,7 @@ DeleteFileButton <- function(label="Delete", container,...){
           action=list(env=.rqda,conName="qdacon")
           )
   assign("DelFilB",DelFilB,env=button)
-  gtkWidgetSetSensitive(button$DelFilB@widget@widget,FALSE) 
+  gtkWidgetSetSensitive(button$DelFilB@widget@widget,FALSE)
 }
 
 ViewFileButton <-  function(label="Open", container,...)
@@ -54,7 +54,7 @@ ViewFileButton <-  function(label="Open", container,...)
           }
           )
   assign("VieFilB",VieFilB,env=button)
-  gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE) 
+  gtkWidgetSetSensitive(button$VieFilB@widget@widget,FALSE)
 }
 
 
@@ -65,7 +65,7 @@ File_MemoButton <- function(label="Memo", container=.rqda$.files_button,FileWidg
   }
           )
   assign("FilMemB",FilMemB,env=button)
-  gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE) 
+  gtkWidgetSetSensitive(button$FilMemB@widget@widget,FALSE)
 }
 
 File_RenameButton <- function(label="Rename", container=.rqda$.files_button,FileWidget=.rqda$.fnames_rqda,...)
@@ -94,7 +94,7 @@ File_RenameButton <- function(label="Rename", container=.rqda$.files_button,File
           )
   FilRenB
   assign("FilRenB",FilRenB,env=button)
-  gtkWidgetSetSensitive(button$FilRenB@widget@widget,FALSE) 
+  gtkWidgetSetSensitive(button$FilRenB@widget@widget,FALSE)
 }
 
 
@@ -133,7 +133,7 @@ AddNewFileFun <- function(){
         }
       }
     } ## end of saveFileFun
-    
+
     gl <- glayout(homogeneous=T,con=get(".AddNewFileWidget2",env=.rqda))
     AddNewFilB <- gbutton("Save To Project", handler=function(h,...){saveFileFun()})
     enabled(AddNewFilB) <- FALSE
@@ -160,7 +160,7 @@ AddNewFileFun <- function(){
       rm(".AddNewFileWidgetW",".AddNewFileWidget",".AddNewFileWidget2",envir=.rqda)
       FALSE
     })
-    svalue(.rqda$.AddNewFileWidget2) <- 0.03999
+    ## svalue(.rqda$.AddNewFileWidget2) <- 0.03999
   }
 }
 

@@ -166,7 +166,7 @@ GetCodingTable <- function(){
   } else cat("Open a project first.\n")
 }
 
-summaryCodings <- 
+summaryCodings <-
 SummaryCoding <- function(byFile=FALSE,...){
   if ( isIdCurrent(.rqda$qdacon)) {
     Codings <- GetCodingTable()
@@ -566,6 +566,7 @@ UpdateCoding <- function(){
 
 
 filesByCodes <- function(codingTable=c("coding","coding2")){
+  codingTable <- match.arg(codingTable)
   if (codingTable=="coding"){
     ans <- RQDAQuery("select coding.fid as fid, freecode.name as codename, source.name as filename from coding left join freecode on (coding.cid=freecode.id)left join source on (coding.fid=source.id) where coding.status==1 and source.status=1 and freecode.status=1")
   }
