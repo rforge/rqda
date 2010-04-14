@@ -60,7 +60,8 @@ EditVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL,s
 
   ## create window, etc
   window <- gtkWindowNew("toplevel", show = F)
-  window$setTitle(paste("Var:",title))
+  Encoding(title) <- 'UTF-8'
+  window$setTitle(paste("Attribute of:",title))
   window$setBorderWidth(5)
   vbox <- gtkVBoxNew(FALSE, 5)
   window$add(vbox)
@@ -182,6 +183,7 @@ saveFUN4FileAttr <- function(button,data){
 FileAttrFun <- function(fileId,title=NULL,attrs=svalue(.rqda$.AttrNamesWidget)){
   if (length(attrs)==0) attrs <-  dbGetQuery(.rqda$qdacon,"select name from attributes where status==1")$name
   if (is.null(attrs)) gmessage("add attribute in Attrs Tabe first.",con=T) else{
+    Encoding(attrs) <- 'UTF-8'
     attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
     variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from fileAttr where fileID==%i and variable in (%s) and status==1",fileId,paste(shQuote(attrs),collapse=",")))
     if (nrow(variables)!=0){
@@ -327,7 +329,7 @@ viewFileAttr <- function(){
   fileName <- dbGetQuery(.rqda$qdacon,"select name,id from source where status==1")
   if (nrow(fileName)!=0){
     names(fileName) <- c("file","fileID")
-    Encoding(fileName$case) <- "UTF-8"
+    Encoding(fileName$file) <- "UTF-8"
     DF <- merge(fileName,DF)
     gtable(DF,con=TRUE)
   }
