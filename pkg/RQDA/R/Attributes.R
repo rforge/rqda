@@ -29,6 +29,7 @@ EditVarWidget <- function(ExistingItems=NULL,container=NULL,title=NULL,ID=NULL,s
 
   cell.edited <- function(cell, path.string, new.text, data)
     {
+      Encoding(new.text) <- 'UTF-8' ## now atrribute displays correctly for non-english character
       checkPtrType(data, "GtkListStore")
       model <- data
       path <- gtkTreePathNewFromString(path.string)
@@ -133,6 +134,7 @@ CaseAttrFun <- function(caseId,title=NULL,attrs=svalue(.rqda$.AttrNamesWidget)){
     attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
     variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from caseAttr where caseID==%i and variable in (%s) and status==1", caseId,paste(shQuote(attrs),collapse=",")))
     if (nrow(variables)!=0){
+      Encoding(variables$variable) <- Encoding(variables$value) <- 'UTF-8'
       idx <- match(variables[[1]],attrs2[[1]])
       attrs2[idx,] <- variables
     }
@@ -187,6 +189,7 @@ FileAttrFun <- function(fileId,title=NULL,attrs=svalue(.rqda$.AttrNamesWidget)){
     attrs2 <- data.frame(variable=attrs,value="NA",stringsAsFactors=FALSE)
     variables <- dbGetQuery(.rqda$qdacon,sprintf("select variable, value from fileAttr where fileID==%i and variable in (%s) and status==1",fileId,paste(shQuote(attrs),collapse=",")))
     if (nrow(variables)!=0){
+      Encoding(variables$variable) <- Encoding(variables$value) <- 'UTF-8'
       idx <- match(variables[[1]],attrs2[[1]])
       attrs2[idx,] <- variables
     }
