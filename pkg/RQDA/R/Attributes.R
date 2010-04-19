@@ -347,6 +347,7 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget),s
   if (type == "case"){
     DF <- dbGetQuery(.rqda$qdacon,sprintf("select variable,value, caseId from caseAttr %s",inClause))
     if (nrow(DF) > 0 ){
+    Encoding(DF$variable) <- Encoding(DF$value) <- "UTF-8"
     DF <- reshape(DF,v.name="value",idvar="caseID",direction="wide",timevar="variable")
     names(DF) <- gsub("^value.","",names(DF))
     caseName <- dbGetQuery(.rqda$qdacon,"select name,id from cases where status==1")
@@ -359,6 +360,7 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget),s
   } else if (type=="file"){
     DF <- dbGetQuery(RQDA:::.rqda$qdacon,sprintf("select variable,value, fileId from fileAttr %s",inClause))
     if (nrow(DF) > 0 ){
+    Encoding(DF$variable) <- Encoding(DF$value) <- "UTF-8"
     DF <- reshape(DF,v.name="value",idvar="fileID",direction="wide",timevar="variable")
     names(DF) <- gsub("^value.","",names(DF))
     fileName <- dbGetQuery(.rqda$qdacon,"select name,id from source where status==1")
