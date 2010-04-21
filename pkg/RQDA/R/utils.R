@@ -263,54 +263,35 @@ RunOnSelected <- function(x,multiple=TRUE,expr,enclos=parent.frame(),title=NULL,
 
 
 gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,x=420,y=2,...){
-  ## gtk version of select.list()
+  ## gtk version of select.list(), revised on 21 Apr. 2010 to fix a bug (crash R with 2.18 or newer libgtk2).
   ## Thanks go to John Verzani for his help.
   if (is.null(title)) title <- ifelse(multiple,"Select one or more","Select one")
   helper <- function(){
-    ans<-new.env()
-    x1<-ggroup(horizontal=FALSE) # no parent container here
-    x2<-gtable(list,multiple=multiple,con=x1,expand=TRUE)
-    gtkWidgetSetSizeRequest(x1@widget@widget, width=width, height=height)
-    gbasicdialog2 <- function(title="Dialog",widget,action=NULL,handler=NULL,x,y,..., toolkit=guiToolkit()){
-      parent <- gtkWindowNew(show=FALSE) ## modified from gbasicdialog of gWidgetRGtk2
-      dlg = gtkDialog(title,
-        parent=parent,
-        c("modal"),
-        "gtk-cancel", GtkResponseType["cancel"],
-        "gtk-ok", GtkResponseType["ok"])
-      dlg$SetTitle(title)
-      dlg$GrabFocus()
-      dlg$GetWindow()$Move(as.integer(x),as.integer(y))
-      dlg$GetWindow()$Raise()
-      tag(widget,"dlg") <- dlg
-      group = ggroup()
-      add(group, widget, expand=TRUE)
-      dlg$GetVbox()$PackStart(group@widget@block)
-      response = dlg$Run()
-      h = list(obj=widget, action=action)
-      if(response == GtkResponseType["cancel"] ||
-         response == GtkResponseType["close"] ||
-         response == GtkResponseType["delete-event"]) {
-        dlg$Destroy()
-        return(FALSE)
-      } else if(response == GtkResponseType["ok"]) {
-        if(!is.null(handler))
-          handler(h)
-        dlg$Destroy()
-        return(TRUE)
-      } else {
-        gwCat("Don't know this response")
-        print(response)
-        dlg$Destroy()
-        invisible(NA)
+      ans<-new.env()
+      gbasicdialog2 <- function(title="Dialog",widget,action=NULL,handler=NULL,x,y,..., toolkit=guiToolkit()){
+          parent <- gtkWindowNew(show=FALSE) ## modified from gbasicdialog of gWidgetRGtk2
+          parent$SetDefaultSize(width,height) ## not working
+          dlg = gtkDialog(title,
+          parent=parent,
+          flags = 0,
+          "gtk-cancel", GtkResponseType["cancel"],
+          "gtk-ok", GtkResponseType["ok"],
+          show=FALSE)
+          dlg$SetTitle(title)
+          dlg$Move(as.integer(x),as.integer(y)) ## use gtkWindowSetPosition?
+          obj <- new("gBasicDialogNoParentRGtk", block=dlg, widget=dlg, toolkit=guiToolkit("RGtk2"))
+          tag(obj,"handler") <- handler
+          tag(obj,"action") <- action
+          obj = new("guiDialog", widget = obj, toolkit = guiToolkit())
       }
-    }
-    ret <- gbasicdialog2(title=title,widget=x1,x=x,y=y,handler=function(h,...){
-      value <- svalue(x2)
-      assign("selected",value,env=h$action$env)
-      dispose(x1)
-    },action=list(env=ans))
-    ans
+      dlg <- gbasicdialog2(title=title,x=x,y=y,handler=function(h,...){
+          value <- svalue(x2)
+          assign("selected",value,env=h$action$env)
+          ## dispose(x1)
+      },action=list(env=ans))
+      x2<-gtable(list,multiple=multiple,con=dlg,expand=TRUE)
+      visible(dlg, set=TRUE)
+      ans
   }## end helper function
   items <- helper()$selected
   if (is.null(items)) items <- ""
