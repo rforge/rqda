@@ -98,7 +98,7 @@ splitDoc <- function(corpus, words= 30,  keep.sent=FALSE, keep.par.bound=TRUE) {
     }
 	spl.docs <- Corpus( VectorSource(spl.docs), readerControl = list( language = "french"))
 	row.names(new.DMD) <- NULL
-	spl.docs <- appendMeta(spl.docs, dmeta = new.DMD)
+	meta(spl.docs, names(new.DMD)) <- new.DMD
     return(spl.docs)
 }
 
@@ -202,12 +202,12 @@ setMethod("tmcollapse",
 
 
 setGeneric("tm2RQDA", function(object) standardGeneric("tm2RQDA"))
-setMethod("tm2RQDA",
-          	signature(object = "Corpus"),
-          	function(object) {
-          		require("RQDA", quietly = TRUE)
-          		u <- lapply(object,tmcollapse, collapse="\r")
-          		names(u) <- 1:length(u)
-          		write.FileList(u)
-          	}
-		)
+setMethod("tm2RQDA", signature(object = "Corpus"),
+          function(object) {
+              require("RQDA", quietly = TRUE)
+              u <- lapply(object,tmcollapse, collapse="\r")
+              fname <- tryCatch(meta(object,'fname')[,'fname'],error=function(e) 1:length(u))
+              names(u) <- fname
+              write.FileList(u)
+          }
+          )

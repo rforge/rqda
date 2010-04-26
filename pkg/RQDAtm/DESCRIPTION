@@ -1,12 +1,12 @@
 Package: RQDAtm
 Type: Package
-Title: RQDA and tm
+Title: A package to bridge RQDA and tm
 Version: 0.1-0
 Date: 2010-02-28
-Author: HUANG Ronggui
+Author: Jean-pierre Muelle and HUANG Ronggui
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
-Depends: RQDA, tm (>= 0.5-3)
-Description: Various functions bridging RQDA and tm.
+Depends: RQDA, tm (>= 0.5-3), methods
+Description: This package provides functions bridging RQDA and tm. The two functions are RQDA2tm and tm2RQDA.
 License: GPL
 LazyLoad: yes
 URL: http://rqda.r-forge.r-project.org/
