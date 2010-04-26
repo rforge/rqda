@@ -1,4 +1,4 @@
-strapplyByDictionary <- function(x,dictionary=NULL,...){
+tokenizeByDictionary <- function(x,dictionary=NULL,...){
     ## x id Corpus[[i]]
     ## dictionary is a tm::Dictionary
     ## this function extract dictionary as term from a Corpus to form a doc x term matrix.

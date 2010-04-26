@@ -1,2 +1,2 @@
-export(RQDA2tm,tm2RQDA,strapplyByDictionary)
+export(RQDA2tm,tm2RQDA,tokenizeByDictionary)
 
