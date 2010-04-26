@@ -1,2 +1,2 @@
-export(RQDA2tm,tm2RQDA)
+export(RQDA2tm,tm2RQDA,strapplyByDictionary)
 
