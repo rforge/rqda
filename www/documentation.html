@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
@@ -175,6 +175,22 @@ numbers of different codes give the command: GetCodingTable()
 <i>summary((getCodingsByOne(1) %and% getCodingsByOne(1)) %or% getCodingsByOne(3) %not% getCodingsByOne(4) )</i>
 
 <p>These operations apply to file ids, file names, case ids, case names, all of which are objects with class "RQDA.vector".
+
+<p><b>9.3. Text mining of codings</b>
+<p> By RQDAtm package, codings are easily converted into Corpus, then you can use tm package to do text mining. You need to open a rqda project first. Here is an example,
+<br>
+<i>
+<br> library(RQDAtm)
+<br> u1 <- RQDA2tm(c('legal fee'))
+<br> u2 <- RQDA2tm(c('evidence'))
+<br> u <- c(u1,u2)
+<br> d <- Dictionary(c('原告','被告','上诉')) ## the Dictionary contains Chinese words
+<br> dtm <- DocumentTermMatrix(u,list(tokenize=tokenizeByDictionary,minWordLength=1,dictionary=d)) # for e.g. English, you can use the default tokenize function.
+<br> inspect(dtm)
+<br> tm_filter(u,FUN=sFilter,'cid==4') ## filter subset of codings
+<br> findAssocs(dtm, '原告',0.2) ## find association
+<br> dissimilarity(dtm,method = "cosine")
+</i>
 
 <p><b>10. Settings</b>
 <p>"Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
