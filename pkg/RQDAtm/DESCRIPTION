@@ -5,7 +5,7 @@ Version: 0.1-0
 Date: 2010-02-28
 Author: HUANG Ronggui
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
-Depends: RQDA, tm
+Depends: RQDA, tm (>= 0.5-3)
 Description: Various functions bridging RQDA and tm.
 License: GPL
 LazyLoad: yes

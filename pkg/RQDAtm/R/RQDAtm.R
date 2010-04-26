@@ -11,7 +11,7 @@ setMethod("FRtreetager",
 			function(object, keep = c("word", "pos", "lemma") , reduce = TRUE, sep = "/", bef = "",  aft = "", ... ) {
 				zz <- file("~/treein.txt", "w", enc="latin1")
 				cat(Content(object), file=zz)
-				close(zz)              
+				close(zz)
 				system("~/cmd/tree-tagger-french ~/treein.txt  >treeout.txt ", ignore.stderr=TRUE)
 				con <- file("~/treeout.txt",  encoding="latin1")
 				toout <-  read.csv(con, header = FALSE, sep="\t", stringsAsFactors = FALSE)
@@ -37,12 +37,12 @@ setMethod("FRtreetager",
 			    else
 			    {
 					Content(object) <- vv
-				}	
+				}
 				return(object)
 			}
 	)
-	
-	
+
+
 splitDoc <- function(corpus, words= 30,  keep.sent=FALSE, keep.par.bound=TRUE) {
 	require("tm", quietly = TRUE)
     spl.docs <- NULL
@@ -56,14 +56,14 @@ splitDoc <- function(corpus, words= 30,  keep.sent=FALSE, keep.par.bound=TRUE) {
     		c.k <- c.k[nchar(c.k)!=0]
         }
         if (!keep.par.bound) {
-    		c.k <- paste(c.k,collapse=" ") 
+    		c.k <- paste(c.k,collapse=" ")
         }
         c.k <- c(c.k)
         s <- 1: length(c.k)
         for (i in s) {
             zz <- file("~/treein.txt", "w", enc="latin1")
 			cat( c.k[i], file=zz)
-			close(zz)              
+			close(zz)
 			system("~/cmd/tree-tagger-french ~/treein.txt  >treeout.txt ", ignore.stderr=TRUE)
 			con <- file("~/treeout.txt",  encoding="latin1")
 			tab.w.pos <- read.csv(con, header = FALSE, sep="\t", stringsAsFactors = FALSE)
@@ -86,7 +86,7 @@ splitDoc <- function(corpus, words= 30,  keep.sent=FALSE, keep.par.bound=TRUE) {
             for (j in 1:(length(ss)-1)) {
             	start.v <- min( (1:nrow(tab.w.pos)) [tab.w.pos$wc == (ss[j])] )
             	end.v <-   min( c( nrow(tab.w.pos)+1 , (1:nrow(tab.w.pos)) [tab.w.pos$wc == (ss[j+1])] ) -1)
-            	zt <- tab.w.pos[ start.v : end.v , 1] 
+            	zt <- tab.w.pos[ start.v : end.v , 1]
             	zt <- paste(zt, collapse=" ")
             	zl <- c(zl, zt)
       		}
@@ -100,8 +100,8 @@ splitDoc <- function(corpus, words= 30,  keep.sent=FALSE, keep.par.bound=TRUE) {
 	row.names(new.DMD) <- NULL
 	spl.docs <- appendMeta(spl.docs, dmeta = new.DMD)
     return(spl.docs)
-}	
-	
+}
+
 speci.calc <- function (tle)  {
 	rstle <- rowSums(tle)
 	cstle <- colSums(tle)
@@ -114,15 +114,15 @@ speci.calc <- function (tle)  {
 	return(specificite)
 }
 
-speci.extract <- function (speci, level) 
+speci.extract <- function (speci, level)
 {
     speci.cells <- which(speci <= (level) , arr.ind = TRUE)
     z <- NULL
     if (nrow(speci.cells) > 0) {
     o <- order(speci.cells[, 1])
     speci.cells <- speci.cells[o, ]
-    z <- data.frame(Doc = rownames(speci)[speci.cells[, 1]], 
-    				Terms = colnames(speci)[speci.cells[, 2]], 
+    z <- data.frame(Doc = rownames(speci)[speci.cells[, 1]],
+    				Terms = colnames(speci)[speci.cells[, 2]],
     				p.value = speci[ speci.cells] )
     }
     return(z)
@@ -150,44 +150,44 @@ speci.indic <- function (tle, tab.ind)  {
 
 rep.mod <- function(tle, speci.col, tab.ind.col, n=5)
 {
-	u <- as.matrix(tle) %*% as.vector(speci.col)	
+	u <- as.matrix(tle) %*% as.vector(speci.col)
 	u[tab.ind.col== 0] <- NA
     z <- order(u, na.last=TRUE, decreasing=FALSE)
     z <- z[1:n]
 	return(z)
 }
 
-RQDA2tm <- function(Code,language="french"){
-  ## require("tm", quietly = TRUE)
-  retrieval <- NULL
-  currentCode <- Code
-  if (length(currentCode)!=0)
-    {		
-      Encoding(currentCode) <- "UTF-8"
-      currentCid <- dbGetQuery(.rqda$qdacon,sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
-      ## reliable is more important   
-      if(!is.null(currentCid))
+RQDA2tm <- function(Code,language="eng"){
+    ## require("tm", quietly = TRUE)
+    retrieval <- NULL
+    currentCode <- Code
+    if (length(currentCode)!=0)
+    {
+        Encoding(currentCode) <- "UTF-8"
+        currentCid <- RQDAQuery(sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
+        ## reliable is more important
+        if(!is.null(currentCid))
         {
-          retrieval <- dbGetQuery(.rqda$qdacon,sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",as.numeric(currentCid)))
-          if (nrow(retrieval)!=0) 
-  				{
-                                  retrieval <-  retrieval[order( retrieval$fid),]
-                                  fid <- unique(retrieval$fid)
-                                  retrieval$fname <-""
-                                  for (i in fid)
-  					{
-                                          FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
-                                          tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
-                                          retrieval$fname[retrieval$fid==i] <- FileName
-  					}
-                                  Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
-				}
+            retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",as.numeric(currentCid)))
+            if (nrow(retrieval)!=0)
+            {
+                retrieval <-  retrieval[order( retrieval$fid),]
+                fid <- unique(retrieval$fid)
+                retrieval$fname <-""
+                for (i in fid)
+                {
+                    FileName <- RQDAQuery(sprintf("select name from source where status==1 and id==%i",i))[['name']]
+                    tryCatch(Encoding(FileName) <- "UTF-8",error=function(e){})
+                    retrieval$fname[retrieval$fid==i] <- FileName
+                }
+                Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
+            }
         }
     }
-  retrived <- tm:::Corpus(tm:::VectorSource(retrieval$seltext), readerControl = list( language = language))
-  retrieval$seltext <- NULL
-  retrived <- tm:::appendMeta(retrived, dmeta = retrieval)
-  return(retrived)
+    retrived <- tm:::Corpus(tm::VectorSource(retrieval$seltext), readerControl = list( language = language))
+    retrieval$seltext <- NULL
+    meta(retrived,tag=names(retrieval)) <- retrieval
+    return(retrived)
 }
 
 setGeneric("tmcollapse", function(object, collapse=" ") standardGeneric("tmcollapse"))
