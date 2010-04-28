@@ -11,7 +11,7 @@
   options(andMethod=c("overlap","exact","inclusion"))
   assign("optOld",optOld,env=.rqda)
   if (interactive()) {
-     cat("\nUse 'RQDA()' to start the programe.\n",fill=TRUE)
+     message("\nUse 'RQDA()' to start the programe.\n")
      RQDA()
    }
 }
