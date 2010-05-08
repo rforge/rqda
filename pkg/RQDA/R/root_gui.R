@@ -2,7 +2,8 @@ RQDA <- function() {
 ########################### GUI FOR ROOT
 ###########################
   ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis",parent=c(2,2),
-                             width=300,height=700,visible=FALSE,handler=function(h,...){
+                             width=300,height=(gdkScreenHeight()-20),
+                             visible=FALSE,handler=function(h,...){
                                close_proj(assignenv=.rqda)
                              }
                              )
