@@ -5,7 +5,7 @@ addSettingGUI <- function(container,width=12){
                   horizontal = FALSE,
                   children = list(
                     list(type="fieldset",
-                         columns = 1,
+                         columns = 2,
                          label = "Settings",
                          label.pos = "top",
                          label.font = c(weight="bold"),
