@@ -213,12 +213,13 @@ RQDA <- function() {
 
 ##########################
 ### set the positions
-  svalue(.codes_pan) <- 0.09
-  svalue(.codecat_pan)<-0.09
-  svalue(.filecat_pan)<-0.09
-  svalue(.case_pan)<-0.04
-  svalue(.attr_pan)<-0.04
-  svalue(.journal_pan)<-0.04
+###  svalue(.codes_pan) <- 0.09
+###  svalue(.codecat_pan)<-0.09
+###  svalue(.filecat_pan)<-0.09
+###  svalue(.case_pan)<-0.04
+###  svalue(.attr_pan)<-0.04
+###  svalue(.journal_pan)<-0.04
+### The effect depends on the screen size, which makes it difficult to look elegent for all PCs.
 
 ##########################
   AddHandler()
