@@ -77,7 +77,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       dbGetQuery(con,"create table caselinkage  (caseid integer, fid integer,
                                                 selfirst real, selend real, status integer,
                                             owner text, date text, memo text)")
-      
+
       if (dbExistsTable(con,"attributes")) dbRemoveTable(con, "attributes")
       dbGetQuery(.rqda$qdacon,"create table attributes (name text, status integer, date text, dateM text, owner text,memo text)")
       if (dbExistsTable(con,"caseAttr")) dbRemoveTable(con, "caseAttr")
@@ -178,7 +178,7 @@ open_proj <- function(path,conName="qdacon",assignenv=.rqda,...){
 
 
 
-close_proj <- function(conName="qdacon",assignenv=.rqda,...){
+closeProject <- function(conName="qdacon",assignenv=.rqda,...){
   tryCatch({
     con <- get(conName,assignenv)
     if (isIdCurrent(con)) {
