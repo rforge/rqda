@@ -118,13 +118,16 @@ ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,
         assign(sprintf(".%smemo2",prefix),
                gpanedgroup(horizontal = FALSE, con=get(sprintf(".%smemo",prefix),env=.rqda)),
                env=.rqda)
-        gbutton("Save Journal",con=get(sprintf(".%smemo2",prefix),env=.rqda),handler=function(h,...){
-          newcontent <- svalue(W)
-          newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
-          Encoding(Selected) <- "UTF-8"
-          dbGetQuery(.rqda$qdacon,sprintf("update %s set journal='%s' where name='%s'",dbTable,newcontent,enc(Selected)))
+        saveJournalButton <- gbutton("Save Journal",con=get(sprintf(".%smemo2",prefix),env=.rqda),handler=function(h,...){
+            newcontent <- svalue(W)
+            newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
+            Encoding(Selected) <- "UTF-8"
+            dbGetQuery(.rqda$qdacon,sprintf("update %s set journal='%s' where name='%s'",dbTable,newcontent,enc(Selected)))
+            enabled(button$saveJournalB) <- FALSE
         }
-                )## end of save button
+                                     )## end of save button
+        assign("saveJournalB",saveJournalButton,env=button)
+        enabled(saveJournalButton) <- FALSE
         tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
         font <- pangoFontDescriptionFromString(.rqda$font)
         gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
@@ -134,6 +137,9 @@ ViewJournalWidget <- function(prefix="Journal",widget=.rqda$.JournalNamesWidget,
         Encoding(prvcontent) <- "UTF-8"
         W <- get(sprintf(".%smemoW",prefix),env=.rqda)
         add(W,prvcontent,do.newline=FALSE)
+        addHandlerKeystroke(tmp,handler=function(h,...){
+            enabled(button$saveJournalB) <- TRUE
+        })
         addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...){
             withinWidget <- svalue(get(sprintf(".%smemoW",prefix),env=.rqda))
             InRQDA <- dbGetQuery(.rqda$qdacon, sprintf("select journal from %s where name='%s'",dbTable, enc(Selected)))[1, 1]
