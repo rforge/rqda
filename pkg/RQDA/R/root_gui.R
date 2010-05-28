@@ -1,6 +1,10 @@
 RQDA <- function() {
 ########################### GUI FOR ROOT
 ###########################
+if (isTRUE(.rqda$isLaunched)) {
+ message("RQDA has been launched.") 
+ } else 
+{
   ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis",parent=c(2,2),
                              width=300,height=(gdkScreenHeight()-65),
                              visible=FALSE,handler=function(h,...){
@@ -197,6 +201,7 @@ RQDA <- function() {
   assign(".currentProj",.currentProj,env=.rqda)
   assign(".SettingsGui",.settings_gui,env=.rqda)
   assign("font","Sans 11",env=.rqda)
+  assign("isLaunched",TRUE,env=.rqda)
 
 ##########################
   gtkWidgetSetSensitive(.fnames_rqda@widget@widget,FALSE)
@@ -223,7 +228,7 @@ RQDA <- function() {
 
 ##########################
   AddHandler()
-}
+}}
 ## end of function RQDA
 
 
@@ -235,6 +240,7 @@ AddHandler <- function(){
     ## make sure is the project should be closed by issuing a confirm window.
     val <- gconfirm("Really EXIT?\n\nYou can use RQDA() to start this program again.", parent=h$obj)
     if(as.logical(val)) {
+      assign("isLaunched",FALSE,env=.rqda)
       return(FALSE) # destroy
     } else {
       return(TRUE) # don't destroy
