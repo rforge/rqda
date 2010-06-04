@@ -91,7 +91,9 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       RQDAQuery("alter table caseAttr add column status integer")
       RQDAQuery("alter table fileAttr add column status integer")
       try(RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, status integer)"),TRUE)
+      if (dbExistsTable(con,"image")) dbRemoveTable(con, "image")
       RQDAQuery("create table image (name text, id integer, date text, dateM text, owner text,status integer)")
+      if (dbExistsTable(con,"imageCoding")) dbRemoveTable(con, "imageCoding")
       RQDAQuery("create table imageCoding (cid integer,iid integer,x1 integer, y1 integer, x2 integer, y2 integer, memo text, date text, dateM text, owner text,status integer)")
     }
   }
