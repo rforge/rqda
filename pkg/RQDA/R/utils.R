@@ -120,15 +120,24 @@ MemoWidget <- function(prefix,widget,dbTable){
               assign(sprintf(".%smemo2",prefix),
                      gpanedgroup(horizontal = FALSE, con=get(sprintf(".%smemo",prefix),env=.rqda)),
                      env=.rqda)
-              gbutton("Save Memo",con=get(sprintf(".%smemo2",prefix),env=.rqda),handler=function(h,...){
+              mbut <- gbutton("Save Memo",con=get(sprintf(".%smemo2",prefix),env=.rqda),handler=function(h,...){
                   newcontent <- svalue(W)
                   newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
                   dbGetQuery(.rqda$qdacon,sprintf("update %s set memo='%s' where name='%s'",dbTable,newcontent,enc(Selected)))
+                  mbut <- get(sprintf("buttonOf.%smemo",prefix),env=button)
+                  enabled(mbut) <- FALSE
               }
-                      )## end of save memo button
+                              )## end of save memo button
+              assign(sprintf("buttonOf.%smemo",prefix),mbut,env=button) ## assign the button object
+              enabled(mbut) <- FALSE
+
               tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
               font <- pangoFontDescriptionFromString(.rqda$font)
               gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
+              addHandlerKeystroke(tmp,handler=function(h,...){
+                  mbut <- get(sprintf("buttonOf.%smemo",prefix),env=button)
+                  enabled(mbut) <- TRUE
+              })##
               assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
               prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable,enc(Selected)))[1,1]
               if (is.na(prvcontent)) prvcontent <- ""
@@ -136,7 +145,10 @@ MemoWidget <- function(prefix,widget,dbTable){
               W <- get(sprintf(".%smemoW",prefix),env=.rqda)
               add(W,prvcontent,do.newline=FALSE)
               addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...)  {!CloseYes(Selected)})
-          }}}}
+          }
+      }
+  }
+}
 
 ## summary coding information
 GetCodingTable <- function(){
