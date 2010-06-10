@@ -15,6 +15,9 @@ if (isTRUE(.rqda$isLaunched)) {
   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
   .root_rqdagui@widget@widget$SetIconFromFile(mainIcon)
   ## set an icon for the main programme.
+  if (is.null(getOption("widgetCoordinate"))) {
+     options(widgetCoordinate=c(size(.root_rqdagui)+2,2))
+  }
 
   ".nb_rqdagui" <- gnotebook(4,container=.root_rqdagui,closebuttons=FALSE)
 
