@@ -71,11 +71,12 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
     dispose(.rqda$.root_edit)
   }
   SelectedFileName <- FileName
-  gw <- gwindow(title = SelectedFileName,parent = getOption("widgetCoordinate"),
+  gw <- gwindow(title = SelectedFileName,parent = .rqda$.root_rqdagui,
                 width = getOption("widgetSize")[1], height = getOption("widgetSize")[2]
                 )
   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
   gw@widget@widget$SetIconFromFile(mainIcon)
+  getToolkitWidget(gw)$Move(getOption("widgetCoordinate")[1],getOption("widgetCoordinate")[2])
   assign(".root_edit", gw, env = .rqda)
   .root_edit <- get(".root_edit", .rqda)
   tmp <- gtext(container=.root_edit)
@@ -206,7 +207,7 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
             }
           })## update the coding table (seltext,selfirst, selend), on the rowid (use rowid to name the marks)
         }
-        
+
         if (nrow(mark_indexS)!=0){ ## only manipulate coding2
           idxS <- apply(mark_indexS, 1, FUN = function(x) {
             m1 <- buffer$GetMark(sprintf("%s.1S", x[3]))
@@ -225,7 +226,7 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
             }
           })
         } ## end of updating coding2
-        
+
         if (nrow(mark_idx_case)!=0){
           idx_case <- apply(mark_idx_case, 1, FUN = function(x) {
             m1 <- buffer$GetMark(sprintf("c%s.1", x["rowid"]))
@@ -244,7 +245,7 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
         }
         enabled(button$EdiFilB) <- FALSE
       })## end of save button
-      
+
       assign("EdiFilB",EdiFilB,env=button)
       enabled(EdiFilB) <- FALSE
       tmp <- gtext(container=.rqda$.root_edit2)
@@ -284,7 +285,7 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
           mark <- buffer$CreateMark(sprintf("%s.2S",x[3]),where=iter$iter)
         }) ## end of apply
       }
-      
+
       mark_idx_case<- dbGetQuery(.rqda$qdacon,sprintf("select selfirst,selend,rowid from caselinkage where fid=%i and status=1",
                                                       IDandContent$id))
       if (nrow(mark_idx_case)!=0){
