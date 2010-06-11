@@ -2,8 +2,8 @@ RQDA <- function() {
 ########################### GUI FOR ROOT
 ###########################
 if (isTRUE(.rqda$isLaunched)) {
- message("RQDA has been launched.") 
- } else 
+ message("RQDA has been launched.")
+ } else
 {
   ".root_rqdagui" <- gwindow(title = "RQDA: Qualitative Data Analysis",parent=c(2,2),
                              width=300,height=(gdkScreenHeight()-65),
@@ -15,10 +15,6 @@ if (isTRUE(.rqda$isLaunched)) {
   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
   .root_rqdagui@widget@widget$SetIconFromFile(mainIcon)
   ## set an icon for the main programme.
-  if (is.null(getOption("widgetCoordinate"))) {
-     options(widgetCoordinate=c(size(.root_rqdagui)+2,2))
-  }
-
   ".nb_rqdagui" <- gnotebook(4,container=.root_rqdagui,closebuttons=FALSE)
 
 ########################### GUI FOR PROJECT
@@ -182,6 +178,9 @@ if (isTRUE(.rqda$isLaunched)) {
   addSettingGUI(cont=.settings_gui)
 
 ######################### Put them together
+  if (is.null(getOption("widgetCoordinate"))) {
+      options(widgetCoordinate=c(size(.root_rqdagui)[1]+12,2))
+  }
 #########################
   visible(.root_rqdagui) <- TRUE
   svalue(.nb_rqdagui) <- 1 ## make sure the project tab gain the focus.
