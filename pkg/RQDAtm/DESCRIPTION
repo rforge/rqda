@@ -5,7 +5,7 @@ Version: 0.1-0
 Date: 2010-02-28
 Author: Jean-pierre Muelle and HUANG Ronggui
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
-Depends: RQDA, tm (>= 0.5-3), methods, gsubfn
+Depends: RQDA, tm (>= 0.5-3), methods, gsubfn, rJava
 Description: This package provides functions bridging RQDA and tm. The two functions are RQDA2tm and tm2RQDA.
 License: GPL
 LazyLoad: yes

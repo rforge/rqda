@@ -1,5 +1,5 @@
 # tm-adtFR.R
-# J-P MÃ¼ller, SSP/ UNIL, jean-pierre.mueller@unil.ch
+# J-P M¨¹ller, SSP/ UNIL, jean-pierre.mueller@unil.ch
 # version 1.1 du 13 mars 2009
 # distributed under the terms of the GNU General Public License Version 2, June 1991.
 # http://wwwpeople.unil.ch/jean-pierre.mueller/ATO_avec_R_files/tm-adtFR.R
@@ -157,13 +157,13 @@ rep.mod <- function(tle, speci.col, tab.ind.col, n=5)
 	return(z)
 }
 
-RQDA2tm <- function(Code,language="eng"){
+RQDA2tm <- function(Code,language="eng",byFile = FALSE){
     ## require("tm", quietly = TRUE)
     retrieval <- NULL
     currentCode <- Code
     if (length(currentCode)!=0)
     {
-        Encoding(currentCode) <- "UTF-8"
+        currentCode <- iconv(currentCode,to="UTF-8")
         currentCid <- RQDAQuery(sprintf("select id from freecode where name== '%s' ",currentCode))[1,1]
         ## reliable is more important
         if(!is.null(currentCid))
@@ -183,11 +183,22 @@ RQDA2tm <- function(Code,language="eng"){
                 Encoding(retrieval$seltext) <-  Encoding(retrieval$fname) <- "UTF-8"
             }
         }
+
+        if (byFile == TRUE){
+            retrieval_f <- data.frame(NULL)
+            for (j in 1 : nrow(retrieval)){
+                retrieval_f[paste(retrieval[j,"fid"]),"seltext"] <- paste(retrieval_f[paste(retrieval[j,"fid"]),"seltext"]
+                                                                          ,retrieval[j,"seltext"])
+                retrieval_f[paste(retrieval[j,"fid"]),"fname"] <- retrieval[j,"fname"]
+            }
+            retrieval_f[,"fid"] <- as.numeric(rownames(retrieval_f))
+            retrieval <- retrieval_f
+        }
+        retrived <- tm:::Corpus(tm::VectorSource(retrieval$seltext), readerControl = list( language = language))
+        retrieval$seltext <- NULL
+        meta(retrived,tag=names(retrieval)) <- retrieval
+        return(retrived)
     }
-    retrived <- tm:::Corpus(tm::VectorSource(retrieval$seltext), readerControl = list( language = language))
-    retrieval$seltext <- NULL
-    meta(retrived,tag=names(retrieval)) <- retrieval
-    return(retrived)
 }
 
 setGeneric("tmcollapse", function(object, collapse=" ") standardGeneric("tmcollapse"))
