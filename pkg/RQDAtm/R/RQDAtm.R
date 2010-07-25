@@ -168,7 +168,9 @@ RQDA2tm <- function(Code,language="eng",byFile = FALSE){
         ## reliable is more important
         if(!is.null(currentCid))
         {
-            retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",as.numeric(currentCid)))
+            ## retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend,seltext from coding where status==1 and cid=%i",as.numeric(currentCid)))
+            retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend, seltext from coding, source where coding.status==1 and coding.cid= %i and source.id == coding.fid",as.numeric(currentCid)))
+            ## the new sql syntax is provided by Benson Ye 2010-7-25
             if (nrow(retrieval)!=0)
             {
                 retrieval <-  retrieval[order( retrieval$fid),]
