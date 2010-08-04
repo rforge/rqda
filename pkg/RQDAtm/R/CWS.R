@@ -1,19 +1,19 @@
 ## Chinese Word Segmentation
-CWS <- CWSimdict <- function (text,stpwords=FALSE)
+CWSimdict <- function (text)
 {
     if (length(text)!= 1) stop("text must be length-1 character vector.")
-    if (isTRUE(stpwords)) zj <- "true" else zj <- "false"
     .jinit(system.file("plugins","CWSimdict.jar",package="RQDAtm"))
-    ## the plugins are from http://code.google.com/p/imdict-chinese-analyzer/
-    hjw <- .jnew("org.apache.lucene.analysis.cn.hzfc")
-    outRef <- .jcall(hjw, "S" , "txtMethod",text,zj, evalString = FALSE)
+    ## the plugins are from http://code.google.com/p/imdict-chinese-analyzer/ and lucene 2.93
+    imdict <- .jnew("org.apache.lucene.analysis.cn.CWSimdict")
+    outRef <- .jcall(imdict, "S" , "txtMethod",text, evalString = FALSE)
     ans <- .jstrVal(outRef)
     ans
 }
 
 CWSmmseg <- function (text)
 {
-## http://code.google.com/p/mmseg4j/
+## the plugins are from http://code.google.com/p/mmseg4j/
+## this one seems most meaningful
     if (length(text)!= 1) stop("text must be length-1 character vector.")
     .jinit(system.file("plugins","CWSmmseg4j.jar",package="RQDAtm"))
     mmseg <- .jnew("com/chenlb/mmseg4j/example/CWSmmseg")
@@ -24,7 +24,7 @@ CWSmmseg <- function (text)
 
 CWSik <- function (text)
 {
-## http://code.google.com/p/ik-analyzer/
+## the plugins are from http://code.google.com/p/ik-analyzer/
     if (length(text)!= 1) stop("text must be length-1 character vector.")
     .jinit(system.file("plugins","IKCWS.jar",package="RQDAtm"))
     ikcws <- .jnew("org/wltea/analyzer/example/IKCWS")

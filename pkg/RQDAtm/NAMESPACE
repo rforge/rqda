@@ -1,2 +1,2 @@
-export(RQDA2tm,tm2RQDA,CWS,CWSmmseg,CWSik)
+export(RQDA2tm,tm2RQDA,CWSimdict,CWSmmseg,CWSik)
 
