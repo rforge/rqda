@@ -1,4 +1,0 @@
-javac com/chenlb/mmseg4j/example/CWSmmseg.java
-##java com/chenlb/mmseg4j/example/CWSmmseg "测试一下"
-jar cvf CWSmmseg4j.jar ./com ./data
-
