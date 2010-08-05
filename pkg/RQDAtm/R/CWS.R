@@ -1,11 +1,12 @@
 ## Chinese Word Segmentation
-CWSimdict <- function (text)
+CWSimdict <- function (text,stpword=TRUE)
 {
     if (length(text)!= 1) stop("text must be length-1 character vector.")
+    if (isTRUE(stpword)) stpword <- "true" else stpword="false"
     .jinit(system.file("plugins","CWSimdict.jar",package="RQDAtm"))
     ## the plugins are from http://code.google.com/p/imdict-chinese-analyzer/ and lucene 2.93
     imdict <- .jnew("org.apache.lucene.analysis.cn.CWSimdict")
-    outRef <- .jcall(imdict, "S" , "txtMethod",text, evalString = FALSE)
+    outRef <- .jcall(imdict, "S" , "txtMethod", text, stpword, evalString = FALSE)
     ans <- .jstrVal(outRef)
     ans
 }
