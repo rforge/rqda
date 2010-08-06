@@ -5,11 +5,12 @@
   Constructs a text document collection (corpus) from RQDA codings.
 }
 \usage{
-RQDA2tm(Code, language = "eng")
+RQDA2tm(Code, language = "eng", byFile = FALSE)
 }
 \arguments{
   \item{Code}{character vector of length 1, name of a code in RQDA.}
   \item{language}{argument passed to \code{\link[tm]{Corpus}}}
+  \item{byFile}{TRUE or FALSE}
 }
 \details{
   To retrieve the codings of \code{Code}, and turn the codings of 'Code' into a corpus.
