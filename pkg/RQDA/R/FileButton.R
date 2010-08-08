@@ -130,18 +130,22 @@ AddNewFileFun <- function(){
           FileNamesUpdate()
           enabled(button$AddNewFilB) <- FALSE
           enabled(button$AddNewFilB2) <- FALSE
-        }
       }
-    } ## end of saveFileFun
+        return(TRUE)
+    } else {
+        return(FALSE)
+    }
+  } ## end of saveFileFun
 
     gl <- glayout(homogeneous=T,con=get(".AddNewFileWidget2",env=.rqda))
     AddNewFilB <- gbutton("Save To Project", handler=function(h,...){saveFileFun()})
     enabled(AddNewFilB) <- FALSE
     assign("AddNewFilB",AddNewFilB,env=button)
     AddNewFilB2 <- gbutton("Save and close", handler=function(h,...){
-      saveFileFun()
-      dispose(.rqda$.AddNewFileWidget)
-    })
+        suc <- saveFileFun()
+        if (suc) dispose(.rqda$.AddNewFileWidget)
+    }
+                           )
     enabled(AddNewFilB2) <- FALSE
     assign("AddNewFilB2",AddNewFilB2,env=button)
     gl[1,1] <- AddNewFilB
