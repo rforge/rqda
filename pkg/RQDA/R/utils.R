@@ -430,7 +430,9 @@ ShowFileProperty <- function(Fid = GetFileId(,"selected"),focus=TRUE) {
     }
     if (length(Fid)>1) val <- "Please select one file only."
     tryCatch(svalue(.rqda$.sfp) <- val,error=function(e){
-      gw <- gwindow("File Property",parent=getOption("widgetCoordinate")+c(0,635),width=600,height=50)
+      gw <- gwindow("File Property",parent=size(.rqda$.root_rqdagui)+c(19,-50),
+            width = min(c(gdkScreenWidth() - size(.rqda$.root_rqdagui)[1] -20,getOption("widgetSize")[1])),
+            height = 50)
       mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
       gw@widget@widget$SetIconFromFile(mainIcon)
       sfp <- glabel(val,cont=gw)

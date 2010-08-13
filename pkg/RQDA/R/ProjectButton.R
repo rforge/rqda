@@ -62,7 +62,7 @@ openProject <- function(path,updateGUI=FALSE) {
         svalue(.rqda$.currentProj) <- "Opening ..."
         UpgradeTables()
         tryCatch(CodeNamesUpdate(sortByTime=FALSE),error=function(e){})
-        tryCatch(FileNamesUpdate(),error=function(e){})
+        tryCatch(FileNamesUpdate(sortByTime=FALSE),error=function(e){})
         tryCatch(CaseNamesUpdate(),error=function(e){})
         tryCatch(UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat"),error=function(e){})
         tryCatch(UpdateCodeofCatWidget(),error=function(e){})

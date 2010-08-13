@@ -37,15 +37,15 @@ ImportFile <- function(path,encoding=.rqda$encoding,con=.rqda$qdacon,...){
 }
 
 
-FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sort=TRUE,decreasing = FALSE,...){
+FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sortByTime=TRUE,decreasing = FALSE,...){
   ##update file names list in the FileNamesWidget
   wopt <- options(warn=-2)
   on.exit(options(wopt))
-  source <- dbGetQuery(.rqda$qdacon, "select name, date, id from source where status=1")
+  source <- dbGetQuery(.rqda$qdacon, "select name, date, id from source where status=1 order by lower(name)")
   if (nrow(source)!=0) {
     fnames <- source$name
     Encoding(fnames) <- "UTF-8"
-    if (sort){
+    if (sortByTime){
       fnames <- fnames[OrderByTime(source$date,decreasing=decreasing)]
     }
     tryCatch(FileNamesWidget[] <- fnames,error=function(e){})
@@ -71,8 +71,10 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
     dispose(.rqda$.root_edit)
   }
   SelectedFileName <- FileName
-  gw <- gwindow(title = SelectedFileName,parent = .rqda$.root_rqdagui,
-                width = getOption("widgetSize")[1], height = getOption("widgetSize")[2]
+  wnh <- size(RQDA:::.rqda$.root_rqdagui) ## size of the main window
+  gw <- gwindow(title = SelectedFileName,parent = wnh, ## .rqda$.root_rqdagui,
+                width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])),
+                height = min(c(wnh[2],getOption("widgetSize")[2]))
                 )
   mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
   gw@widget@widget$SetIconFromFile(mainIcon)
