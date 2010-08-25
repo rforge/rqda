@@ -319,8 +319,9 @@ write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...
   ## import a list of files into the source table
   ## FileList is a list of file content, with names(FileList) the name of the files.
   WriteToTable <- function(Fname,content){
-    ## helper function
-    FnameUTF8 <- iconv(Fname,to="UTF-8")
+      ## helper function
+      ## FnameUTF8 <- iconv(Fname,to="UTF-8")
+      FnameUTF8 <- enc(Fname, encoding=encoding)
     content <- enc(content,encoding=encoding) ## adjust encoding argument.
     if (Encoding(content)!="UTF-8"){
       content <- iconv(content,to="UTF-8") ## UTF-8 file content
@@ -343,7 +344,7 @@ write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...
   if (write ) {
     dbGetQuery(con,sprintf("insert into source (name, file, id, status,date,owner )
                              values ('%s', '%s',%i, %i, '%s', '%s')",
-                           Fname,content, nextid, 1,date(),.rqda$owner))
+                           FnameUTF8,content, nextid, 1,date(),.rqda$owner))
   }
   }
   FileNames <- names(FileList)

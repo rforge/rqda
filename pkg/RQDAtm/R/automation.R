@@ -22,7 +22,7 @@ vectorTermDF <- function(text,var){
     }
     text <- Corpus(VectorSource(re))
     dtm <- DocumentTermMatrix(text,control = list(minWordLength=2,removeNumbers=TRUE))
-    predData <- as.data.frame(as.matrix(dtm))
+    preData <- as.data.frame(as.matrix(dtm))
     ndata <- as.data.frame(matrix(data = 0, nrow = nrow(preData), ncol = length(var)))
     names(ndata) <- var
     idx <- match(names(preData),names(ndata))
