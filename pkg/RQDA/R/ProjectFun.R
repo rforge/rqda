@@ -237,7 +237,7 @@ ProjectMemoWidget <- function(){
     .projmemo <- get(".projmemo",.rqda)
     .projmemo2 <- gpanedgroup(horizontal = FALSE, con=.projmemo)
     ## use .projmemo2, so can add a save button to it.
-    gbutton("Save memo",con=.projmemo2,handler=function(h,...){
+    proj_memoB <- gbutton("Save memo",con=.projmemo2,handler=function(h,...){
       ## send the new content of memo back to database
       newcontent <- svalue(W)
       ## Encoding(newcontent) <- "UTF-8"
@@ -246,9 +246,17 @@ ProjectMemoWidget <- function(){
                                       newcontent)
                  ## have to quote the character in the sql expression
                  )
-    }
+      mbut <- get("proj_memoB",env=button)
+      enabled(mbut) <- FALSE ## grey out the  button
+  }
             )## end of save memo button
+    enabled(proj_memoB) <- FALSE
+    assign("proj_memoB",proj_memoB,env=button)
     tmp <- gtext(container=.projmemo2,font.attr=c(sizes="large"))
+    addHandlerKeystroke(tmp,handler=function(h,...){
+        mbut <- get("proj_memoB",env=button)
+        enabled(mbut) <- TRUE
+    })##
     font <- pangoFontDescriptionFromString(.rqda$font)
     gtkWidgetModifyFont(tmp@widget@widget,font)
     assign(".projmemocontent",tmp,env=.rqda)
