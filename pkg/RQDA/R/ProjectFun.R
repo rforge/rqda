@@ -227,10 +227,11 @@ ProjectMemoWidget <- function(){
     tryCatch(dispose(.rqda$.projmemo),error=function(e) {})
     ## Close the open project memo first, then open a new one
     ## .projmemo is the container of .projmemocontent,widget for the content of memo
-    gw <- gwindow(title="Project Memo", parent=getOption("widgetCoordinate"),
-                            width = getOption("widgetSize")[1],
-                            height = getOption("widgetSize")[2]
-                       )
+    wnh <- size(RQDA:::.rqda$.root_rqdagui) ## size of the main window
+    gw <- gwindow(title="Project Memo", parent=c(wnh[1]+10,2),
+                width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])),
+                height = min(c(wnh[2],getOption("widgetSize")[2]))
+                 )
     mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
     gw@widget@widget$SetIconFromFile(mainIcon)
     assign(".projmemo", gw, env=.rqda)
