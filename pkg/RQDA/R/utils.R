@@ -274,34 +274,19 @@ RunOnSelected <- function(x,multiple=TRUE,expr,enclos=parent.frame(),title=NULL,
 }
 
 
-gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,x=420,y=2,...){
+gselect.list <- function(list,multiple=TRUE,title=NULL,width=200, height=500,...){
   ## gtk version of select.list(), revised on 21 Apr. 2010 to fix a bug (crash R with 2.18 or newer libgtk2).
   ## Thanks go to John Verzani for his help.
   if (is.null(title)) title <- ifelse(multiple,"Select one or more","Select one")
   helper <- function(){
       ans<-new.env()
-      gbasicdialog2 <- function(title="Dialog",widget,action=NULL,handler=NULL,x,y,..., toolkit=guiToolkit()){
-          parent <- gtkWindowNew(show=FALSE) ## modified from gbasicdialog of gWidgetRGtk2
-          parent$SetDefaultSize(width,height) ## not working
-          dlg = gtkDialog(title,
-          parent=parent,
-          flags = 0,
-          "gtk-cancel", GtkResponseType["cancel"],
-          "gtk-ok", GtkResponseType["ok"],
-          show=FALSE)
-          dlg$SetTitle(title)
-          dlg$Move(as.integer(x),as.integer(y)) ## use gtkWindowSetPosition?
-          obj <- new("gBasicDialogNoParentRGtk", block=dlg, widget=dlg, toolkit=guiToolkit("RGtk2"))
-          tag(obj,"handler") <- handler
-          tag(obj,"action") <- action
-          obj = new("guiDialog", widget = obj, toolkit = guiToolkit())
-      }
-      dlg <- gbasicdialog2(title=title,x=x,y=y,handler=function(h,...){
+       dlg <- gbasicdialog(title=title,handler=function(h,...){
           value <- svalue(x2)
           assign("selected",value,env=h$action$env)
-          ## dispose(x1)
-      },action=list(env=ans))
+          },action=list(env=ans))
       x2<-gtable(list,multiple=multiple,con=dlg,expand=TRUE)
+      dlg@widget@widget$Move(size(RQDA:::.rqda$.root_rqdagui)[1],2)
+      size(dlg) <- c(width,height)
       visible(dlg, set=TRUE)
       ans
   }## end helper function
