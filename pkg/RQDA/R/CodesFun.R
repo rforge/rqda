@@ -281,7 +281,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
       tryCatch(eval(parse(text=sprintf("dispose(.rqda$.codingsOf%s)",currentCid))),error=function(e){})
       wnh <- size(RQDA:::.rqda$.root_rqdagui) ## size of the main window
       .gw <- gwindow(title=title, parent=c(wnh[1]+10,2),
-                     width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])), 
+                     width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])),
                      height = min(c(wnh[2],getOption("widgetSize")[2]))
                      )
       mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
@@ -542,43 +542,54 @@ DeleteAnnotationAnchorByMark <- function(markname){
 
 
 openAnnotation <- function(New=TRUE,pos,fid,rowid,AnchorPos=NULL){
-  tryCatch(dispose(.rqda$.annotation),error=function(e) {})
-  wnh <- size(RQDA:::.rqda$.root_rqdagui)
-  .annotation <- gwindow(title="Annotation",parent=c(wnh[1]+10,2),
-                        width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])),
-                        height = min(c(wnh[2],getOption("widgetSize")[2]))
-                        )
-  mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
-  .annotation@widget@widget$SetIconFromFile(mainIcon)
-  assign(".annotation",.annotation, env=.rqda)
-  .annotation2 <- gpanedgroup(horizontal = FALSE, con=.annotation)
-  gbutton("Save Annotation",con=.annotation2,handler=function(h,...){
-    newcontent <- svalue(W)
-    newcontent <- enc(newcontent,encoding="UTF-8")
-    if (newcontent != ""){
-    if (New) {
-      if (is.null(AnchorPos)) AnchorPos <- pos
-      InsertAnnotation(index=pos,fid=fid,rowid=rowid,AnchorPos=AnchorPos)
-      RQDAQuery(sprintf("insert into annotation (fid,position,annotation,owner,date,status) values (%i,%i,'%s','%s','%s',1)", fid,pos,newcontent,.rqda$owner,date()))
-      New <<- FALSE ## note the replacement <<-
-    } else {
-      ## RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1", newcontent,fid,pos))
-      RQDAQuery(sprintf("update annotation set annotation='%s' where rowid==%s and status=1", newcontent,rowid))
-    }} else {## action for empty new content.
-      tryCatch(DeleteAnnotationAnchorByMark(sprintf("%s.3",rowid)),error=function(e){})
-      ## RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1", newcontent,fid,pos))
-      RQDAQuery(sprintf("update annotation set annotation='%s' where rowid==%s and status=1", newcontent,rowid))
-      ## RQDAQuery(sprintf("update annotation set status=0 where fid=%i and position=%s and status=1",fid,pos))
-      RQDAQuery(sprintf("update annotation set status=0 where rowid==%s and status=1",rowid))
+    tryCatch(dispose(.rqda$.annotation),error=function(e) {})
+    wnh <- size(RQDA:::.rqda$.root_rqdagui)
+    .annotation <- gwindow(title="Annotation",parent=c(wnh[1]+10,2),
+                           width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])),
+                           height = min(c(wnh[2],getOption("widgetSize")[2]))
+                           )
+    mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+    .annotation@widget@widget$SetIconFromFile(mainIcon)
+    assign(".annotation",.annotation, env=.rqda)
+    .annotation2 <- gpanedgroup(horizontal = FALSE, con=.annotation)
+    savAnnB <-
+    gbutton("Save Annotation",con=.annotation2,handler=function(h,...){
+        newcontent <- svalue(W)
+        newcontent <- enc(newcontent,encoding="UTF-8")
+        if (newcontent != ""){
+            if (New) {
+                if (is.null(AnchorPos)) AnchorPos <- pos
+                InsertAnnotation(index=pos,fid=fid,rowid=rowid,AnchorPos=AnchorPos)
+                RQDAQuery(sprintf("insert into annotation (fid,position,annotation,owner,date,status) values (%i,%i,'%s','%s','%s',1)", fid,pos,newcontent,.rqda$owner,date()))
+                New <<- FALSE ## note the replacement <<-
+            } else {
+                ## RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1", newcontent,fid,pos))
+                RQDAQuery(sprintf("update annotation set annotation='%s' where rowid==%s and status=1", newcontent,rowid))
+            }
+        } else {## action for empty new content.
+            tryCatch(DeleteAnnotationAnchorByMark(sprintf("%s.3",rowid)),error=function(e){})
+            ## RQDAQuery(sprintf("update annotation set annotation='%s' where fid=%i and position=%s and status=1", newcontent,fid,pos))
+            RQDAQuery(sprintf("update annotation set annotation='%s' where rowid==%s and status=1", newcontent,rowid))
+            ## RQDAQuery(sprintf("update annotation set status=0 where fid=%i and position=%s and status=1",fid,pos))
+            RQDAQuery(sprintf("update annotation set status=0 where rowid==%s and status=1",rowid))
+        }
+        enabled(savAnnB) <- FALSE
     }
-  })## end of save button
-  assign(".annotationContent",gtext(container=.annotation2,font.attr=c(sizes="large")),env=.rqda)
+            )## end of save button
+    enabled(savAnnB) <- FALSE
+    assign("savAnnB", savAnnB, env=button)
+    assign(".annotationContent",gtext(container=.annotation2,font.attr=c(sizes="large")),env=.rqda)
     ## prvcontent <- RQDAQuery(sprintf("select annotation from annotation where fid=%i and position=%s and status=1",fid,pos))[1,1]
     prvcontent <- RQDAQuery(sprintf("select annotation from annotation where rowid==%s and status==1",rowid))[1,1]
-  if (is.null(prvcontent) || is.na(prvcontent)) prvcontent <- ""
-  Encoding(prvcontent) <- "UTF-8"
-  W <- get(".annotationContent",env=.rqda)
-  add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+    if (is.null(prvcontent) || is.na(prvcontent)) prvcontent <- ""
+    Encoding(prvcontent) <- "UTF-8"
+    W <- get(".annotationContent",env=.rqda)
+    addHandlerKeystroke(W,handler=function(h,...){
+        mbut <- get("savAnnB",env=button)
+        enabled(mbut) <- TRUE
+    }
+                        )## end of addHandlerKeystroke
+    add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
 }
 
 Annotation <- function(...){
@@ -597,7 +608,8 @@ Annotation <- function(...){
       if (nrow(idx)==0) rowid <- NextRowId("annotation") else rowid <- idx$rowid
       openAnnotation(New=New,pos=pos$startN,fid=currentFid,rowid=rowid,AnchorPos=AnchorPos)
     }
-  }}
+  }
+}
 
 CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory","both"),
                            codingTable="coding"){
