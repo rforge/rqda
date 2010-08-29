@@ -389,12 +389,13 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
     }
   }
-CodesNamesWidgetMenu$"Export Codings"$handler <- function(h, ...) {
+CodesNamesWidgetMenu$"Export Codings as HTML"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     path=gfile(type="save",text = "Type a name for the exported codings (with suffix of .html) and click OK.")
     if (!is.na(path)){
       Encoding(path) <- "UTF-8"
-      ExportCoding(file=path)
+      if (.rqda$TOR == "uncondition") fid <- NULL else fid <- getFileIds(condition=.rqda$TOR)
+      ExportCoding(file=path,Fid=fid)
     }}}
 CodesNamesWidgetMenu$"Highlight All Codings"$handler <- function(h, ...) {HL_AllCodings()}
 CodesNamesWidgetMenu$"Highlight Codings with Memo"$handler <- function(h, ...) {HL_CodingWithMemo()}
