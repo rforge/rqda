@@ -134,10 +134,11 @@ MemoWidget <- function(prefix,widget,dbTable){
               tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
               font <- pangoFontDescriptionFromString(.rqda$font)
               gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
-              addHandlerKeystroke(tmp,handler=function(h,...){
+              gSignalConnect(tmp@widget@widget$GetBuffer(), "changed", function(h,...) {
                   mbut <- get(sprintf("buttonOf.%smemo",prefix),env=button)
                   enabled(mbut) <- TRUE
-              })##
+              }
+                             )##
               assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
               prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable,enc(Selected)))[1,1]
               if (is.na(prvcontent)) prvcontent <- ""

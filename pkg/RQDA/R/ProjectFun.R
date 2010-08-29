@@ -254,10 +254,11 @@ ProjectMemoWidget <- function(){
     enabled(proj_memoB) <- FALSE
     assign("proj_memoB",proj_memoB,env=button)
     tmp <- gtext(container=.projmemo2,font.attr=c(sizes="large"))
-    addHandlerKeystroke(tmp,handler=function(h,...){
-        mbut <- get("proj_memoB",env=button)
-        enabled(mbut) <- TRUE
-    })##
+    gSignalConnect(tmp@widget@widget$GetBuffer(), "changed",
+                   function(h,...){
+                       mbut <- get("proj_memoB",env=button)
+                       enabled(mbut) <- TRUE
+                   })##
     font <- pangoFontDescriptionFromString(.rqda$font)
     gtkWidgetModifyFont(tmp@widget@widget,font)
     assign(".projmemocontent",tmp,env=.rqda)

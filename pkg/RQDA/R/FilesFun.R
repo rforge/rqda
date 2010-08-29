@@ -302,13 +302,14 @@ EditFileFun <- function(FileNameWidget=.rqda$.fnames_rqda){
           gtkTextMarkSetVisible(mark,TRUE)
         }) ## end of apply
       }
-      addHandlerKeystroke(.rqda$.openfile_gui,handler=function(h,...){
-        enabled(button$EdiFilB) <- TRUE
-      })
+      gSignalConnect(.rqda$.openfile_gui@widget@widget$GetBuffer(), "changed",
+                     function(h,...){
+                         enabled(button$EdiFilB) <- TRUE
+                     })
       addhandlerunrealize(.rqda$.openfile_gui,handler=function(h,...){
-        rm("EdiFilB",envir=button)
-        rm(".root_edit",".root_edit2",".openfile_gui",envir=.rqda)
-        FALSE
+          rm("EdiFilB",envir=button)
+          rm(".root_edit",".root_edit2",".openfile_gui",envir=.rqda)
+          FALSE
       })
     } ## end of else
   }

@@ -584,11 +584,12 @@ openAnnotation <- function(New=TRUE,pos,fid,rowid,AnchorPos=NULL){
     if (is.null(prvcontent) || is.na(prvcontent)) prvcontent <- ""
     Encoding(prvcontent) <- "UTF-8"
     W <- get(".annotationContent",env=.rqda)
-    addHandlerKeystroke(W,handler=function(h,...){
-        mbut <- get("savAnnB",env=button)
-        enabled(mbut) <- TRUE
-    }
-                        )## end of addHandlerKeystroke
+    gSignalConnect(W@widget@widget$GetBuffer(), "changed",
+                   function(h,...){
+                       mbut <- get("savAnnB",env=button)
+                       enabled(mbut) <- TRUE
+                   }
+                   )##
     add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
 }
 
