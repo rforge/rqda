@@ -128,17 +128,11 @@ MemoWidget <- function(prefix,widget,dbTable){
                   enabled(mbut) <- FALSE
               }
                               )## end of save memo button
-              assign(sprintf("buttonOf.%smemo",prefix),mbut,env=button) ## assign the button object
               enabled(mbut) <- FALSE
-
+              assign(sprintf("buttonOf.%smemo",prefix),mbut,env=button) ## assign the button object
               tmp <- gtext(container=get(sprintf(".%smemo2",prefix),env=.rqda))
               font <- pangoFontDescriptionFromString(.rqda$font)
               gtkWidgetModifyFont(tmp@widget@widget,font)## set the default fontsize
-              gSignalConnect(tmp@widget@widget$GetBuffer(), "changed", function(h,...) {
-                  mbut <- get(sprintf("buttonOf.%smemo",prefix),env=button)
-                  enabled(mbut) <- TRUE
-              }
-                             )##
               assign(sprintf(".%smemoW",prefix),tmp,env=.rqda)
               prvcontent <- dbGetQuery(.rqda$qdacon, sprintf("select memo from %s where name='%s'",dbTable,enc(Selected)))[1,1]
               if (is.na(prvcontent)) prvcontent <- ""
@@ -146,6 +140,11 @@ MemoWidget <- function(prefix,widget,dbTable){
               W <- get(sprintf(".%smemoW",prefix),env=.rqda)
               add(W,prvcontent,do.newline=FALSE)
               addHandlerUnrealize(get(sprintf(".%smemo",prefix),env=.rqda),handler <- function(h,...)  {!CloseYes(Selected)})
+              gSignalConnect(tmp@widget@widget$GetBuffer(), "changed", function(h,...) {
+                  mbut <- get(sprintf("buttonOf.%smemo",prefix),env=button)
+                  enabled(mbut) <- TRUE
+              }
+                             )##
           }
       }
   }

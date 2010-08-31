@@ -168,7 +168,7 @@ numbers of different codes give the command: GetCodingTable()
 <br> and(c1,c2,show=TRUE)
 </i>
 <p>Since rev 280 (RC for RQDA 0.2-0), boolean operations are simplied by functions of %and%, %or% and %not%. To retreive codings coded by cid 1 and cid 2, you can run:
-<i>summary(getCodingsByOne(1) %and% getCodingsByOne(1))</i>
+<i>summary(getCodingsByOne(1) %and% getCodingsByOne(2))</i>. please note that the summary method put the resulting codings into a gtext widget, so you can read it with ease.
 <p>To retreive codings coded by cid 1 but not cid 2, you can run:
 <i>summary(getCodingsByOne(1) %not% getCodingsByOne(1))</i>
 <p>You can do more complex operation as well. For example, to retreive codings coded by cid 1 and cid 2, plus codings coded by cid 3 but not cid 4. You can run:
