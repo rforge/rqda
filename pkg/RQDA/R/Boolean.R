@@ -84,58 +84,58 @@ print.codingsByOne <- function (object,...)
 }
 
 
-and_helper <- function(CT1,CT2,method){
-  ## CT1 and CT2 is from GetCodingTable,each for one code and one file only
-  ridx <- vector()
-  idx <- vector()
-  for (i in 1:nrow(CT1)) {
-    for (j in 1:nrow(CT2)){
-      rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
-      if (rel$Relation %in% method){
-        ridx <- c(ridx,i,j)
-        idx <- c(idx,rel$OverlapIndex)
-      }
-    }
-  }
-  if (length(ridx) >=2){
-    rf <- ridx[seq(from=1,to=length(ridx),by=2)] ## row index for CT1
-    rs <- ridx[seq(from=2,to=length(ridx),by=2)] ## row index for CT2
-    index1 <- idx[seq(from=1,to=length(idx),by=2)]
-    index2 <- idx[seq(from=2,to=length(idx),by=2)]
-    ans <- cbind(CT1[rf,c("rowid","fid","filename")],index1=index1,index2=index2)
-    ans
-  }
-}
+## and_helper <- function(CT1,CT2,method){
+##   ## CT1 and CT2 is from GetCodingTable,each for one code and one file only
+##   ridx <- vector()
+##   idx <- vector()
+##   for (i in 1:nrow(CT1)) {
+##     for (j in 1:nrow(CT2)){
+##       rel <- relation(as.numeric(CT1[i,c("index1","index2")]),as.numeric(CT2[j,c("index1","index2")]))
+##       if (rel$Relation %in% method){
+##         ridx <- c(ridx,i,j)
+##         idx <- c(idx,rel$OverlapIndex)
+##       }
+##     }
+##   }
+##   if (length(ridx) >=2){
+##     rf <- ridx[seq(from=1,to=length(ridx),by=2)] ## row index for CT1
+##     rs <- ridx[seq(from=2,to=length(ridx),by=2)] ## row index for CT2
+##     index1 <- idx[seq(from=1,to=length(idx),by=2)]
+##     index2 <- idx[seq(from=2,to=length(idx),by=2)]
+##     ans <- cbind(CT1[rf,c("rowid","fid","filename")],index1=index1,index2=index2)
+##     ans
+##   }
+## }
 
 
-and <- function(CT1,CT2,showCoding=TRUE, method= c("overlap","exact","inclusion")){
-  ## CT1 and CT2 is from GetCodingTable,each for one code only
-  fid <- intersect(CT1$fid,CT2$fid)
-  if (length(fid)>0) {
-    ans <- lapply(fid,FUN=function(x) {
-      and_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x),method=method)
-    }
-      )
-    ans <- do.call(rbind,ans)
-    if (showCoding && !is.null(ans)){
-      txt <- apply(ans,1,function(x){
-        txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
-        Encoding(txt) <- "UTF-8"
-        ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
-        ans
-      })
-      ans$coding <- txt
-    }
-  }
+## and <- function(CT1,CT2,showCoding=TRUE, method= c("overlap","exact","inclusion")){
+##   ## CT1 and CT2 is from GetCodingTable,each for one code only
+##   fid <- intersect(CT1$fid,CT2$fid)
+##   if (length(fid)>0) {
+##     ans <- lapply(fid,FUN=function(x) {
+##       and_helper(CT1=subset(CT1,fid==x),CT2=subset(CT2,fid==x),method=method)
+##     }
+##       )
+##     ans <- do.call(rbind,ans)
+##     if (showCoding && !is.null(ans)){
+##       txt <- apply(ans,1,function(x){
+##         txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
+##         Encoding(txt) <- "UTF-8"
+##         ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
+##         ans
+##       })
+##       ans$coding <- txt
+##     }
+##   }
 
-  if ((length(fid)==0) || is.null(ans)){
-    ans <- data.frame("rowid"=integer(0),"fid"=integer(0),
-                      "filename"=character(0), "index1"=integer(0),
-                      "index2"=integer(0), "coding"=character(0))
-  }
-  class(ans) <- c("codingsByOne","data.frame")
-  ans
-}
+##   if ((length(fid)==0) || is.null(ans)){
+##     ans <- data.frame("rowid"=integer(0),"fid"=integer(0),
+##                       "filename"=character(0), "index1"=integer(0),
+##                       "index2"=integer(0), "coding"=character(0))
+##   }
+##   class(ans) <- c("codingsByOne","data.frame")
+##   ans
+## }
 
 
 andHelper <- function(d1,d2){
@@ -154,8 +154,9 @@ andHelper <- function(d1,d2){
     ans
 }
 
-andSmart <- function (CT1, CT2)
-## much faster than previous version of and()
+and <- function (CT1, CT2)
+### much faster than previous version of and()
+### can extend to andSmart to handle more codes at the same time
 {
     ans <- data.frame()
     fid <- unique(intersect(CT1$fid, CT2$fid))
@@ -189,9 +190,6 @@ andSmart <- function (CT1, CT2)
     ans
 }
 
-#coding <- getCodingTable()
-#andSmart(subset(coding,cid=2),subset(coding,cid=5))
-
 orHelper <- function(d1,d2){
     da11 <- sort(unlist(apply(d1,1,function(i)seq(i[1],i[2]))))
     da22 <- sort(unlist(apply(d2,1,function(i)seq(i[1],i[2]))))
@@ -207,7 +205,7 @@ orHelper <- function(d1,d2){
     ans
 }
 
-orSmart <- function (CT1, CT2)
+or <- function (CT1, CT2)
 {
     ans <- data.frame(stringsAsFactors=FALSE)
     fid <- unique(union(CT1$fid, CT2$fid))
@@ -258,7 +256,7 @@ notHelper <- function(d1,d2){
     ans
 }
 
-notSmart <- function (CT1, CT2)
+not <- function (CT1, CT2)
 {
     ans <- data.frame(stringsAsFactors=FALSE)
     fid <- unique(CT1$fid)

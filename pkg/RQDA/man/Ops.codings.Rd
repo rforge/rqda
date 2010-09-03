@@ -1,7 +1,7 @@
 \name{Ops.codings}
-\alias{andSmart}
-\alias{orSmart}
-\alias{notSmart}
+\alias{and}
+\alias{or}
+\alias{not}
 \title{
   Boolean operation on codings.
 }
@@ -9,11 +9,11 @@
   Return the result codings of the Boolean operation.
 }
 \usage{
-andSmart(CT1, CT2)
+and(CT1, CT2)
 
-orSmart(CT1, CT2)
+or(CT1, CT2)
 
-notSmart(CT1, CT2)
+not(CT1, CT2)
 }
 \arguments{
   \item{CT1}{
@@ -52,15 +52,16 @@ notSmart(CT1, CT2)
 a <- getCodingTable()
 c1 <- subset(a,cid==6)
 c2 <- subset(a,cid==24)
-ans <- andSmart(c1, c2)
+ans <- and(c1, c2)
 ans ## put it into a widget for inspection
 
 ## another way to do the same
-andSmart(getCodingsByOne(6), getCodingsByOne(24))
+and(getCodingsByOne(6), getCodingsByOne(24))
 
 ## or operator
-orSmart(getCodingsByOne(6), getCodingsByOne(24))
+or(getCodingsByOne(6), getCodingsByOne(24))
 
 ## not operator
-notSmart(getCodingsByOne(6), getCodingsByOne(24))
-}}
+not(getCodingsByOne(6), getCodingsByOne(24))
+}
+}

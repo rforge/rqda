@@ -173,15 +173,15 @@ numbers of different codes give the command: GetCodingTable()
 <i>getCodingsByOne(1) %not% getCodingsByOne(2)</i>
 <p>please note that the print method put the resulting codings into a gtext widget, so you can read it with ease.
 <p> You can also use the following commands to conduct the same inquiry:
-<br><i>andSmart(getCodingsByOne(1), getCodingsByOne(2))
-<br>orSmart(getCodingsByOne(1), getCodingsByOne(2))
-<br>notSmart(getCodingsByOne(1), getCodingsByOne(2))</i>
+<br><i>and(getCodingsByOne(1), getCodingsByOne(2))
+<br>or(getCodingsByOne(1), getCodingsByOne(2))
+<br>not(getCodingsByOne(1), getCodingsByOne(2))</i>
 <p>You can do more complex operation as well. For example, to retreive codings coded by cid 1 and cid 2, plus codings coded by cid 3 but not cid 4. You can run:
 <br><i>summary((getCodingsByOne(1) %and% getCodingsByOne(1)) %or% getCodingsByOne(3) %not% getCodingsByOne(4) )</i>
 <p>Please note that %and%, %or% and %not% apply to file ids, file names, case ids, case names, all of which are objects with class "RQDA.vector".
 
 <p><b>9.3. Text mining of codings</b>
-<p> By RQDAtm package, codings are easily converted into Corpus, then you can use tm package to do text mining. You need to open a rqda project first. Examples can be found <A HREF="License.html">Using_RQDA2tm.pdf</A> [PDF].
+<p> By RQDAtm package, codings are easily converted into Corpus, then you can use tm package to do text mining. You need to open a rqda project first. Examples can be found <A HREF="Using_RQDA2tm.pdf">here</A> [PDF].
 
 <p><b>10. Settings</b>
 <p>"Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
