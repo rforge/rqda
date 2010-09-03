@@ -209,7 +209,7 @@ orHelper <- function(d1,d2){
 
 orSmart <- function (CT1, CT2)
 {
-    ans <- data.frame()
+    ans <- data.frame(stringsAsFactors=FALSE)
     fid <- union(CT1$fid, CT2$fid)
     if (length(fid) > 0) {
         for (j in fid) {
@@ -217,7 +217,8 @@ orSmart <- function (CT1, CT2)
                             subset(CT2, fid == j, c("index1","index2"))
                             )
             if (nrow(tmp)>0) {
-                tmp <- cbind(tmp,fid=j, filename=CT1$filename[which(CT1$fid==j)[1]])
+                tmp <- cbind(tmp,fid=j, filename=CT1$filename[which(CT1$fid==j)[1]],stringsAsFactors=FALSE)
+                tmp$filename[is.na(tmp$filename)] <- CT2$filename[which(CT2$fid==j)[1]]
                 rid1 <- match(tmp$index1,CT1$index1)
                 rid1NA <- is.na(rid1)
                 tmp$rowid[!rid1NA] <- CT1$rowid[rid1[!rid1NA]]

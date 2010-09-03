@@ -58,4 +58,7 @@ ans ## put it into a widget for inspection
 
 ## another way to do the same
 andSmart(getCodingsByOne(6), getCodingsByOne(24))
+
+## or operator
+orSmart(getCodingsByOne(6), getCodingsByOne(24))
 }}
