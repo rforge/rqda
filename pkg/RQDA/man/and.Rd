@@ -55,4 +55,7 @@ and(c1,c2,T)
 ## or use andSmart which is much faster (by a factor about 300)
 ans <- andSmart(c1, c2)
 ans ## put it into a widget for inspection
+
+## another way to do the same
+andSmart(getCodingsByOne(6), getCodingsByOne(24))
 }}

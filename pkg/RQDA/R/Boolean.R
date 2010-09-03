@@ -192,6 +192,54 @@ andSmart <- function (CT1, CT2)
 #coding <- getCodingTable()
 #andSmart(subset(coding,cid=2),subset(coding,cid=5))
 
+orHelper <- function(d1,d2){
+    da11 <- sort(unlist(apply(d1,1,function(i)seq(i[1],i[2]))))
+    da22 <- sort(unlist(apply(d2,1,function(i)seq(i[1],i[2]))))
+    daAll <- c(da11,da22)
+    x <- sort(unique(daAll))
+    vnl <- rle(diff(x))
+    idx2 <- 1+cumsum(vnl$lengths)[which(vnl$value==1)]
+    len <- 1+vnl$lengths[which(vnl$value==1)]
+    idx1 <- idx2 - len + 1
+    x1 <- x[idx1]
+    x2 <- x[idx2]
+    ans <- data.frame(index1=x1, index2=x2)
+    ans
+}
+
+orSmart <- function (CT1, CT2)
+{
+    ans <- data.frame()
+    fid <- union(CT1$fid, CT2$fid)
+    if (length(fid) > 0) {
+        for (j in fid) {
+            tmp <- orHelper(subset(CT1, fid == j, c("index1","index2")),
+                            subset(CT2, fid == j, c("index1","index2"))
+                            )
+            if (nrow(tmp)>0) {
+                tmp <- cbind(tmp,fid=j, filename=CT1$filename[which(CT1$fid==j)[1]])
+                rid1 <- match(tmp$index1,CT1$index1)
+                rid1NA <- is.na(rid1)
+                tmp$rowid[!rid1NA] <- CT1$rowid[rid1[!rid1NA]]
+                rid2 <- match(tmp$index1[rid1NA],CT2$index1)
+                tmp$rowid[rid1NA] <- CT2$rowid[rid2]
+                ## add rowid so the summary method will work
+                ans <- rbind(ans,tmp)
+            }
+        }
+        if (nrow(ans) != 0){
+            txt <- apply(ans,1,function(x){
+                txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
+                Encoding(txt) <- "UTF-8"
+                ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
+                ans
+            })
+            ans$coding <- txt
+        }
+    }
+    class(ans) <- c("codingsByOne", "data.frame")
+    ans
+}
 
 "%and%.codingsByOne" <- function(e1,e2){
     and(e1, e2, showCoding=TRUE, method= getOption("andMethod"))
