@@ -158,7 +158,7 @@ andSmart <- function (CT1, CT2)
 ## much faster than previous version of and()
 {
     ans <- data.frame()
-    fid <- intersect(CT1$fid, CT2$fid)
+    fid <- unique(intersect(CT1$fid, CT2$fid))
     if (length(fid) > 0) {
         for (j in fid) {
             tmp <- andHelper(subset(CT1, fid == j, c("index1","index2")),
@@ -210,7 +210,7 @@ orHelper <- function(d1,d2){
 orSmart <- function (CT1, CT2)
 {
     ans <- data.frame(stringsAsFactors=FALSE)
-    fid <- union(CT1$fid, CT2$fid)
+    fid <- unique(union(CT1$fid, CT2$fid))
     if (length(fid) > 0) {
         for (j in fid) {
             tmp <- orHelper(subset(CT1, fid == j, c("index1","index2")),
@@ -225,6 +225,55 @@ orSmart <- function (CT1, CT2)
                 rid2 <- match(tmp$index1[rid1NA],CT2$index1)
                 tmp$rowid[rid1NA] <- CT2$rowid[rid2]
                 ## add rowid so the summary method will work
+                ans <- rbind(ans,tmp)
+            }
+        }
+        if (nrow(ans) != 0){
+            txt <- apply(ans,1,function(x){
+                txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
+                Encoding(txt) <- "UTF-8"
+                ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
+                ans
+            })
+            ans$coding <- txt
+        }
+    }
+    class(ans) <- c("codingsByOne", "data.frame")
+    ans
+}
+
+
+notHelper <- function(d1,d2){
+    da11 <- sort(unlist(apply(d1,1,function(i)seq(i[1],i[2]))))
+    da22 <- sort(unlist(apply(d2,1,function(i)seq(i[1],i[2]))))
+    daAll <- setdiff(da11,da22)
+    x <- sort(unique(daAll))
+    vnl <- rle(diff(x))
+    idx2 <- 1+cumsum(vnl$lengths)[which(vnl$value==1)]
+    len <- 1+vnl$lengths[which(vnl$value==1)]
+    idx1 <- idx2 - len + 1
+    x1 <- x[idx1]
+    x2 <- x[idx2]
+    ans <- data.frame(index1=x1, index2=x2)
+    ans
+}
+
+notSmart <- function (CT1, CT2)
+{
+    ans <- data.frame(stringsAsFactors=FALSE)
+    fid <- unique(CT1$fid)
+    if (length(fid) > 0) {
+        for (j in fid) {
+            tmp <- notHelper(subset(CT1, fid == j, c("index1","index2")),
+                             subset(CT2, fid == j, c("index1","index2"))
+                            )
+            if (nrow(tmp)>0) {
+                tmp <- cbind(tmp,fid=j, filename=CT1$filename[which(CT1$fid==j)[1]],stringsAsFactors=FALSE)
+                rid1 <- match(tmp$index1,CT1$index1)
+                rid1NA <- is.na(rid1)
+                tmp$rowid[!rid1NA] <- CT1$rowid[rid1[!rid1NA]]
+                rid2 <- match(tmp$index1[rid1NA],CT2$index1)
+                tmp$rowid[rid1NA] <- CT2$rowid[rid2]
                 ans <- rbind(ans,tmp)
             }
         }

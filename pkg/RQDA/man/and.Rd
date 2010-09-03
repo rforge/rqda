@@ -1,6 +1,8 @@
-\name{and}
+\name{Ops.Codings}
 \alias{and}
 \alias{andSmart}
+\alias{orSmart}
+\alias{notSmart}
 \title{
   Boolean operation on codings.
 }
@@ -12,6 +14,10 @@ and(CT1, CT2, showCoding = TRUE, method = c("overlap", "exact",
 "inclusion"))
 
 andSmart(CT1, CT2)
+
+orSmart(CT1, CT2)
+
+notSmart(CT1, CT2)
 }
 \arguments{
   \item{CT1}{
@@ -44,7 +50,7 @@ andSmart(CT1, CT2)
   Ronggui HUANG
 }
 \seealso{
-  \code{\link{relation}}, \code{\link{GetCodingTable}}
+  \code{\link{relation}}, \code{\link{GetCodingTable}, \code{\link{%and%}}}
 }
 \examples{
 \dontrun{
@@ -60,5 +66,8 @@ ans ## put it into a widget for inspection
 andSmart(getCodingsByOne(6), getCodingsByOne(24))
 
 ## or operator
+orSmart(getCodingsByOne(6), getCodingsByOne(24))
+
+## not operator
 orSmart(getCodingsByOne(6), getCodingsByOne(24))
 }}
