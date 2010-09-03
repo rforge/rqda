@@ -16,7 +16,7 @@ getCodingsByOne <- function(cid, fid=NULL,codingTable=c("coding","coding2")){
 }
 
 
-summary.codingsByOne <- function (object,...)
+print.codingsByOne <- function (object,...)
 {
     ComputeCallbackFun <- function(FileName,rowid){
         CallBackFUN <- function(widget,event,...){
@@ -108,7 +108,7 @@ and_helper <- function(CT1,CT2,method){
 }
 
 
-and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion")){
+and <- function(CT1,CT2,showCoding=TRUE, method= c("overlap","exact","inclusion")){
   ## CT1 and CT2 is from GetCodingTable,each for one code only
   fid <- intersect(CT1$fid,CT2$fid)
   if (length(fid)>0) {
@@ -154,7 +154,7 @@ andHelper <- function(d1,d2){
     ans
 }
 
-andSmart <- function (CT1, CT2, showCoding=FALSE)
+andSmart <- function (CT1, CT2)
 ## much faster than previous version of and()
 {
     ans <- data.frame()
@@ -175,7 +175,7 @@ andSmart <- function (CT1, CT2, showCoding=FALSE)
             ans <- rbind(ans,tmp)
             }
         }
-        if (showCoding && nrow(ans) != 0){
+        if (nrow(ans) != 0){
             txt <- apply(ans,1,function(x){
                 txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
                 Encoding(txt) <- "UTF-8"
