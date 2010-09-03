@@ -1,5 +1,6 @@
 \name{and}
 \alias{and}
+\alias{andSmart}
 \title{
   Boolean operation on codings.
 }
@@ -7,7 +8,10 @@
   Return codings belong to two codes.
 }
 \usage{
-and(CT1, CT2, showCoding = FALSE, method = c("overlap", "exact", "inclusion"))
+and(CT1, CT2, showCoding = FALSE, method = c("overlap", "exact",
+"inclusion"))
+
+andSmart(CT1, CT2, showCoding = FALSE)
 }
 \arguments{
   \item{CT1}{
@@ -29,6 +33,9 @@ and(CT1, CT2, showCoding = FALSE, method = c("overlap", "exact", "inclusion"))
 
   columns of "index1", "index2","fid","filename" from CT1 and CT2 are
   used by this function.
+
+  The \code{andSmart} is faster. In addition, it will join the adjacent
+  codings into one coding.
 }
 \value{
   a data frame if there is overlapping coding. Otherwise, it is NULL.
@@ -41,8 +48,11 @@ and(CT1, CT2, showCoding = FALSE, method = c("overlap", "exact", "inclusion"))
 }
 \examples{
 \dontrun{
-a <- GetCodingTable()
+a <- getCodingTable()
 c1 <- subset(a,cid==6)
 c2 <- subset(a,cid==24)
 and(c1,c2,T)
+## or use andSmart which is much faster (by a factor about 300)
+ans <- andSmart(c1, c2, T)
+summary(ans) ## put it into a widget for inspection
 }}

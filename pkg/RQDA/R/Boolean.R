@@ -138,6 +138,61 @@ and <- function(CT1,CT2,showCoding=FALSE, method= c("overlap","exact","inclusion
 }
 
 
+andHelper <- function(d1,d2){
+    da11 <- sort(unlist(apply(d1,1,function(i)seq(i[1],i[2]))))
+    da22 <- sort(unlist(apply(d2,1,function(i)seq(i[1],i[2]))))
+    daAll <- c(da11,da22)
+    ta <- table(daAll)
+    x <- sort(as.numeric(names(ta)[which(ta==2)]))
+    vnl <- rle(diff(x))
+    idx2 <- 1+cumsum(vnl$lengths)[which(vnl$value==1)]
+    len <- 1+vnl$lengths[which(vnl$value==1)]
+    idx1 <- idx2 - len + 1
+    x1 <- x[idx1]
+    x2 <- x[idx2]
+    ans <- data.frame(index1=x1, index2=x2)
+    ans
+}
+
+andSmart <- function (CT1, CT2, showCoding=FALSE)
+## much faster than previous version of and()
+{
+    ans <- data.frame()
+    fid <- intersect(CT1$fid, CT2$fid)
+    if (length(fid) > 0) {
+        for (j in fid) {
+            tmp <- andHelper(subset(CT1, fid == j, c("index1","index2")),
+                                    subset(CT2, fid == j, c("index1","index2"))
+                                    )
+            if (nrow(tmp)>0) {
+            tmp <- cbind(tmp,fid=j, filename=CT1$filename[which(CT1$fid==j)[1]])
+            rid1 <- match(tmp$index1,CT1$index1)
+            rid1NA <- is.na(rid1)
+            tmp$rowid[!rid1NA] <- CT1$rowid[rid1[!rid1NA]]
+            rid2 <- match(tmp$index1[rid1NA],CT2$index1)
+            tmp$rowid[rid1NA] <- CT2$rowid[rid2]
+            ## add rowid so the summary method will work
+            ans <- rbind(ans,tmp)
+            }
+        }
+        if (showCoding && nrow(ans) != 0){
+            txt <- apply(ans,1,function(x){
+                txt <- RQDAQuery(sprintf("select file from source where id==%s",x[["fid"]]))[1,1]
+                Encoding(txt) <- "UTF-8"
+                ans <- substr(txt, as.numeric(x[["index1"]])+1, as.numeric(x[["index2"]]))
+                ans
+            })
+            ans$coding <- txt
+        }
+    }
+    class(ans) <- c("codingsByOne", "data.frame")
+    ans
+}
+
+#coding <- getCodingTable()
+#andSmart(subset(coding,cid=2),subset(coding,cid=5))
+
+
 "%and%.codingsByOne" <- function(e1,e2){
     and(e1, e2, showCoding=TRUE, method= getOption("andMethod"))
 }
@@ -162,7 +217,7 @@ or <- function(CT1,CT2) {
           ## take care of proximity with distance of 0.
           ## (a not b) or (b) == a
           dis <- sapply(Relations,function(x) x$Distance)
-          if (all(dis>0)) {          
+          if (all(dis>0)) {
             ## if there are no overlap in any kind, the result is From+Exist
             ans <- rbind(From[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE],
                          Exist[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE])
@@ -202,7 +257,7 @@ or <- function(CT1,CT2) {
     }
     ans
   } ## end of helper function.
-  
+
   if (any(c(nrow(CT1),nrow(CT2))==0)) stop("One code has empty coding.")
   CT1 <- CT1[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
   CT2 <- CT2[,c("rowid","fid","filename","index1","index2","coding"),drop=FALSE]
@@ -213,7 +268,7 @@ or <- function(CT1,CT2) {
     FromDat <- CT1
     ToDat <- CT2
   }
-  
+
   fidUnique <- unique(FromDat$fid)
   Nf <- length(fidUnique)
   ans <- vector("list",Nf+1)
@@ -257,7 +312,7 @@ not_helper <- function(CT1,CT2){
         Relation <- sapply(relAll,function(x) x$Relation)
         if (all(Relation=="exact")) {
           ## do nothing
-        } else { ## else2 
+        } else { ## else2
           if (all(Relation=="proximity")){
             ridx <- c(ridx,i)
             idx <- c(idx, CT1[i,c("index1","index2"),drop=TRUE])
@@ -288,7 +343,7 @@ not_helper <- function(CT1,CT2){
                   CT1[i,"index2"] <- relAll[[j]]$OverlapIndex[1]
                 }
               } ## end for j
-              
+
               inidx<- Relation %in% c("inclusion")
               ans <- sapply(relAll[inidx],function(x) x$OverlapIndex)
               ans <- sort(unlist(c(CT1[i,c("index1","index2"),drop=TRUE],ans)))
@@ -300,7 +355,7 @@ not_helper <- function(CT1,CT2){
       } ## end of for i
     } ## end else1
   }## if1
-  
+
   if (length(ridx) >=1){
     idx <- unlist(idx)
     index1 <- idx[seq(from=1,to=length(idx),by=2)]
@@ -309,7 +364,7 @@ not_helper <- function(CT1,CT2){
     ## ans <- unique(ans)
     ans
   }
-  
+
 }## end of fun
 
 
