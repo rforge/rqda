@@ -29,8 +29,7 @@ not(CT1, CT2)
   columns of "index1", "index2","fid","filename" from CT1 and CT2 are 
   used by this function.
 
-  These functions join the adjacent codings into one long coding,
-  while \code{\%and\%}, \code{\%or\%}, \code{\%not\%} do not.
+  These functions are the same as \code{\%and\%}, \code{\%or\%}, \code{\%not\%}.
 }
 \value{
   An object of class "codingsByOne" and "data.frame". It consists:
