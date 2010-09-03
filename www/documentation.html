@@ -159,38 +159,29 @@ numbers of different codes give the command: GetCodingTable()
 <p> Contributed by Amman Madan (amman@iitk.ac.in)
 
 <p><b>9.2 Boolean search</b>
-<p> To do complex <b>Boolean search</b>, programming is needed. More programming is under way now.
-<p> To retreive coding by cid 1 and cid 2, you can run the following command (since rev 171):
+<p> To do complex <b>Boolean search</b>, programming is needed. Currently, some are supported by RQDA.
+<p> To retreive coding by cid 1 and cid 2, you can run the following command:
 <i>
-<br> a <- GetCodingTable()
-<br> c1 <- subset(b,cid==1)
-<br> c2 <- subset(b,cid==2)
-<br> and(c1,c2,show=TRUE)
+<br> coding <- GetCodingTable()
+<br> c1 <- subset(coding,cid==1)
+<br> c2 <- subset(coding,cid==2)
+<br> andSmart(c1,c2)
 </i>
-<p>Since rev 280 (RC for RQDA 0.2-0), boolean operations are simplied by functions of %and%, %or% and %not%. To retreive codings coded by cid 1 and cid 2, you can run:
-<i>summary(getCodingsByOne(1) %and% getCodingsByOne(2))</i>. please note that the summary method put the resulting codings into a gtext widget, so you can read it with ease.
+<p> In RQDA 0.2-0, boolean operations are simplied by functions of %and%, %or% and %not%. To retreive codings coded by cid 1 and cid 2, you can run:
+<i>getCodingsByOne(1) %and% getCodingsByOne(2)</i>. 
 <p>To retreive codings coded by cid 1 but not cid 2, you can run:
-<i>summary(getCodingsByOne(1) %not% getCodingsByOne(1))</i>
+<i>getCodingsByOne(1) %not% getCodingsByOne(2)</i>
+<p>please note that the print method put the resulting codings into a gtext widget, so you can read it with ease.
+<p> You can also use the following commands to conduct the same inquiry:
+<br><i>andSmart(getCodingsByOne(1), getCodingsByOne(2))
+<br>orSmart(getCodingsByOne(1), getCodingsByOne(2))
+<br>notSmart(getCodingsByOne(1), getCodingsByOne(2))</i>
 <p>You can do more complex operation as well. For example, to retreive codings coded by cid 1 and cid 2, plus codings coded by cid 3 but not cid 4. You can run:
-<i>summary((getCodingsByOne(1) %and% getCodingsByOne(1)) %or% getCodingsByOne(3) %not% getCodingsByOne(4) )</i>
-
-<p>These operations apply to file ids, file names, case ids, case names, all of which are objects with class "RQDA.vector".
+<br><i>summary((getCodingsByOne(1) %and% getCodingsByOne(1)) %or% getCodingsByOne(3) %not% getCodingsByOne(4) )</i>
+<p>Please note that %and%, %or% and %not% apply to file ids, file names, case ids, case names, all of which are objects with class "RQDA.vector".
 
 <p><b>9.3. Text mining of codings</b>
-<p> By RQDAtm package, codings are easily converted into Corpus, then you can use tm package to do text mining. You need to open a rqda project first. Here is an example,
-<br>
-<i>
-<br> library(RQDAtm)
-<br> u1 <- RQDA2tm(c('legal fee'))
-<br> u2 <- RQDA2tm(c('evidence'))
-<br> u <- c(u1,u2)
-<br> d <- Dictionary(c('原告','被告','上诉')) ## the Dictionary contains Chinese words
-<br> dtm <- DocumentTermMatrix(u,list(tokenize=tokenizeByDictionary,minWordLength=1,dictionary=d)) # for e.g. English, you can use the default tokenize function.
-<br> inspect(dtm)
-<br> tm_filter(u,FUN=sFilter,'cid==4') ## filter subset of codings
-<br> findAssocs(dtm, '原告',0.2) ## find association
-<br> dissimilarity(dtm,method = "cosine")
-</i>
+<p> By RQDAtm package, codings are easily converted into Corpus, then you can use tm package to do text mining. You need to open a rqda project first. Examples can be found <A HREF="License.html">Using_RQDA2tm.pdf</A> [PDF].
 
 <p><b>10. Settings</b>
 <p>"Name of coder" is the name of the analyst. this is crucial if there are more than one analysts, and crucial for calculate the inter-coder reliability coeficient. You should always set this parameter. 
