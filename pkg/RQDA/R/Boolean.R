@@ -188,7 +188,7 @@ or <- function (CT1, CT2)
 
 notHelper <- function(d1,d2){
     da11 <- sort(unlist(apply(d1,1,function(i)seq(i[1],i[2]))))
-    da22 <- sort(unlist(apply(d2,1,function(i)seq(i[1],i[2]))))
+    da22 <- sort(unlist(apply(d2,1,function(i)seq(i[1]+1,i[2]-1))))
     daAll <- setdiff(da11,da22)
     x <- sort(unique(daAll))
     vnl <- rle(diff(x))
