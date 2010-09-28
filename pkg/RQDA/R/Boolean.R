@@ -16,7 +16,7 @@ getCodingsByOne <- function(cid, fid=NULL,codingTable=c("coding","coding2")){
 }
 
 
-print.codingsByOne <- function (object,...)
+print.codingsByOne <- function (x,...)
 {
     ComputeCallbackFun <- function(FileName,rowid){
         CallBackFUN <- function(widget,event,...){
@@ -36,13 +36,13 @@ print.codingsByOne <- function (object,...)
         CallBackFUN
     }
 
-    if (nrow(object) == 0)
+    if (nrow(x) == 0)
       gmessage("No Codings.", con = TRUE)
     else {
-        object <-object[order(object$fid,object$index1,object$index2),]
-        fid <- unique(object$fid)
+        x <-x[order(x$fid,x$index1,x$index2),]
+        fid <- unique(x$fid)
         Nfiles <- length(fid)
-        Ncodings <- nrow(object)
+        Ncodings <- nrow(x)
         title <- sprintf(ngettext(Ncodings, "%i coding from %s %s",
                                   "%i codings from %s %s"), Ncodings,
                          Nfiles, ngettext(Nfiles, "file", "files"))
@@ -61,7 +61,7 @@ print.codingsByOne <- function (object,...)
         .retreivalgui@widget@widget$SetPixelsInsideWrap(5)
         buffer <- .retreivalgui@widget@widget$GetBuffer()
         iter <- buffer$getIterAtOffset(0)$iter
-        apply(object, 1, function(x) {
+        apply(x, 1, function(x) {
             metaData <- sprintf("%s [%i:%i]", x[["filename"]],as.numeric(x[["index1"]]), as.numeric(x[["index2"]]))
             buffer$InsertWithTagsByName(iter, metaData, "red")
             anchorcreated <- buffer$createChildAnchor(iter)
