@@ -18,7 +18,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
     }
     if (!fexist | override ){
       ## close con in assignmenv first.
-      tryCatch(close_proj(conName=conName,assignenv=assignenv),error=function(e){})
+      tryCatch(closeProject(conName=conName,assignenv=assignenv),error=function(e){})
 
       assign(conName,dbConnect(drv=dbDriver("SQLite"),dbname=path),envir=assignenv)
       con <- get(conName,assignenv)
