@@ -51,7 +51,7 @@ RetrievalButton <- function(label){
                 retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)}
             }
                  )
-  gtkTooltips()$setTip(RetB@widget@widget,"Retrieve codings of the selected code.")
+  gtkWidgetSetTooltipText(getToolkitWidget(RetB),"Retrieve codings of the selected code.")
   assign("RetB",RetB,env=button)
   enabled(RetB) <- FALSE
   return(RetB)
@@ -236,7 +236,7 @@ CodeMemoButton <- function(label="C-Memo",...){
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
   }
           )
-  gtkTooltips()$setTip(codememobuton@widget@widget,"Memo for selected code.")
+  gtkWidgetSetTooltipText(getToolkitWidget(codememobuton),"Memo for selected code.")
   assign("codememobuton",codememobuton,env=button)
   enabled(codememobuton) <- FALSE
   return(codememobuton)
@@ -328,7 +328,7 @@ CodingMemoButton <- function(label="C2Memo")
           }
         }
       }}})
-  gtkTooltips()$setTip(c2memobutton@widget@widget,"Memo for a Coding.")
+  gtkWidgetSetTooltipText(getToolkitWidget(c2memobutton),"Memo for a Coding.")
   assign("c2memobutton",c2memobutton,env=button)
   enabled(c2memobutton) <- FALSE
   return(c2memobutton)
@@ -372,7 +372,7 @@ AnnotationButton <- function(label="Add Anno"){
     if (is_projOpen(env=.rqda,conName="qdacon")) {
       Annotation()
     }})
-  gtkTooltips()$setTip(AnnB@widget@widget,"Add new annotation to the open file\nat position of cursor.")
+  gtkWidgetSetTooltipText(getToolkitWidget(AnnB),"Add new annotation to the open file\nat position of cursor.")
   assign("AnnB",AnnB,env=button)
   enabled(AnnB) <- FALSE
   return(AnnB)

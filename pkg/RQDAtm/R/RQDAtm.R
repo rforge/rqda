@@ -158,7 +158,6 @@ rep.mod <- function(tle, speci.col, tab.ind.col, n=5)
 }
 
 RQDA2tm <- function(Code,language="eng",byFile = FALSE){
-    ## require("tm", quietly = TRUE)
     retrieval <- NULL
     currentCode <- Code
     if (length(currentCode)!=0)
@@ -202,6 +201,7 @@ RQDA2tm <- function(Code,language="eng",byFile = FALSE){
         return(retrived)
     }
 }
+
 
 setGeneric("tmcollapse", function(object, collapse=" ") standardGeneric("tmcollapse"))
 setMethod("tmcollapse",

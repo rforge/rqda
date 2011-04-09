@@ -1,3 +1,6 @@
+2011-04-09
+	* use the new api to set the tooltips.
+
 2010-09-03
 	* re-written and, or and not and alias to %and%, %or% and %not%.
 	* use print method rather than summary for codingByOne object.

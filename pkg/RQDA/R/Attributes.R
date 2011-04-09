@@ -390,7 +390,7 @@ SetAttrClsButton <- function(label="Class"){
     setAttrType()
   }
                  )
-  gtkTooltips()$setTip(ans@widget@widget,"Set class of selected attribute.\nIt can be 'numeric' or 'character'.")
+  gtkWidgetSetTooltipText(getToolkitWidget(ans),"Set class of selected attribute.\nIt can be 'numeric' or 'character'.")
   assign("SetAttClsB",ans,env=button)
   enabled(ans) <- FALSE
   ans
