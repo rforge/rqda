@@ -628,6 +628,38 @@ SearchButton <- function(widget){
 }
 
 
+
+
+ViewPlainFile <- function(FileNameWidget=.rqda$.fnames_rqda){
+    if (is_projOpen(env = .rqda, conName = "qdacon")) {
+        if (length(svalue(FileNameWidget)) == 0) {
+            gmessage("Select a file first.", icon = "error",con = TRUE)
+        } else {
+            SelectedFileName <- svalue(FileNameWidget)
+
+  wnh <- size(RQDA:::.rqda$.root_rqdagui) ## size of the main window
+  gw <- gwindow(title = SelectedFileName,parent = wnh, ## .rqda$.root_rqdagui,
+                width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])),
+                height = min(c(wnh[2],getOption("widgetSize")[2]))
+                )
+  mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+  gw@widget@widget$SetIconFromFile(mainIcon)
+  getToolkitWidget(gw)$Move(getOption("widgetCoordinate")[1],getOption("widgetCoordinate")[2])
+  tmp <- gtext(container=gw)
+  font <- pangoFontDescriptionFromString(.rqda$font)
+  gtkWidgetModifyFont(tmp@widget@widget,font)
+  tmp@widget@widget$SetPixelsBelowLines(5) ## set the spacing
+  tmp@widget@widget$SetPixelsInsideWrap(5) ## so the text looks more confortable.
+  Encoding(SelectedFileName) <- "unknown"
+  IDandContent <- RQDAQuery(sprintf("select id, file from source where name='%s'",
+                                    enc(SelectedFileName))
+                            )
+  content <- IDandContent$file
+  Encoding(content) <- "UTF-8"
+  add(tmp, content)
+  slot(tmp, "widget")@widget$SetEditable(FALSE) 
+}}}
+
 ## UncodedFileNamesUpdate <- function(FileNamesWidget = .rqda$.fnames_rqda, sort=TRUE, decreasing = FALSE){
 ## replaced by the general function of FileNameWigetUpdate() and GetFileId()
 ## ## only show the uncoded file names in the .rqda$.fnames_rqda

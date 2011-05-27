@@ -1,3 +1,6 @@
+2011-05-18
+	* unexpored function of ViewPlainFile as requested by Irfan Emrah Kanat.
+
 2011-04-09
 	* use the new api to set the tooltips.
 

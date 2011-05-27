@@ -111,6 +111,7 @@ saveFUN4CaseAttr <- function(button,data){
     idx2 <- seq(2,to=n,by=2)
     ans <- data.frame(Variable=ans[idx1],Value=ans[idx2],stringsAsFactors=FALSE)
     ## cal which variable is added and which is modified
+    ExistingItems$value[which(is.na(ExistingItems$value))] <- "NA" ## add this line to address NA.
     change_idx <- ans$Value != ExistingItems$value
     mod_idx <- change_idx & (ExistingItems$value!= "NA")
     new_idx <- change_idx & (! mod_idx)
