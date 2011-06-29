@@ -201,6 +201,7 @@ DeleteButton <- function(widget,label,index,direction=c("backward","forward")){
   if (direction=="backward") index <- index - 1
   iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
   stop <- FALSE
+  isRemove <- FALSE
   while (!stop) {
     Anchor <- iter$getChildAnchor()
     if (!is.null(Anchor)){
@@ -210,11 +211,13 @@ DeleteButton <- function(widget,label,index,direction=c("backward","forward")){
         iterEnd <- gtkTextBufferGetIterAtOffset(buffer,iterEnd+1)$iter
         gtkTextBufferDelete(buffer,iter,iterEnd)
         stop <- TRUE
+        isRemove <- TRUE
       }
       if (direction=="backward") if (! iter$BackwardChar()) stop <- TRUE
       if (direction=="forward") if (! iter$ForwardChar()) stop <- TRUE
     } else {stop <- TRUE}
   }
+  invisible(isRemove)
 }
 
 countAnchors <- function(widget=.rqda$.openfile_gui,to,from=0){

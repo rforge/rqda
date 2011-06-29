@@ -197,7 +197,7 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda,codingTable="coding")
         SelectedFile <- enc(SelectedFile,"UTF-8") ## Encoding(SelectedFile) <- "UTF-8"
         currentFid <-  dbGetQuery(con,sprintf("select id from source where name=='%s'",
                                               SelectedFile))[,1]
-        codings_index <-  RQDAQuery(sprintf("select rowid, cid, fid, selfirst, selend from %s  where cid==%i and fid==%i",codingTable, currentCid, currentFid))
+        codings_index <-  RQDAQuery(sprintf("select rowid, cid, fid, selfirst, selend from %s where cid==%i and fid==%i and status==1",codingTable, currentCid, currentFid))
         ## should only work with those related to current code and current file.
         rowid <- codings_index$rowid[(codings_index$selfirst  >= idx1$startN) &
                                      (codings_index$selend  <= idx1$endN)]
@@ -205,25 +205,26 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda,codingTable="coding")
           gmessage("Select a code and one of its codings exactly first.",con=TRUE)
         } else {
           for (j in rowid) {
-            dbGetQuery(con,sprintf("update %s set status=-1 where rowid=%i",codingTable, j))
-
-          ## better to get around the loop by sqlite condition expression.
-          ## status=-1 to differentiate the result of delete button
           ClearMark(W,min=idx2$startN,max=idx2$endN)
           ## This clear all the marks in the gtext window
           buffer <- slot(.rqda$.openfile_gui, "widget")@widget$GetBuffer()
           startIter <- buffer$GetIterAtMark(idx2$startMark)$iter
           startN <- startIter$GetOffset()
-          DeleteButton(.rqda$.openfile_gui,label=sprintf("<%s>",svalue(codeListWidget)),
-                       index=startN,direction="backward")
-          endMark <- buffer$GetMark(sprintf("%s.2", j))
-          ## gtkTextMarkSetVisible(endMark,FALSE)
-          gtkTextBufferDeleteMarkByName(buffer,sprintf("%s.2", j))
-          ##endIter <- buffer$GetIterAtMark(idx2$endMark)$iter
-          ##endN <- endIter$GetOffset()
-          ##DeleteButton(.rqda$.openfile_gui,label=sprintf(">%s",svalue(codeListWidget)),index=endN,direction="forward")
-          ## even for the non-current code. can improve.
+          isRemoved <- DeleteButton(.rqda$.openfile_gui,label=sprintf("<%s>",svalue(codeListWidget)),
+                                  index=startN,direction="backward")
+          if (isRemoved) {
+            dbGetQuery(con,sprintf("update %s set status=-1 where rowid=%i",codingTable, j))
+            ## better to get around the loop by sqlite condition expression.
+            ## status=-1 to differentiate the result of delete button
+            endMark <- buffer$GetMark(sprintf("%s.2", j))
+            ## gtkTextMarkSetVisible(endMark,FALSE)
+            gtkTextBufferDeleteMarkByName(buffer,sprintf("%s.2", j))
+            ##endIter <- buffer$GetIterAtMark(idx2$endMark)$iter
+            ##endN <- endIter$GetOffset()
+            ##DeleteButton(.rqda$.openfile_gui,label=sprintf(">%s",svalue(codeListWidget)),index=endN,direction="forward")
+            ## even for the non-current code. can improve.
           }
+         }
         }
       }
     }
