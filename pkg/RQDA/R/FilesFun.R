@@ -52,6 +52,41 @@ FileNamesUpdate <- function(FileNamesWidget=.rqda$.fnames_rqda,sortByTime=TRUE,d
   }
 }
 
+LineNumber.expose <- function(da,event,data){
+    ## translated from http://www.pygtk.org/pygtk2tutorial/sec-TextViewExample.html
+    textView <- da
+    textView$SetBorderWindowSize('GTK_TEXT_WINDOW_LEFT',30)
+    vis <- textView$GetVisibleRect()
+    heightVis <- vis$visible.rect$height
+    firstY <- vis$visible.rect$y
+    lastY <- firstY + heightVis
+    posFirst <- gtkTextViewWindowToBufferCoords(textView, 'GTK_TEXT_WINDOW_LEFT', 0, firstY )
+    posLast <- gtkTextViewWindowToBufferCoords(textView, 'GTK_TEXT_WINDOW_LEFT', 0, lastY)
+    windowL <- textView$GetWindow('GTK_TEXT_WINDOW_LEFT')
+    atTop <- textView$GetLineAtY(firstY)
+    iter  <- atTop$target.iter
+    top <- atTop$line.top
+    count <- 0
+    pixels <- numbers <- c()
+    while (!iter$IsEnd()) {
+        tmp <- textView$GetLineYrange(iter)
+        y <- tmp$y
+        line_num <- gtkTextViewGetLineAtY(textView,y)$target.iter$GetLine()+1
+        numbers <- c(numbers, line_num)
+        height <- tmp$height
+        count <- count + 1
+        pixels <- c(pixels, y)
+        if ((y + height) >= lastY) {break}
+        iter$ForwardLine()
+    }
+    pixels <- pixels - min(pixels)
+
+    pango <- gtkWidgetCreatePangoLayout(textView,NULL)
+    for (i in 1:count){
+        pango$SetText(as.character(numbers[i]))
+        gtkPaintLayout(textView$Style,windowL,textView$State(),FALSE,NULL,widget=textView,x=2,y=pixels[i],layout=pango)
+    }
+}
 
 
 ViewFileFun <- function(FileNameWidget,hightlight=TRUE){
@@ -150,6 +185,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
       InsertAnnotation(index=idx,fid=IDandContent$id, rowid=x["rowid"])
     })}
   buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
+  gSignalConnect(tmp@widget@widget,"expose_event",LineNumber.expose) ## add line number to the widget
   enabled(button$AnnB) <- TRUE
   enabled(button$MarCodB1) <- (length(svalue(.rqda$.codes_rqda))==1)
   enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)
