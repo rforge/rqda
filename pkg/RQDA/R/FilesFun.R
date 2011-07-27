@@ -185,7 +185,8 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
       InsertAnnotation(index=idx,fid=IDandContent$id, rowid=x["rowid"])
     })}
   buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
-  gSignalConnect(tmp@widget@widget,"expose_event",LineNumber.expose) ## add line number to the widget
+  ## gSignalConnect(tmp@widget@widget,"expose_event",LineNumber.expose) ## add line number to the widget
+  ## does not work well yet
   enabled(button$AnnB) <- TRUE
   enabled(button$MarCodB1) <- (length(svalue(.rqda$.codes_rqda))==1)
   enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)

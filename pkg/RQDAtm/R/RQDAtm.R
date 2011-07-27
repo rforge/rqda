@@ -157,7 +157,7 @@ rep.mod <- function(tle, speci.col, tab.ind.col, n=5)
 	return(z)
 }
 
-RQDA2tm <- function(Code,language="eng",byFile = FALSE){
+codings2tm <- RQDA2tm <- function(Code,language="eng",byFile = FALSE){
     retrieval <- NULL
     currentCode <- Code
     if (length(currentCode)!=0)
@@ -201,6 +201,20 @@ RQDA2tm <- function(Code,language="eng",byFile = FALSE){
         return(retrived)
     }
 }
+
+files2tm <- function(Code,language="eng"){
+  fcat <- RQDAQuery("select treefile.fid, filecat.name from treefile, filecat on filecat.catid==treefile.catid and treefile.status==1 and filecat.status==1")
+  Encoding(fcat$name) <- "UTF-8"
+  names(fcat) <- c("id","filecat")
+  txt <-RQDAQuery("select name, id, file, owner, date from source where status==1")
+  txt <- merge(txt,fcat,by="id",all.x=TRUE,all.y=FALSE)
+  Encoding(txt$file) <- "UTF-8"
+  Encoding(txt$name) <- "UTF-8"
+  fcorpus <- tm:::Corpus(tm::VectorSource(txt$file), 
+            readerControl = list(language = language))
+  meta(fcorpus, tag = c("fname","id","owner","date","filecat")) <- txt[,c("name","id","owner","date","filecat")]
+  fcorpus
+  }
 
 
 setGeneric("tmcollapse", function(object, collapse=" ") standardGeneric("tmcollapse"))
