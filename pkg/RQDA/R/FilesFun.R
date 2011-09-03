@@ -187,6 +187,11 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
   ## gSignalConnect(tmp@widget@widget,"expose_event",LineNumber.expose) ## add line number to the widget
   ## does not work well yet
+  fore.col <- .rqda$fore.col
+  back.col <- .rqda$back.col
+  buffer$createTag(fore.col,foreground = fore.col)
+  buffer$createTag(sprintf("%s.background",back.col),background = back.col)
+  ## create buffer tag, which is created by defualt since gwidgetRGtk2 changes its API
   enabled(button$AnnB) <- TRUE
   enabled(button$MarCodB1) <- (length(svalue(.rqda$.codes_rqda))==1)
   enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)
