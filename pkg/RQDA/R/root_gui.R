@@ -68,6 +68,7 @@ if (isTRUE(.rqda$isLaunched)) {
   ## memo button of selected file. The code of File_Memo buttion has been moved into memo.R
   File_RenameButton(label="Rename", container=.files_button,FileWidget=.fnames_rqda)
   ## rename a selected file.
+  FileAttribute_Button(label="Attribute", container=.files_button,FileWidget=.fnames_rqda)
 
 ########################### GUI for CODES
 ###########################
@@ -260,6 +261,8 @@ AddHandler <- function(){
       gtkWidgetSetSensitive(button$VieFilB@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$FilMemB@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$FilRenB@widget@widget,TRUE)
+      enabled(button$FileAttrB) <- TRUE
+
     }
   }
                     )
