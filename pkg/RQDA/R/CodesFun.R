@@ -168,12 +168,12 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                          handler=FALSE, EndMarkName=NULL) {
     ## EndMarkName is a gtk mark for end position of highlight
     lab <- gtkLabelNew(label)
-    label <- gtkEventBoxNew()
-    if (isTRUE(handler)) label$ModifyBg("normal", gdkColorParse(label.col)$color)
-    label$Add(lab)
+    labelEvBox <- gtkEventBoxNew()
+    if (isTRUE(handler)) labelEvBox$ModifyBg("normal", gdkColorParse(label.col)$color)
+    labelEvBox$Add(lab)
     buffer <- slot(widget,"widget")@widget$GetBuffer()
     if (isTRUE(handler)){
-      button_press <-function(widget,event,W, label){
+      button_press <-function(widget,event,W, codeName = label){
           if (attr(event$type,"name")== "GDK_BUTTON_PRESS" && event$button==1) {
               ## action for left click
               if (!is.null(EndMarkName)){
@@ -193,7 +193,7 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                   prvcontent <- RQDAQuery(sprintf("select memo from coding where rowid==%s",rowid))[1,1]
                   tryCatch(dispose(.rqda$.codingmemo),error=function(e) {})
                   ## Close the coding memo first, then open a new one
-                  title <- "Coding Memo"
+                  title <- sprintf("Coding Memo:%s",codeName)
                   .codingmemo <- gwindow(title=title,getOption("widgetCoordinate"),width=600,height=400)
                   assign(".codingmemo",.codingmemo, env=.rqda)
                   .codingmemo <- get(".codingmemo",env=.rqda)
@@ -212,14 +212,14 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
               }
           }
       }
-      gSignalConnect(label, "button-press-event",button_press,data=widget)
+      gSignalConnect(labelEvBox, "button-press-event",button_press,data=widget)
   }
     iter <- gtkTextBufferGetIterAtOffset(buffer,index)$iter
     anchorcreated <- buffer$createChildAnchor(iter)
     iter$BackwardChar()
     anchor <- iter$getChildAnchor()
     anchor <- gtkTextIterGetChildAnchor(iter)
-    widget@widget@widget$addChildAtAnchor(label, anchor)
+    widget@widget@widget$addChildAtAnchor(labelEvBox, anchor)
 }
 
 

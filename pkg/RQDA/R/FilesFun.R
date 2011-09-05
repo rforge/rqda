@@ -197,14 +197,14 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)
   enabled(button$MarCodB2) <- (length(svalue(.rqda$.CodeofCat))==1)
   enabled(button$UnMarB2) <- (length(svalue(.rqda$.CodeofCat))==1)
-  enabled(button$c2memobutton) <- TRUE
+  ## enabled(button$c2memobutton) <- TRUE
   addHandlerUnrealize(gw, handler = function(h,...) {
     enabled(button$AnnB) <- FALSE
     enabled(button$MarCodB1) <- FALSE
     enabled(button$UnMarB1) <- FALSE
     enabled(button$MarCodB2) <- FALSE
     enabled(button$UnMarB2) <- FALSE
-    enabled(button$c2memobutton) <- FALSE
+    ## enabled(button$c2memobutton) <- FALSE
     enabled(button$CasMarB) <- FALSE
     enabled(button$CasUnMarB) <- FALSE
     return(FALSE)
@@ -699,7 +699,7 @@ ViewPlainFile <- function(FileNameWidget=.rqda$.fnames_rqda){
   content <- IDandContent$file
   Encoding(content) <- "UTF-8"
   add(tmp, content)
-  slot(tmp, "widget")@widget$SetEditable(FALSE) 
+  slot(tmp, "widget")@widget$SetEditable(FALSE)
 }}}
 
 ## UncodedFileNamesUpdate <- function(FileNamesWidget = .rqda$.fnames_rqda, sort=TRUE, decreasing = FALSE){

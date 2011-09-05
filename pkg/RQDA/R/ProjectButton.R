@@ -149,7 +149,7 @@ CloseProjectButton <- function(container){
     enabled(button$DelCodB) <- FALSE
     enabled(button$codememobuton) <- FALSE
     enabled(button$FreCodRenB) <- FALSE
-    enabled(button$c2memobutton) <- FALSE
+    ## enabled(button$c2memobutton) <- FALSE
     enabled(button$AddCodCatB) <- FALSE
     enabled(button$DelCodCatB) <- FALSE
     enabled(button$CodCatMemB) <- FALSE

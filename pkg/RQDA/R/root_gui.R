@@ -80,11 +80,11 @@ if (isTRUE(.rqda$isLaunched)) {
   .codes_button[1,2]<- DeleteCodeButton()
   .codes_button[1,3] <- FreeCode_RenameButton(label="Rename",CodeNamesWidget=.codes_rqda)
   .codes_button[1,4] <- CodeMemoButton(label="Memo")
-  .codes_button[2,3] <-  AnnotationButton("Anno")
-  .codes_button[2,1]<- CodingMemoButton(label="C2Memo")
+  .codes_button[2,1] <-  AnnotationButton("Anno")
+  ## .codes_button[2,1]<- CodingMemoButton(label="C2Memo")
   .codes_button[2,2]<- RetrievalButton("Coding")
-  .codes_button[2,4]<- Unmark_Button(name="UnMarB1")
-  .codes_button[1:2,5]<- Mark_Button(name="MarCodB1")
+  .codes_button[2,3]<- Unmark_Button(name="UnMarB1")
+  .codes_button[2,4]<- Mark_Button(name="MarCodB1")
 
 
 ######################### GUI  for C-cat
