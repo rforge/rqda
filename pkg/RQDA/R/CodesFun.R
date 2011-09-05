@@ -198,17 +198,24 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                   assign(".codingmemo",.codingmemo, env=.rqda)
                   .codingmemo <- get(".codingmemo",env=.rqda)
                   .codingmemo2 <- gpanedgroup(horizontal = FALSE, con=.codingmemo)
-                  gbutton("Save Coding Memo",con=.codingmemo2,action=list(rowid=rowid),handler=function(h,...){
+                  .codingMemoSaveButton <- gbutton("Save Coding Memo",con=.codingmemo2,action=list(rowid=rowid),handler=function(h,...){
                       newcontent <- svalue(.rqda$.cdmemocontent)
                       newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
                       RQDAQuery(sprintf("update coding set memo='%s' where rowid=%s",newcontent,rowid=h$action$rowid))
                   })## end of save memo button
+                  enabled(.codingMemoSaveButton) <- FALSE
+                  assign(".codingMemoSaveButton",.codingMemoSaveButton,env=.rqda)
                   assign(".cdmemocontent",gtext(container=.codingmemo2,font.attr=c(sizes="large")),env=.rqda)
                   if (is.na(prvcontent)) prvcontent <- ""
                   Encoding(prvcontent) <- "UTF-8"
                   if (prvcontent=="") assign("NewCodingMemo",TRUE,env=.rqda)
                   W <- get(".cdmemocontent",env=.rqda)
                   add(W,prvcontent,font.attr=c(sizes="large"),do.newline=FALSE)
+                  gSignalConnect(W@widget@widget$GetBuffer(), "changed",
+                                 function(h,...){
+                                 enabled(.rqda$".codingMemoSaveButton") <- TRUE
+                                 })
+
               }
           }
       }
