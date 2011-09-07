@@ -14,6 +14,17 @@ ImportFileButton <- function(label="Import", container,...)
   gtkWidgetSetSensitive(button$ImpFilB@widget@widget,FALSE)
 }
 
+NewFileButton <- function(label="New", container,...)
+{
+    NewFilB <- gbutton(label, contain=container, handler=function(h,...){
+        if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+            AddNewFileFun()
+        }
+    }
+                       )
+    assign("NewFilB",NewFilB,env=button)
+    enabled(NewFilB) <- FALSE
+}
 
 DeleteFileButton <- function(label="Delete", container,...){
   DelFilB <- gbutton(label,contain=container,handler=function(h,...){

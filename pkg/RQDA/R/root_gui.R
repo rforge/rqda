@@ -62,6 +62,7 @@ if (isTRUE(.rqda$isLaunched)) {
   ".fnames_rqda" <- gtable(character(0),container=.files_pan,multiple=TRUE)
   names(.fnames_rqda) <- "Files"
   ImportFileButton("Import",con=.files_button)
+  NewFileButton("New",con=.files_button)
   DeleteFileButton("Delete",con=.files_button)
   ViewFileButton("Open",con=.files_button)
   File_MemoButton(label="Memo", container=.files_button,FileWidget=.fnames_rqda)
