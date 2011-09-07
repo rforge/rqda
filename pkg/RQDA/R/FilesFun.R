@@ -648,6 +648,7 @@ searchWord <- function(str,widget,from=0,col="green"){
     ans <- gtkTextIterForwardSearch(Iter0,str,'GTK_TEXT_SEARCH_VISIBLE_ONLY')
     if (ans$retval) {
         gtkTextViewScrollToIter(tview,ans$match.start,0.47)
+        buffer$createTag(sprintf("%s.background",col),background = col)
         buffer$ApplyTagByName(sprintf("%s.background", col),ans$match.start, ans$match.end)
         ans$match.end$GetOffset()
     } else {
