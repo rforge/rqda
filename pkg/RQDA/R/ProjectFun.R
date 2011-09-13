@@ -36,14 +36,14 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
                                               id integer, status integer, color text)")
       if (dbExistsTable(con,"treecode")) dbRemoveTable(con, "treecode")
       ## tree-like strcuture of code (relationship between code and code-category[codecat])
-      dbGetQuery(con,"create table treecode  (cid integer, catid integer
-                                              owner text, date text, dateM text,
-                                              memo text, status integer)")
+      dbGetQuery(con,"create table treecode  (cid integer, catid integer,
+                                              date text, dateM text,
+                                              memo text, status integer, owner text)")
       if (dbExistsTable(con,"treefile")) dbRemoveTable(con, "treefile")
       ## tree-like structure of interview record  (relationship between file and file category [filecat])
-      dbGetQuery(con,"create table treefile  (fid integer, catid integer
-                                              owner text, date text,dateM text,
-                                              memo text, status integer)")
+      dbGetQuery(con,"create table treefile  (fid integer, catid integer,
+                                              date text,dateM text,
+                                              memo text, status integer,owner text)")
       if (dbExistsTable(con,"filecat")) dbRemoveTable(con, "filecat")
       ## file category
       dbGetQuery(con,"create table filecat  (name text,fid integer, catid integer, owner text,
@@ -67,7 +67,7 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
       ##                                       memo text,BOM integer)")
       dbGetQuery(con,"create table project  (databaseversion text, date text,dateM text,
                                              memo text,about text)")
-      dbGetQuery(con,sprintf("insert into project (databaseversion,date,about,memo) values ('0.2.0','%s',
+      dbGetQuery(con,sprintf("insert into project (databaseversion,date,about,memo) values ('0.2.2','%s',
                             'Database created by RQDA (http://rqda.r-forge.r-project.org/)','')",date()))
       if (dbExistsTable(con,"cases")) dbRemoveTable(con, "cases")
       dbGetQuery(con,"create table cases  (name text, memo text,
@@ -159,8 +159,12 @@ UpgradeTables <- function(){
                                             owner text, date text, memo text)")
     dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.2.0'")
   }
+  if (currentVersion<"0.2.2"){
+      RQDAQuery("alter table treecode add column owner text")
+      RQDAQuery("alter table treefile add column owner text")
+      dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.2.2'")
+  }
 }
-
 
 open_proj <- function(path,conName="qdacon",assignenv=.rqda,...){
   tryCatch({ con <- get(conName,assignenv)
