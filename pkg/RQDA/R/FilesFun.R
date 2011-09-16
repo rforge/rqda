@@ -189,6 +189,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   ## does not work well yet
   fore.col <- .rqda$fore.col
   back.col <- .rqda$back.col
+  buffer$createTag("underline", underline = "single")
   buffer$createTag(fore.col,foreground = fore.col)
   buffer$createTag(sprintf("%s.background",back.col),background = back.col)
   ## create buffer tag, which is created by defualt since gwidgetRGtk2 changes its API

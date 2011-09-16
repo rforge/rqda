@@ -185,6 +185,8 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                   gtkTextMarkSetVisible(m,TRUE) ## useful when a coding end with space
                   Offset2 <- buffer$GetIterAtMark(m)$iter$GetOffset()
                   HL(W=W, index=data.frame(Offset,Offset2))
+                  ## buffer$createTag("underline", underline = "single")
+                  ## buffer$ApplyTagByName("underline",Iter,buffer$GetIterAtMark(m)$iter)
               }}
           if (attr(event$type,"name")== "GDK_BUTTON_PRESS" && event$button==3) {
               ## action for right click
@@ -202,6 +204,7 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                       newcontent <- svalue(.rqda$.cdmemocontent)
                       newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
                       RQDAQuery(sprintf("update coding set memo='%s' where rowid=%s",newcontent,rowid=h$action$rowid))
+                      enabled(.rqda$".codingMemoSaveButton") <- FALSE
                   })## end of save memo button
                   enabled(.codingMemoSaveButton) <- FALSE
                   assign(".codingMemoSaveButton",.codingMemoSaveButton,env=.rqda)
@@ -362,6 +365,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
       } ## end of ComputeCallbackFun
 
       buffer <- .retreivalgui@widget@widget$GetBuffer()
+      buffer$createTag("red", foreground = "red")
       iter <- buffer$getIterAtOffset(0)$iter
 
       apply(retrieval,1, function(x){
