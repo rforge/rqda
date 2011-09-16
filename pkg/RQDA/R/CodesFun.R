@@ -117,13 +117,14 @@ markRange <- function(widget,from,to,rowid,fore.col=.rqda$fore.col,back.col=NULL
       if (!is.null(back.col)) buffer$ApplyTagByName(sprintf("%s.background",back.col),startIter,endIter)
     }}}
 
-ClearMark <- function(widget,min=0, max, clear.fore.col=TRUE,clear.back.col=FALSE){
+ClearMark <- function(widget,min=0, max, clear.fore.col=TRUE,clear.back.col=FALSE, clear.underline=TRUE){
   ## max position of marked text.
   buffer <- slot(widget,"widget")@widget$GetBuffer()
   startI <- gtkTextBufferGetIterAtOffset(buffer,min)$iter # translate number back to iter
   endI <-gtkTextBufferGetIterAtOffset(buffer,max)$iter
   if (clear.fore.col) gtkTextBufferRemoveTagByName(buffer,.rqda$fore.col,startI,endI)
   if (clear.back.col) gtkTextBufferRemoveTagByName(buffer,sprintf("%s.background",.rqda$back.col),startI,endI)
+  if (clear.underline) gtkTextBufferRemoveTagByName(buffer,"underline",startI,endI)
 }
 
 HL <- function(W,index,fore.col=.rqda$fore.col,back.col=NULL){
@@ -186,7 +187,12 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                   Offset2 <- buffer$GetIterAtMark(m)$iter$GetOffset()
                   HL(W=W, index=data.frame(Offset,Offset2))
                   ## buffer$createTag("underline", underline = "single")
-                  ## buffer$ApplyTagByName("underline",Iter,buffer$GetIterAtMark(m)$iter)
+                  ## should be created when a file is opened
+                  rowid <- gsub(".2$","",EndMarkName)
+                  memo <- RQDAQuery(sprintf("select memo from coding where rowid==%s",rowid))$memo
+                  if (memo!="") {
+                      buffer$ApplyTagByName("underline",Iter,buffer$GetIterAtMark(m)$iter)
+                  }
               }}
           if (attr(event$type,"name")== "GDK_BUTTON_PRESS" && event$button==3) {
               ## action for right click
