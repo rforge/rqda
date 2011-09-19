@@ -101,7 +101,7 @@ ViewFileFun <- function(FileNameWidget,hightlight=TRUE){
         }}}
 
 
-ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingTable){
+ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingTable, annotation=TRUE){
   if (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit)) {
     dispose(.rqda$.root_edit)
   }
@@ -132,7 +132,9 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   add(W, content)
   slot(W, "widget")@widget$SetEditable(FALSE)
   markidx <- RQDAQuery(sprintf("select %s.rowid,selfirst,selend,freecode.name,freecode.color, freecode.id from %s,freecode where fid=%i and %s.status=1 and freecode.id==cid and freecode.status==1",codingTable,codingTable, IDandContent$id,codingTable))
-  anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
+  if (annotation) {
+      anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
+  }
   buffer <- W@widget@widget$GetBuffer()
   if (nrow(markidx)!=0){ ## make sense only when there is coding there
     apply(markidx[,1:3],1,function(x){
@@ -142,11 +144,13 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
       buffer$CreateMark(sprintf("%s.2",x["rowid"]),where=iter$iter)
       ## the second iter is used to HL coding
     })} ## create marks
-  if (nrow(anno)!=0){
-    apply(anno,1,function(x){
-      iter <- gtkTextBufferGetIterAtOffset(buffer, x["position"]) ## index to iter
-      buffer$CreateMark(sprintf("%s.3",x["rowid"]),where=iter$iter) ## insert marks
-    })} ## creat marks for annotation
+  if (annotation){
+      if (nrow(anno)!=0){
+          apply(anno,1,function(x){
+              iter <- gtkTextBufferGetIterAtOffset(buffer, x["position"]) ## index to iter
+              buffer$CreateMark(sprintf("%s.3",x["rowid"]),where=iter$iter) ## insert marks
+          })} ## creat marks for annotation
+  }
   if (nrow(markidx)!=0){
     sapply(markidx[, "rowid"], FUN = function(x) {
       code <- markidx[markidx$rowid == x, "name"]
@@ -177,13 +181,14 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
       idx <- t(idx)
       HL(W, idx, fore.col = .rqda$fore.col, back.col = NULL)
     }}
-  if (nrow(anno)!=0){
-    apply(anno,1,function(x){
-      m <- buffer$GetMark(sprintf("%s.3", x["rowid"]))
-      iter <- buffer$GetIterAtMark(m)
-      idx <- gtkTextIterGetOffset(iter$iter)
-      InsertAnnotation(index=idx,fid=IDandContent$id, rowid=x["rowid"])
-    })}
+  if (annotation) {
+      if (nrow(anno)!=0){
+          apply(anno,1,function(x){
+              m <- buffer$GetMark(sprintf("%s.3", x["rowid"]))
+              iter <- buffer$GetIterAtMark(m)
+              idx <- gtkTextIterGetOffset(iter$iter)
+              InsertAnnotation(index=idx,fid=IDandContent$id, rowid=x["rowid"])
+          })}}
   buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
   ## gSignalConnect(tmp@widget@widget,"expose_event",LineNumber.expose) ## add line number to the widget
   ## does not work well yet

@@ -190,7 +190,7 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                   ## should be created when a file is opened
                   rowid <- gsub(".2$","",EndMarkName)
                   memo <- RQDAQuery(sprintf("select memo from coding where rowid==%s",rowid))$memo
-                  if (memo!="") {
+                  if (!is.na(memo) && memo!="") {
                       buffer$ApplyTagByName("underline",Iter,buffer$GetIterAtMark(m)$iter)
                   }
               }}
