@@ -87,13 +87,19 @@ CrossTwo <- function(cid1, cid2,data,relation=c("overlap","inclusion","exact","p
   ans
 }
 
-CrossCode <- function(relation=c("overlap","inclusion","exact","proximity"),codeList=NULL,data=GetCodingTable(),print=TRUE,...){
+crossCodes <- CrossCode <- function(relation=c("overlap","inclusion","exact","proximity"),codeList=NULL,data=GetCodingTable(),print=TRUE,...){
 ## codeList is character vector of codes.
   if (nrow(data)==0) {
     stop("No coding in this project.")
   } else{
     Cid_Name <- unique(data[,c("cid","codename")])
-    if (is.null(codeList)) codeList <- gselect.list(Cid_Name$codename,multiple=TRUE)
+    if (is.null(codeList)) {
+        codeList <- gselect.list(Cid_Name$codename,multiple=TRUE)
+    } else {
+        nList <- length(codeList)
+        codeList <- intersect(Cid_Name$codename,codeList)
+        if (nList > length(codeList)) cat("Codes without codings dropped.\n")
+    }
     if (length(codeList)<2) {
       stop("The codeList should be a vector of length 2 or abvoe.")
     } else {

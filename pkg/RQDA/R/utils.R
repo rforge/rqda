@@ -565,7 +565,7 @@ filesByCodes <- function(codingTable=c("coding","coding2")){
 
 ## use cam name conventions; duplicated the original functions for smooth transition.
 ## must in ultis.R
-crossCodes <- CrossCode
+## crossCodes <- CrossCode
 crossTwoCodes <- CrossTwo
 exportCodings <- ExportCoding
 getCaseNames <- GetCaseName
