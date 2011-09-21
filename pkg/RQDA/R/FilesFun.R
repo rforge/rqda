@@ -136,6 +136,12 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
       anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
   }
   buffer <- W@widget@widget$GetBuffer()
+  fore.col <- .rqda$fore.col
+  back.col <- .rqda$back.col
+  buffer$createTag("underline", underline = "single")
+  buffer$createTag(fore.col,foreground = fore.col)
+  buffer$createTag(sprintf("%s.background",back.col),background = back.col)
+  ## create buffer tag, which is created by defualt since gwidgetRGtk2 changes its API
   if (nrow(markidx)!=0){ ## make sense only when there is coding there
     apply(markidx[,1:3],1,function(x){
       iter <- gtkTextBufferGetIterAtOffset(buffer, x["selfirst"]) ## index to iter
@@ -192,12 +198,6 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter) ## place cursor at the beginning
   ## gSignalConnect(tmp@widget@widget,"expose_event",LineNumber.expose) ## add line number to the widget
   ## does not work well yet
-  fore.col <- .rqda$fore.col
-  back.col <- .rqda$back.col
-  buffer$createTag("underline", underline = "single")
-  buffer$createTag(fore.col,foreground = fore.col)
-  buffer$createTag(sprintf("%s.background",back.col),background = back.col)
-  ## create buffer tag, which is created by defualt since gwidgetRGtk2 changes its API
   enabled(button$AnnB) <- TRUE
   enabled(button$MarCodB1) <- (length(svalue(.rqda$.codes_rqda))==1)
   enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)
