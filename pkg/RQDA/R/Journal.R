@@ -59,7 +59,7 @@ JournalNamesUpdate <- function(Widget=.rqda$.JournalNamesWidget,decreasing=FALSE
       journal <- NULL
     } else {
       journal <- journal[,1]
-      journal <- journal[OrderByTime(journal,decreasing=decreasing)]
+      journal <- journal[OrderByTime(substring(journal,0,20),decreasing=decreasing)]
     }
     tryCatch(Widget[] <- journal, error=function(e){})
   }
@@ -76,7 +76,8 @@ AddNewJournalFun <- function(){
         assign(".AddNewJournalWidget",gw,env=.rqda)
         assign(".AddNewJournalWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewJournalWidget",env=.rqda)),env=.rqda)
         gbutton("Save Journal",con=get(".AddNewJournalWidget2",env=.rqda),handler=function(h,...){
-            title <- ginput("Enter new file name. ",text=Sys.time(), icon="info")
+            ## title <- ginput("Enter new file name. ",text=Sys.time(), icon="info")
+            title <- Sys.time()
             if (!is.na(title)){
             if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from journal where name=='%s'",enc(title))))!=0) {
                 title <- paste("New",title)

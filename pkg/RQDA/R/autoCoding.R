@@ -9,3 +9,32 @@ AutoCoding <- function(KeyWord,expansion=6){
   ## if any index > nchar(Files$file), set to nchar(Files$file)
   ## for each file, simplify the coding index, so erase the overlapping codings or proximity with distance=0
 }
+
+## auto coding: each paragraph is a analysis unit
+codingBySearch <- function(pattern, fid, cid, unit="paragraph") {
+    txt <- RQDAQuery(sprintf("select file from source where status==1 and id=%s",fid))$file
+    Encoding(txt) <- "UTF-8"
+    pidx <- gregexpr("(\n){1,}",txt)
+    idx1 <- c(0,pidx[[1]]+attr(pidx[[1]],"match.length")-1)
+    idx2 <- c(pidx[[1]]-1,nchar(txt))
+
+    sidx <- gregexpr("the",txt)[[1]]
+    residx <- unique(findInterval(sidx,sort(c(idx1,idx2))))
+    idx <- (residx + 1)/2
+
+    anstxt <- strsplit(txt,"(\n){1,}")[[1]][idx]
+
+                                        # create data frame
+    df <- data.frame(cbind(cid     = as.integer(cid),
+                           fid      = as.integer(fid),
+                           seltext  = anstxt,
+                           selfirst = idx1[idx],
+                           selend   = idx2[idx],
+                           status   = as.integer(1),
+                           owner    = Sys.info()["user"],
+                           date     = date(),
+                           memo     = sprintf("auto coding by searching %s", pattern)),
+                     stringsAsFactors=FALSE
+                     )
+    dbWriteTable(RQDA:::.rqda$qdacon, "coding", df, row.names = FALSE, append = TRUE)
+}
