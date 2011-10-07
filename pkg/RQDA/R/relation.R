@@ -113,9 +113,21 @@ crossCodes <- CrossCode <- function(relation=c("overlap","inclusion","exact","pr
           ans[i,j] <- CrossTwo(cidList[i],cidList[j],data=data,relation=relation)
         }
       }
+      class(ans) <- "crossCodes"
       if (print) {print(ans,na.print="")}
       invisible(ans)
     }
   }
 }
 
+plot.crossCodes <- function(x, ...){
+    require(igraph)
+    cmG <- graph.adjacency(x,mode="upper",diag=FALSE,weighted=TRUE)
+    E(cmG)[weight==1]$color <- "green"
+    E(cmG)[weight==2]$color <- "yellow"
+    E(cmG)[weight==3]$color <- "orange"
+    E(cmG)[weight>=4]$color <- "red"
+    tryCatch(tkplot(cmG,edge.width=sqrt(E(cmG)$weight),vertex.label=V(cmG)$CodeName), error=function(e){
+        plot(cmG,edge.width=sqrt(E(cmG)$weight),vertex.label=V(cmG)$CodeName)
+    })
+}
