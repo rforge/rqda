@@ -346,6 +346,8 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget),s
   if (length(attrs)==0) attrs <- NULL
   inClause <- ifelse(is.null(attrs),"",sprintf("where status==1 and variable in (%s)",paste(shQuote(attrs),collapse=",")))
   if (type == "case"){
+    RQDAQuery("delete from caseAttr where value=='NA'")
+    RQDAQuery("delete from caseAttr where value==''") ## clean the table
     DF <- dbGetQuery(.rqda$qdacon,sprintf("select variable,value, caseId from caseAttr %s",inClause))
     if (nrow(DF) > 0 ){
     Encoding(DF$variable) <- Encoding(DF$value) <- "UTF-8"
@@ -359,6 +361,8 @@ GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget),s
       class(DF) <- c("CaseAttr","data.frame")
     }}
   } else if (type=="file"){
+    RQDAQuery("delete from fileAttr where value=='NA'")
+    RQDAQuery("delete from fileAttr where value==''") ## clean the table
     DF <- dbGetQuery(RQDA:::.rqda$qdacon,sprintf("select variable,value, fileId from fileAttr %s",inClause))
     if (nrow(DF) > 0 ){
     Encoding(DF$variable) <- Encoding(DF$value) <- "UTF-8"

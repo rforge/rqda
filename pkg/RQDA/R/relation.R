@@ -131,3 +131,6 @@ plot.crossCodes <- function(x, ...){
         plot(cmG,edge.width=sqrt(E(cmG)$weight),vertex.label=V(cmG)$CodeName)
     })
 }
+
+
+

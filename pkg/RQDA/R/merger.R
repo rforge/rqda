@@ -80,3 +80,49 @@ mergeCodes <- function(cid1,cid2){ ## cid1 and cid2 are two code IDs.
   dbGetQuery(.rqda$qdacon,sprintf("update coding set status==0 where cid=='%i'",FromCid))
   dbGetQuery(.rqda$qdacon,sprintf("update freecode set status==0 where id=='%i'",FromCid))
 }
+
+findConsecutive <- function(x) {
+    x <- sort(x)
+    d <- diff(x)
+    d2 <- rle(d)
+    eidx <- cumsum(d2$length) [which(d2$values==1)]+1
+    L.consecutive <- d2$length[which(d2$values==1)]
+    bidx <- eidx - L.consecutive
+    ans <- data.frame(first=x[bidx],end=x[eidx])
+    ans
+}
+
+expand <- function(first, end){
+    seq(from=first,to=end,by=1)
+}
+## x <- c(0,1,2,5,6,7,8,20,21,23,24)
+## res <- findConsecutive(x)
+## res2 <- unlist(apply(res,1,function(x) expand(x[1],x[2])))
+## identical(sort(x),res2)
+
+erger2 <- function (cid1, cid2, data)
+{## cid1 and cid2
+    data <- data[data$cid %in% c(cid1, cid2), c("cid", "fid",
+                                                "index1", "index2")]
+    ans <-  data.frame(fid=numeric(),cid=numeric(),index1=numeric(),index2=numeric())
+    fidList <- unique(data[data$cid %in% cid1, "fid"])
+    for (fid in fidList) {
+        tmpdat1 <- data[data$fid == fid & data$cid == cid1, ,
+                        drop = FALSE]
+        tmpdat2 <- data[data$fid == fid & data$cid == cid2, ,
+                        drop = FALSE]
+        if (nrow(tmpdat2) > 0 && nrow(tmpdat1) > 0) {
+            tmpdat1[,4] <- tmpdat1[,4] -1
+            tmpdat2[,4] <- tmpdat2[,4] -1
+            idx1 <- sort(unlist(apply(tmpdat1[,3:4],1,function(x)RQDA:::expand(x[1],x[2]))))
+            idx2 <- sort(unlist(apply(tmpdat2[,3:4],1,function(x)RQDA:::expand(x[1],x[2]))))
+            idx <- unique(intersect(idx1,idx2))
+            if (length(idx)>1) {
+                res <- RQDA:::findConsecutive(idx)
+                res <- data.frame(fid=fid,cid=tmpdat1$cid[1],index1=res$first,index2=res$end+1)
+                ans <- rbind(ans, res)
+            }
+        }
+    }
+    ans
+}
