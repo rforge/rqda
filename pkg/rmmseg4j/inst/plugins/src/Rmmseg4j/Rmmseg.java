@@ -56,7 +56,7 @@ public class Rmmseg {
     public static void main(String[] args) throws IOException {
         String txt = "";
 	if (args.length == 0) {
-	    System.out.println("Usage:\n Rmmseg4j text.");
+	    System.out.println("Usage:\n Rmmseg4j text");
 	}
         if (args.length > 0) {
             txt = args[0];
