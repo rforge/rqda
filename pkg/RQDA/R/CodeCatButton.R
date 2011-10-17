@@ -143,7 +143,7 @@ CodeCatAddToButton <- function(label="Add To",Widget=.rqda$.CodeCatWidget,...)
             if (length(Selected) >1 || Selected != ""){
                 ## Selected <- iconv(Selected,to="UTF-8")
                 cid <- codeoutofcat[codeoutofcat$name %in% Selected,"id"]
-                Dat <- data.frame(cid=cid,catid=catid,date=date(),dateM=date(),memo="",status=1)
+                Dat <- data.frame(cid=cid,catid=catid,date=date(),dateM=date(),memo="",status=1,owner=.rqda$owner)
                 ## Push selected codeList to table treecode
                 dbWriteTable(.rqda$qdacon,"treecode",Dat,row.names=FALSE,append=TRUE)
                 ## update .CodeofCat Widget

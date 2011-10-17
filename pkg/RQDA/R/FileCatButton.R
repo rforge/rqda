@@ -122,7 +122,7 @@ FileCatAddToButton <- function(label="AddTo",Widget=.rqda$.FileCatWidget,...)
       if (Selected != ""){
         ## Selected <- iconv(Selected,to="UTF-8") ## already Encoded as UTF-8.
         fid <- fileoutofcat[fileoutofcat$name %in% Selected,"id"]
-        Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo=NA,status=1)
+        Dat <- data.frame(fid=fid,catid=catid,date=date(),dateM=date(),memo=NA,status=1,owner=.rqda$owner)
         dbWriteTable(.rqda$qdacon,"treefile",Dat,row.names=FALSE,append=TRUE)
         UpdateFileofCatWidget()
       }

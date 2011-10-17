@@ -695,7 +695,7 @@ AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
         if (nrow(exist) != length(cid)) {
           DAT <- data.frame(cid = cid[!cid %in% exist$cid],
                             catid = CodeCatid, date = date(), dateM = date(),
-                            memo = "", status = 1)
+                            memo = "", status = 1, owner=.rqda$owner)
           success <- dbWriteTable(.rqda$qdacon, "treecode",
                                   DAT, row.name = FALSE, append = TRUE)
           if (success && updateWidget) {
