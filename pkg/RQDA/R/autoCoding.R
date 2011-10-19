@@ -35,8 +35,15 @@ codingBySearchOneFile <- function(pattern, fid, cid, unit="paragraph", ...) {
                                memo     = sprintf("auto coding by searching %s", pattern)),
                          stringsAsFactors=FALSE
                          )
-        ## need to exclude the codings in the coding table
-        dbWriteTable(RQDA:::.rqda$qdacon, "coding", df, row.names = FALSE, append = TRUE)
+        dfprev <- RQDAQuery("select cid, fid, selfirst, selend from coding where status==1")
+        if (any(duplicated(dfprev))) stop("Duplicated coding records, clean it manually before autocoding.")
+        idx <- apply(df[,c("cid","fid","selfirst","selend")],1,function(x) {
+            any(duplicated(rbind(x,dfprev)))
+        })
+        df <- df[!idx,] ## non-duplicated codings only
+        if (nrow(df)>0) {
+            dbWriteTable(.rqda$qdacon, "coding", df, row.names = FALSE, append = TRUE)
+        }
     }
 }
 
