@@ -242,6 +242,14 @@ FileNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
 FileNamesWidgetMenu$"Edit Seleted File"$handler <- function(h, ...) {
   EditFileFun()
 }
+FileNamesWidgetMenu$"Export Coded file as HTML"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        path=gfile(type="save",text = "Type a name for the exported codings and click OK.")
+        if (!is.na(path)){
+            Encoding(path) <- "UTF-8"
+            path <- sprintf("%s.html",path)
+            exportCodedFile(file=path,getFileIds(type="selected")[1])
+        }}}
 FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
     if (exists(".openfile_gui",env=.rqda) && isExtant(.rqda$.openfile_gui)) {
         SearchButton(RQDA:::.rqda$.openfile_gui)

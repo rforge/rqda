@@ -392,9 +392,10 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
   }
 CodesNamesWidgetMenu$"Export Codings as HTML"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-    path=gfile(type="save",text = "Type a name for the exported codings (with suffix of .html) and click OK.")
+    path=gfile(type="save",text = "Type a name for the exported codings and click OK.")
     if (!is.na(path)){
       Encoding(path) <- "UTF-8"
+      path <- sprintf("%s.html",path)
       if (.rqda$TOR == "uncondition") fid <- NULL else fid <- getFileIds(condition=.rqda$TOR)
       ExportCoding(file=path,Fid=fid)
     }}}
