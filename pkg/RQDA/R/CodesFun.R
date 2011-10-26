@@ -250,6 +250,7 @@ DeleteButton <- function(widget,label,index,direction=c("backward","forward")){
     Anchor <- iter$getChildAnchor()
     if (!is.null(Anchor)){
       lab <- Anchor$GetWidgets()[[1]][["child"]]$GetLabel()
+      Encoding(lab) <- "UTF-8"
       if (lab==label){
         iterEnd <- gtkTextIterGetOffset(iter)
         iterEnd <- gtkTextBufferGetIterAtOffset(buffer,iterEnd+1)$iter
@@ -419,6 +420,7 @@ ExportCodingOfOneCode <- function(file,currentCode,Fid,order=c("fname","ftime","
       retrieval$fname <-""
       for (i in fid){
         FileName <- dbGetQuery(.rqda$qdacon,sprintf("select name from source where status==1 and id==%i",i))[['name']]
+        Encoding(FileName) <- "UTF-8"
         if (!is.null(FileName)){
           retrieval$fname[retrieval$fid==i] <- FileName
         } else {
@@ -428,6 +430,7 @@ ExportCodingOfOneCode <- function(file,currentCode,Fid,order=c("fname","ftime","
       }
       Nfiles <- length(unique(retrieval$fname))
       Ncodings <- nrow(retrieval)
+      Encoding(retrieval$seltext) <- "UTF-8"
       if (nrow(retrieval)==1) {
         cat(sprintf("<hr><p align='center'><b><font color='blue' size='+2'>%i Coding of <a id='%s'>\"%s\" from %s %s </a></b></font><hr><p align='left'>",Ncodings,currentCode,currentCode,Nfiles,ngettext(Nfiles,"file","files")),file=file,append=append)
      } else {
@@ -451,6 +454,7 @@ if (!is.null(allcodes)){
     Encoding(allcodes) <- "UTF-8"
     CodeList <- gselect.list(allcodes, multiple = TRUE, title = "Select one or more codes.")
     if (length(CodeList)>1 || CodeList!="") {
+        file=file(file,open="w",encoding="UTF-8")
         if (!append){
             cat("<HEAD><META HTTP-EQUIV='CONTENT-TYPE' CONTENT='text/html; charset=UTF-8'><TITLE>Codings created by RQDA.</TITLE><META NAME='AUTHOR' CONTENT='RQDA'>",file=file,append=append)
         }
@@ -460,7 +464,10 @@ if (!is.null(allcodes)){
           }
         for (i in seq_along(CodeList)){
             ExportCodingOfOneCode(file=file,currentCode=CodeList[i],Fid=Fid,order=order,append=TRUE)
-        }}}}
+        }
+        close(file)
+    }
+}}
 
 
 ClickHandlerFun <- function(CodeNameWidget,buttons=c("MarCodB1","UnMarB1"),codingTable="coding"){

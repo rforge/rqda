@@ -31,6 +31,7 @@ exportCodedFile <- function(file, fid, closeAfter=TRUE){
         rowids <- sapply(marks,gtkTextMarkGetName)
         pos <- match(gsub(".[1,2]$","",rowids),cidx$rowid)
         code <- cidx$code[pos]
+        Encoding(code) <- "UTF-8"
         b <- grep(".1$",rowids)
         code[b] <- paste("<b><font color='#FF0000'>&lt&lt ",code[b],"</font></b>", sep="")
         e <- grep(".2$",rowids)
