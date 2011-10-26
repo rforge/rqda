@@ -122,6 +122,7 @@ if (isTRUE(.rqda$isLaunched)) {
   ##.case_buttons[1,4] <- CaseMemoButton()
   .case_buttons[1,4] <- CaseUnMark_Button("Unlink")
   .case_buttons[1,5] <- CaseMark_Button(" Link ")
+  .case_buttons[1,6] <- CaseAttribute_Button("Attribute")
   ##.case_buttons[2,3] <- AddWebSearchButton("WebSearch") # use popup menu instead
 
 ########################### GUI for Attributes
@@ -315,6 +316,7 @@ AddHandler <- function(){
     if (length(SelectedCase)!=0) {
       enabled(button$DelCasB) <- TRUE
       enabled(button$CasRenB) <- TRUE
+      enabled(button$CasAttrB) <- TRUE
       enabled(.rqda$.FileofCase) <- TRUE
       enabled(button$CasMarB) <-
         (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))

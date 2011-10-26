@@ -165,6 +165,7 @@ CloseProjectButton <- function(container){
     enabled(button$CasRenB) <- FALSE
     enabled(button$CasMarB) <- FALSE
     enabled(button$CasUnMarB) <- FALSE
+    enabled(button$CasAttrB) <- FALSE
     enabled(button$AddAttB) <- FALSE
     enabled(button$DelAttB) <- FALSE
     enabled(button$RenAttB) <- FALSE

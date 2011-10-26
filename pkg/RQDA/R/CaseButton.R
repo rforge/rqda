@@ -177,6 +177,19 @@ CaseUnMark_Button<-function(label="Unmark"){
   CasUnMarB
 }
 
+CaseAttribute_Button <- function(label="Attribute"){
+    CasAttrB <- gbutton(text=label, handler = function(h, ...) {
+        SelectedCase <- svalue(.rqda$.CasesNamesWidget)
+        if (length(SelectedCase!=0)){
+            SelectedCase <- enc(SelectedCase,"UTF-8")
+            caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))[,1]
+            CaseAttrFun(caseId=caseid,title=SelectedCase)
+        }})
+     assign("CasAttrB", CasAttrB, env = button)
+     enabled(button$CasAttrB) <- FALSE
+     CasAttrB
+}
+
 CaseNamesWidgetMenu <- list()
 CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
   if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
