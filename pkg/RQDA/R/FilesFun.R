@@ -21,7 +21,7 @@ ImportFile <- function(path,encoding=.rqda$encoding,con=.rqda$qdacon,...){
       write <- TRUE
       ## if this is the first file, no need to worry about the duplication issue.
     } else {
-      if (nrow(dbGetQuery(con,sprintf("select name from source where name=='%s'",FnameUTF8)))==0) {
+      if (nrow(dbGetQuery(con,sprintf("select name from source where name='%s'",FnameUTF8)))==0) {
         ## no duplication file exists, then write.
         write <- TRUE
       } else {
@@ -131,9 +131,9 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   W <- get(".openfile_gui", .rqda)
   add(W, content)
   slot(W, "widget")@widget$SetEditable(FALSE)
-  markidx <- RQDAQuery(sprintf("select %s.rowid,selfirst,selend,freecode.name,freecode.color, freecode.id from %s,freecode where fid=%i and %s.status=1 and freecode.id==cid and freecode.status==1",codingTable,codingTable, IDandContent$id,codingTable))
+  markidx <- RQDAQuery(sprintf("select %s.rowid,selfirst,selend,freecode.name,freecode.color, freecode.id from %s,freecode where fid=%i and %s.status=1 and freecode.id=cid and freecode.status=1",codingTable,codingTable, IDandContent$id,codingTable))
   if (annotation) {
-      anno <- RQDAQuery(sprintf("select position,rowid from annotation where status==1 and fid==%s",IDandContent$id))
+      anno <- RQDAQuery(sprintf("select position,rowid from annotation where status=1 and fid=%s",IDandContent$id))
   }
   buffer <- W@widget@widget$GetBuffer()
   fore.col <- .rqda$fore.col
@@ -383,7 +383,7 @@ write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...
       write <- TRUE
       ## if this is the first file, no need to worry about the duplication issue.
     } else {
-      if (nrow(dbGetQuery(con,sprintf("select name from source where name=='%s'",FnameUTF8)))==0) {
+      if (nrow(dbGetQuery(con,sprintf("select name from source where name='%s'",FnameUTF8)))==0) {
       ## no duplication file exists, then write.
         write <- TRUE
       } else {
@@ -429,7 +429,7 @@ ProjectMemoWidget <- function(){
       newcontent <- svalue(W)
       ## Encoding(newcontent) <- "UTF-8"
       newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
-      dbGetQuery(.rqda$qdacon,sprintf("update project set memo='%s' where rowid==1", ## only one row is needed
+      dbGetQuery(.rqda$qdacon,sprintf("update project set memo='%s' where rowid=1", ## only one row is needed
                                       newcontent)
                  ## have to quote the character in the sql expression
                  )
@@ -490,13 +490,13 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
       if (type=="selected"){
         selected <- svalue(.rqda$.fnames_rqda)
         ans <- dbGetQuery(.rqda$qdacon,
-                          sprintf("select id from source where status==1 and name in (%s)",
+                          sprintf("select id from source where status=1 and name in (%s)",
                                   paste(paste("'",enc(selected),"'",sep=""),collapse=",")
                                   ))$id
       } else {
-        allfid <- dbGetQuery(.rqda$qdacon,"select id from source where status==1 group by id")$id
+        allfid <- dbGetQuery(.rqda$qdacon,"select id from source where status=1 group by id")$id
         if (type!="all"){
-          fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status==1 group by fid")$fid
+          fid_coded <- dbGetQuery(.rqda$qdacon,"select fid from coding where status=1 group by fid")$fid
         }
         if (type=="all") {
           ans <- allfid
@@ -513,7 +513,7 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
     if (type=="selected"){
       selected <- svalue(.rqda$.FileofCase)
       ans <- dbGetQuery(.rqda$qdacon,
-                        sprintf("select id from source where status==1 and name in (%s)",
+                        sprintf("select id from source where status=1 and name in (%s)",
                                 paste(paste("'",enc(selected),"'",sep=""),collapse=",")
                                 ))$id
     } else {
@@ -526,7 +526,7 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
                                }
         caseid <- RQDAQuery(sprintf("select id from cases where status=1 and name='%s'",
                                     enc(Selected)))$id
-        fidofcase <- RQDAQuery(sprintf("select fid from caselinkage where status==1 and caseid==%i",caseid))$fid
+        fidofcase <- RQDAQuery(sprintf("select fid from caselinkage where status=1 and caseid=%i",caseid))$fid
         ##         caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name in (%s)",
         ##                                                  paste(paste("'",Selected,"'",sep=""),collapse=",")))$id
         ##         fidofcase <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (%s)",
@@ -543,13 +543,13 @@ GetFileId <- function(condition=c("unconditional","case","filecategory","both"),
     if (type=="selected"){
       selected <- svalue(.rqda$.FileofCat)
       ans <- dbGetQuery(.rqda$qdacon,
-                        sprintf("select id from source where status==1 and name in (%s)",
+                        sprintf("select id from source where status=1 and name in (%s)",
                                 paste(paste("'",enc(selected),"'",sep=""),collapse=",")
                                 ))$id
     }
     allfid <- GetFileIdSets("filecategory","intersect")
     if (type=="all") {ans <- allfid} else {
-      codedfid <- RQDAQuery(sprintf("select fid from coding where status==1 and fid in (%s) group by fid",paste(shQuote(allfid),collapse=",")))$fid
+      codedfid <- RQDAQuery(sprintf("select fid from coding where status=1 and fid in (%s) group by fid",paste(shQuote(allfid),collapse=",")))$fid
       if (type=="coded") {ans <- codedfid}
       if (type=="uncoded") { ans <-  setdiff(allfid,codedfid)}
     }
@@ -586,9 +586,9 @@ GetFileIdSets <- function(set=c("case","filecategory"),relation=c("union","inter
     } else {
       Selected <- gsub("'", "''", Selected)
       if (relation=="union"){
-        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status==1 and caseid in (select id from cases where status=1 and name in (%s)) group by fid", paste(paste("'",Selected,"'",sep=""),collapse=",")))$fid
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid from caselinkage where status=1 and caseid in (select id from cases where status=1 and name in (%s)) group by fid", paste(paste("'",Selected,"'",sep=""),collapse=",")))$fid
       } else if (relation=="intersect"){
-        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid, count(fid) as n from caselinkage where status==1 and caseid in (select id from cases where status=1 and name in (%s)) group by fid having n= %i", paste(paste("'",Selected,"'",sep=""),collapse=","),length(Selected)))$fid
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid, count(fid) as n from caselinkage where status=1 and caseid in (select id from cases where status=1 and name in (%s)) group by fid having n= %i", paste(paste("'",Selected,"'",sep=""),collapse=","),length(Selected)))$fid
       }
     }
   }## end of set=="case"
@@ -599,9 +599,9 @@ GetFileIdSets <- function(set=c("case","filecategory"),relation=c("union","inter
     } else {
       Selected <- gsub("'", "''", Selected)
       if (relation=="union"){
-        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status==1 and catid in (select catid from filecat where status=1 and name in (%s)) group by fid", paste(paste("'",Selected,"'",sep=""),collapse=",")))$fid
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid from treefile where status=1 and catid in (select catid from filecat where status=1 and name in (%s)) group by fid", paste(paste("'",Selected,"'",sep=""),collapse=",")))$fid
       } else if (relation=="intersect"){
-        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid, count(fid) as n from treefile where status==1 and catid in (select catid from filecat where status=1 and name in (%s)) group by fid having n= %i", paste(paste("'",Selected,"'",sep=""),collapse=","),length(Selected)))$fid
+        ans <- dbGetQuery(.rqda$qdacon,sprintf("select fid, count(fid) as n from treefile where status=1 and catid in (select catid from filecat where status=1 and name in (%s)) group by fid having n= %i", paste(paste("'",Selected,"'",sep=""),collapse=","),length(Selected)))$fid
       }
     }
   } ## end of set=="filecategory"

@@ -40,7 +40,7 @@ mergeCodes <- function(cid1,cid2){ ## cid1 and cid2 are two code IDs.
             memo <- paste(c(oldmemo,From$memo),collapse="\n",sep="") ## merge the old memo from From
             dbGetQuery(.rqda$qdacon,sprintf("delete from coding where rowid in (%s)",
                                             paste(Exist$rowid[del],collapse=",",sep=""))) ## delete codings
-            tt <-   dbGetQuery(.rqda$qdacon,sprintf("select file from source where id=='%i'", From$fid))[1,1]
+            tt <-   dbGetQuery(.rqda$qdacon,sprintf("select file from source where id='%i'", From$fid))[1,1]
             Encoding(tt) <- "UTF-8"  ## fulltext of the file
             Sel <- c(min(Exist$Start[del]), max(Exist$End[del])) ## index to get the new coding
             ## what is Sel?
@@ -55,19 +55,19 @@ mergeCodes <- function(cid1,cid2){ ## cid1 and cid2 are two code IDs.
     }
   } ## end of helper function.
 
-  Coding1 <-  dbGetQuery(.rqda$qdacon,sprintf("select * from coding where cid==%i and status=1",cid1))
-  Coding2 <-  dbGetQuery(.rqda$qdacon,sprintf("select * from coding where cid==%i and status=1",cid2))
+  Coding1 <-  dbGetQuery(.rqda$qdacon,sprintf("select * from coding where cid=%i and status=1",cid1))
+  Coding2 <-  dbGetQuery(.rqda$qdacon,sprintf("select * from coding where cid=%i and status=1",cid2))
   if (any(c(nrow(Coding1),nrow(Coding2))==0)) stop("One code has empty coding.")
   if (nrow(Coding1) >= nrow(Coding2)) {
     FromDat <- Coding2
     ToDat <- Coding1
-    ToDat$rowid <- RQDAQuery(sprintf("select rowid from coding where cid==%i and status=1",cid1))$rowid
+    ToDat$rowid <- RQDAQuery(sprintf("select rowid from coding where cid=%i and status=1",cid1))$rowid
     FromDat$cid <- cid1 ## so can write to directly where it is proximate
     FromCid <- cid2
   } else {
     FromDat <- Coding1
     ToDat <- Coding2
-    ToDat$rowid <- RQDAQuery(sprintf("select rowid from coding where cid==%i and status=1",cid2))$rowid
+    ToDat$rowid <- RQDAQuery(sprintf("select rowid from coding where cid=%i and status=1",cid2))$rowid
     FromDat$cid <- cid2
     FromCid <- cid1
   } ## use small coding as FromDat -> speed it up.
@@ -77,8 +77,8 @@ mergeCodes <- function(cid1,cid2){ ## cid1 and cid2 are two code IDs.
     ## avoding the NOTE from docs checking.
     mergeHelperFUN(From=x,Exist=Exist)
   }
-  dbGetQuery(.rqda$qdacon,sprintf("update coding set status==0 where cid=='%i'",FromCid))
-  dbGetQuery(.rqda$qdacon,sprintf("update freecode set status==0 where id=='%i'",FromCid))
+  dbGetQuery(.rqda$qdacon,sprintf("update coding set status=0 where cid='%i'",FromCid))
+  dbGetQuery(.rqda$qdacon,sprintf("update freecode set status=0 where id='%i'",FromCid))
 }
 
 findConsecutive <- function(x) {

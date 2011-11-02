@@ -13,7 +13,7 @@ AutoCoding <- function(KeyWord,expansion=6){
 ## auto coding: each paragraph is a analysis unit
 codingBySearchOneFile <- function(pattern, fid, cid, unit="paragraph", ...) {
     ## allow more flexible control on the matching
-    txt <- RQDAQuery(sprintf("select file from source where status==1 and id=%s",fid))$file
+    txt <- RQDAQuery(sprintf("select file from source where status=1 and id=%s",fid))$file
     Encoding(txt) <- "UTF-8"
     pidx <- gregexpr("(\n){1,}",txt)
     idx1 <- c(0,pidx[[1]]+attr(pidx[[1]],"match.length")-1)
@@ -35,7 +35,7 @@ codingBySearchOneFile <- function(pattern, fid, cid, unit="paragraph", ...) {
                                memo     = sprintf("auto coding by searching %s", pattern)),
                          stringsAsFactors=FALSE
                          )
-        dfprev <- RQDAQuery("select cid, fid, selfirst, selend from coding where status==1")
+        dfprev <- RQDAQuery("select cid, fid, selfirst, selend from coding where status=1")
         if (any(duplicated(dfprev))) stop("Duplicated coding records, clean it manually before autocoding.")
         idx <- apply(df[,c("cid","fid","selfirst","selend")],1,function(x) {
             any(duplicated(rbind(x,dfprev)))

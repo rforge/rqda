@@ -321,7 +321,7 @@ AddHandler <- function(){
       enabled(button$CasMarB) <-
         (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))
       Encoding(SelectedCase) <- "UTF-8"
-      currentCid <- RQDAQuery(sprintf("select id from cases where name=='%s'",
+      currentCid <- RQDAQuery(sprintf("select id from cases where name='%s'",
                                       enc(SelectedCase)
                                       )
                               )[,1]
@@ -330,22 +330,22 @@ AddHandler <- function(){
         SelectedFile <- svalue(.rqda$.root_edit)
         Encoding(SelectedFile) <- "UTF-8"
         currentFid <- RQDAQuery(sprintf(
-                                        "select id from source where name=='%s'",
+                                        "select id from source where name='%s'",
                                         enc(SelectedFile)
                                         )
                                 )[,1]
         ## following code: Only mark the text chuck according to the current code.
         coding.idx <- RQDAQuery(sprintf("select selfirst,selend from coding where
-                                        fid=%i and status==1",currentFid
+                                        fid=%i and status=1",currentFid
                                         )
                                 )
         anno.idx <- RQDAQuery(sprintf("select position from annotation where
-                                       fid=%i and status==1",currentFid))$position
+                                       fid=%i and status=1",currentFid))$position
         allidx <- unlist(coding.idx,anno.idx)
         sel_index <-  RQDAQuery(sprintf("select selfirst, selend from caselinkage where
-                                                   caseid==%i and fid==%i and status==1",
+                                                   caseid=%i and fid=%i and status=1",
                                         currentCid, currentFid))
-        Maxindex <- RQDAQuery(sprintf("select max(selend) from caselinkage where fid==%i",
+        Maxindex <- RQDAQuery(sprintf("select max(selend) from caselinkage where fid=%i",
                                       currentFid))[1,1]
         if (!is.null(allidx)) Maxindex <- Maxindex + sum(allidx<=Maxindex)
         ClearMark(.rqda$.openfile_gui,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
@@ -377,7 +377,7 @@ AddHandler <- function(){
       enabled(button$CodCatAddToB) <- TRUE
       enabled(button$MarCodB2) <- FALSE
       enabled(button$UnMarB2) <- FALSE
-      catid <- RQDAQuery(sprintf("select catid from codecat where name=='%s'",
+      catid <- RQDAQuery(sprintf("select catid from codecat where name = '%s'",
                                  enc(svalue(.rqda$.CodeCatWidget))
                                  )
                          )$catid

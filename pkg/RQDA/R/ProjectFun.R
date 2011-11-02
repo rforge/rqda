@@ -103,7 +103,7 @@ UpgradeTables <- function(){
   Fields <- dbListFields(.rqda$qdacon,"project")
   if (!"databaseversion" %in% Fields) {
     dbGetQuery(.rqda$qdacon,"alter table project add column databaseversion text")
-    dbGetQuery(.rqda$qdacon,"update project set databaseversion=='0.1.5'")
+    dbGetQuery(.rqda$qdacon,"update project set databaseversion='0.1.5'")
   }
   currentVersion <- dbGetQuery(.rqda$qdacon,"select databaseversion from project")[[1]]
   if (currentVersion=="0.1.5") {
@@ -127,8 +127,8 @@ UpgradeTables <- function(){
     RQDAQuery("alter table caseAttr add column status integer")
     RQDAQuery("alter table fileAttr add column status integer")
     RQDAQuery("alter table freecode add column color text")
-    RQDAQuery("update caseAttr set status==1")
-    RQDAQuery("update fileAttr set status==1")
+    RQDAQuery("update caseAttr set status=1")
+    RQDAQuery("update fileAttr set status=1")
     try(RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, status integer)"),TRUE)
     RQDAQuery("create table image (name text, id integer, date text, dateM text, owner text,status integer)")
     RQDAQuery("create table imageCoding (cid integer,iid integer,x1 integer, y1 integer, x2 integer, y2 integer, memo text, date text, dateM text, owner text,status integer)")
@@ -140,10 +140,10 @@ UpgradeTables <- function(){
     RQDAQuery("alter table project add column imageDir text")
     try(RQDAQuery("alter table attributes add column class text"),TRUE)
     RQDAQuery("alter table caseAttr add column status integer")
-    RQDAQuery("update caseAttr set status==1")
+    RQDAQuery("update caseAttr set status=1")
     RQDAQuery("alter table fileAttr add column status integer")
     RQDAQuery("alter table freecode add column color text")
-    RQDAQuery("update fileAttr set status==1")
+    RQDAQuery("update fileAttr set status=1")
     try(RQDAQuery("create table annotation (fid integer,position integer,annotation text, owner text, date text,dateM text, status integer)"),TRUE)
     RQDAQuery("create table image (name text, id integer, date text, dateM text, owner text,status integer)")
     RQDAQuery("create table imageCoding (cid integer,iid integer,x1 integer, y1 integer, x2 integer, y2 integer, memo text, date text, dateM text, owner text,status integer)")
@@ -247,7 +247,7 @@ ProjectMemoWidget <- function(){
       newcontent <- svalue(W)
       ## Encoding(newcontent) <- "UTF-8"
       newcontent <- enc(newcontent,encoding="UTF-8") ## take care of double quote.
-      dbGetQuery(.rqda$qdacon,sprintf("update project set memo='%s' where rowid==1", ## only one row is needed
+      dbGetQuery(.rqda$qdacon,sprintf("update project set memo='%s' where rowid=1", ## only one row is needed
                                       newcontent)
                  ## have to quote the character in the sql expression
                  )

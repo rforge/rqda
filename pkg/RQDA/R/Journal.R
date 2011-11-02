@@ -14,7 +14,7 @@ DeleteJournalButton <- function(label="Delete"){
         if (isTRUE(del)){
           Selected <- svalue(.rqda$.JournalNamesWidget)
           Encoding(Selected) <- "UTF-8"
-          RQDAQuery(sprintf("update journal set status=0 where name=='%s'",enc(Selected)))
+          RQDAQuery(sprintf("update journal set status=0 where name='%s'",enc(Selected)))
           JournalNamesUpdate()
         }
       }
@@ -79,7 +79,7 @@ AddNewJournalFun <- function(){
             ## title <- ginput("Enter new file name. ",text=Sys.time(), icon="info")
             title <- Sys.time()
             if (!is.na(title)){
-            if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from journal where name=='%s'",enc(title))))!=0) {
+            if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from journal where name='%s'",enc(title))))!=0) {
                 title <- paste("New",title)
             }## Make sure it is unique
             content <- svalue(textW)
