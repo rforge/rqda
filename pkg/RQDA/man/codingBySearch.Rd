@@ -7,7 +7,7 @@ Auto-coding by pattern matching
 Applies the specified code to a specified file based on given text pattern.
 }
 \usage{
-codingBySearch(pattern, fid, cid, unit = "paragraph")
+codingBySearch(pattern, fid, cid, unit = "paragraph",...)
 }
 \arguments{
   \item{pattern}{
@@ -21,6 +21,9 @@ Code id, in the GUI 'Codes' tab click on code to see its id
 }
   \item{unit}{
 At the moment the available option
+}
+\item{\ldots}{
+  not used currently.
 }
 }
 \details{
@@ -38,7 +41,9 @@ Ronggui Huang
 \link{getFileIds}
 }
 \examples{
+\dontrun{
 codingBySearch("internet",fid=1,cid=2)
 
 codingBySearch("internet",fid=getFileIds(),cid=2)
+}
 }

@@ -347,7 +347,7 @@ AddHandler <- function(){
                                         currentCid, currentFid))
         Maxindex <- RQDAQuery(sprintf("select max(selend) from caselinkage where fid=%i",
                                       currentFid))[1,1]
-        if (!is.null(allidx)) Maxindex <- Maxindex + sum(allidx<=Maxindex)
+        if (!is.null(allidx) && length(allidx)>0) Maxindex <- Maxindex + sum(allidx<=Maxindex)
         ClearMark(.rqda$.openfile_gui,min=0,max=Maxindex,clear.fore.col=FALSE,clear.back.col=TRUE)
         if (nrow(sel_index)>0){
           if (!is.null(allidx)){

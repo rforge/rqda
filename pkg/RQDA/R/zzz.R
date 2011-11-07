@@ -14,7 +14,7 @@
   options(andMethod=c("overlap","exact","inclusion"))
   assign("optOld",optOld,env=.rqda)
   if (interactive()) {
-     message("\nUse 'RQDA()' to start the programe.\n")
+     packageStartupMessage("\nUse 'RQDA()' to start the programe.\n")
      RQDA()
    }
 }
