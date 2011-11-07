@@ -68,7 +68,7 @@ Mark_Button<-function(label="Mark",codeListWidget=".codes_rqda",name="MarCodB1")
 
 
 MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
-  ## insert lable as mark when data is written to database.
+    ## insert lable as mark when data is written to database.
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     currentFile <- tryCatch(svalue(.rqda$.root_edit),error=function(e){NULL})
       if (is.null(currentFile)) gmessage("Open a file first.",con=TRUE) else{
@@ -166,7 +166,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
 
 Unmark_Button <- function(label="Unmark",codeListWidget=.rqda$.codes_rqda,name="UnMarB1"){
   ans <- gbutton("Unmark", handler=function(h,...) {
-    UnMarkCodeFun(codeListWidget=codeListWidget,codingTable=.rqda$codingTable)
+    UnMarkCodeFunByRowid(codeListWidget=codeListWidget,codingTable=.rqda$codingTable)
   }
                  )
   enabled(ans) <- FALSE
@@ -175,6 +175,7 @@ Unmark_Button <- function(label="Unmark",codeListWidget=.rqda$.codes_rqda,name="
 }
 
 UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda,codingTable="coding") {
+    ## this function is superseded by MarkCodeFunByRowid
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     con <- .rqda$qdacon
     W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
@@ -231,6 +232,32 @@ UnMarkCodeFun <- function(codeListWidget=.rqda$.codes_rqda,codingTable="coding")
   }
 }
 
+
+UnMarkCodeFunByRowid <- function(codeListWidget=.rqda$.codes_rqda,codingTable="coding") {
+    W <- tryCatch( get(".openfile_gui",env=.rqda), error=function(e){})
+    ## get the widget for file display. If it does not exist, then return NULL.
+    if (!is.null(W)) {
+        rowid <- .codingEnv$selectedRowid
+        coding_index <- RQDAQuery(sprintf("select cid, fid, selfirst, selend from %s where rowid=%s and status=1",
+                                          codingTable,rowid))
+        nshift1 <- nrow(RQDAQuery(sprintf("select selfirst from %s where status=1 and selfirst<= %s and fid=%s",
+                                         codingTable,coding_index$selfirst,coding_index$fid)))
+        nshift2 <- nrow(RQDAQuery(sprintf("select fid, position from annotation where status=1 and position <= %s and fid=%s",
+                                         coding_index$selfirst,coding_index$fid)))
+        nshift <- nshift1 + nshift2
+        ClearMark(W,min=coding_index$selfirst+nshift, max=coding_index$selend+nshift)
+        ## clear mark of the selected coding
+        codeName <- RQDAQuery(sprintf("select name from freecode where status=1 and id = %s",coding_index$cid))$name
+        buffer <- slot(.rqda$.openfile_gui, "widget")@widget$GetBuffer()
+        isRemoved <- DeleteButton(.rqda$.openfile_gui,label=sprintf("<%s>",codeName),
+                                  index=coding_index$selfirst+nshift,direction="backward")
+        if (isRemoved) {
+            RQDAQuery(sprintf("update %s set status=-1 where rowid=%s",codingTable, rowid))
+            endMark <- buffer$GetMark(sprintf("%s.2", rowid))
+            gtkTextBufferDeleteMarkByName(buffer,sprintf("%s.2", rowid))
+        }
+    }
+}
 
 CodeMemoButton <- function(label="C-Memo",...){
   codememobuton <- gbutton(label, handler=function(h,...){

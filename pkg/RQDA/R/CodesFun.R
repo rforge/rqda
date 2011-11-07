@@ -189,11 +189,13 @@ InsertAnchor <- function(widget,label,index,label.col="gray90",
                   ## buffer$createTag("underline", underline = "single")
                   ## should be created when a file is opened
                   rowid <- gsub(".2$","",EndMarkName)
+                  assign("selectedRowid", rowid, env=.codingEnv)
                   memo <- RQDAQuery(sprintf("select memo from coding where rowid=%s",rowid))$memo
                   if (!is.na(memo) && memo!="") {
                       buffer$ApplyTagByName("underline",Iter,buffer$GetIterAtMark(m)$iter)
                   }
-              }}
+              }
+          }
           if (attr(event$type,"name")== "GDK_BUTTON_PRESS" && event$button==3) {
               ## action for right click
               if (!is.null(EndMarkName)) {
