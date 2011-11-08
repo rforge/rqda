@@ -122,13 +122,13 @@ crossCodes <- CrossCode <- function(relation=c("overlap","inclusion","exact","pr
 
 plot.crossCodes <- function(x, ...){
     require(igraph)
-    cmG <- igraph::graph.adjacency(x,mode="upper",diag=FALSE,weighted=TRUE)
-    igraph::E(cmG)[weight==1]$color <- "green"
-    igraph::E(cmG)[weight==2]$color <- "yellow"
-    igraph::E(cmG)[weight==3]$color <- "orange"
-    igraph::E(cmG)[weight>=4]$color <- "red"
-    tryCatch(tkplot(cmG,edge.width=sqrt(igraph::E(cmG)$weight),vertex.label=igraph::V(cmG)$CodeName), error=function(e){
-        plot(cmG,edge.width=sqrt(igraph::E(cmG)$weight),vertex.label=igraph::V(cmG)$CodeName)
+    cmG <- igraph:::graph.adjacency(x,mode="upper",diag=FALSE,weighted=TRUE)
+    igraph:::E(cmG)[weight==1]$color <- "green"
+    igraph:::E(cmG)[weight==2]$color <- "yellow"
+    igraph:::E(cmG)[weight==3]$color <- "orange"
+    igraph:::E(cmG)[weight>=4]$color <- "red"
+    tryCatch(tkplot(cmG,edge.width=sqrt(igraph:::E(cmG)$weight),vertex.label=igraph:::V(cmG)$CodeName), error=function(e){
+        plot(cmG,edge.width=sqrt(igraph:::E(cmG)$weight),vertex.label=igraph:::V(cmG)$CodeName)
     })
 }
 
