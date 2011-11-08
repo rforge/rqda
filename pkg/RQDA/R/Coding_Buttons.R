@@ -248,6 +248,7 @@ UnMarkCodeFunByRowid <- function(codeListWidget=.rqda$.codes_rqda,codingTable="c
         ClearMark(W,min=coding_index$selfirst+nshift, max=coding_index$selend+nshift)
         ## clear mark of the selected coding
         codeName <- RQDAQuery(sprintf("select name from freecode where status=1 and id = %s",coding_index$cid))$name
+        Encoding(codeName) <- "UTF-8"
         buffer <- slot(.rqda$.openfile_gui, "widget")@widget$GetBuffer()
         isRemoved <- DeleteButton(.rqda$.openfile_gui,label=sprintf("<%s>",codeName),
                                   index=coding_index$selfirst+nshift,direction="backward")
