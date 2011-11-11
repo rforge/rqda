@@ -173,13 +173,15 @@ open_proj <- function(path,conName="qdacon",assignenv=.rqda,...){
            error=function(e){})
   ## Fist close the con if it exist, then open a new con.
   if (file.access(path, 2) == 0) {
-    assign(conName, dbConnect(drv=dbDriver("SQLite"),dbname=path),envi=assignenv)
+      Encoding(path) <- "unknown"
+      assign(conName, dbConnect(drv=dbDriver("SQLite"),dbname=path),envi=assignenv)
   } else if (file.access(path, 4) == 0){
-    assign(conName, dbConnect(drv=dbDriver("SQLite"),dbname=path),envi=assignenv)
-    gmessage("You don't have write access to the *.rqda file. You can only read the project.",con=TRUE,icon="warning")
+      Encoding(path) <- "unknown"
+      assign(conName, dbConnect(drv=dbDriver("SQLite"),dbname=path),envi=assignenv)
+      gmessage("You don't have write access to the *.rqda file. You can only read the project.",con=TRUE,icon="warning")
   } else {
-    gmessage("You don't have read access to the *.rqda file. Fail to open.",con=TRUE,icon="error")
-}
+      gmessage("You don't have read access to the *.rqda file. Fail to open.",con=TRUE,icon="error")
+  }
 }
 
 

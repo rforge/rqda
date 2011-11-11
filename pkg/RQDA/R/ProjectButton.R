@@ -71,7 +71,9 @@ openProject <- function(path,updateGUI=FALSE) {
         tryCatch(UpdateFileofCatWidget(),error=function(e){})
         tryCatch(AttrNamesUpdate(),error=function(e){})
         tryCatch(JournalNamesUpdate(),error=function(e){})
-        path <- gsub("\\\\","/",dbGetInfo(.rqda$qdacon)$dbname)
+        path <- dbGetInfo(.rqda$qdacon)$dbname
+        Encoding(path) <- "UTF-8"
+        path <- gsub("\\\\","/", path)
         path <- gsub("/","/ ",path)
         svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,50),collapse="\n"))
         gtkWidgetSetSensitive(button$cloprob@widget@widget,TRUE)
