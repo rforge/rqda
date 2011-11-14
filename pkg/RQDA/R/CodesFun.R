@@ -574,6 +574,7 @@ InsertAnnotation <- function (index,fid,rowid,label="[Annotation]",AnchorPos=NUL
     buffer <- slot(widget, "widget")@widget$GetBuffer()
     button_press <- function(widget, event,moreArgs) {
       openAnnotation(New=FALSE,pos=moreArgs$pos,fid=moreArgs$fid,rowid=moreArgs$rowid)
+      enabled(button$savAnnB) <- FALSE
     }
     gSignalConnect(label, "button-press-event", button_press,data = list(pos=index,fid=fid,rowid=rowid))
     if (is.null(AnchorPos)) AnchorPos <- index
