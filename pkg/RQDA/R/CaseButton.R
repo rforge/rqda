@@ -247,6 +247,14 @@ CaseNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
    viewCaseAttr()
   }
 }
+CaseNamesWidgetMenu$"Export Case Attributes"$handler <- function(h,...){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        fName <- gfile(type='save',filter=list("csv"=list(pattern=c("*.csv"))))
+        Encoding(fName) <- "UTF-8"
+        if (length(grep(".csv$",fName))==0) fName <- sprintf("%s.csv",fName)
+        write.csv(GetAttr("case"), row.names=FALSE, file=fName, na="")
+    }
+}
 CaseNamesWidgetMenu$"Sort All by Created Time"$handler <- function(h,...){
   CaseNamesUpdate(.rqda$.CasesNamesWidget,sortByTime = TRUE)
 }
