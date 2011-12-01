@@ -77,7 +77,7 @@ AddNewJournalFun <- function(){
         assign(".AddNewJournalWidget2",gpanedgroup(horizontal = FALSE, con=get(".AddNewJournalWidget",env=.rqda)),env=.rqda)
         gbutton("Save Journal",con=get(".AddNewJournalWidget2",env=.rqda),handler=function(h,...){
             ## title <- ginput("Enter new file name. ",text=Sys.time(), icon="info")
-            title <- Sys.time()
+            title <- as.character(Sys.time())
             if (!is.na(title)){
             if (nrow(dbGetQuery(.rqda$qdacon,sprintf("select name from journal where name='%s'",enc(title))))!=0) {
                 title <- paste("New",title)

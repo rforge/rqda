@@ -217,6 +217,7 @@ is_projOpen <- function(env=.rqda,conName="qdacon",message=TRUE){
 backup_proj <- function(con){
   ## con=.rqda$qdacon
   dbname <- dbGetInfo(con)$dbname
+  Encoding(dbname) <- "UTF-8"
   backupname <- sprintf("%s%s.rqda",gsub("rqda$","",dbname),format(Sys.time(), "%H%M%S%d%m%Y"))
   success <- file.copy(from=dbname, to=backupname , overwrite = FALSE)
   if (success) {
