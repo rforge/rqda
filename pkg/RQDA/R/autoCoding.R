@@ -18,7 +18,7 @@ codingBySearchOneFile <- function(pattern, fid, cid, unit="paragraph", ...) {
     pidx <- gregexpr("(\n){1,}",txt)
     idx1 <- c(0,pidx[[1]]+attr(pidx[[1]],"match.length")-1)
     idx2 <- c(pidx[[1]]-1,nchar(txt))
-    sidx <- gregexpr(pattern,txt)[[1]]
+    sidx <- gregexpr(pattern,txt, ...)[[1]]
     if (length(sidx) > 1 || (sidx != -1)) {
         residx <- unique(findInterval(sidx,sort(c(idx1,idx2))))
         idx <- (residx + 1)/2

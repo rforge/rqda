@@ -23,7 +23,7 @@ Code id, in the GUI 'Codes' tab click on code to see its id
 At the moment the available option
 }
 \item{\ldots}{
-  not used currently.
+  arguments passed to \link{gregexpr}
 }
 }
 \details{
