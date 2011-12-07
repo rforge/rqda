@@ -216,15 +216,6 @@ FileNamesWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
       UpdateFileofCatWidget()
     }
   }
-FileNamesWidgetMenu$"Add/modify Attributes of Selected File..."$handler <- function(h,...){
-  if (is_projOpen(env=.rqda,conName="qdacon")) {
-    Selected <- svalue(.rqda$.fnames_rqda)
-    if (length(Selected !=0 )){
-    fileId <- RQDAQuery(sprintf("select id from source where status=1 and name='%s'",
-                                enc(Selected)))[,1]
-    FileAttrFun(fileId=fileId,title=Selected)
-  }
-}}
 FileNamesWidgetMenu$"Add/modify Attributes of The Open File..."$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
     Selected <- tryCatch(svalue(RQDA:::.rqda$.root_edit),error=function(e){NULL})
@@ -238,6 +229,14 @@ FileNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
   if (is_projOpen(env=.rqda,conName="qdacon")) {
    viewFileAttr()
   }
+}
+FileNamesWidgetMenu$"Export File Attributes"$handler <- function(h,...){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        fName <- gfile(type='save',filter=list("csv"=list(pattern=c("*.csv"))))
+        Encoding(fName) <- "UTF-8"
+        if (length(grep(".csv$",fName))==0) fName <- sprintf("%s.csv",fName)
+        write.csv(GetAttr("file"), row.names=FALSE, file=fName, na="")
+    }
 }
 FileNamesWidgetMenu$"Edit Seleted File"$handler <- function(h, ...) {
   EditFileFun()
