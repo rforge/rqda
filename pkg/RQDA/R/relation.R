@@ -121,7 +121,7 @@ crossCodes <- CrossCode <- function(relation=c("overlap","inclusion","exact","pr
 }
 
 plot.crossCodes <- function(x, ...){
-    require(igraph)
+    ## require(igraph) ## no need use require
     cmG <- igraph:::graph.adjacency(x,mode="upper",diag=FALSE,weighted=TRUE)
     igraph:::E(cmG)[weight==1]$color <- "green"
     igraph:::E(cmG)[weight==2]$color <- "yellow"

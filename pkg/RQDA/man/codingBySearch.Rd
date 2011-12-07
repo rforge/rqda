@@ -7,7 +7,7 @@ Auto-coding by pattern matching
 Applies the specified code to a specified file based on given text pattern.
 }
 \usage{
-codingBySearch(pattern, fid = getFileIds(), cid, unit = "paragraph",...)
+codingBySearch(pattern, fid = getFileIds(), cid, seperator="\n", ...)
 }
 \arguments{
   \item{pattern}{
@@ -19,8 +19,8 @@ File id, in the GUI 'File' tab click on file to see its id
   \item{cid}{
 Code id, in the GUI 'Codes' tab click on code to see its id
 }
-  \item{unit}{
-At the moment the available option
+  \item{seperator}{
+  single character string, specifying the seperator of unit of analysis.
 }
 \item{\ldots}{
   arguments passed to \link{gregexpr}
@@ -30,7 +30,7 @@ At the moment the available option
 The function can be used if on is interested in automatically applying a code to 
 paragraphs in a file based on certain words specified by 'pattern'. 
 
-It first splits the whole text into pieces (depending on the unit), then match the pattern with each pieces. When a matche is found, tha piece, e.g. paragraph, is coded to the code specified by cid.
+It first splits the whole text into pieces which depends on the seperator, then match the pattern with each pieces. When a matche is found, tha piece is coded to the code specified by cid. The default seperator defines paragraph as unit of analysis. The seperator is passed to the pattern argument of \link{grepexpr}.
 
 This function is also useful for keyword in context (KWIC) analysis.
 }
@@ -49,5 +49,7 @@ Ronggui Huang
 codingBySearch("internet",fid=1,cid=2)
 
 codingBySearch("internet",fid=getFileIds(),cid=2)
+
+codingBySearch("internet",fid=getFileIds(),cid=2, seperator="[.!?]")
 }
 }

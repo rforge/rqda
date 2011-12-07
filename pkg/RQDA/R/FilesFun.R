@@ -200,7 +200,7 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   ## does not work well yet
   enabled(button$AnnB) <- TRUE
   enabled(button$MarCodB1) <- (length(svalue(.rqda$.codes_rqda))==1)
-  enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)
+  ## enabled(button$UnMarB1) <- (length(svalue(.rqda$.codes_rqda))==1)
   enabled(button$MarCodB2) <- (length(svalue(.rqda$.CodeofCat))==1)
   enabled(button$UnMarB2) <- (length(svalue(.rqda$.CodeofCat))==1)
   ## enabled(button$c2memobutton) <- TRUE

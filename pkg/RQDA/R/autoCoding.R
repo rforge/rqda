@@ -10,19 +10,19 @@ AutoCoding <- function(KeyWord,expansion=6){
   ## for each file, simplify the coding index, so erase the overlapping codings or proximity with distance=0
 }
 
-## auto coding: each paragraph is a analysis unit
-codingBySearchOneFile <- function(pattern, fid, cid, unit="paragraph", ...) {
-    ## allow more flexible control on the matching
+codingBySearchOneFile <- function(pattern, fid, cid, seperator, ...) {
+  ## auto coding: when seperator is \n, each paragraph is a analysis unit
+  ## by providing approperiate seperator, it allows flexible control on the unit of autocoding
     txt <- RQDAQuery(sprintf("select file from source where status=1 and id=%s",fid))$file
     Encoding(txt) <- "UTF-8"
-    pidx <- gregexpr("(\n){1,}",txt)
+    pidx <- gregexpr(sprintf("(%s){1,}", seperator),txt)
     idx1 <- c(0,pidx[[1]]+attr(pidx[[1]],"match.length")-1)
     idx2 <- c(pidx[[1]]-1,nchar(txt))
     sidx <- gregexpr(pattern,txt, ...)[[1]]
     if (length(sidx) > 1 || (sidx != -1)) {
         residx <- unique(findInterval(sidx,sort(c(idx1,idx2))))
         idx <- (residx + 1)/2
-        anstxt <- strsplit(txt,"(\n){1,}")[[1]][idx]
+        anstxt <- strsplit(txt,sprintf("(%s){1,}", seperator))[[1]][idx]
         ## create data frame
         df <- data.frame(cbind(cid     = as.integer(cid),
                                fid      = as.integer(fid),
@@ -47,10 +47,10 @@ codingBySearchOneFile <- function(pattern, fid, cid, unit="paragraph", ...) {
     }
 }
 
-codingBySearch <- function(pattern, fid = getFileIds(), cid, unit="paragraph", ...) {
+codingBySearch <- function(pattern, fid = getFileIds(), cid, seperator="\n", ...) {
     if (length(fid)> 0) {
         for (i in fid) {
-            codingBySearchOneFile(pattern, fid=i, cid, unit, ...)
+            codingBySearchOneFile(pattern, fid=i, cid=cid, seperator=seperator, ...)
         }
     }
 }

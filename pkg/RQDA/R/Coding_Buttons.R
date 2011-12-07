@@ -175,6 +175,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
 Unmark_Button <- function(label="Unmark",codeListWidget=.rqda$.codes_rqda,name="UnMarB1"){
   ans <- gbutton("Unmark", handler=function(h,...) {
     UnMarkCodeFunByRowid(codeListWidget=codeListWidget,codingTable=.rqda$codingTable)
+    enabled(button$UnMarB1) <- FALSE
   }
                  )
   enabled(ans) <- FALSE

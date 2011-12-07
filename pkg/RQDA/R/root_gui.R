@@ -291,7 +291,7 @@ AddHandler <- function(){
   add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)
 
   addHandlerClicked(.rqda$.codes_rqda,handler <- function(h,...){
-    ClickHandlerFun(.rqda$.codes_rqda,buttons=c("MarCodB1","UnMarB1"),codingTable=.rqda$codingTable)
+    ClickHandlerFun(.rqda$.codes_rqda,buttons=c("MarCodB1"),codingTable=.rqda$codingTable)
     if (length(svalue(.rqda$.codes_rqda))==1) {
       enabled(button$RetB) <- TRUE
       enabled(button$DelCodB) <- TRUE
