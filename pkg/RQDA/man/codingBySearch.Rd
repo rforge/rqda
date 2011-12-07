@@ -30,7 +30,7 @@ Code id, in the GUI 'Codes' tab click on code to see its id
 The function can be used if on is interested in automatically applying a code to 
 paragraphs in a file based on certain words specified by 'pattern'. 
 
-It first splits the whole text into pieces which depends on the seperator, then match the pattern with each pieces. When a matche is found, tha piece is coded to the code specified by cid. The default seperator defines paragraph as unit of analysis. The seperator is passed to the pattern argument of \link{grepexpr}.
+It first splits the whole text into pieces which depends on the seperator, then match the pattern with each pieces. When a matche is found, tha piece is coded to the code specified by cid. The default seperator defines paragraph as unit of analysis. The seperator is passed to the pattern argument of \link{gregexpr}.
 
 This function is also useful for keyword in context (KWIC) analysis.
 }
