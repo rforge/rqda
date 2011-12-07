@@ -1,6 +1,8 @@
 RQDA <- function() {
 ########################### GUI FOR ROOT
 ###########################
+options("guiToolkit"='RGtk2')
+## avoid menual selection when more than one toolkits have been installed
 if (isTRUE(.rqda$isLaunched)) {
  message("RQDA has been launched.")
  } else

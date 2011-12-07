@@ -7,7 +7,7 @@ Auto-coding by pattern matching
 Applies the specified code to a specified file based on given text pattern.
 }
 \usage{
-codingBySearch(pattern, fid, cid, unit = "paragraph",...)
+codingBySearch(pattern, fid = getFileIds(), cid, unit = "paragraph",...)
 }
 \arguments{
   \item{pattern}{
@@ -28,7 +28,11 @@ At the moment the available option
 }
 \details{
 The function can be used if on is interested in automatically applying a code to 
-paragraphs in a file based on certain words specified by 'pattern'.  
+paragraphs in a file based on certain words specified by 'pattern'. 
+
+It first splits the whole text into pieces (depending on the unit), then match the pattern with each pieces. When a matche is found, tha piece, e.g. paragraph, is coded to the code specified by cid.
+
+This function is also useful for keyword in context (KWIC) analysis.
 }
 \value{
 Thee function is used for its side effect.

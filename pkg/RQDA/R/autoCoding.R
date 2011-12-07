@@ -47,7 +47,7 @@ codingBySearchOneFile <- function(pattern, fid, cid, unit="paragraph", ...) {
     }
 }
 
-codingBySearch <- function(pattern, fid, cid, unit="paragraph", ...) {
+codingBySearch <- function(pattern, fid = getFileIds(), cid, unit="paragraph", ...) {
     if (length(fid)> 0) {
         for (i in fid) {
             codingBySearchOneFile(pattern, fid=i, cid, unit, ...)

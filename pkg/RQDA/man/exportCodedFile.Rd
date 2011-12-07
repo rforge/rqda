@@ -28,7 +28,7 @@ No returned value, for its side effect only.
 Ronggui HUANG
 }
 \examples{
-\donotrun{
+\dontrun{
 exportCodedFile("~/coded file with id of 1.html", fid=1)
 }
 }
