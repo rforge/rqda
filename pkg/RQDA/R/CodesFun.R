@@ -21,8 +21,8 @@ addcode <- function(name,conName="qdacon",assignenv=.rqda,...) {
 
 CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sortByTime=TRUE,decreasing = FALSE,...)
 {
-  if (isIdCurrent(.rqda$qdacon)){
-  freecode <- dbGetQuery(.rqda$qdacon, "select name, id,date from freecode where status=1 order by lower(name)")
+  if (is_projOpen()){
+  freecode <- RQDAQuery("select name, id,date from freecode where status=1 order by lower(name)")
   codeName <- freecode$name
   if (nrow(freecode)!=0) {
     Encoding(codeName) <- "UTF-8"
@@ -38,7 +38,7 @@ CodeNamesUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sortByTime=TRUE,de
 CodeNamesWidgetUpdate <- function(CodeNamesWidget=.rqda$.codes_rqda,sortByTime=TRUE,decreasing = FALSE,CodeId=NULL,...)
   ## CodeNamesWidgetUpdate is the alternative function of CodeNamesUpdate, should be used afterwards
 {
-  if (isIdCurrent(.rqda$qdacon)){
+  if (is_projOpen()){
     freecode <- dbGetQuery(.rqda$qdacon, "select name, id,date from freecode where status=1 order by lower(name)")
     if (nrow(freecode)!=0) {
       if (!is.null(CodeId)) {freecode <- freecode[freecode$id %in% CodeId,]}

@@ -167,10 +167,12 @@ UpgradeTables <- function(){
 }
 
 open_proj <- function(path,conName="qdacon",assignenv=.rqda,...){
-  tryCatch({ con <- get(conName,assignenv)
-             if (isIdCurrent(con)) dbDisconnect(con)
-           },
-           error=function(e){})
+  tryCatch( { con <- get(conName,assignenv)
+              pkg <- attr(attr(con,"class"),'package')
+              Open <- getFunction("isIdCurrent",where=sprintf("package:%s",pkg))(con)
+             if (open) dbDisconnect(con)
+              },
+            error=function(e){})
   ## Fist close the con if it exist, then open a new con.
   if (file.access(path, 2) == 0) {
       Encoding(path) <- "unknown"
@@ -189,7 +191,7 @@ open_proj <- function(path,conName="qdacon",assignenv=.rqda,...){
 closeProject <- function(conName="qdacon",assignenv=.rqda,...){
   tryCatch({
     con <- get(conName,assignenv)
-    if (isIdCurrent(con)) {
+    if (is_projOpen(message=FALSE)) {
         tryCatch(dispose(.rqda$.sfp),error=function(e){})
         tryCatch(dispose(.rqda$.root_edit),error=function(e){})
         WidgetList <- ls(envir=RQDA:::.rqda,pattern="^[.]codingsOf",all=TRUE)

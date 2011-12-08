@@ -1,7 +1,7 @@
 ### UpdateTableWidget() and AddTodbTable() are generall version of the previous functions
 UpdateTableWidget <- function(Widget,FromdbTable,con=.rqda$qdacon,sortByTime=FALSE,decreasing=FALSE,...)
 {
-  if (isIdCurrent(con)){
+  if (is_projOpen()){
   items <- dbGetQuery(con, sprintf("select name,date from %s where status=1",FromdbTable))
   if (nrow(items)!=0) {
     Encoding(items$name) <- "UTF-8"

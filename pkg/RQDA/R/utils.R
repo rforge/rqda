@@ -154,7 +154,7 @@ MemoWidget <- function(prefix,widget,dbTable){
 GetCodingTable <- function(){
   ## test when any table is empty
   ## http://archives.postgresql.org/pgsql-sql/2004-01/msg00160.php
-  if ( isIdCurrent(.rqda$qdacon)) {
+  if ( is_projOpen()) {
    ## Codings <- dbGetQuery(.rqda$qdacon,"select freecode.name as codename, freecode.id as cid,
    ##         coding.cid as cid2,coding.fid as fid,source.id as fid2, source.name as filename,
    ##         coding.selend - coding.selfirst as CodingLength,coding.selend, coding.selfirst
@@ -180,7 +180,7 @@ GetCodingTable <- function(){
 
 summaryCodings <-
 SummaryCoding <- function(byFile=FALSE,...){
-  if ( isIdCurrent(.rqda$qdacon)) {
+  if ( is_projOpen() ) {
     Codings <- GetCodingTable()
     if (nrow(Codings)>0){
       NumOfCoding <- table(Codings$codename,...) ## how many coding for each code
@@ -223,7 +223,7 @@ SearchFiles <- function(pattern,content=FALSE,Fid=NULL,Widget=NULL,is.UTF8=FALSE
 ##SearchFiles("file like '%新民晚报%'")
 ##SearchFiles("name like '%物权法%'")
 ##SearchFiles("file like '%新民晚报%'",Widget=.rqda$.fnames_rqda)
-    if ( isIdCurrent(.rqda$qdacon)) {
+    if ( is_projOpen() ) {
         if(!is.UTF8){ pattern <- iconv(pattern,to="UTF-8")}
         Encoding(pattern) <- "unknown"
         if (!is.null(Fid)) pattern <- sprintf("(%s) and id in (%s)",pattern,paste(shQuote(Fid),collapse=","))

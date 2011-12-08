@@ -399,7 +399,7 @@ write.FileList <- function(FileList,encoding=.rqda$encoding,con=.rqda$qdacon,...
   FileNames <- names(FileList)
   FileNames[FileNames==""] <- as.character(1:sum(FileNames==""))
 
-  if (isIdCurrent(con)) {
+  if (is_projOpen()) {
     for (i in 1:length(FileList)) {
       WriteToTable(FileNames[i],FileList[[i]])
     }

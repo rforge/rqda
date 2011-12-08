@@ -1,7 +1,7 @@
 CaseNamesUpdate <- function(CaseNamesWidget=.rqda$.CasesNamesWidget,
                             sortByTime=FALSE,decreasing=FALSE,...)
 {
-  if (isIdCurrent(.rqda$qdacon)){
+  if (is_projOpen()){
     ## CaseName <- dbGetQuery(.rqda$qdacon, "select name, id,date from cases where status=1 order by lower(name)")
     CaseName <- dbGetQuery(.rqda$qdacon, "select name, id,date from cases where status=1")
     if (nrow(CaseName)==0) {

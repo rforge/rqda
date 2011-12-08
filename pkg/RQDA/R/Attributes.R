@@ -205,7 +205,7 @@ FileAttrFun <- function(fileId,title=NULL,attrs=svalue(.rqda$.AttrNamesWidget)){
 
 AttrNamesUpdate <- function(Widget=.rqda$.AttrNamesWidget,sortByTime=FALSE,decreasing=FALSE,...)
 {
-  if (isIdCurrent(.rqda$qdacon)){
+  if (is_projOpen()){
     attr <- dbGetQuery(.rqda$qdacon, "select name, date from attributes where status=1")
     if (nrow(attr)==0) {
       attr <- NULL
@@ -342,7 +342,7 @@ viewFileAttr <- function(){
 
 
 GetAttr <- function(type=c("case","file"),attrs=svalue(.rqda$.AttrNamesWidget),subset){
-  if (isIdCurrent(.rqda$qdacon)){
+  if (is_projOpen()){
   type <-  match.arg(type)
   if (length(attrs)==0) attrs <- NULL
   inClause <- ifelse(is.null(attrs),"",sprintf("where status=1 and variable in (%s)",paste(shQuote(attrs),collapse=",")))

@@ -35,7 +35,7 @@ It first splits the whole text into pieces which depends on the seperator, then 
 This function is also useful for keyword in context (KWIC) analysis.
 }
 \value{
-Thee function is used for its side effect.
+The function is used for its side effect.
 }
 \author{
 Ronggui Huang

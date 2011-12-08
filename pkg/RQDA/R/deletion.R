@@ -1,7 +1,7 @@
 list.deleted <- function(type=c("file","code","case","codecategory","filecategory")){
   ## list the tmp deleted file/code/case/codecategory/filecategory
   ## no need to list deleted coding
-  if (!isIdCurrent(.rqda$qdacon)) print("No project is open!")
+  if (!is_projOpen()) print("No project is open!")
   else {
     type <- match.arg(type)
     if (type=="file"){
@@ -112,7 +112,7 @@ pdelete <- function(type=c("file","code","case","codecategory","filecategory","c
 
   ## end of helper functions
 
-  if (!isIdCurrent(.rqda$qdacon)) {
+  if (!is_projOpen()) {
     print("No project is open!")
   }  else {
     type <- match.arg(type)
@@ -220,7 +220,7 @@ undelete <- function(type=c("file","code","case","codecategory","filecategory"),
   }
   ## end of helper functions
 
-  if (!isIdCurrent(.rqda$qdacon)) {
+  if (!is_projOpen()) {
     print("No project is open!")
   }  else {
     type <- match.arg(type)

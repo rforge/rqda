@@ -53,7 +53,7 @@ OpenJournalButton <- function(label="Open")
 
 JournalNamesUpdate <- function(Widget=.rqda$.JournalNamesWidget,decreasing=FALSE,...)
 {
-  if (isIdCurrent(.rqda$qdacon)){
+  if (is_projOpen()){
     journal <- dbGetQuery(.rqda$qdacon, "select name from journal where status=1")
     if (nrow(journal)==0) {
       journal <- NULL
