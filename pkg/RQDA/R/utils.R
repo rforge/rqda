@@ -457,6 +457,7 @@ filesCodedByNot <- function(cid, codingTable=c("coding","coding2")){
 
 nCodedByTwo <- function(FUN, codeList=NULL, print=TRUE,...){
     ## codeList is character vector of codes.
+    if (!is_projOpen(message=FALSE)) stop("No project is opened.")
     FUN <- match.fun(FUN)
     Cid_Name <- RQDAQuery("select id, name from freecode where status=1")
     if (is.null(codeList)) {

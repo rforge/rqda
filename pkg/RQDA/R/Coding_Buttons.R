@@ -48,8 +48,12 @@ RetrievalButton <- function(label){
   RetB <- gbutton(label,
           handler=function(h,...) {
             if (is_projOpen(env=.rqda,conName="qdacon")) {
-                retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)}
-            }
+              Fid <- GetFileId(condition=.rqda$TOR,type="coded")
+              if (length(Fid)>0) {
+                retrieval(Fid=Fid,CodeNameWidget=.rqda$.codes_rqda)
+              } else {gmessage("No codngs associated with this code.",cont=TRUE)}
+              }
+              } 
                  )
   gtkWidgetSetTooltipText(getToolkitWidget(RetB),"Retrieve codings of the selected code.")
   assign("RetB",RetB,env=button)

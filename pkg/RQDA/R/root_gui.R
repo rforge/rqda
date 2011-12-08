@@ -283,9 +283,14 @@ AddHandler <- function(){
 
   ## handler for .codes_rqda
   addhandlerdoubleclick(.rqda$.codes_rqda,handler=function(h,...) {
-    if (is_projOpen(env=.rqda,conName="qdacon"))
-      retrieval(Fid=GetFileId(condition=.rqda$TOR,type="coded"),CodeNameWidget=.rqda$.codes_rqda)
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+      if (length(Fid <- GetFileId(condition=.rqda$TOR,type="coded"))>0){
+       retrieval(Fid=Fid,CodeNameWidget=.rqda$.codes_rqda)
+      } else {
+        gmessage("No coding associated with this code.",cont=TRUE)
+        }
   }
+    }
                         )
 
   add3rdmousepopupmenu(.rqda$.codes_rqda,CodesNamesWidgetMenu)

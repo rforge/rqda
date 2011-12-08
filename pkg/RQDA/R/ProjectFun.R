@@ -208,8 +208,10 @@ is_projOpen <- function(env=.rqda,conName="qdacon",message=TRUE){
   open <- FALSE
   tryCatch({
     con <- get(conName,env)
-    open <- open + isIdCurrent(con)
-  } ,error=function(e){})
+    pkg <- attr(attr(con,"class"),'package')
+    Open2 <- getFunction("isIdCurrent",where=sprintf("package:%s",pkg))(con)
+    open <- open + Open2
+    } ,error=function(e){})
   if (!open & message) gmessage("No Project is Open.",icon="warning",con=TRUE)
   return(open)
 }
