@@ -428,6 +428,28 @@ setAttrType <- function() {
     })}
 
 
+importAttr <- function(data, type='file', filename){
+  idx <- match(filename, names(data))
+  dat <- data[, -idx,drop=FALSE]
+  fn <- getFiles()
+  fid <- getFiles(names=F)
+  fnuser <- data[,filename]
+  if (!all(fnuser %in% fn)) stop("some files are not in the rqda project.")
+  fid <- fid[match(data[[filename]],fn)]
+  allAtt <- RQDAQuery("select name from attributes where status=1")$name
+  if (!all(names(dat) %in% allAtt)) stop("some attributes are in not the rqda project.")
+  for (att in names(dat)) {
+    attval <- dat[[att]]
+    if (mode(attval) == "character" && Encoding(attval) != "UTF-8") attval <- iconv(attval, to='UTF-8')
+    for (i in 1:nrow(dat)) {
+      exist <- RQDAQuery(sprintf("select value from fileAttr where variable='%s' and fileID=%i and status=1", att, fid[i]))
+      if (nrow(exist)==0 && !is.na(attval[i])) {
+        RQDAQuery(sprintf("insert into fileAttr (variable, value, fileID, date, owner, status) 
+                          values ('%s','%s','%s','%s','rghuang',1)",att, attval[i], fid[i], as.character(date())))
+        }
+    }
+    }
+}
 
 #######################
 ## Defunct functions
