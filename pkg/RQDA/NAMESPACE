@@ -3,12 +3,12 @@ export("%and%","%or%","%not%", and, CleanProject,closeProject,codingBySearch,
        casesCodedByAnd, casesCodedByOr,casesCodedByNot,
        exportCodedFile, filesByCodes,
        filesCodedByAnd, filesCodedByOr,filesCodedByNot,
-       gselect.list,GetAttr,getCaseIds,getCaseNames,
+       gselect.list,getAttr,getCaseIds,getCaseNames,
        getCases, getCodingsByOne, getFiles,
        getCodingTable,getFileIds,getFileIdSets,getFileNames,
        list.deleted,nCodedByTwo, not, or, openProject,
        pdelete,queryFiles,relation,retrieval,RQDA,RQDAQuery,
-       SearchFiles,ShowSubset,summaryCodings,undelete,
+       SearchFiles,showSubset,summaryCodings,undelete,
        ViewPlainFile,write.FileList)
 S3method("%and%",RQDA.vector)
 S3method("%and%",codingsByOne)
