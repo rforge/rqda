@@ -95,7 +95,7 @@ MemoWidget <- function(prefix,widget,dbTable){
                   return(TRUE) } else {
                       if (is.na(InRQDA) && withinWidget=="")  {
                           return(TRUE) } else {
-                      val <- gconfirm("The memo has bee change, Close anyway?",con=TRUE)
+                      val <- gconfirm("The memo has been change, Close anyway?",con=TRUE)
                   }
                       return(val)
                   }
