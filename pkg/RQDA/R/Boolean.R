@@ -60,6 +60,7 @@ print.codingsByOne <- function (x,...)
         .retreivalgui@widget@widget$SetPixelsBelowLines(5)
         .retreivalgui@widget@widget$SetPixelsInsideWrap(5)
         buffer <- .retreivalgui@widget@widget$GetBuffer()
+        buffer$createTag("red", foreground = "red")
         iter <- buffer$getIterAtOffset(0)$iter
         apply(x, 1, function(x) {
             metaData <- sprintf("%s [%i:%i]", x[["filename"]],as.numeric(x[["index1"]]), as.numeric(x[["index2"]]))

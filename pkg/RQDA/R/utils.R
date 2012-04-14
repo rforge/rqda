@@ -150,6 +150,76 @@ MemoWidget <- function(prefix,widget,dbTable){
   }
 }
 
+getMemos <- function(type="codes"){
+    memos <- RQDAQuery("select memo, name, id, date, dateM from freecode where status==1 and memo not in ('NA','')")
+    if (nrow(memos)>0){
+        Encoding(memos$memo) <- "UTF-8"
+        Encoding(memos$name) <- "UTF-8"
+    }
+    class(memos) <- c("memos","data.frame")
+    memos
+}
+
+print.memos <- function(x, ...){
+    ComputeCallbackFun <- function(FileName, rowid) {
+        CallBackFUN <- function(widget, event, ...) {
+            ViewFileFunHelper(FileName, hightlight = FALSE)
+            textView <- .rqda$.openfile_gui@widget@widget
+            buffer <- textView$GetBuffer()
+            mark1 <- gtkTextBufferGetMark(buffer, sprintf("%s.1",
+                rowid))
+            gtkTextViewScrollToMark(textView, mark1, 0)
+            iter1 <- buffer$GetIterAtMark(mark1)$iter
+            idx1 <- gtkTextIterGetOffset(iter1)
+            mark2 <- buffer$GetMark(sprintf("%s.2", rowid))
+            gtkTextMarkSetVisible(mark2, TRUE)
+            iter2 <- buffer$GetIterAtMark(mark2)$iter
+            idx2 <- gtkTextIterGetOffset(iter2)
+            HL(.rqda$.openfile_gui, data.frame(idx1, idx2), fore.col = .rqda$fore.col,
+               back.col = NULL)
+        }
+        CallBackFUN
+    }
+    if (nrow(x) == 0)
+        gmessage("No Memos.", container = TRUE)
+    else {
+        title <- sprintf("%i code %s", nrow(x), ngettext(nrow(x),"memo","memos"))
+        .gw <- gwindow(title = title, parent = getOption("widgetCoordinate"),
+                       width = getOption("widgetSize")[1], height = getOption("widgetSize")[2])
+        mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
+        .gw@widget@widget$SetIconFromFile(mainIcon)
+        ## assign(sprintf(".codingsOf%s", "codingsByone"), .gw, env = .rqda)
+        .retreivalgui <- gtext(container = .gw)
+        font <- pangoFontDescriptionFromString(.rqda$font)
+        gtkWidgetModifyFont(.retreivalgui@widget@widget, font)
+        .retreivalgui@widget@widget$SetPixelsBelowLines(5)
+        .retreivalgui@widget@widget$SetPixelsInsideWrap(5)
+        buffer <- .retreivalgui@widget@widget$GetBuffer()
+        buffer$createTag("red", foreground = "red")
+        iter <- buffer$getIterAtOffset(0)$iter
+        apply(x, 1, function(x) {
+            metaData <- sprintf("%s created on %s", x[["name"]], x[["date"]])
+            buffer$InsertWithTagsByName(iter, metaData, "red")
+            ## anchorcreated <- buffer$createChildAnchor(iter)
+            ## iter$BackwardChar()
+            ## anchor <- iter$getChildAnchor()
+            ## lab <- gtkLabelNew("Back")
+            ## widget <- gtkEventBoxNew()
+            ## widget$Add(lab)
+            ## gSignalConnect(widget, "button-press-event", ComputeCallbackFun(x[["filename"]],
+            ##    as.numeric(x[["rowid"]])))
+            ## .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
+            ## widget$showAll()
+            iter$ForwardChar()
+            buffer$insert(iter, "\n")
+            buffer$InsertWithTagsByName(iter, x[["memo"]])
+            buffer$insert(iter, "\n\n")
+        })
+        buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter)
+    }
+}
+
+
 ## summary coding information
 GetCodingTable <- function(){
   ## test when any table is empty

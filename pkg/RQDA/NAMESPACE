@@ -6,6 +6,7 @@ export("%and%","%or%","%not%", and, CleanProject,closeProject,codingBySearch,
        gselect.list,getAttr,getCaseIds,getCaseNames,
        getCases, getCodingsByOne, getFiles,
        getCodingTable,getFileIds,getFileIdSets,getFileNames,
+       getMemos,
        list.deleted,nCodedByTwo, not, or, openProject,
        pdelete,queryFiles,relation,retrieval,RQDA,RQDAQuery,
        SearchFiles,showSubset,summaryCodings,undelete,
@@ -22,6 +23,7 @@ S3method(ShowSubset,CaseAttr)
 S3method(ShowSubset, caseName)
 S3method(ShowSubset,FileAttr)
 S3method(print,codingsByOne)
+S3method(print,memos)
 S3method(plot, crossCodes)
 import(RGtk2)
 import(gWidgetsRGtk2)
