@@ -8,6 +8,7 @@ Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
 Depends: rJava
 Description: This package provides functions to segment a Chinese sentence into words which are seperated by space.
 License: Apache
+Encoding: UTF-8
 LazyLoad: yes
 LazyData: yes
 

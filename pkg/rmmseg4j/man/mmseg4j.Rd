@@ -26,5 +26,6 @@ mmseg4j(text)
   Ronggui HUANG
 }
 \examples{
+\dontrun{
 mmseg4j("这是一个中文分词软件")
-}
+}}
