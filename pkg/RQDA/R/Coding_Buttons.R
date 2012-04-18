@@ -53,7 +53,7 @@ RetrievalButton <- function(label){
                 retrieval(Fid=Fid,CodeNameWidget=.rqda$.codes_rqda)
               } else {gmessage("No codngs associated with this code.",cont=TRUE)}
               }
-              } 
+              }
                  )
   gtkWidgetSetTooltipText(getToolkitWidget(RetB),"Retrieve codings of the selected code.")
   assign("RetB",RetB,env=button)
@@ -459,6 +459,9 @@ CodesNamesWidgetMenu$"Show All By Created Time"$handler <- function(h, ...) {
 }
 CodesNamesWidgetMenu$"Show Codes With Codings"$handler <- function(h, ...) {
     CodeWithCoding(.rqda$TOR)
+}
+CodesNamesWidgetMenu$"Show Codes Without Codings"$handler <- function(h, ...) {
+    CodeWithoutCoding(condition=.rqda$TOR)
 }
 CodesNamesWidgetMenu$"Show Codes With Code Category"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {

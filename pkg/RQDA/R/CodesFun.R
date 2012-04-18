@@ -683,6 +683,22 @@ CodeWithCoding <- function(condition = c("unconditional", "case", "filecategory"
             invisible(ans)
         }}}
 
+CodeWithoutCoding <- function(condition = c("unconditional", "case", "filecategory","both"),
+                              codingTable="coding"){
+    if (is_projOpen(env=.rqda,conName="qdacon")) {
+        condition <- match.arg(condition)
+        fid <- GetFileId(condition,"coded")
+        if (length(fid)!=0){
+            ans <- unlist(RQDAQuery(sprintf("select name from freecode where status=1 and id not in
+(select cid from %s where status=1 and fid in (%s) group by cid)",
+codingTable, paste(shQuote(fid),collapse=","))))
+            Encoding(ans) <- "UTF-8"
+            .rqda$.codes_rqda[] <- ans
+            invisible(ans)
+        }
+}
+}
+
 AddToCodeCategory <- function (Widget = .rqda$.codes_rqda, updateWidget = TRUE)
 {
   codename2 <- svalue(Widget)
