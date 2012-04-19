@@ -28,7 +28,8 @@ RenameJournalButton <- function(label="Rename")
 {
   RenJouB <- gbutton(label,handler=function(h,...) {
       selected <- svalue(.rqda$.JournalNamesWidget)
-        NewName <- ginput("Enter new journal name. ",text=selected, icon="info")
+      NewName <- ginput("Enter new journal name. ",text=selected, icon="info")
+      Encoding(NewName) <- "UTF-8"
         if (!is.na(NewName)) {
           rename(from=selected,to=NewName,"journal")
           JournalNamesUpdate()
@@ -59,6 +60,7 @@ JournalNamesUpdate <- function(Widget=.rqda$.JournalNamesWidget,decreasing=FALSE
       journal <- NULL
     } else {
       journal <- journal[,1]
+      Encoding(journal) <- "UTF-8"
       journal <- journal[OrderByTime(substring(journal,0,20),decreasing=decreasing)]
     }
     tryCatch(Widget[] <- journal, error=function(e){})
