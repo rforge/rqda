@@ -281,7 +281,7 @@ print.SummaryCoding <- function(x,...){
   cat("Number of codings for each code.\n")
   print(x$NumOfCoding)
   cat("----------------\n")
-  cat("Average number of words assciated with each code.\n\n")
+  cat("Average number of characters associated with each code.\n\n")
   print(x$AvgLength)
   cat("----------------\n")
   cat("Number of files associated with each code.\n\n")
