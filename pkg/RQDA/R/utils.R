@@ -150,6 +150,17 @@ MemoWidget <- function(prefix,widget,dbTable){
   }
 }
 
+getAnnos <- function(type="file"){
+    annos <- RQDAQuery("select annotation.rowid, source.id, source.name, annotation.annotation,annotation.date from annotation join source on annotation.fid=source.id where  annotation.status==1 and annotation not in ('NA','')")
+    if (nrow(annos)>0){
+        Encoding(annos$annotation) <- "UTF-8"
+        Encoding(annos$name) <- "UTF-8"
+    }
+    class(annos) <- c("memos","data.frame")
+    attr(annos,"field.name") <- "annotation"
+    annos
+}
+
 getMemos <- function(type="codes"){
     memos <- RQDAQuery("select memo, name, id, date, dateM from freecode where status==1 and memo not in ('NA','')")
     if (nrow(memos)>0){
@@ -157,6 +168,7 @@ getMemos <- function(type="codes"){
         Encoding(memos$name) <- "UTF-8"
     }
     class(memos) <- c("memos","data.frame")
+    attr(memos,"field.name") <- "memo"
     memos
 }
 
@@ -183,7 +195,9 @@ print.memos <- function(x, ...){
     if (nrow(x) == 0)
         gmessage("No Memos.", container = TRUE)
     else {
-        title <- sprintf("%i code %s", nrow(x), ngettext(nrow(x),"memo","memos"))
+        field.name <-attr(x,"field.name")
+        if (field.name=="memo") title <- sprintf("%i code %s", nrow(x), ngettext(nrow(x),"memo","memos"))
+        if (field.name=="annotation") title <- sprintf("%i %s", nrow(x), ngettext(nrow(x),"annotation","annotations"))
         .gw <- gwindow(title = title, parent = getOption("widgetCoordinate"),
                        width = getOption("widgetSize")[1], height = getOption("widgetSize")[2])
         mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
@@ -212,7 +226,7 @@ print.memos <- function(x, ...){
             ## widget$showAll()
             iter$ForwardChar()
             buffer$insert(iter, "\n")
-            buffer$InsertWithTagsByName(iter, x[["memo"]])
+            buffer$InsertWithTagsByName(iter, x[[field.name]])
             buffer$insert(iter, "\n\n")
         })
         buffer$PlaceCursor(buffer$getIterAtOffset(0)$iter)
