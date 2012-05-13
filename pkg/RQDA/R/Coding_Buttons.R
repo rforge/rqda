@@ -426,6 +426,11 @@ CodesNamesWidgetMenu <- list()
 CodesNamesWidgetMenu$"Add To Code Category..."$handler <- function(h, ...) {
     AddToCodeCategory()
 }
+CodesNamesWidgetMenu$"All Code Memos"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    print(getMemos())
+    }
+  }
 CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     MemoWidget("code",.rqda$.codes_rqda,"freecode")

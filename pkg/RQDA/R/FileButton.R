@@ -262,6 +262,10 @@ FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
 ## s0$match.start$GetOffset()
 ## s0$match.end$GetOffset()
 
+FileNamesWidgetMenu$"File Annotations"$handler <- function(h,...){
+ if (is_projOpen(env=.rqda,conName="qdacon")) {
+ print(getAnnos())
+}}
 FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
  MemoWidget("File",.rqda$.fnames_rqda,"source")
