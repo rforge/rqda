@@ -142,20 +142,22 @@ ViewFileFunHelper <- function(FileName,hightlight=TRUE,codingTable=.rqda$codingT
   buffer$createTag(fore.col,foreground = fore.col)
   buffer$createTag(sprintf("%s.background",back.col),background = back.col)
   ## create buffer tag, which is created by defualt since gwidgetRGtk2 changes its API
+  N <- nrow(markidx)
   if (nrow(markidx)!=0){ ## make sense only when there is coding there
-    apply(markidx[,1:3],1,function(x){
-      iter <- gtkTextBufferGetIterAtOffset(buffer, x["selfirst"]) ## index to iter
-      buffer$CreateMark(sprintf("%s.1",x["rowid"]),where=iter$iter) ## insert marks
-      iter <- gtkTextBufferGetIterAtOffset(buffer, x["selend"])
-      buffer$CreateMark(sprintf("%s.2",x["rowid"]),where=iter$iter)
-      ## the second iter is used to HL coding
-    })} ## create marks
+      for (i in 1:N){
+          iter <- gtkTextBufferGetIterAtOffset(buffer, markidx[i,"selfirst"]) ## index to iter
+          buffer$CreateMark(sprintf("%s.1",markidx[i,"rowid"]),where=iter$iter) ## insert marks
+          iter <- gtkTextBufferGetIterAtOffset(buffer, markidx[i,"selend"])
+          buffer$CreateMark(sprintf("%s.2",markidx[i, "rowid"]),where=iter$iter)
+          ## the second iter is used to HL coding
+      }
+  } ## create marks
   if (annotation){
       if (nrow(anno)!=0){
-          apply(anno,1,function(x){
-              iter <- gtkTextBufferGetIterAtOffset(buffer, x["position"]) ## index to iter
-              buffer$CreateMark(sprintf("%s.3",x["rowid"]),where=iter$iter) ## insert marks
-          })} ## creat marks for annotation
+          for (i in 1:nrow(anno)) {
+              iter <- gtkTextBufferGetIterAtOffset(buffer, anno[i,"position"]) ## index to iter
+              buffer$CreateMark(sprintf("%s.3",anno[i,"rowid"]),where=iter$iter) ## insert marks
+          }} ## creat marks for annotation
   }
   if (nrow(markidx)!=0){
     sapply(markidx[, "rowid"], FUN = function(x) {

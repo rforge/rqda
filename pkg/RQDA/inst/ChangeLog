@@ -1,3 +1,8 @@
+2012-05-15
+	* clean "file of case" when a case is deleted.
+	* coding highlighting works for RGtk2 2.20.23. (use "for" instead of "apply")
+	* rename print.memos to print.Info4Widget, for generic use.
+
 2011-12-26
 	* clean up and prepare for release
 	

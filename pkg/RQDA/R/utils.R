@@ -156,8 +156,9 @@ getAnnos <- function(type="file"){
         Encoding(annos$annotation) <- "UTF-8"
         Encoding(annos$name) <- "UTF-8"
     }
-    class(annos) <- c("memos","data.frame")
     attr(annos,"field.name") <- "annotation"
+    attr(annos,"descr") <- sprintf("%i %s", nrow(annos), ngettext(nrow(annos),"annotation","annotations"))
+    class(annos) <- c("annotations","Info4Widget", "data.frame")
     annos
 }
 
@@ -167,12 +168,13 @@ getMemos <- function(type="codes"){
         Encoding(memos$memo) <- "UTF-8"
         Encoding(memos$name) <- "UTF-8"
     }
-    class(memos) <- c("memos","data.frame")
+    class(memos) <- c("memos","Info4Widget","data.frame")
     attr(memos,"field.name") <- "memo"
+    attr(memos,"descr") <- sprintf("%i code %s", nrow(memos), ngettext(nrow(memos),"memo","memos"))
     memos
 }
 
-print.memos <- function(x, ...){
+print.Info4Widget <- function(x, ...){
     ComputeCallbackFun <- function(FileName, rowid) {
         CallBackFUN <- function(widget, event, ...) {
             ViewFileFunHelper(FileName, hightlight = FALSE)
@@ -193,12 +195,10 @@ print.memos <- function(x, ...){
         CallBackFUN
     }
     if (nrow(x) == 0)
-        gmessage("No Memos.", container = TRUE)
+        gmessage("No Information is collected.", container = TRUE)
     else {
         field.name <-attr(x,"field.name")
-        if (field.name=="memo") title <- sprintf("%i code %s", nrow(x), ngettext(nrow(x),"memo","memos"))
-        if (field.name=="annotation") title <- sprintf("%i %s", nrow(x), ngettext(nrow(x),"annotation","annotations"))
-        .gw <- gwindow(title = title, parent = getOption("widgetCoordinate"),
+        .gw <- gwindow(title = attr(x,"descr"), parent = getOption("widgetCoordinate"),
                        width = getOption("widgetSize")[1], height = getOption("widgetSize")[2])
         mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
         .gw@widget@widget$SetIconFromFile(mainIcon)

@@ -33,6 +33,7 @@ DeleteCaseButton <- function(label="Delete"){
       dbGetQuery(.rqda$qdacon,sprintf("update caselinkage set status=0 where caseid=%i",caseid))
       ## set status in table caselinkage to 0
       CaseNamesUpdate()
+      .rqda$.FileofCase[] <- NULL
     }
   }
                      )
