@@ -265,10 +265,15 @@ AddHandler <- function(){
       gtkWidgetSetSensitive(button$VieFilB@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$FilMemB@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$FilRenB@widget@widget,TRUE)
-      enabled(button$FileAttrB) <- TRUE
-
-    }
+      ## dynamically change the label of attribute(s)
+      if ((nattr <- length(.rqda$.AttrNamesWidget[]))!=0) {
+          enabled(button$FileAttrB) <- TRUE
+          if (length(svalue(.rqda$.AttrNamesWidget))>1 || nattr>1) {
+              svalue(button$FileAttrB) <- "Attributes"
+          }
+      }
   }
+}
                     )
 
   add3rdmousepopupmenu(.rqda$.fnames_rqda, FileNamesWidgetMenu)
@@ -323,7 +328,12 @@ AddHandler <- function(){
     if (length(SelectedCase)!=0) {
       enabled(button$DelCasB) <- TRUE
       enabled(button$CasRenB) <- TRUE
-      enabled(button$CasAttrB) <- TRUE
+      if ((nattr <- length(.rqda$.AttrNamesWidget[]))!=0) {
+          enabled(button$CasAttrB) <- TRUE
+          if (length(svalue(.rqda$.AttrNamesWidget))>1 || nattr>1) {
+              svalue(button$CasAttrB) <- "Attributes"
+          }
+      }
       enabled(.rqda$.FileofCase) <- TRUE
       enabled(button$CasMarB) <-
         (exists(".root_edit",env=.rqda) && isExtant(.rqda$.root_edit))
@@ -405,8 +415,13 @@ AddHandler <- function(){
       enabled(button$RenAttB) <- TRUE
       enabled(button$AttMemB) <- TRUE
       enabled(button$SetAttClsB) <- TRUE
-    }
+      if (length(svalue(.rqda$.AttrNamesWidget))>1) {
+          svalue(button$CasAttrB) <- svalue(button$FileAttrB) <- "Attributes"
+      } else {
+          svalue(button$CasAttrB) <- svalue(button$FileAttrB) <- "Attribute"
+      }
   }
+}
                     )
 
   addhandlerdoubleclick(.rqda$.CodeCatWidget, handler=function(h,...) {
