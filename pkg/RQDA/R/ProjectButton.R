@@ -1,13 +1,16 @@
 NewProjectButton <- function(container){
   gbutton("New Project",container=container,handler=function(h,...){
     path=gfile(type="save",text = "Type a name for the new project and click OK.")
+    if (Encoding(path) != "UTF-8") {
+        Encoding(path) <- "UTF-8"
+    }
     if (path!=""){
-      ## if path="", then click "cancel".
-      new_proj(path,assignenv=.rqda)
-      path <- dbGetInfo(.rqda$qdacon)$dbname
-      Encoding(path) <- "UTF-8"
-      path <- gsub("\\\\","/",path,fixed=TRUE)
-      path <- gsub("/","/ ",path,fixed=TRUE)
+     ## if path="", then click "cancel".
+     new_proj(path,assignenv=.rqda)
+     path <- dbGetInfo(.rqda$qdacon)$dbname
+     Encoding(path) <- "UTF-8" ## path created by gfile is in utf8 encoding
+     path <- gsub("\\\\","/",path,fixed=TRUE)
+     path <- gsub("/","/ ",path,fixed=TRUE)
       svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"),fixed=TRUE)
       gtkWidgetSetSensitive(button$cloprob@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$BacProjB@widget@widget,TRUE)

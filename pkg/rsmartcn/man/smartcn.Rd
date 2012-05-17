@@ -1,4 +1,4 @@
-﻿\name{smartcn}
+\name{smartcn}
 \alias{smartcn}
 \encoding{UTF-8}
 \title{
@@ -25,10 +25,6 @@ smartcn(text)
   Ronggui HUANG
 }
 \examples{
-smartcn("这是一个中文分词软件")
-
-cht <- "這是一個中文分詞軟件"
-cht <- iconv(cht,to="UTF-8")
-smartcn(zhConv(cht,dic$zh2Hans))
-
+## The example will cause error in latex, so I put it in a demo.
+demo(smartcn,ask=FALSE)
 }

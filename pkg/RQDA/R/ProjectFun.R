@@ -19,8 +19,14 @@ new_proj <- function(path, conName="qdacon",assignenv=.rqda,...){
     if (!fexist | override ){
       ## close con in assignmenv first.
       tryCatch(closeProject(conName=conName,assignenv=assignenv),error=function(e){})
-
-      assign(conName,dbConnect(drv=dbDriver("SQLite"),dbname=path),envir=assignenv)
+      if (Encoding(path)=='UTF-8') {
+          Encoding(path)='unknown'
+          ## otherwise, it is illegible under windows when path contains chinese because it is in utf8 encoding
+          assign(conName,dbConnect(drv=dbDriver("SQLite"),dbname=path),envir=assignenv)
+          Encoding(path) <- "UTF-8"
+      } else {
+          assign(conName,dbConnect(drv=dbDriver("SQLite"),dbname=path),envir=assignenv)
+      }
       con <- get(conName,assignenv)
 
       if (dbExistsTable(con,"source")) dbRemoveTable(con, "source")

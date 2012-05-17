@@ -1,4 +1,4 @@
-﻿\name{mmseg4j}
+\name{mmseg4j}
 \alias{mmseg4j}
 \encoding{UTF-8}
 \title{
@@ -26,6 +26,6 @@ mmseg4j(text)
   Ronggui HUANG
 }
 \examples{
-\dontrun{
-mmseg4j("这是一个中文分词软件")
-}}
+## The example will cause error in latex, so I put it in a demo.
+demo(mmseg4j, ask=FALSE)
+}
