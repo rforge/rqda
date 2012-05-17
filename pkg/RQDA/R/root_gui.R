@@ -386,22 +386,26 @@ AddHandler <- function(){
                     )
 
   addHandlerClicked(.rqda$.CodeCatWidget,handler <- function(h,...){
-    if (length(svalue(RQDA:::.rqda$.CodeCatWidget)) != 0) {
-      enabled(.rqda$.CodeofCat) <- TRUE
-      enabled(button$DelCodCatB) <- TRUE
-      enabled(button$CodCatMemB) <- TRUE
-      enabled(button$CodCatRenB) <- TRUE
-      enabled(button$CodCatAddToB) <- TRUE
-      enabled(button$MarCodB2) <- FALSE
-      enabled(button$UnMarB2) <- FALSE
-      catid <- RQDAQuery(sprintf("select catid from codecat where name = '%s'",
+      if ((ncc <- length(svalue(RQDA:::.rqda$.CodeCatWidget))) != 0) {
+          enabled(.rqda$.CodeofCat) <- TRUE
+          enabled(button$DelCodCatB) <- TRUE
+          enabled(button$CodCatMemB) <- TRUE
+          enabled(button$CodCatRenB) <- TRUE
+          enabled(button$CodCatAddToB) <- TRUE
+          enabled(button$MarCodB2) <- FALSE
+          enabled(button$UnMarB2) <- FALSE
+          catid <- RQDAQuery(sprintf("select catid from codecat where name = '%s'",
                                  enc(svalue(.rqda$.CodeCatWidget))
-                                 )
-                         )$catid
-      if (!is.null(catid) && length(catid)==1) {
-        names(.rqda$.CodeCatWidget) <- sprintf("Selected category id is %s",catid)
-      }}
-    UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
+                                     )
+                             )$catid
+          if (!is.null(catid) && length(catid)==1) {
+              names(.rqda$.CodeCatWidget) <- sprintf("Selected category id is %s",catid)
+          }}
+      UpdateCodeofCatWidget(con=.rqda$qdacon,Widget=.rqda$.CodeofCat)
+      ## if (ncc>1) {
+      ##     psccItem <- CodeCatWidgetMenu$"Plot Selected Code Category"
+      ##     svalue(psccItem) <- "Plot Selected Code Categories"
+      ## }
   })
 
   addhandlerdoubleclick(.rqda$.AttrNamesWidget, handler=function(h,...) {

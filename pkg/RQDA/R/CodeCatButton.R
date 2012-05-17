@@ -206,6 +206,8 @@ plotCodeCategory <-function(parent=NULL){
     ans <- RQDAQuery(sprintf("select codecat.name as parent,freecode.name as child from treecode, codecat,freecode
 where treecode.status=1 and codecat.status=1 and freecode.status=1
 and treecode.catid=codecat.catid and freecode.id=treecode.cid and codecat.name in (%s)",paste(shQuote(parent),collapse=",")))
+    Encoding(ans$parent) <- "UTF-8"
+    Encoding(ans$child) <- "UTF-8"
     g <- igraph:::graph.data.frame(ans)
     tryCatch(igraph:::tkplot(g,vertex.label=igraph:::V(g)$name),error=function(e){
         igraph:::plot.igraph(g,vertex.label=igraph:::V(g)$name)
@@ -274,11 +276,14 @@ CodeCatWidgetMenu$Memo$handler <- function(h,...){
  MemoWidget("Code Category",.rqda$.CodeCatWidget,"codecat")
 }
 }
-CodeCatWidgetMenu$"Plot Selected Code Categories"$handler <- function(h,...){
-    if (is_projOpen(env=.rqda,conName="qdacon")) {
-        plotCodeCategory()
-    }
-}
+##psccFun <- function(h,...){
+##    plotCodeCategory()
+##}
+##psccItem <- gaction("Plot Selected Code Category", handler=psccFun,toolkit=guiToolkit("RGtk2"))
+## need to manually set the toolkit
+##CodeCatWidgetMenu$"Plot Selected Code Category" <- psccItem
+CodeCatWidgetMenu$"Plot Selected Code Categories"$handler <- function(h,...){plotCodeCategory()}
+
 CodeCatWidgetMenu$"Sort by created time"$handler <- function(h,...){
  if (is_projOpen(env=.rqda,conName="qdacon")) {
    UpdateTableWidget(Widget=.rqda$.CodeCatWidget,FromdbTable="codecat")
