@@ -28,6 +28,7 @@ if (isTRUE(.rqda$isLaunched)) {
   Proj_MemoButton(label = "Project Memo", container = .proj_gui)
   ## project memo button
   BackupProjectButton(container=.proj_gui)
+  saveAsButt(container=.proj_gui)
   CleanProjButton(container=.proj_gui)
   CloseAllCodingsButton(container=.proj_gui)
   ##gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})

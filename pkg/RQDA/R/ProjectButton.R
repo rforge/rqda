@@ -14,6 +14,7 @@ NewProjectButton <- function(container){
       svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,60),collapse="\n"),fixed=TRUE)
       gtkWidgetSetSensitive(button$cloprob@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$BacProjB@widget@widget,TRUE)
+      enabled(button$saveAsB) <- TRUE
       gtkWidgetSetSensitive(button$proj_memo@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$CleProB@widget@widget,TRUE)
       gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,TRUE)
@@ -82,6 +83,7 @@ openProject <- function(path,updateGUI=FALSE) {
         svalue(.rqda$.currentProj) <- gsub("/ ","/",paste(strwrap(path,50),collapse="\n"))
         gtkWidgetSetSensitive(button$cloprob@widget@widget,TRUE)
         gtkWidgetSetSensitive(button$BacProjB@widget@widget,TRUE)
+        enabled(button$saveAsB) <- TRUE
         gtkWidgetSetSensitive(button$proj_memo@widget@widget,TRUE)
         gtkWidgetSetSensitive(button$CleProB@widget@widget,TRUE)
         gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,TRUE)
@@ -104,8 +106,7 @@ openProject <- function(path,updateGUI=FALSE) {
     }
 }
 
-CloseProjectButton <- function(container){
-  cloprob <- gbutton("Close Project",container=container,handler=function(h,...){
+closeProjBF <- function(){
     svalue(.rqda$.currentProj) <- "Closing ..."
     tryCatch(.rqda$.codes_rqda[]<-NULL,error=function(e){})
     tryCatch(.rqda$.fnames_rqda[]<-NULL,error=function(e){})
@@ -117,7 +118,6 @@ CloseProjectButton <- function(container){
     tryCatch(.rqda$.FileofCat[]<-NULL,error=function(e){})
     tryCatch(.rqda$.AttrNamesWidget[] <- NULL,error=function(e){})
     tryCatch(.rqda$.JournalNamesWidget[] <- NULL,error=function(e){})
-    closeProject(assignenv=.rqda)
     svalue(.rqda$.currentProj) <- "No project is open."
     names(.rqda$.fnames_rqda) <- "Files"
     names(.rqda$.codes_rqda) <- "Codes List"
@@ -140,6 +140,7 @@ CloseProjectButton <- function(container){
     enabled(.rqda$.FileofCat) <- FALSE
     gtkWidgetSetSensitive(button$cloprob@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$BacProjB@widget@widget,FALSE)
+    enabled(button$saveAsB) <- FALSE
     gtkWidgetSetSensitive(button$proj_memo@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$CleProB@widget@widget,FALSE)
     gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,FALSE)
@@ -183,6 +184,12 @@ CloseProjectButton <- function(container){
     enabled(button$FilCatMemB) <- FALSE
     enabled(button$FilCatAddToB) <- FALSE
     enabled(button$FilCatDroFromB) <- FALSE
+}
+
+CloseProjectButton <- function(container){
+  cloprob <- gbutton("Close Project",container=container,handler=function(h,...){
+  closeProjBF()
+  closeProject(assignenv=.rqda)
   }
                      )
   assign("cloprob",cloprob,env=button)

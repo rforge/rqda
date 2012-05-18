@@ -27,5 +27,7 @@ mmseg4j(text)
 }
 \examples{
 ## The example will cause error in latex, so I put it in a demo.
+\dontrun{
 demo(mmseg4j, ask=FALSE)
+}
 }

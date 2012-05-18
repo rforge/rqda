@@ -26,5 +26,7 @@ smartcn(text)
 }
 \examples{
 ## The example will cause error in latex, so I put it in a demo.
+\dontrun{
 demo(smartcn,ask=FALSE)
+}
 }
