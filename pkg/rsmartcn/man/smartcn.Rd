@@ -12,14 +12,14 @@ smartcn(text)
 }
 \arguments{
   \item{text}{
-    Length-1 string vector.
+    A string vector
   }
 }
 \details{
   It is a wrapper function to a Java Chinese analyser lucene-smartcn-3.4.0.jar. It supports CHS only. CHT should be converted to CHS first.
 }
 \value{
-  A vector similar to text, with space between Chinese words.
+  A string vector similar to text, with space between Chinese words.
 }
 \author{
   Ronggui HUANG

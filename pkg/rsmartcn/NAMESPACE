@@ -1,2 +1,2 @@
-export(smartcn,zhConv)
+export(smartcn)
 
