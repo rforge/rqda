@@ -8,11 +8,14 @@ Chinese Word Segmentation
   Chinese word segmentation based on mmseg4j
 }
 \usage{
-mmseg4j(text)
+mmseg4j(text, method = c("complex", "maxword"))
 }
 \arguments{
   \item{text}{
-    Length-1 string vector.
+    A string vector
+  }
+  \item{method}{
+    Method of segmentation
   }
 }
 \details{
@@ -20,7 +23,7 @@ mmseg4j(text)
   simplified Chinese only.
 }
 \value{
-  A vector similar to text, with space between Chinese words.
+  A string vector similar to text, with space between Chinese words.
 }
 \author{
   Ronggui HUANG

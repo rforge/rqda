@@ -1,19 +1,30 @@
 ## Chinese Word Segmentation
-mmseg4j <- function (text,method=c("complex","maxword"))
+
+.onAttach <- function(...) {
+    .jinit(system.file("plugins","Rmmseg4j.jar",package="rmmseg4j"))
+}
+
+mmseg4j <- function (text, method = c("complex", "maxword"))
 {
     ## the plugins are from http://code.google.com/p/mmseg4j/
     ## this one seems most meaningful
     method = match.arg(method)
-    if (length(text)!= 1) stop("text must be length-1 character vector.")
-    .jinit(system.file("plugins","Rmmseg4j.jar",package="rmmseg4j"))
-    if (method=="complex") {
+    if (class(text) != "character") stop ("text should be character vector")
+    N <- length(text)
+    Rval <- vector(mode = "character", length = N)
+    if (method == "complex") {
         mmseg <- .jnew("Rmmseg4j/RmmsegComplex")
-        outRef <- .jcall(mmseg, "S" , "textMethod",text,evalString = FALSE)
+        for (i in seq_len(N)) {
+            outRef <- .jcall(mmseg, "S" , "textMethod", text[i], evalString = FALSE)
+            Rval[i] <- .jstrVal(outRef)
+        }
     }
     if (method=="maxword") {
         mmseg <- .jnew("Rmmseg4j/RmmsegMaxWord")
-        outRef <- .jcall(mmseg, "S" , "textMethod",text,evalString = FALSE)
+        for (i in seq_len(N)) {
+            outRef <- .jcall(mmseg, "S" , "textMethod", text[i], evalString = FALSE)
+            Rval[i] <- .jstrVal(outRef)
+        }
     }
-    ans <- .jstrVal(outRef)
-    ans
+    Rval
 }
