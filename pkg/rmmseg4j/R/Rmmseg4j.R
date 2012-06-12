@@ -1,5 +1,5 @@
 ## Chinese Word Segmentation
-mmseg4j <- function (text,method=c("complex"))
+mmseg4j <- function (text,method=c("complex","maxword"))
 {
     ## the plugins are from http://code.google.com/p/mmseg4j/
     ## this one seems most meaningful
@@ -7,7 +7,11 @@ mmseg4j <- function (text,method=c("complex"))
     if (length(text)!= 1) stop("text must be length-1 character vector.")
     .jinit(system.file("plugins","Rmmseg4j.jar",package="rmmseg4j"))
     if (method=="complex") {
-        mmseg <- .jnew("Rmmseg4j/Rmmseg")
+        mmseg <- .jnew("Rmmseg4j/RmmsegComplex")
+        outRef <- .jcall(mmseg, "S" , "textMethod",text,evalString = FALSE)
+    }
+    if (method=="maxword") {
+        mmseg <- .jnew("Rmmseg4j/RmmsegMaxWord")
         outRef <- .jcall(mmseg, "S" , "textMethod",text,evalString = FALSE)
     }
     ans <- .jstrVal(outRef)

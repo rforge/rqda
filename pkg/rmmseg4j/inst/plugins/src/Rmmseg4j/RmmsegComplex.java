@@ -16,11 +16,11 @@ import com.chenlb.mmseg4j.MMSeg;
 import com.chenlb.mmseg4j.Seg;
 import com.chenlb.mmseg4j.Word;
 
-public class Rmmseg {
+public class RmmsegComplex {
 
     protected Dictionary dic;
 
-    public Rmmseg() {
+    public RmmsegComplex() {
         dic = Dictionary.getInstance();
     }
 
@@ -61,12 +61,12 @@ public class Rmmseg {
         if (args.length > 0) {
             txt = args[0];
         }
-        System.out.println(new Rmmseg().run(txt));
+        System.out.println(new RmmsegComplex().run(txt));
     }
 
     private String textMethod(String txt) throws IOException {
         String res = "";
-        res = new Rmmseg().run(txt);
+        res = new RmmsegComplex().run(txt);
         return res;
     }
 }
