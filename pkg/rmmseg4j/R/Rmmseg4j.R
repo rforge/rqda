@@ -4,7 +4,7 @@
        rJava:::.jpackage(pkgname, lib.loc=libname)
      }
 
-mmseg4j <- function (text, method = c("complex", "maxword"), dicDir = NULL)
+mmseg4j <- function (text, method = c("complex", "maxword"), dicDir = NULL, reload = FALSE)
 {
     ## the plugins are from http://code.google.com/p/mmseg4j/
     ## this one seems most meaningful
@@ -21,6 +21,7 @@ mmseg4j <- function (text, method = c("complex", "maxword"), dicDir = NULL)
         } else {
             mmseg$dic <-  mmseg$dic$getInstance(file.path(system.file(package = "rmmseg4j"), "userDic"))
         }
+        if (reload) mmseg$dic$reload()
         for (i in seq_len(N)) {
            Val <- mmseg$segWords(text[i], " ")
            Encoding(Val) <- "UTF-8"
@@ -34,6 +35,7 @@ mmseg4j <- function (text, method = c("complex", "maxword"), dicDir = NULL)
         } else {
             mmseg$dic <- mmseg$dic$getInstance(file.path(system.file(package = "rmmseg4j"), "userDic"))
         }
+        if (reload) mmseg$dic$reload()
         for (i in seq_len(N)) {
             Val <- mmseg$segWords(text[i], " ")
             Encoding(Val) <- "UTF-8"

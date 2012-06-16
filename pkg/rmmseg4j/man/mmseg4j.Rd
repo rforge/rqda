@@ -8,7 +8,7 @@ Chinese Word Segmentation
   Chinese word segmentation based on mmseg4j
 }
 \usage{
-mmseg4j(text, method = c("complex", "maxword"), dicDir = NULL)
+mmseg4j(text, method = c("complex", "maxword"), dicDir = NULL, reload = FALSE)
 }
 \arguments{
   \item{text}{
@@ -19,6 +19,9 @@ mmseg4j(text, method = c("complex", "maxword"), dicDir = NULL)
   }
     \item{dicDir}{
     Directory of user provided dictionary. If NULL, it sets to userDic in the root besides the default dictionaries.
+  }
+      \item{reload}{
+    logical, reload the changed dictionaries
   }
 }
 \details{
