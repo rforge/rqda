@@ -1,5 +1,6 @@
 /*
 Rewritten by ronggui huang on 18 Sep. 2011
+ * revised on 16 June 2012
 Based on the Complex example
  */
 package Rmmseg4j;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-
 import com.chenlb.mmseg4j.ComplexSeg;
 import com.chenlb.mmseg4j.Dictionary;
 import com.chenlb.mmseg4j.MMSeg;
@@ -18,19 +18,16 @@ import com.chenlb.mmseg4j.Word;
 
 public class RmmsegComplex {
 
-    protected Dictionary dic;
-
-    public RmmsegComplex() {
-        dic = Dictionary.getInstance();
-    }
-
-    protected Seg getSeg() {
+   public Dictionary dic = Dictionary.getInstance();
+   /*must be public for R to access it*/
+   
+   protected Seg getSeg(Dictionary dic) {
         return new ComplexSeg(dic);
-    }
+   }
 
-    public String segWords(Reader input, String wordSpilt) throws IOException {
+    protected String segWords(Reader input, String wordSpilt) throws IOException {
         StringBuilder sb = new StringBuilder();
-        Seg seg = getSeg();	//取得不同的分词具体算法
+        Seg seg = getSeg(dic);	//取得不同的分词具体算法
         MMSeg mmSeg = new MMSeg(input, seg);
         Word word = null;
         boolean first = true;
@@ -49,24 +46,4 @@ public class RmmsegComplex {
         return segWords(new StringReader(txt), wordSpilt);
     }
 
-    protected String run(String txt) throws IOException {
-        return segWords(txt, " ");
-    }
-
-    public static void main(String[] args) throws IOException {
-        String txt = "";
-	if (args.length == 0) {
-	    System.out.println("Usage:\n Rmmseg4j text");
-	}
-        if (args.length > 0) {
-            txt = args[0];
-        }
-        System.out.println(new RmmsegComplex().run(txt));
-    }
-
-    private String textMethod(String txt) throws IOException {
-        String res = "";
-        res = new RmmsegComplex().run(txt);
-        return res;
-    }
 }

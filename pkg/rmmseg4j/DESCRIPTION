@@ -2,7 +2,7 @@ Package: rmmseg4j
 Type: Package
 Title: Chinese word segmentation based on mmseg4j
 Version: 0.1-0
-Date: 2012-06-12
+Date: 2012-06-16
 Author: HUANG Ronggui
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
 Depends: rJava
