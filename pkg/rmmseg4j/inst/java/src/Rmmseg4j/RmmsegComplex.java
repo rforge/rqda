@@ -1,8 +1,10 @@
 /*
+This is part of rmmseg4j package
 Rewritten by ronggui huang on 18 Sep. 2011
  * revised on 16 June 2012
 Based on the Complex example
  */
+
 package Rmmseg4j;
 
 import java.io.BufferedReader;

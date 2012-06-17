@@ -8,7 +8,8 @@ Chinese Word Segmentation
   Chinese word segmentation based on mmseg4j
 }
 \usage{
-mmseg4j(text, method = c("complex", "maxword"), dicDir = NULL, reload = FALSE)
+mmseg4j(text, method = c("complex", "maxword", "simple"), 
+        dicDir = NULL, reload = FALSE)
 }
 \arguments{
   \item{text}{
