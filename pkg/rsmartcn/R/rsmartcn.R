@@ -1,9 +1,14 @@
 ## Chinese Word Segmentation
 ## This is part of rsmartcn
 
-.onAttach <- function(...) {
-    .jinit(system.file("plugins","rsmartcn.jar",package="rsmartcn"))
-}
+#.onAttach <- function(...) {
+#    .jinit(system.file("plugins","rsmartcn.jar",package="rsmartcn"))
+#}
+
+.onLoad <- function(libname, pkgname) {
+       rJava:::.jpackage(pkgname, lib.loc=libname)
+       ## must use full access of :::
+     }
 
 smartcn <- function (text)
 {
