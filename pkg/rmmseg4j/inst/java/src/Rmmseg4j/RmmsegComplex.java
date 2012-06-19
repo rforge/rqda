@@ -20,12 +20,23 @@ import com.chenlb.mmseg4j.Word;
 
 public class RmmsegComplex {
 
-   public Dictionary dic = Dictionary.getInstance();
+   protected Dictionary dic = Dictionary.getInstance();
    /*must be public for R to access it*/
   
-   public boolean needReload (Dictionary dic){
-       return dic.wordsFileIsChange();
+   public boolean needReload (){
+       return this.dic.wordsFileIsChange();
    }
+   
+   public void resetDefaultDicPath(String path){
+        this.dic = Dictionary.getInstance(path);
+        }
+   
+   public Dictionary showDic() {
+         return this.dic;
+         }
+   public boolean reloadDic(){
+         return this.dic.reload();
+         }
    
    protected Seg getSeg(Dictionary dic) {
         return new ComplexSeg(dic);

@@ -18,11 +18,14 @@ mmseg4j <- function (text, method = c("complex", "maxword", "simple"), dicDir = 
     if (method=="maxword")  mmseg <- .jnew("Rmmseg4j/RmmsegMaxWord")
     if (method=="simple")  mmseg <- .jnew("Rmmseg4j/RmmsegSimple")
     if (!is.null(dicDir)) {
-        mmseg$dic <- mmseg$dic$getInstance(dicDir)
+        mmseg$resetDefaultDicPath(dicDir)
     } else {
-        mmseg$dic <-  mmseg$dic$getInstance(file.path(system.file(package = "rmmseg4j"), "userDic"))
+        mmseg$resetDefaultDicPath(file.path(system.file(package = "rmmseg4j"), "userDic"))
     }
-    if (isTRUE(mmseg$dic$wordsFileIsChange())) mmseg$dic$reload()
+    if (isTRUE(mmseg$needReload())) {
+        succeeded <- mmseg$reloadDic()
+        if (!succeeded) warning("Fail to reload the changed dictionary")
+        }
     ## automatically examine the status of dic, reload if changed
     for (i in seq_len(N)) {
         Val <- mmseg$segWords(text[i], " ")
