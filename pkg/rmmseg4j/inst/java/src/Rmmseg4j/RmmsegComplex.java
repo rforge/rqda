@@ -22,6 +22,10 @@ public class RmmsegComplex {
 
    public Dictionary dic = Dictionary.getInstance();
    /*must be public for R to access it*/
+  
+   public boolean needReload (Dictionary dic){
+       return dic.wordsFileIsChange();
+   }
    
    protected Seg getSeg(Dictionary dic) {
         return new ComplexSeg(dic);

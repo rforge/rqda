@@ -5,7 +5,7 @@
        ## must use full access of :::
      }
 
-mmseg4j <- function (text, method = c("complex", "maxword", "simple"), dicDir = NULL, reload = FALSE)
+mmseg4j <- function (text, method = c("complex", "maxword", "simple"), dicDir = NULL)
 {
     ## the plugins are from http://code.google.com/p/mmseg4j/
     ## this segmentation softeware seems most useful
@@ -22,7 +22,8 @@ mmseg4j <- function (text, method = c("complex", "maxword", "simple"), dicDir = 
     } else {
         mmseg$dic <-  mmseg$dic$getInstance(file.path(system.file(package = "rmmseg4j"), "userDic"))
     }
-    if (reload) mmseg$dic$reload()
+    if (isTRUE(mmseg$dic$wordsFileIsChange())) mmseg$dic$reload()
+    ## automatically examine the status of dic, reload if changed
     for (i in seq_len(N)) {
         Val <- mmseg$segWords(text[i], " ")
         Encoding(Val) <- "UTF-8"
