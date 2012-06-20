@@ -2,17 +2,20 @@
 \alias{smartcn}
 \encoding{UTF-8}
 \title{
-Chinese Word Segmentation
+A R interface to the Chinese word segmentation system of lucene-smartcn
 }
 \description{
-  Chinese word segmentation based on smartcn
+  A Chinese word segmentation based on the Chinese analyser lucene-smartcn-3.4.0
 }
 \usage{
-smartcn(text)
+smartcn(text, useStopWord = TRUE)
 }
 \arguments{
   \item{text}{
     A string vector
+  }
+    \item{useStopWord}{
+    Whether use the default stop words
   }
 }
 \details{

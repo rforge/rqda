@@ -10,15 +10,17 @@
        ## must use full access of :::
      }
 
-smartcn <- function (text)
+smartcn <- function (text, useStopWord = TRUE)
 {
     if (class(text) != "character") stop ("text should be character vector")
     smartcn <- .jnew("rsmartcn.rsmartcn")
+    stopWord <- .jnew("java.lang.Boolean", ifelse(useStopWord, "true", "false"))
     N <- length(text)
     Rval <- vector(mode = "character", length = N)
     for (i in seq_len(N)){
-        outRef <- .jcall(smartcn, "S" , "textMethod", text[i], evalString = FALSE)
-        Rval[i] <- .jstrVal(outRef)
+        ans <- smartcn$Seg(text[i], stopWord$booleanValue())
+        Encoding(ans) <- "UTF-8"
+        Rval[i] <- ans
     }
     Rval
 }
