@@ -1,6 +1,6 @@
 Package: rsmartcn
 Type: Package
-Title: Chinese word segmentation based on smartcn
+Title: R interface to the Java Chinese word segmentation system of smartcn
 Version: 0.1-0
 Date: 2012-06-12
 Author: Ronggui HUANG
