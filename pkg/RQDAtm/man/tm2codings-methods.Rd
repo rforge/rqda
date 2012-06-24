@@ -1,12 +1,11 @@
-\name{tm2RQDA-methods}
+\name{tm2codings-methods}
 \docType{methods}
-\alias{tm2RQDA}
-\alias{tm2RQDA-methods}
-\alias{tm2RQDA,Corpus-method}
-\title{Methods for Function tm2RQDA in Package `RQDAtm'}
+\alias{tm2codings}
+\alias{tm2codings-methods}
+\alias{tm2codings,Corpus-method}
+\title{Methods for Function tm2codings in Package `RQDAtm'}
 \description{
-  This is methods for function \code{tm2RQDA} in Package `RQDAtm'. It extracts detail information from a Corpus and import it into a rqda project.
-  
+  This is methods for function \code{tm2codings} in Package `RQDAtm'. It extracts detail information from a Corpus and import it into a rqda project.
 }
 \section{Methods}{
 \describe{
@@ -26,13 +25,13 @@
   J-P Mueller and revised and documented by HUANG Ronggui
 }
 \seealso{
-  \code{\link{RQDA2tm}}
+  \code{\link{codings2tm}}
 }
 \examples{
 \dontrun{
 example(Corpus)
 ## open a rqda project first
-tm2RQDA(r)
+tm2codings(r)
 }
 }
 \keyword{methods}

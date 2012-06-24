@@ -1,11 +1,8 @@
 codingTermDF <- function(code,var.name,n=30){
-    cp <- RQDA2tm(code ,byFile = FALSE)
+    cp <- codings2tm(code ,byFile = FALSE)
     cp <- tm_map(cp, stripWhitespace)
     txt <- prescindMeta(cp,c("ID"))
-    re <- vector()
-    for (i in 1:nrow(txt)) {
-	re[i]<- CWSimdict(PlainTextDocument(cp)[[i]], TRUE)
-    }
+    re <- mmseg4j(PlainTextDocument(cp))
     cp <- Corpus(VectorSource(re))
     dtm <- DocumentTermMatrix(cp,control = list(minWordLength=2,removeNumbers=TRUE))
     top_index <- findFreqTerms(dtm,sort(dtm$v ,decreasing = TRUE)[n])
@@ -16,10 +13,7 @@ codingTermDF <- function(code,var.name,n=30){
 vectorTermDF <- function(text,var){
     text <- Corpus(VectorSource(text))
     text<- tm_map(text, stripWhitespace)
-    re <- vector()
-    for (i in 1:length(text)) {
-        re[i]<- CWSimdict(PlainTextDocument(text)[[i]], TRUE)
-    }
+    re <- mmseg4j(PlainTextDocument(text))
     text <- Corpus(VectorSource(re))
     dtm <- DocumentTermMatrix(text,control = list(minWordLength=2,removeNumbers=TRUE))
     preData <- as.data.frame(as.matrix(dtm))

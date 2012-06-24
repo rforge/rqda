@@ -9,7 +9,7 @@ setGeneric("FRtreetager", function(object, keep = c("word", "pos", "lemma") , re
 setMethod("FRtreetager",
 			signature(object = "PlainTextDocument"),
 			function(object, keep = c("word", "pos", "lemma") , reduce = TRUE, sep = "/", bef = "",  aft = "", ... ) {
-				zz <- file("~/treein.txt", "w", enc="latin1")
+				zz <- file("~/treein.txt", "w", encoding="latin1")
 				cat(Content(object), file=zz)
 				close(zz)
 				system("~/cmd/tree-tagger-french ~/treein.txt  >treeout.txt ", ignore.stderr=TRUE)
@@ -61,7 +61,7 @@ splitDoc <- function(corpus, words= 30,  keep.sent=FALSE, keep.par.bound=TRUE) {
         c.k <- c(c.k)
         s <- 1: length(c.k)
         for (i in s) {
-            zz <- file("~/treein.txt", "w", enc="latin1")
+            zz <- file("~/treein.txt", "w", encoding="latin1")
 			cat( c.k[i], file=zz)
 			close(zz)
 			system("~/cmd/tree-tagger-french ~/treein.txt  >treeout.txt ", ignore.stderr=TRUE)
@@ -157,7 +157,7 @@ rep.mod <- function(tle, speci.col, tab.ind.col, n=5)
 	return(z)
 }
 
-codings2tm <- RQDA2tm <- function(Code,language="eng",byFile = FALSE){
+codings2tm <- function(Code,language="eng",byFile = FALSE){
     retrieval <- NULL
     currentCode <- Code
     if (length(currentCode)!=0)
@@ -210,7 +210,7 @@ files2tm <- function(Code,language="eng"){
   txt <- merge(txt,fcat,by="id",all.x=TRUE,all.y=FALSE)
   Encoding(txt$file) <- "UTF-8"
   Encoding(txt$name) <- "UTF-8"
-  fcorpus <- tm:::Corpus(tm::VectorSource(txt$file), 
+  fcorpus <- tm:::Corpus(tm::VectorSource(txt$file),
             readerControl = list(language = language))
   meta(fcorpus, tag = c("fname","id","owner","date","filecat")) <- txt[,c("name","id","owner","date","filecat")]
   fcorpus
@@ -228,8 +228,9 @@ setMethod("tmcollapse",
 
 
 
-setGeneric("tm2RQDA", function(object) standardGeneric("tm2RQDA"))
-setMethod("tm2RQDA", signature(object = "Corpus"),
+setGeneric("tm2codings", function(object) standardGeneric("tm2codings"))
+
+setMethod("tm2codings", signature(object = "Corpus"),
           function(object) {
               require("RQDA", quietly = TRUE)
               u <- lapply(object,tmcollapse, collapse="\r")

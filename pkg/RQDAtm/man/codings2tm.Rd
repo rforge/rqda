@@ -1,11 +1,11 @@
-\name{RQDA2tm}
-\alias{RQDA2tm}
-\title{RQDA to Corpus}
+\name{codings2tm}
+\alias{codings2tm}
+\title{RQDA codings to Corpus}
 \description{
   Constructs a text document collection (corpus) from RQDA codings.
 }
 \usage{
-RQDA2tm(Code, language = "eng", byFile = FALSE)
+codings2tm(Code, language = "eng", byFile = FALSE)
 }
 \arguments{
   \item{Code}{character vector of length 1, name of a code in RQDA.}
