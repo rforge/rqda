@@ -32,8 +32,8 @@ mmseg4j(text, method = c("complex", "maxword", "simple"), dicDir = NULL)
   Ronggui HUANG
 }
 \examples{
-## The example will cause error in latex, so I put it in a demo.
-\dontrun{
-demo(mmseg4j, ask=FALSE)
-}
+## Use the following command to open the example file
+## then you can copy and paste the commands into R
+
+## file.show(file.path(path.package("rmmseg4j"),"mmseg4jExample.R"))
 }
