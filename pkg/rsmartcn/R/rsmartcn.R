@@ -12,7 +12,8 @@
 
 smartcn <- function (text, useStopWord = TRUE)
 {
-    if (class(text) != "character") stop ("text should be character vector")
+    if ( !inherits(text, "character") ) stop ("text should be character vector")
+    oriClass <- class(text)
     smartcn <- .jnew("rsmartcn.rsmartcn")
     stopWord <- .jnew("java.lang.Boolean", ifelse(useStopWord, "true", "false"))
     N <- length(text)
@@ -22,5 +23,6 @@ smartcn <- function (text, useStopWord = TRUE)
         Encoding(ans) <- "UTF-8"
         Rval[i] <- ans
     }
+    class(Rval) <- oriClass
     Rval
 }

@@ -1,7 +1,7 @@
 Package: rmmseg4j
 Type: Package
 Title: R interface to the Java Chinese word segmentation system of mmseg4j
-Version: 0.2-0
+Version: 0.2-1
 Date: 2012-07-22
 Author: HUANG Ronggui
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>

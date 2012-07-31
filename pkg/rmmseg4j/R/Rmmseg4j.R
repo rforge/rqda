@@ -11,7 +11,8 @@ mmseg4j <- function (text, method = c("complex", "maxword", "simple"), dicDir = 
     ## this segmentation softeware seems most useful
     ## .jinit(system.file("java","Rmmseg4j.jar",package="rmmseg4j"), force.init = TRUE)
     method = match.arg(method)
-    if (class(text) != "character") stop ("text should be character vector")
+    oriClass <- class(text)
+    if ( !inherits(text, "character") ) stop ("text should be character vector")
     N <- length(text)
     Rval <- vector(mode = "character", length = N)
     if (method == "complex")  mmseg <- .jnew("Rmmseg4j/RmmsegComplex")
@@ -32,5 +33,6 @@ mmseg4j <- function (text, method = c("complex", "maxword", "simple"), dicDir = 
         Encoding(Val) <- "UTF-8"
         Rval[i] <- Val
     }
+    class(Rval) <- oriClass
     Rval
 }
