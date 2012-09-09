@@ -272,6 +272,9 @@ FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
 ## see CodeCatButton.R  for definition of MemoWidget
 }
 }
+FileNamesWidgetMenu$"Import highligted from PDF"$handler <- function(h,...){
+    importPDF()
+}
 FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
   ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
 }

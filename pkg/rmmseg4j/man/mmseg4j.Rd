@@ -25,6 +25,10 @@ mmseg4j(text, method = c("complex", "maxword", "simple"), dicDir = NULL)
   It is a wrapper function to a Java Chinese analyser mmseg4j-1.8.4 \url{http://code.google.com/p/mmseg4j/}, which works for
   simplified Chinese only.
 }
+\note{
+  This functin requires Java Runtime Environment (build 1.6.0_21-b07) or later.
+}
+
 \value{
   A string vector similar to text, with space between Chinese words.
 }
