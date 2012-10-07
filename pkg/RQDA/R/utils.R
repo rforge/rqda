@@ -274,7 +274,7 @@ SummaryCoding <- function(byFile=FALSE,...){
         CodingOfFile <- tapply(Codings$codename,Codings$filename,FUN=table,...) # summary of codings for each file
       } else CodingOfFile <- NULL
       ans <- list(NumOfCoding=NumOfCoding,AvgLength=AvgLength,NumOfFile=NumOfFile,CodingOfFile=CodingOfFile)
-      class(ans) <- "SummaryCoding"
+      class(ans) <- "summaryCodings"
       ans
     } else {
       cat("No coding.\n")
@@ -284,7 +284,7 @@ SummaryCoding <- function(byFile=FALSE,...){
   }
 }
 
-print.SummaryCoding <- function(x,...){
+print.summaryCodings <- function(x,...){
   class(x)
   if (!is.null(x$CodingOfFile)){
     cat("----------------\n")
@@ -303,7 +303,7 @@ print.SummaryCoding <- function(x,...){
 }
 
 
-SearchFiles <- function(pattern,content=FALSE,Fid=NULL,Widget=NULL,is.UTF8=FALSE){
+searchFiles <- SearchFiles <- function(pattern,content=FALSE,Fid=NULL,Widget=NULL,is.UTF8=FALSE){
 ##SearchFiles("file like '%新民晚报%'")
 ##SearchFiles("name like '%物权法%'")
 ##SearchFiles("file like '%新民晚报%'",Widget=.rqda$.fnames_rqda)

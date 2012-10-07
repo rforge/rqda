@@ -9,15 +9,15 @@ export("%and%","%or%","%not%", and, CleanProject,closeProject,codingBySearch,
        getMemos,
        list.deleted,nCodedByTwo, not, or, openProject,
        pdelete,queryFiles,relation,retrieval,RQDA,RQDAQuery,
-       SearchFiles,showSubset,summaryCodings,undelete,
-       ViewPlainFile,write.FileList)
+       searchFiles,showSubset,summaryCodings,undelete,
+       viewPlainFile,write.FileList)
 S3method("%and%",RQDA.vector)
 S3method("%and%",codingsByOne)
 S3method("%or%",RQDA.vector)
 S3method("%or%",codingsByOne)
 S3method("%not%",RQDA.vector)
 S3method("%not%",codingsByOne)
-S3method(print,SummaryCoding)
+S3method(print,summaryCodings)
 S3method(ShowSubset,fileName)
 S3method(ShowSubset,CaseAttr)
 S3method(ShowSubset, caseName)

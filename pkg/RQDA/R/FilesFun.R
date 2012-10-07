@@ -681,7 +681,7 @@ SearchButton <- function(widget){
 
 
 
-ViewPlainFile <- function(FileNameWidget=.rqda$.fnames_rqda){
+viewPlainFile <- function(FileNameWidget=.rqda$.fnames_rqda){
     if (is_projOpen(env = .rqda, conName = "qdacon")) {
         if (length(svalue(FileNameWidget)) == 0) {
             gmessage("Select a file first.", icon = "error",con = TRUE)

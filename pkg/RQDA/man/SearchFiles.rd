@@ -1,12 +1,11 @@
-\name{SearchFiles}
-\alias{SearchFiles}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Search files}
+\name{searchFiles}
+\alias{searchFiles}
+\title{Search files}
 \description{
   Search files according to the pattern.
 }
 \usage{
-SearchFiles(pattern, content = FALSE, Fid = NULL, Widget = NULL,is.UTF8 = FALSE)
+searchFiles(pattern, content = FALSE, Fid = NULL, Widget = NULL,is.UTF8 = FALSE)
 }
 \arguments{
   \item{pattern}{ The criterion of search, see examples section for examples.}
@@ -33,13 +32,13 @@ A data frame with variables:
 \seealso{\code{\link[gWidgets]{gtable}},  \code{\link[utils]{localeToCharset}}}
 \examples{
 \dontrun{
-SearchFiles("file like '\%keyword\%'") 
+searchFiles("file like '\%keyword\%'") 
 ## search for files who contain the word of "keyword"
-SearchFiles("file like 'keyword\%'") 
+searchFiles("file like 'keyword\%'") 
 ## search for files whose conent begin with the word of "keyword"
-SearchFiles("name like '\%keyword'") 
+searchFiles("name like '\%keyword'") 
 ## search for files whose name end with the word of "keyword"
-SearchFiles("name like '\%keyword one' and file like '\%keyword tow\%'") 
+searchFiles("name like '\%keyword one' and file like '\%keyword tow\%'") 
 ## combined conidtions
 }
 }
