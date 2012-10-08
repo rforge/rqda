@@ -212,11 +212,11 @@ closeProject <- function(conName="qdacon",assignenv=.rqda,...){
 
 
 
-is_projOpen <- function(env=.rqda,conName="qdacon",message=TRUE){
+is_projOpen <- function(envir=.rqda,conName="qdacon",message=TRUE){
   ## test if any project is open.
   open <- FALSE
   tryCatch({
-    con <- get(conName,env)
+    con <- get(conName,envir)
     pkg <- attr(attr(con,"class"),'package')
     Open2 <- getFunction("isIdCurrent",where=sprintf("package:%s",pkg))(con)
     open <- open + Open2

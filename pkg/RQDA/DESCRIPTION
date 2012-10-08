@@ -7,8 +7,8 @@ Author: HUANG Ronggui
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
 Depends: R (>= 2.8.0), DBI, RSQLite, gWidgets (>= 0.0-31), gWidgetsRGtk2 (>= 0.0-36)
 Imports: RGtk2 (>= 2.20), methods, igraph
-Enhances: RMySQL
-Suggests: vcd, tcltk, pdfutils
+Enhances: RMySQL, pdfutils
+Suggests: vcd, tcltk
 Description: R package for Qualitative Data Analysis. Current version only supports plain text.
 License: BSD
 LazyLoad: yes
