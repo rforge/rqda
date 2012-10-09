@@ -322,6 +322,7 @@ searchFiles <- SearchFiles <- function(pattern,content=FALSE,Fid=NULL,Widget=NUL
             eval(parse(text=sprintf(".rqda$%s[] <- ans$name",Widget)))
             ## eval(substitute(widget[] <- ans$name,list(widget=quote(Widget))))
         }
+        cat(sprintf("%s retrieved file(s).", nrow(ans)))
         invisible(ans)
     } else cat("Open a project first.\n")
 }

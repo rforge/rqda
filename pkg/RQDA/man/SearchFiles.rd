@@ -22,7 +22,7 @@ searchFiles(pattern, content = FALSE, Fid = NULL, Widget = NULL,is.UTF8 = FALSE)
 This function use select statment of sql to search files (from source database table). The pattern is the WHERE clause (without the keyword WHERE). For more information, please refer to the website of SQLite syntax. All data in *.rqda use UTF-8 encoding, so the encoding of pattern matters. It will be converted to UTF-8 if it is not (is.UTF8=FALSE).
 }
 \value{
-A data frame with variables:
+A data frame with variables (which is \code{invisible} and you need to print it explicitly):
   \item{id }{The file id.}
   \item{name }{The file name.}
   \item{file }{The file content. Only return when content is TRUE.}
