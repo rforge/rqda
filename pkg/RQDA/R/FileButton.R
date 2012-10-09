@@ -59,7 +59,7 @@ DeleteFileButton <- function(label="Delete", container,...){
 
 ViewFileButton <-  function(label="Open", container,...)
 {
-  VieFilB <- gbutton(label,container=container,h=function(h,...)
+  VieFilB <- gbutton(label,container=container,handler=function(h,...)
           {
             ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
           }
@@ -254,7 +254,7 @@ FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
         SearchButton(RQDA:::.rqda$.openfile_gui)
     }
 }
-## a=gtext("this is a test for search a.",con=T)
+## a=gtext("this is a test for search a.",container=T)
 ## b<-a@widget@widget$GetBuffer()
 ## b$GetIterAtOffset(0)
 ## i0=b$GetIterAtOffset(0)

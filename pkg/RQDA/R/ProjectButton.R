@@ -192,7 +192,7 @@ CloseProjectButton <- function(container){
   closeProject(assignenv=.rqda)
   }
                      )
-  assign("cloprob",cloprob,env=button)
+  assign("cloprob",cloprob,envir=button)
   gtkWidgetSetSensitive(button$cloprob@widget@widget,FALSE)
 }
 
@@ -201,7 +201,7 @@ BackupProjectButton <- function(container){
     backup_proj(con=.rqda$qdacon)
   }
                       )
-  assign("BacProjB",BacProjB,env=button)
+  assign("BacProjB",BacProjB,envir=button)
   gtkWidgetSetSensitive(button$BacProjB@widget@widget,FALSE)
 }
 
@@ -211,30 +211,30 @@ Proj_MemoButton <- function(label="Porject Memo",container,...){
   ## The memo in dataset is UTF-8
   ## label of button
   ## name of contaianer or TRUE
-  proj_memo <- gbutton(label, contain=container, handler=function(h,...) {
+  proj_memo <- gbutton(label, container=container, handler=function(h,...) {
     ProjectMemoWidget()
   }
                        )
-  assign("proj_memo",proj_memo,env=button)
+  assign("proj_memo",proj_memo,envir=button)
   gtkWidgetSetSensitive(button$proj_memo@widget@widget,FALSE)
 }
 
 
 CleanProjButton <- function(label="Clean Project",container,...){
-  CleProB <- gbutton(label, contain=container, handler=function(h,...) {
+  CleProB <- gbutton(label, container=container, handler=function(h,...) {
     CleanProject(ask=FALSE)
   }
                      )
-  assign("CleProB",CleProB,env=button)
+  assign("CleProB",CleProB,envir=button)
   gtkWidgetSetSensitive(button$CleProB@widget@widget,FALSE)
 }
 
 CloseAllCodingsButton <- function(label="Close All Codings",container,...){
-  CloAllCodB <- gbutton(label, contain=container, handler=function(h,...) {
+  CloAllCodB <- gbutton(label, container=container, handler=function(h,...) {
     close_AllCodings()
   }
                         )
-  assign("CloAllCodB",CloAllCodB,env=button)
+  assign("CloAllCodB",CloAllCodB,envir=button)
   gtkWidgetSetSensitive(button$CloAllCodB@widget@widget,FALSE)
 }
 
@@ -244,11 +244,11 @@ CloseAllCodingsButton <- function(label="Close All Codings",container,...){
 ####################
 ## ProjectInforButton <- function(container){
 ## gbutton("Current Project",container=container,handler=function(h,...){
-##     if (is_projOpen(env=.rqda,conName="qdacon")) {
+##     if (is_projOpen(envir=.rqda,conName="qdacon")) {
 ##       con <- .rqda$qdacon
 ##       dbname <- dbGetInfo(.rqda$qdacon)$dbname
 ##       ##substr(dbname, nchar(dbname)-15,nchar(dbname))
-##       gmessage(dbname,title="Info about current project.",con=TRUE)
+##       gmessage(dbname,title="Info about current project.",container=TRUE)
 ##     }
 ##   },
 ##                              action=list(env=.rqda,conName="qdacon")
