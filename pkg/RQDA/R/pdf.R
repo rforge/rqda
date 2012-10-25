@@ -17,7 +17,7 @@ importPDF <- function(file, type=c("higjlight")){
         }
     }
     if (write ) {
-        ans <- pdfutils:::extractHL(file)
+        ans <- pdfutils:::extractPDF(file)
         RQDAQuery(sprintf("insert into source (name, file, id, status,date,owner )
                              values ('%s', '%s',%i, %i, '%s', '%s')",
                           fileName,enc(ans), nextid, 1, date(), .rqda$owner))
