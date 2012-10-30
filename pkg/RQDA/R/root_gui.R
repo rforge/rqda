@@ -39,6 +39,10 @@ if (isTRUE(.rqda$isLaunched)) {
 
   gseparator(container=.proj_gui)
   glabel("Author: <ronggui.huang@gmail.com>",container=.proj_gui)
+  glabel("Help: click to join rqda-help mailing list",
+         container=.proj_gui, handler=function(h,...){
+             browseURL("https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/rqda-help")
+         }) 
   gseparator(container=.proj_gui)
   glabel("License: BSD",
          container=.proj_gui, handler=function(h,...){
