@@ -249,11 +249,7 @@ FileNamesWidgetMenu$"Export Coded file as HTML"$handler <- function(h, ...) {
             path <- sprintf("%s.html",path)
             exportCodedFile(file=path,getFileIds(type="selected")[1])
         }}}
-FileNamesWidgetMenu$"Find a word..."$handler <- function(h, ...) {
-    if (exists(".openfile_gui",envir=.rqda) && isExtant(.rqda$.openfile_gui)) {
-        SearchButton(RQDA:::.rqda$.openfile_gui)
-    }
-}
+
 ## a=gtext("this is a test for search a.",container=T)
 ## b<-a@widget@widget$GetBuffer()
 ## b$GetIterAtOffset(0)
@@ -284,7 +280,12 @@ FileNamesWidgetMenu$"Open Previous Coded File"$handler <- function(h,...){
     if (length(fname)!=0)  fname <- enc(fname,"UTF-8")
     ViewFileFunHelper(FileName=fname)
   }}
-FileNamesWidgetMenu$"Search Files..."$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Search for a word"$handler <- function(h, ...) {
+    if (exists(".openfile_gui",envir=.rqda) && isExtant(.rqda$.openfile_gui)) {
+        SearchButton(RQDA:::.rqda$.openfile_gui)
+    }
+}
+FileNamesWidgetMenu$"Search all files ..."$handler <- function(h, ...) {
     if (is_projOpen(envir = .rqda, conName = "qdacon", message = FALSE)) {
     pattern <- ifelse(is.null(.rqda$lastsearch),"file like '%%'",.rqda$lastsearch)
     pattern <- ginput("Please input a search pattern.",text=pattern)

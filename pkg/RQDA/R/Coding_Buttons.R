@@ -431,6 +431,11 @@ CodesNamesWidgetMenu$"All Code Memos"$handler <- function(h, ...) {
     print(getMemos())
     }
   }
+CodesNamesWidgetMenu$"All Annotations"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+    print(getAnno())
+    }
+  }
 CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
