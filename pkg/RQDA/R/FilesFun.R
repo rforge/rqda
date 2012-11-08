@@ -649,7 +649,7 @@ AddToFileCategory <- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
 
 
 ## library(RGtk2)
-searchWord <- function(str,widget,from=0,col="green"){
+searchWord <- function(str,widget,from=0,col="green", verbose=FLASE){
     tview <- slot(widget,"widget")@widget
     buffer <- tview$GetBuffer()
     Iter0 <- buffer$GetIterAtOffset(from)$iter
@@ -660,6 +660,7 @@ searchWord <- function(str,widget,from=0,col="green"){
         buffer$ApplyTagByName(sprintf("%s.background", col),ans$match.start, ans$match.end)
         ans$match.end$GetOffset()
     } else {
+        if (verbose) gmessage("Reach the end.")
         invisible(NULL)
     }
 }
@@ -669,15 +670,17 @@ SearchButton <- function(widget){
     assign("searchFrom",0,envir=RQDA:::.rqda)
     group <- ggroup(horizontal=FALSE, container=gwindow(width=50,height=20,title="Search a word"))
     kwdW <- gedit("", container=group)
-    gbutton("Search", container = group,handler=function(h,...){
+    gbutton("Search next", container = group,handler=function(h,...){
         if (!is.null(RQDA:::.rqda$searchFrom)){
             str <- svalue(h$action)
             Encoding(str) <- "UTF-8"
-            res <- searchWord(str,widget=widget,from=RQDA:::.rqda$searchFrom)
+            res <- searchWord(str,widget=widget,from=RQDA:::.rqda$searchFrom, verbose=TRUE)
             assign("searchFrom",res,envir=RQDA:::.rqda)
         }},action=kwdW)
+     gbutton("Restart", container = group,handler=function(h,...){
+         assign("searchFrom",0,envir=RQDA:::.rqda)
+     })
 }
-
 
 
 
