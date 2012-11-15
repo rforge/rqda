@@ -76,7 +76,7 @@ AddNewJournalFun <- function(){
         mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
         gw@widget@widget$SetIconFromFile(mainIcon)
         assign(".AddNewJournalWidget",gw,envir=.rqda)
-        assign(".AddNewJournalWidget2",gpanedgroup(horizontal = FALSE, containter=get(".AddNewJournalWidget",envir=.rqda)),envir=.rqda)
+        assign(".AddNewJournalWidget2",gpanedgroup(horizontal = FALSE, container=get(".AddNewJournalWidget",envir=.rqda)),envir=.rqda)
         gbutton("Save Journal",container=get(".AddNewJournalWidget2",envir=.rqda),handler=function(h,...){
             ## title <- ginput("Enter new file name. ",text=Sys.time(), icon="info")
             title <- as.character(Sys.time())

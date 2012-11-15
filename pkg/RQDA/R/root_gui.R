@@ -28,7 +28,7 @@ if (isTRUE(.rqda$isLaunched)) {
   Proj_MemoButton(label = "Project Memo", container = .proj_gui)
   ## project memo button
   BackupProjectButton(container=.proj_gui)
-  saveAsButt(container=.proj_gui)
+  saveAsButt(label="Save Project As", container=.proj_gui)
   CleanProjButton(container=.proj_gui)
   CloseAllCodingsButton(container=.proj_gui)
   ##gbutton("About",container=.proj_gui, handler=function(h,...) {browseURL("http://rqda.r-forge.r-project.org/")})
@@ -42,7 +42,7 @@ if (isTRUE(.rqda$isLaunched)) {
   glabel("Help: click to join rqda-help mailing list",
          container=.proj_gui, handler=function(h,...){
              browseURL("https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/rqda-help")
-         }) 
+         })
   gseparator(container=.proj_gui)
   glabel("License: BSD",
          container=.proj_gui, handler=function(h,...){

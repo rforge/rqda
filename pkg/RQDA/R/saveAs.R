@@ -1,5 +1,5 @@
-saveAsButt <- function(container){
-    saveAsB <- gbutton(text="Save Project As ...",container=container, handler=function(h, ...){
+saveAsButt <- function(label="Save Project As ...", container){
+    saveAsB <- gbutton(text=label, container=container, handler=function(h, ...){
         saveAs()
     }
             )
@@ -21,13 +21,13 @@ saveAs <- function(newpath=NULL) {
         if (file.access(newpath, 2) != 0 && override) {
             override <- FALSE
             gmessage("You have no write permission to overwrite it.",container=TRUE,icon="error")
-        } 
+        }
     }
     if (!fexist | override ){
         succeeded <- file.copy(from=oldpath, to=newpath,overwrite=override)
     }
     if (!succeeded) gmessage("Failed to save the project to the new location.",container=TRUE,icon="error")
-    closeProjBF() 
+    closeProjBF()
     ## this must be placed before closeProject() because .fnames_rqda[] <- NULL will triger Clicked handler
     closeProject()
     enabled(button$cloprob) <- FALSE
