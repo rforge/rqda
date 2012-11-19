@@ -462,11 +462,7 @@ CodesNamesWidgetMenu$"Merge Selected with..."$handler <- function(h, ...) {
         CodeNamesWidgetUpdate()
     }
 }
-CodesNamesWidgetMenu$"Show All By Created Time"$handler <- function(h, ...) {
-    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
-        CodeNamesUpdate(sortByTime=TRUE)
-    }
-}
+
 CodesNamesWidgetMenu$"Show Codes With Codings"$handler <- function(h, ...) {
     CodeWithCoding(.rqda$TOR)
 }
@@ -524,6 +520,28 @@ CodesNamesWidgetMenu$"Set Coding Mark Color"$handler <- function(h, ...) {
       RQDAQuery(sprintf("update freecode set color='%s' where id =%i",newCol,cid))
     }
   }}
+}
+
+CodesNamesWidgetMenu$"Sort: By Created Time"$handler <- function(h, ...) {
+    if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
+        CodeNamesUpdate(sortByTime=TRUE)
+    }
+}
+CodesNamesWidgetMenu$"Sort: Most to Least Frequently Used"$handler <- function(h, ...) {
+    freq <- RQDAQuery("select count(cid) as freq, freecode.name from freecode left join coding on cid=freecode.id group by freecode.name order by freq desc")
+    if (nrow(freq)>0){
+        Encoding(freq$name) <- "UTF-8"
+        CodeNamesWidget=.rqda$.codes_rqda
+        CodeNamesWidget[] <- freq$name
+    }
+}
+CodesNamesWidgetMenu$"Sort: Least to Most Frequently Used"$handler <- function(h, ...) {
+    freq <- RQDAQuery("select count(cid) as freq, freecode.name from freecode left join coding on cid=freecode.id group by freecode.name order by freq asc")
+    if (nrow(freq)>0){
+        Encoding(freq$name) <- "UTF-8"
+        CodeNamesWidget=.rqda$.codes_rqda
+        CodeNamesWidget[] <- freq$name
+    }
 }
 
 

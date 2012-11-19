@@ -214,13 +214,32 @@ CaseNamesWidgetMenu$"Add File(s)"$handler <- function(h, ...) {
         Encoding(Selected) <- "UTF-8"
         fid <- fileoutofcase[fileoutofcase$name %in% Selected,"id"]
         selend <- nchar(fileoutofcase[fileoutofcase$name %in% Selected,"file"])
-        Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend,status=1,owner=.rqda$owner,date=date(),memo=NA)
+        Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend=selend,status=1,owner=.rqda$owner,date=date(),memo=NA)
         dbWriteTable(.rqda$qdacon,"caselinkage",Dat,row.names=FALSE,append=TRUE)
         UpdateFileofCaseWidget()
       }})
   }
   }
 }
+
+CaseNamesWidgetMenu$"Add New File to Selected Case"$handler <- function(h, ...) {
+    lastid <- RQDAQuery("select max(id) as maxid from source where status=1")$maxid
+    SelectedCase <- svalue(RQDA:::.rqda$.CasesNamesWidget)
+    SelectedCase <- enc(SelectedCase,"UTF-8")
+    caseid <- dbGetQuery(.rqda$qdacon,sprintf("select id from cases where status=1 and name='%s'",SelectedCase))$id
+    RQDA:::AddNewFileFun()
+    maxid <- RQDAQuery("select max(id) as maxid from source where status=1")$maxid
+    if (maxid > lastid){
+        fid <- RQDAQuery(sprintf("select id from source where status=1 and id=%s", maxid))$id
+        content <- RQDAQuery("select file from source where id=234")$file
+        Encoding(content) <- "UTF-8"
+        selend <- nchar(content)
+        Dat <- data.frame(caseid=caseid,fid=fid,selfirst=0,selend,status=1,owner=.rqda$owner,date=date(),memo=NA)
+        dbWriteTable(.rqda$qdacon,"caselinkage",Dat,row.names=FALSE,append=TRUE)
+        UpdateFileofCaseWidget()
+    }
+}
+
 CaseNamesWidgetMenu$"Case Memo"$handler <- function(h,...){
   if (is_projOpen(envir=.rqda,conName="qdacon")) {
     MemoWidget("Case",.rqda$.CasesNamesWidget,"cases")

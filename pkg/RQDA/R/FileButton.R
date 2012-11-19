@@ -320,6 +320,13 @@ FileNamesWidgetMenu$"Show ..."$"Show Files With Annotation"$handler <- function(
     FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
   } else gmessage("No file with memo.",container=TRUE)
 }
+FileNamesWidgetMenu$"Show ..."$"Show Files Without Annotation"$handler <- function(h, ...) {
+  fileid <- RQDAQuery("select id from source where status=1 and id not in (select fid from annotation where status=1 group by fid)")$id
+  if (length(fileid)!=0) {
+    FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
+  } else gmessage("All files have annotation.",container=TRUE)
+}
+
 FileNamesWidgetMenu$"Show ..."$"Show Files With Memo"$handler <- function(h, ...) {
     if (is_projOpen(envir = .rqda, conName = "qdacon", message = FALSE)) {
     fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is not null")
@@ -329,12 +336,6 @@ FileNamesWidgetMenu$"Show ..."$"Show Files With Memo"$handler <- function(h, ...
     } else gmessage("No file with memo.",container=TRUE)
     }
   }
-FileNamesWidgetMenu$"Show ..."$"Show Files Without Annotation"$handler <- function(h, ...) {
-  fileid <- RQDAQuery("select id from source where status=1 and id not in (select fid from annotation where status=1 group by fid)")$id
-  if (length(fileid)!=0) {
-    FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
-  } else gmessage("All files have annotation.",container=TRUE)
-}
 FileNamesWidgetMenu$"Show ..."$"Show Files Without Memo"$handler <- function(h, ...) {
     if (is_projOpen(envir = .rqda, conName = "qdacon", message = FALSE)) {
     fileid <- dbGetQuery(.rqda$qdacon,"select id from source where memo is null")
@@ -344,6 +345,7 @@ FileNamesWidgetMenu$"Show ..."$"Show Files Without Memo"$handler <- function(h, 
     } else gmessage("No file is found.",container=TRUE)
     }
   }
+
 FileNamesWidgetMenu$"Show ..."$"Show Files Without File Category"$handler <- function(h, ...) {
     if (is_projOpen(envir = .rqda, conName = "qdacon", message = FALSE)) {
         fileid <- RQDAQuery("select id from source where status=1 and id not in (select fid from treefile where status=1)")
@@ -351,6 +353,15 @@ FileNamesWidgetMenu$"Show ..."$"Show Files Without File Category"$handler <- fun
             fileid <- fileid[[1]]
             FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
         } else gmessage("All are linked with file category.",container=TRUE)
+    }
+}
+FileNamesWidgetMenu$"Show ..."$"Show Files With No Case"$handler <- function(h, ...) {
+    if (is_projOpen(envir = .rqda, conName = "qdacon", message = FALSE)) {
+        fileid <- RQDAQuery("select id from source where status=1 and id not in (select fid from caselinkage where status=1)")
+        if (nrow(fileid)!=0) {
+            fileid <- fileid[[1]]
+            FileNameWidgetUpdate(FileNamesWidget=.rqda$.fnames_rqda,FileId=fileid)
+        } else gmessage("All are linked with cases.",container=TRUE)
     }
 }
 FileNamesWidgetMenu$"Show Selected File Property"$handler <- function(h, ...) {
