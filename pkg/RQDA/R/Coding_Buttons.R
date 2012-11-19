@@ -441,6 +441,10 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     MemoWidget("code",.rqda$.codes_rqda,"freecode")
     }
   }
+CodesNamesWidgetMenu$"Codings of Multiple Codes"$handler <- function(h, ...) {
+    ct <- getCodingsOfCodes()
+    print.codingsByOne(ct)
+  }
 CodesNamesWidgetMenu$"Export Codings as HTML"$handler <- function(h, ...) {
     if (is_projOpen(env = .rqda, conName = "qdacon", message = FALSE)) {
     path=gfile(type="save",text = "Type a name for the exported codings and click OK.")
@@ -528,17 +532,19 @@ CodesNamesWidgetMenu$"Sort: By Created Time"$handler <- function(h, ...) {
     }
 }
 CodesNamesWidgetMenu$"Sort: Most to Least Frequently Used"$handler <- function(h, ...) {
-    freq <- RQDAQuery("select count(cid) as freq, freecode.name from freecode left join coding on cid=freecode.id group by freecode.name order by freq desc")
+    freq <- RQDAQuery("select count(cid) as freq, freecode.name, freecode.status from freecode left join coding on cid=freecode.id group by freecode.name order by freq desc")
     if (nrow(freq)>0){
         Encoding(freq$name) <- "UTF-8"
+        freq <- subset(freq, status==1)
         CodeNamesWidget=.rqda$.codes_rqda
         CodeNamesWidget[] <- freq$name
     }
 }
 CodesNamesWidgetMenu$"Sort: Least to Most Frequently Used"$handler <- function(h, ...) {
-    freq <- RQDAQuery("select count(cid) as freq, freecode.name from freecode left join coding on cid=freecode.id group by freecode.name order by freq asc")
+    freq <- RQDAQuery("select count(cid) as freq, freecode.name, freecode.status from freecode left join coding on cid=freecode.id group by freecode.name order by freq asc")
     if (nrow(freq)>0){
         Encoding(freq$name) <- "UTF-8"
+        freq <- subset(freq, status==1)
         CodeNamesWidget=.rqda$.codes_rqda
         CodeNamesWidget[] <- freq$name
     }

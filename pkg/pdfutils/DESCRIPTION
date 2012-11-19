@@ -1,0 +1,13 @@
+Package: pdfutils
+Type: Package
+Title: PDF ultilities based on the PDF Clown Java library
+Version: 0.2-1
+Date: 2012-09-05
+Author: HUANG Ronggui and the author of PDF Clown Java library
+Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
+Depends: rJava
+Description: This package uses PDF Clown Java library to extract highlighted or underlined text from a PDF file.
+License: LGPL
+Encoding: UTF-8
+LazyLoad: yes
+

@@ -215,7 +215,7 @@ and treecode.catid=codecat.catid and freecode.id=treecode.cid and codecat.name i
 }
 
 
-getCodindsByCategory <- function(catid=NULL, fid = NULL, codingTable = c("coding", "coding2")){
+getCodingsByCategory <- function(catid=NULL, fid = NULL, codingTable = c("coding", "coding2")){
     if (is.null(catid)) catid <- RQDAQuery(sprintf("select catid from codecat where name = '%s'", enc(svalue(.rqda$.CodeCatWidget))))$catid
     cid <- RQDAQuery(sprintf("select cid from treecode where catid==%s and status==1",catid))$cid
     codingTable <- match.arg(codingTable)
@@ -267,7 +267,7 @@ CodeCatWidgetMenu$"Add New Code to Selected Category"$handler <- function(h,...)
 }
 CodeCatWidgetMenu$"Codings of selected category"$handler <- function(h,...){
     if (is_projOpen(envir=.rqda,conName="qdacon")) {
-        ct <- getCodindsByCategory()
+        ct <- getCodingsByCategory()
         print.codingsByOne(ct)
     }
 }

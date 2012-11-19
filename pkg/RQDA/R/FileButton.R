@@ -268,7 +268,7 @@ FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
 ## see CodeCatButton.R  for definition of MemoWidget
 }
 }
-FileNamesWidgetMenu$"Import highligted from PDF"$handler <- function(h,...){
+FileNamesWidgetMenu$"Import Highligted from PDF"$handler <- function(h,...){
     importPDF()
 }
 FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
@@ -280,7 +280,7 @@ FileNamesWidgetMenu$"Open Previous Coded File"$handler <- function(h,...){
     if (length(fname)!=0)  fname <- enc(fname,"UTF-8")
     ViewFileFunHelper(FileName=fname)
   }}
-FileNamesWidgetMenu$"Search for a word"$handler <- function(h, ...) {
+FileNamesWidgetMenu$"Search for a Word"$handler <- function(h, ...) {
     if (exists(".openfile_gui",envir=.rqda) && isExtant(.rqda$.openfile_gui)) {
         SearchButton(RQDA:::.rqda$.openfile_gui)
     }
