@@ -267,7 +267,7 @@ CodeCatWidgetMenu$"Add New Code to Selected Category"$handler <- function(h,...)
 }
 CodeCatWidgetMenu$"Codings of selected category"$handler <- function(h,...){
     if (is_projOpen(envir=.rqda,conName="qdacon")) {
-        ct <- getCodingsByCategory()
+        ct <- getCodingsByCategory(fid=getFileIds(condition=.rqda$TOR))
         print.codingsByOne(ct)
     }
 }

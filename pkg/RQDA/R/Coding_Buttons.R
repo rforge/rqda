@@ -442,7 +442,7 @@ CodesNamesWidgetMenu$"Code Memo"$handler <- function(h, ...) {
     }
   }
 CodesNamesWidgetMenu$"Codings of Multiple Codes"$handler <- function(h, ...) {
-    ct <- getCodingsOfCodes()
+    ct <- getCodingsOfCodes(fid=getFileIds(condition=.rqda$TOR))
     print.codingsByOne(ct)
   }
 CodesNamesWidgetMenu$"Export Codings as HTML"$handler <- function(h, ...) {
@@ -508,6 +508,22 @@ CodesNamesWidgetMenu$"Show Codes Without Memo"$handler <- function(h, ...) {
       CodeNamesWidgetUpdate(CodeNamesWidget=.rqda$.codes_rqda,CodeId=cid,sortByTime=FALSE)
     } else gmessage("No Code with memo.",container=TRUE)
   }
+}
+
+CodesNamesWidgetMenu$"Show Codes With Selected File"$handler <- function(h, ...) {
+    fname <- svalue(.rqda$.fnames_rqda)
+    if (length(fname) > 0) {
+        fname <- enc(fname)
+        codes <- RQDAQuery(sprintf("select freecode.name from freecode where freecode.status=1 and freecode.id in (
+         select coding.cid from coding where coding.status=1 and coding.fid in (
+               select source.id from source where source.status=1 and source.name='%s'
+               )
+        )", fname))
+        if (nrow(codes) > 0){
+            Encoding(codes$name) <- "UTF-8"
+            .rqda$.codes_rqda[] <- codes$name
+        }
+    }
 }
 
 CodesNamesWidgetMenu$"Set Coding Mark Color"$handler <- function(h, ...) {
