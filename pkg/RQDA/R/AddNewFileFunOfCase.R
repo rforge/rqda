@@ -63,7 +63,7 @@ AddNewFileFunOfCase <- function ()
     })
     addhandlerunrealize(.rqda$.AddNewFileWidgetW, handler = function(h, ...) {
         rm("AddNewFilBC", envir = button)
-        rm(".AddNewFileWidgetW", ".AddNewFileWidget", envir = .rqda)
+        rm(".AddNewFileWidgetW", envir = .rqda)
         FALSE
     })
 }

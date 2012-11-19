@@ -347,7 +347,7 @@ AddHandler <- function(){
                                       enc(SelectedCase)
                                       )
                               )[,1]
-      names(.rqda$.CasesNamesWidget) <- sprintf("Selected case id is %i",currentCid)
+      names(.rqda$.CasesNamesWidget) <- sprintf("Selected case id is %i", currentCid)
       if (exists(".root_edit",envir=.rqda) && isExtant(.rqda$.root_edit)) {
         SelectedFile <- svalue(.rqda$.root_edit)
         Encoding(SelectedFile) <- "UTF-8"
