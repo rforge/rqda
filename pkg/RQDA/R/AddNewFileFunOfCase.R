@@ -12,7 +12,7 @@ AddNewFileFunOfCase <- function ()
         UpdateFileofCaseWidget()
     }
 
-    gw <- gwindow(title = "Add a new file", parent = getOption("widgetCoordinate"),
+    gw <- gwindow(title = "Add a new file to selected case", parent = getOption("widgetCoordinate"),
                   width = getOption("widgetSize")[1], height = getOption("widgetSize")[2])
     mainIcon <- system.file("icon", "mainIcon.png", package = "RQDA")
     gw@widget@widget$SetIconFromFile(mainIcon)
