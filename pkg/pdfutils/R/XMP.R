@@ -1,21 +1,19 @@
 getXMP <- function(file, JabrefBibtex=TRUE){
     r <- rJava:::.jnew("RQDAPDF/PDFFile")
-    ## r$setPDFDocument("c://SunHuang2012.pdf")
     r$setPDFDocument(file)
-    meta <- r$document$getMetadata()
+    ## meta <- r$document$getMetadata()
     info <- r$document$getInformation()
     baseDataObject <- info$getBaseDataObject()
     ## author <- info$getAuthor()
     ## title <- info$getTitle()
-    jarray <- .jevalArray(baseDataObject$entrySet()$toArray())
+    jarray <- rJava:::.jevalArray(baseDataObject$entrySet()$toArray())
     r$document$getBaseDataObject()$getFile()$close()## close the file
-    ans <- list()
-    for (item in jarray){
-        item <- item$toString()
-        Encoding(item) <- "UTF-8"
-        if (JabrefBibtex) {
-           if (grepl("^bibtex", item)) ans <- c(ans, item)
-        } else ans <- c(ans, item)
+    keys <- sapply(jarray,function(x) x$getKey()$toString())
+    values <- sapply(jarray,function(x) x$getValue()$toString())
+    Encoding(values) <- "UTF-8"
+    names(values) <- keys
+    if (JabrefBibtex) {
+        values <- values[grepl("^bibtex", keys)]
     }
-    ans
+    values
 }

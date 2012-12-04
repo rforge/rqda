@@ -1,4 +1,4 @@
-importPDF <- function(file, type=c("higjlight")){
+importPDFHL <- function(file, type=c("Highlight")){
     if (missing(file)) {
         file <- gfile(text="select a pdf file", type="open", filter=list("PDF"=list(patterns=c("*.PDF"))))
     }
@@ -17,10 +17,14 @@ importPDF <- function(file, type=c("higjlight")){
         }
     }
     if (write ) {
-        ans <- pdfutils:::extractPDF(file)
-        RQDAQuery(sprintf("insert into source (name, file, id, status,date,owner )
-                             values ('%s', '%s',%i, %i, '%s', '%s')",
-                          fileName,enc(ans), nextid, 1, date(), .rqda$owner))
+        ans <- pdfutils:::extractPDF(file, type = type)
+        finfo <-  pdfutils:::getXMP(file)
+        keys <- names(finfo)
+        keys <- gsub("^bibtex/","", keys)
+        finfo <- paste(sort(paste(keys,finfo, sep="=")), collapse=",\n")
+        RQDAQuery(sprintf("insert into source (name, file, id, status,date,owner, memo )
+                             values ('%s', '%s',%i, %i, '%s', '%s', '%s')",
+                          fileName,enc(ans), nextid, 1, date(), .rqda$owner, enc(finfo)))
         FileNamesUpdate()
     }
 }
