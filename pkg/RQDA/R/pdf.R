@@ -17,8 +17,8 @@ importPDFHL <- function(file, type=c("Highlight")){
         }
     }
     if (write ) {
-        ans <- pdfutils:::extractPDF(file, type = type)
-        finfo <-  pdfutils:::getXMP(file)
+        ans <- rpdfclown:::extractPDF(file, type = type)
+        finfo <-  rpdfclown:::getXMP(file)
         keys <- names(finfo)
         keys <- gsub("^bibtex/","", keys)
         finfo <- paste(sort(paste(keys,finfo, sep="=")), collapse=",\n")

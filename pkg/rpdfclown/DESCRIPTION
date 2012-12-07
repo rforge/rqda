@@ -1,4 +1,4 @@
-Package: pdfutils
+Package: rpdfclown
 Type: Package
 Title: PDF ultilities based on the PDF Clown Java library
 Version: 0.2-1
