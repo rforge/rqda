@@ -1,0 +1,119 @@
+5.5.0 ========================
+Ooops - seems we missed publishing a version...
+
+- switch service provider framework
+- CreateAttachment example
+- DrawTextExample with encoding
+- form handling fixes
+- CSTextExtractor handle invalid chars
+- primitives for PDF collections (PDCollection)
+- COSString (PDF String) line delimiter handling
+- add some defensive code for still more real world PDF's
+- fix JBIG2 integration with new JBIG2 version
+- some more constants
+- more sophisticated button value handling
+- more sophisticated error check on xref streams
+
+5.3.0 ========================
+
+- fix color space optimization
+- font name for embedded fonts
+- font lookup
+- outline expand / collapse
+- /ToUnicode string mappings
+- interface for device feature declaration (enables performance shortcuts)
+- postscript conditional expressions
+- minor fixes and performance checks
+
+5.2.0 ========================
+
+jPod:
+- fix matrix bugs
+- change shape transformation handling
+- "quick hack" fix for text extraction, introduce device transformation, but not used overall yet
+  handles extraction from rotated pages now
+- changed inline image handling, added support for just another strange end of image marker
+- extended color space handling (error handling, default spaces, PDF/A support)
+- COS level performance refactorings (size&speed)
+- COS document revisions 
+- COS encryption review & improvements
+- Font encoding extensions & fixes (multibyte ToUnicode maps STILL not supported)
+- still another fax encoding fix 
+- PNG prediction
+- some more real world document parser issues
+- COS model multithreading issues
+- PDPage sequences did notwork in all circumstances
+- sampled functions
+- improved shading & patterns
+- lots of minor extensions, improvements and fixes
+
+Runtime:
+- More tools
+
+5.1.0 ========================
+
+There has never been an official release for this version - just too much work in our projects...
+
+5.0.0 RC 3 ========================
+
+- Refactorings, fixes and features with font / glyph / encoding handling.
+- PDDocument exception handling upon creation
+- concurrency issue with COSWriter
+
+5.0.0 RC 2 ========================
+
+A word upfront: This is a major release. While we tried our best, we can not guarantee
+for the compatibility of all API's. Where we had design flaws or missing features, we always
+opted for the best solution.
+
+- lot of typos :-)
+- some minor standard bugs (NPE and the like)
+- 2 or 3 methods have undergone "standardization" with regard to their return type
+- added annotation API
+- improved appearance creation 
+- reworked PDF content handling framework (with regard to the jPodRenderer release)
+- add text content handling (extraction and searching)
+- reworked save state creation
+- COSBases setters return previuos value
+- transparent object swapping (!). COSObjects no longer needed may be transparently garbage collected.
+- complete rework of the "crypt" component. Added examples for encrypting and decrypting.
+- COSStream filter API extensions
+- COSName UTF 8 support
+- COSString user defined encoding support
+- improved character mapping
+- fixed multibyte codepoint handling (CMap, CID, Type0 fonts). There is still some work to be done
+  to handle creation and we are looking forward for a full featured multibyte enabled release soon.
+- added JBIG2 filter (using jBig2 from jPedal)
+- some more real world document interpretation of the spec found and supported
+- return index position with parser error 
+- ...and i bet some others i forgot to mention
+
+4.3.1 ========================
+
+- fix concurrency issues on IRandomAccess
+- XRef no longer handled recursive
+- fix page rotation (property inheritance)
+- improve real world outline node detection
+- improve decision for forcing incremental write
+- signature handling in AcroForm
+- defend parsre against strange real world documents
+- PDFontTools refactoring and additional methods
+- PDFont performance review, TT embedding
+- fix real world problem with inconsistent stream length
+- fix stream filter exception handling
+- simplified PD resource handling
+- fix bounding box computation
+- interpret extended graphics state 
+- defend against (unexpected) null objects
+- CSContentStream name change
+- name tree iteration fixed
+- central switch for PDF action processor
+- some additional examples
+- TTFont refactoring, no longer read completely to memory (IRandomAccess based)
+- read only support for ILocator
+- prevent file from being created on read/write check
+- fixing some minor bugs in basic libraries;
+
+4.3.0 ========================
+
+initial open source release
