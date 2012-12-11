@@ -1,11 +1,11 @@
 pdfAnnotations <- function(file, type=c("Highlight", "Popup"), collapse=TRUE){
     type <- match.arg(type)
-    commonjpod <- .jnew("common/CommonRJPod")
+    commonjpod <- rJava:::.jnew("common/CommonRJPod")
     commonjpod$open(file)
     doc <- commonjpod$getDoc()
     anns <- doc$getAnnotations()
     annsArray <- anns$toArray()
-    annsArray <- .jevalArray(annsArray)
+    annsArray <- rJava:::.jevalArray(annsArray)
     types <- sapply(annsArray, function(x) x$getSubtypeLabel())
     idx <- types %in% "Highlight"
     annsArray <- annsArray[idx]

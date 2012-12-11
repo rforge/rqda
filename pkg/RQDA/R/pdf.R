@@ -1,4 +1,4 @@
-importPDFHL <- function(file, type=c("Highlight")){
+importPDFHL <- function(file, type=c("Highlight"), engine="rjpod"){
     if (missing(file)) {
         file <- gfile(text="select a pdf file", type="open", filter=list("PDF"=list(patterns=c("*.PDF"))))
     }
@@ -17,11 +17,12 @@ importPDFHL <- function(file, type=c("Highlight")){
         }
     }
     if (write ) {
-        ans <- rpdfclown:::extractPDF(file, type = type)
-        finfo <-  rpdfclown:::getXMP(file)
-        keys <- names(finfo)
-        keys <- gsub("^bibtex/","", keys)
-        finfo <- paste(sort(paste(keys,finfo, sep="=")), collapse=",\n")
+        if (engine == "rjpod") {
+            ans <- rjpod:::pdfAnnotations(file, type = type)
+            finfo <-  rjpod:::pdfXMP(file, bibtex=TRUE)
+            finfo <- gsub("^bibtex/","", finfo)
+            finfo <- paste(sort(finfo), collapse=",\n")
+        }
         RQDAQuery(sprintf("insert into source (name, file, id, status,date,owner, memo )
                              values ('%s', '%s',%i, %i, '%s', '%s', '%s')",
                           fileName,enc(ans), nextid, 1, date(), .rqda$owner, enc(finfo)))

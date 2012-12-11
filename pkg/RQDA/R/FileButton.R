@@ -268,12 +268,12 @@ FileNamesWidgetMenu$"File Memo"$handler <- function(h,...){
 ## see CodeCatButton.R  for definition of MemoWidget
 }
 }
-FileNamesWidgetMenu$"Import PDF Highligts (selector)"$handler <- function(h,...){
-    importPDFHL()
+FileNamesWidgetMenu$"Import PDF Highligts via rjpod (selector)"$handler <- function(h,...){
+    importPDFHL(engine="rjpod")
 }
-FileNamesWidgetMenu$"Import PDF Highligts (file path)"$handler <- function(h,...){
+FileNamesWidgetMenu$"Import PDF Highligts via rjpod (file path)"$handler <- function(h,...){
     fpath=ginput("Enter a pdf file path",con=T)
-    importPDFHL(file=fpath)
+    importPDFHL(file=fpath, engine="rjpod")
 }
 FileNamesWidgetMenu$"Open Selected File"$handler <- function(h,...){
   ViewFileFun(FileNameWidget=.rqda$.fnames_rqda)
