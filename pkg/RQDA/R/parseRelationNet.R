@@ -1,5 +1,4 @@
  parseRelationNet <- function(mapStr, plot=FALSE){
-     mapStr <- map
      mapStr <- strsplit(mapStr, "\n")[[1]]
      mapStr <- gsub("(^[[:space:]]{1,})|([[:space:]]{1,}$)", "", mapStr) ## strip white space
      mapStr <- mapStr[!grepl("^#", mapStr)] ## strip comment lines
@@ -9,7 +8,7 @@
      ix1 <- regexpr("\\[",mapStr)
      ix2 <- regexpr("\\]",mapStr)
      relation <- substr(mapStr,ix1,ix2)
-     mapStr <- gsub("[[:space:]]+\\[(.)+\\]$", "", mapStr)
+     mapStr <- gsub("[[:space:]]{0,}\\[(.)+\\]$", "", mapStr)
      mapL <- strsplit(mapStr, "->")
      mapDF <- as.data.frame(do.call(rbind, mapL))
      mapDF$relation <- relation
