@@ -3,6 +3,7 @@
      mapStr <- strsplit(mapStr, "\n")[[1]]
      mapStr <- gsub("(^[[:space:]]{1,})|([[:space:]]{1,}$)", "", mapStr) ## strip white space
      mapStr <- mapStr[!grepl("^#", mapStr)] ## strip comment lines
+     mapStr <- mapStr[map!=""] # throw the empty lines
      nrelations <- sapply(gregexpr("->",mapStr), length)
      if (!all(nrelations==1))  stop("Each line represents one relation only")
      ix1 <- regexpr("\\[",mapStr)
