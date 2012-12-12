@@ -1,4 +1,4 @@
-pdfXMP <- function(file, bibtex=TRUE){
+pdfXMP <- function(file, jabrefOnly=TRUE){
     commonjpod <- rJava:::.jnew("common/CommonRJPod")
     commonjpod$open(file)
     doc <- commonjpod$getDoc()
@@ -14,7 +14,7 @@ pdfXMP <- function(file, bibtex=TRUE){
         val <- gsub("^(\\()|(\\)$)", "", val)
         sprintf("%s = %s", key, val)
     })
-    if (bibtex) {
+    if (jabrefOnly) {
         ans <- ans[grepl("^bibtex",ans)]
     }
     ans

@@ -19,7 +19,7 @@ importPDFHL <- function(file, type=c("Highlight"), engine="rjpod"){
     if (write ) {
         if (engine == "rjpod") {
             ans <- rjpod:::pdfAnnotations(file, type = type)
-            finfo <-  rjpod:::pdfXMP(file, bibtex=TRUE)
+            finfo <-  rjpod:::pdfXMP(file, jabrefOnly=TRUE)
             finfo <- gsub("^bibtex/","", finfo)
             finfo <- paste(sort(finfo), collapse=",\n")
         }
