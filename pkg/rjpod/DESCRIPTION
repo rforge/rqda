@@ -7,7 +7,7 @@ Author: HUANG Ronggui and the author of jPod Java library
 Maintainer: HUANG Ronggui <ronggui.huang@gmail.com>
 Depends: rJava
 Description: This package uses jPod Java library to manipulate PDF.
-License: BSD License
+License: BSD
 Encoding: UTF-8
 LazyLoad: yes
 

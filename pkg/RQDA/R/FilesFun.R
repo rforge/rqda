@@ -649,7 +649,7 @@ AddToFileCategory <- function(Widget=.rqda$.fnames_rqda,updateWidget=TRUE){
 
 
 ## library(RGtk2)
-searchWord <- function(str,widget,from=0,col="green", verbose=FLASE){
+searchWord <- function(str,widget,from=0,col="green", verbose=FALSE){
     tview <- slot(widget,"widget")@widget
     buffer <- tview$GetBuffer()
     Iter0 <- buffer$GetIterAtOffset(from)$iter

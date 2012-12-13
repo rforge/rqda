@@ -5,6 +5,7 @@ RQDA 0.2-3
 * show number of codings [Codes]
 * add "Save as" button [Project]
 * fix bugs related to encoding issues
+* comment out the support for MySQL [perhaps need a seperate package]
 
 RQDA 0.2-2
 * easier to uncode a coding (major change in GUI behaviour)

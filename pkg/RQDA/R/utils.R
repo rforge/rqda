@@ -471,7 +471,7 @@ ShowSubset <- function(x,...){
   UseMethod("ShowSubset")
 }
 ShowSubset.fileName <- function(x,widget=".fnames_rqda",envir=.rqda,...){
-  widget <- get(widget,envir=env)
+  widget <- get(widget,envir=envir)
   class(x) <- NULL
   widget[] <- x
 }
