@@ -11,4 +11,5 @@ Enhances: tcltk
 Description: R package for Qualitative Data Analysis. Current version only supports plain text. In addition, it can import PDF highlights
 License: BSD
 LazyLoad: yes
+SystemRequirements: Java (>= 1.6)
 URL: http://rqda.r-forge.r-project.org/
