@@ -27,3 +27,4 @@ S3method(print,Info4Widget)
 S3method(plot, crossCodes)
 import(RGtk2)
 import(gWidgetsRGtk2)
+
