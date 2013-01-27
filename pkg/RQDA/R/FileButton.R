@@ -235,7 +235,7 @@ FileNamesWidgetMenu$"Codings of selected file(s)"$handler <- function(h,...){
   if (is_projOpen(envir=.rqda,conName="qdacon")) {
       fid =getFileIds(type="selected")
       if (length(fid)>0) {
-         getCodingsFromFiles(Fid=)
+         getCodingsFromFiles(Fid=fid)
       } else gmessage("No coded file is selected.")
   }
 }
