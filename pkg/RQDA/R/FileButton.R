@@ -230,6 +230,16 @@ FileNamesWidgetMenu$"View Attributes"$handler <- function(h,...){
    viewFileAttr()
   }
 }
+
+FileNamesWidgetMenu$"Codings of selected file(s)"$handler <- function(h,...){
+  if (is_projOpen(envir=.rqda,conName="qdacon")) {
+      fid =getFileIds(type="selected")
+      if (length(fid)>0) {
+         getCodingsFromFiles(Fid=)
+      } else gmessage("No coded file is selected.")
+  }
+}
+
 FileNamesWidgetMenu$"Export File Attributes"$handler <- function(h,...){
     if (is_projOpen(envir=.rqda,conName="qdacon")) {
         fName <- gfile(type='save',filter=list("csv"=list(pattern=c("*.csv"))))
