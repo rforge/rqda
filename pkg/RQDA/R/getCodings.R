@@ -31,10 +31,10 @@ getCodingsFromFiles <- function(Fid, order=c("fname","ftime","ctime"), codingTab
 {
     order <- match.arg(order)
     order <- switch(order,
-                    fname="order by source.name",
-                    ftime="order by source.id",
+                    fname="order by freecode.name, source.name, selfirst, selend ASC",
+                    ftime="order by freecode.name, source.id, selfirst, selend ASC",
                     ctime="")
-    retrieval <- RQDAQuery(sprintf("select cid,fid, selfirst, selend, seltext, %s.rowid, source.name,source.id from %s,source where %s.status=1 and source.id=fid and fid in (%s) %s",codingTable, codingTable, codingTable, paste(Fid,collapse=","), order))
+    retrieval <- RQDAQuery(sprintf("select cid, freecode.name as code, fid, selfirst, selend, seltext, %s.rowid, source.name,source.id from %s,source, freecode where %s.status=1 and source.id=fid and freecode.id=%s.cid and fid in (%s) %s", codingTable, codingTable, codingTable, codingTable, paste(Fid,collapse=","), order))
     if (nrow(retrieval)==0) gmessage("No Coding associated with the selected code.",container=TRUE) else {
         fid <- unique(retrieval$fid)
         Nfiles <- length(fid)
@@ -88,7 +88,7 @@ getCodingsFromFiles <- function(Fid, order=c("fname","ftime","ctime"), codingTab
         iter <- buffer$getIterAtOffset(0)$iter
 
         apply(retrieval,1, function(x){
-            metaData <- sprintf("%s [%i:%i]",x[['fname']],as.numeric(x[['selfirst']]),as.numeric(x[['selend']]))
+            metaData <- sprintf("[%s] - %s [%i:%i]",x[["code"]], x[['fname']],as.numeric(x[['selfirst']]),as.numeric(x[['selend']]))
             ## buffer$InsertWithTagsByName(iter, metaData,"x-large","red")
             buffer$InsertWithTagsByName(iter, metaData,"red")
             anchorcreated <- buffer$createChildAnchor(iter)
