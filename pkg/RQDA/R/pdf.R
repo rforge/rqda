@@ -19,9 +19,9 @@ importPDFHL <- function(file, type=c("Highlight"), engine="rjpod"){
     if (write ) {
         if (engine == "rjpod") {
             cat("Extracting highlight ...\n")
-            ans <- pdfAnnotations(file, type = type)
+            ans <- rjpod::pdfAnnotations(file, type = type)
             cat("Highlight extracted\nExtracting XMP ...\n")
-            finfo <-  pdfXMP(file, jabrefOnly=TRUE)
+            finfo <-  rjpod::pdfXMP(file, jabrefOnly=TRUE)
             cat("XMP extracted\n")
             finfo <- gsub("^bibtex/","", finfo)
             finfo <- paste(sort(finfo), collapse=",\n")

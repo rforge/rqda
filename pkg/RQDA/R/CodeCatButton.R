@@ -208,9 +208,9 @@ where treecode.status=1 and codecat.status=1 and freecode.status=1
 and treecode.catid=codecat.catid and freecode.id=treecode.cid and codecat.name in (%s)",paste(shQuote(parent),collapse=",")))
     Encoding(ans$parent) <- "UTF-8"
     Encoding(ans$child) <- "UTF-8"
-    g <- igraph:::graph.data.frame(ans)
-    tryCatch(igraph:::tkplot(g,vertex.label=igraph:::V(g)$name),error=function(e){
-        igraph:::plot.igraph(g,vertex.label=igraph:::V(g)$name)
+    g <- igraph::graph.data.frame(ans)
+    tryCatch(igraph::tkplot(g,vertex.label=igraph::V(g)$name),error=function(e){
+        igraph::plot.igraph(g,vertex.label=igraph::V(g)$name)
     })
 }
 
