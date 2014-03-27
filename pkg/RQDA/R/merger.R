@@ -11,6 +11,7 @@ mergeCodes <- function(cid1,cid2){ ## cid1 and cid2 are two code IDs.
       if (!any(Exist$Relation=="exact")){
         ## if they are axact, do nothing; -> if they are not exact, do something. The following lines record meta info.
         Exist$WhichMin <- sapply(Relations,FUN=function(x)x$WhichMin)
+        Exist$WhichMax <- sapply(Relations,FUN=function(x)x$WhichMax)
         Exist$Start <- sapply(Relations,FUN=function(x)x$UnionIndex[1])
         Exist$End <- sapply(Relations,FUN=function(x)x$UnionIndex[2])
         if (all(Exist$Relation=="proximity")){ ## if there are no overlap in any kind, just write to database
@@ -114,11 +115,11 @@ erger2 <- function (cid1, cid2, data)
         if (nrow(tmpdat2) > 0 && nrow(tmpdat1) > 0) {
             tmpdat1[,4] <- tmpdat1[,4] -1
             tmpdat2[,4] <- tmpdat2[,4] -1
-            idx1 <- sort(unlist(apply(tmpdat1[,3:4],1,function(x)RQDA:::expand(x[1],x[2]))))
-            idx2 <- sort(unlist(apply(tmpdat2[,3:4],1,function(x)RQDA:::expand(x[1],x[2]))))
+            idx1 <- sort(unlist(apply(tmpdat1[,3:4],1,function(x) expand(x[1],x[2]))))
+            idx2 <- sort(unlist(apply(tmpdat2[,3:4],1,function(x) expand(x[1],x[2]))))
             idx <- unique(intersect(idx1,idx2))
             if (length(idx)>1) {
-                res <- RQDA:::findConsecutive(idx)
+                res <- findConsecutive(idx)
                 res <- data.frame(fid=fid,cid=tmpdat1$cid[1],index1=res$first,index2=res$end+1)
                 ans <- rbind(ans, res)
             }

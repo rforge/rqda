@@ -218,7 +218,7 @@ FileNamesWidgetMenu$"Add To File Category ..."$handler <- function(h, ...) {
   }
 FileNamesWidgetMenu$"Add/modify Attributes of The Open File..."$handler <- function(h,...){
   if (is_projOpen(envir=.rqda,conName="qdacon")) {
-    Selected <- tryCatch(svalue(RQDA:::.rqda$.root_edit),error=function(e){NULL})
+    Selected <- tryCatch(svalue(.rqda$.root_edit),error=function(e){NULL})
     if (!is.null(Selected)){
       fileId <- RQDAQuery(sprintf("select id from source where status=1 and name='%s'",
                                   enc(Selected)))[,1]
@@ -296,7 +296,7 @@ FileNamesWidgetMenu$"Open Previous Coded File"$handler <- function(h,...){
   }}
 FileNamesWidgetMenu$"Search for a Word"$handler <- function(h, ...) {
     if (exists(".openfile_gui",envir=.rqda) && isExtant(.rqda$.openfile_gui)) {
-        SearchButton(RQDA:::.rqda$.openfile_gui)
+        SearchButton(.rqda$.openfile_gui)
     }
 }
 FileNamesWidgetMenu$"Search all files ..."$handler <- function(h, ...) {

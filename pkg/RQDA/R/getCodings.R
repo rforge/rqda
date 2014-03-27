@@ -1,8 +1,8 @@
 getCodingsOfCodes <- function(fid = NULL, codingTable = c("coding", "coding2")){
-    codes <- RQDA:::.rqda$.codes_rqda[]
+    codes <- .rqda$.codes_rqda[]
     Encoding(codes) <- "UTF-8"
     selected <- gselect.list(codes)
-    selected <- RQDA:::enc(selected)
+    selected <- enc(selected)
     cid <- RQDAQuery(sprintf("select id from freecode where status=1 and name in (%s)",paste( paste("'", selected, "'", sep=""), collapse = ",")))$id
     codingTable <- match.arg(codingTable)
     if (codingTable == "coding") {
@@ -41,7 +41,7 @@ getCodingsFromFiles <- function(Fid, order=c("fname","ftime","ctime"), codingTab
         retrieval$fname <-""
         Ncodings <- nrow(retrieval)
         title <- sprintf(ngettext(Ncodings,"%i Retrieved coding from %i %s", "%i Retrieved codings from %i %s"),Ncodings, Nfiles, ngettext(Nfiles,"file","files"))
-        wnh <- size(RQDA:::.rqda$.root_rqdagui) ## size of the main window
+        wnh <- size(.rqda$.root_rqdagui) ## size of the main window
         .gw <- gwindow(title=title, parent=c(wnh[1]+10,2),
                        width = min(c(gdkScreenWidth()- wnh[1]-20,getOption("widgetSize")[1])),
                        height = min(c(wnh[2],getOption("widgetSize")[2]))

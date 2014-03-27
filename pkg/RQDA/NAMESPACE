@@ -31,4 +31,3 @@ import(gWidgetsRGtk2)
 import(DBI)
 import(RSQLite)
 import(igraph)
-
