@@ -13,7 +13,7 @@
 \tabular{ll}{
 Package: \tab RQDA\cr
 Type: \tab Package\cr
-Version: \tab 0.2-5\cr
+Version: \tab 0.2-6\cr
 Date: \tab 2014-03-26\cr
 Depends: \tab R (>= 2.8.0), DBI, RSQLite, gWidgets (>= 0.0-31),
 gWidgetsRGtk2 (>= 0.0-36), igraph \cr
