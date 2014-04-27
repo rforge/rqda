@@ -11,6 +11,6 @@ Enhances: tcltk, rjpod
 Description: R package for Qualitative Data Analysis. Current version only supports plain text, but it can import PDF highlights if the Enhance package of rjpod, which is available on R-Forge, is installed.
 License: BSD_3_clause + file LICENSE
 LazyLoad: yes
-SystemRequirements: Java (>= 1.6)
+SystemRequirements: Java (>= 1.6) for rjpod
 URL: http://rqda.r-forge.r-project.org/
 
