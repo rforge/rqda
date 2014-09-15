@@ -96,6 +96,7 @@ openProject <- function(path,updateGUI=FALSE) {
         enabled(button$AddCasB) <- TRUE
         enabled(button$AddAttB) <- TRUE
         enabled(button$AddFilCatB) <- TRUE
+        enabled(button$profmatB) <- TRUE        
         enabled(.rqda$.JournalNamesWidget) <- TRUE
         enabled(.rqda$.codes_rqda) <- TRUE
         enabled(.rqda$.SettingsGui) <- TRUE
@@ -173,6 +174,7 @@ closeProjBF <- function(){
     enabled(button$CasMarB) <- FALSE
     enabled(button$CasUnMarB) <- FALSE
     enabled(button$CasAttrB) <- FALSE
+    enabled(button$profmatB) <- FALSE 
     enabled(button$AddAttB) <- FALSE
     enabled(button$DelAttB) <- FALSE
     enabled(button$RenAttB) <- FALSE

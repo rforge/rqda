@@ -1,7 +1,7 @@
 prof_mat <- function(){
     case_ids <- getCaseIds()
     case_names <- getCaseNames(case_ids)
-    codes <- RQDAQuery("select name, id, cid from freecode, coding where freecode.id=coding.cid and freecode.status=1 group by cid")
+    codes <- RQDAQuery("select name, id, cid from freecode, coding where freecode.id=coding.cid and freecode.status=1 group by cid order by name")
     Encoding(codes$name) <- "UTF-8"
     
     wnh <- size(.rqda$.root_rqdagui)  
