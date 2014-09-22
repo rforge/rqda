@@ -98,10 +98,10 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
             # JS Test for coherency!
             #sourcetext <- dbGetQuery(con,sprintf("select substr(file,%s,%s) from source where name='%s'",ans$start+1,ans$end-ans$start,SelectedFile))[,1]
             #if (sourcetext != ans$text) {
-            #    print("ERROR!")
-            #    print(sprintf("Start: %s  End: %s", ans$start,ans$end))
-            #    print(sprintf("Source <%s>", sourcetext))
-            #    print(sprintf("Selection <%s>", ans$text))
+            #  print(sprintf("Start: %s  End: %s", ans$start,ans$end))
+            #  print(sprintf("Source <%s>", sourcetext))
+            #  print(sprintf("Selection <%s>", ans$text))
+            #  gmessage("CONSISTENCY ERROR 1 - See console for details")
             #}
 
             ## Exist <-  dbGetQuery(con,sprintf("select rowid, selfirst, selend from coding where cid=%i and fid=%i and status=1",currentCid,currentFid))
@@ -135,7 +135,7 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
 		    } else {gmessage("fail to write to data base.",con=TRUE)}
                     ## if there are no overlap in any kind, just write to database; otherwise, pass to else{}.
                 } else {
-                  del1 <-(Exist$Relation =="inclusion" & any(Exist$WhichMin==2,Exist$WhichMax==2))
+                  del1 <-(Exist$Relation =="inclusion" & (is.na(Exist$WhichMin) | Exist$WhichMin==2))
                   ## if overlap or inclusion [old nested in new]
                   ## then the original coding should be deleted
                   ## then write the new coding to table
@@ -158,7 +158,18 @@ MarkCodeFun <- function(codeListWidget=".codes_rqda",codingTable="coding"){
                     }
                     tt <- svalue(W)
                     Encoding(tt) <- "UTF-8"
-                    DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=substr(tt,Sel[1],Sel[2]),selfirst=Sel[1],selend=Sel[2],status=1,owner=.rqda$owner,date=date(),memo=memo,stringsAsFactors=FALSE)
+                    DAT <- data.frame(cid=currentCid,fid=currentFid,seltext=substr(tt,Sel[1]+1,Sel[2]),selfirst=Sel[1],selend=Sel[2],status=1,owner=.rqda$owner,date=date(),memo=memo,stringsAsFactors=FALSE)
+                    
+                    # JS Test for coherency!
+                    #sourcetext <- dbGetQuery(con,sprintf("select substr(file,%s,%s) from source where name='%s'",Sel[1]+1,Sel[2]-Sel[1],SelectedFile))[,1]
+                    #seltext = substr(tt,Sel[1]+1,Sel[2])
+                    #if (sourcetext != seltext) {
+                    #  print(sprintf("Start: %s  End: %s", Sel[1],Sel[2]))
+                    #  print(sprintf("Source <%s>", sourcetext))
+                    #  print(sprintf("Selection <%s>", seltext))
+                    #  gmessage("CONSISTENCY ERROR 2 - See console for details")
+                    #}
+                    
                     DAT$seltext <- enc(DAT$seltext)
                     rowid <- NextRowId(codingTable)
                     ## success <- dbWriteTable(.rqda$qdacon,codingTable,DAT,row.name=FALSE,append=TRUE)
