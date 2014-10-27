@@ -7,7 +7,8 @@ Auto-coding by pattern matching
 Applies the specified code to a specified file based on given text pattern.
 }
 \usage{
-codingBySearch(pattern, fid = getFileIds(), cid, seperator="\n", ...)
+codingBySearch(pattern, fid = getFileIds(), cid, seperator="\n",
+               concatenate = FALSE, ...)
 }
 \arguments{
   \item{pattern}{
@@ -29,7 +30,7 @@ Code id, in the GUI 'Codes' tab click on code to see its id
 \item{\ldots}{
   arguments passed to \link{gregexpr}.
   
-  A useful example is \link{ignore.case}.
+  A useful example is the 'ignore.case' argument.
 }
 }
 \details{

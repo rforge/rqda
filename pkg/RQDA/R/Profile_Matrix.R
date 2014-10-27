@@ -7,7 +7,7 @@ prof_mat <- function(unit=c("coding","file")){
     
     wnh <- size(.rqda$.root_rqdagui)  
     w <- gwindow(title=sprintf("Profile Matrix - %s", unit), height=(gdkScreenHeight()-100), width=500,visible=FALSE, parent = c(wnh[1]+10, 2))
-    gf <- ggroup(cont=w, use.scrollwindow=TRUE)
+    gf <- ggroup(container=w, use.scrollwindow=TRUE)
     tbl <- glayout(container = gf, expand=FALSE)
 
     for (i in 1:nrow(codes)){
