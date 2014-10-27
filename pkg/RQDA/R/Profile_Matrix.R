@@ -1,11 +1,12 @@
-prof_mat <- function(){
+prof_mat <- function(unit=c("coding","file")){
+    unit <- match.arg(unit)
     case_ids <- getCaseIds()
     case_names <- getCaseNames(case_ids)
     codes <- RQDAQuery("select name, id, cid from freecode, coding where freecode.id=coding.cid and freecode.status=1 group by cid order by name")
     Encoding(codes$name) <- "UTF-8"
     
     wnh <- size(.rqda$.root_rqdagui)  
-    w <- gwindow("Profile Matrix", height=(gdkScreenHeight()-100), width=500,visible=FALSE, parent = c(wnh[1]+10, 2))
+    w <- gwindow(title=sprintf("Profile Matrix - %s", unit), height=(gdkScreenHeight()-100), width=500,visible=FALSE, parent = c(wnh[1]+10, 2))
     gf <- ggroup(cont=w, use.scrollwindow=TRUE)
     tbl <- glayout(container = gf, expand=FALSE)
 
@@ -23,7 +24,12 @@ prof_mat <- function(){
         ncoded <- RQDAQuery(sprintf("select count(fid) as n, fid, status from coding where status=1 and cid=%s group by fid", codes$cid[i]))
         for (col in 1:length(case_names)){
           fid <- RQDAQuery(sprintf("select fid from caselinkage where caseid=%s",case_ids[col]))$fid
-          if (nrow(ncoded)==0) ncodings <- 0 else ncodings <- sum(ncoded$n[ncoded$fid %in% fid])
+          if (nrow(ncoded)==0) ncodings <- 0 else {
+            ncodings <- switch(unit,
+                               coding = sum(ncoded$n[ncoded$fid %in% fid]),
+                               file = sum(ncoded$fid %in% fid)
+                               )
+          }
           tbl[i+1,col+1] <- gcheckbox(formatC(ncodings,width=4), container=tbl, use.togglebutton=TRUE, 
                                         action=list(code=codes$name[i], fid=fid), 
                                         handler=function(h,...) {
