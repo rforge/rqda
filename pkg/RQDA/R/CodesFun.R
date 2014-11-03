@@ -400,7 +400,9 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
         RQDAQuery(sprintf("update %s set status=-1 where rowid=%s", .rqda$codingTable, rowid))
         freq <- RQDAQuery(sprintf("select count(cid) as freq from coding where status=1 and cid=%s", currentCid))$freq
         names(CodeNameWidget) <- sprintf("Selected code id is %s__%s codings",currentCid, freq)
-      }} ## end of ComputeUnMarkFun
+      }
+      RecodeFun
+      } ## end of ComputeUnMarkFun
 
       buffer <- .retreivalgui@widget@widget$GetBuffer()
       buffer$createTag("red", foreground = "red")
