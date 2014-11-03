@@ -46,14 +46,13 @@ if (isTRUE(.rqda$isLaunched)) {
   gseparator(container=.proj_gui)
   glabel("License: BSD",
          container=.proj_gui, handler=function(h,...){
-           gtext(readLines((system.file("License",package="RQDA")),warn=FALSE),
+           gtext(paste(readLines((system.file("License",package="RQDA")), warn=FALSE) , collapse="\n"),
                  container=gwindow(title="License"))
          })
   glabel(
          paste("Version:", packageDescription("RQDA")$Version, " Year:", substr(packageDescription("RQDA")$Date,1,4)),
          container=.proj_gui, handler=function(h,...){
-             gtext(paste(attr(citation("RQDA")[[1]],"textVersion"),"\n\nUse citation('RQDA') to get more info."),
-                   container=gwindow(title="Please cite this package."))
+             gtext(format(citation("RQDA"), "textVersion"), container=gwindow(title="Please cite this package."))
          })
   glabel("About",
          container=.proj_gui, handler=function(h,...){
