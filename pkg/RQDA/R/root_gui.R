@@ -95,7 +95,7 @@ if (isTRUE(.rqda$isLaunched)) {
   .codes_button[2,4]<- Mark_Button(name="MarCodB1")
 
 
-######################### GUI  for C-cat
+######################### GUI  for code categories
 #########################
   ".codecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="Code\nCategories")
   ".codecat_buttons" <- glayout(container=.codecat_pan)
@@ -147,7 +147,7 @@ if (isTRUE(.rqda$isLaunched)) {
   .attr_buttons[1,5] <- SetAttrClsButton()
 
 
-######################### GUI  for F-cat
+######################### GUI  for File categories
 #########################
   ".filecat_pan" <- gpanedgroup(container=.nb_rqdagui,horizontal=FALSE,label="File\nCategories")
   ".filecat_buttons" <- glayout(container=.filecat_pan)
@@ -228,6 +228,7 @@ if (isTRUE(.rqda$isLaunched)) {
   enabled(.rqda$.AttrNamesWidget) <- FALSE
   enabled(.rqda$.FileCatWidget) <- FALSE
   enabled(.rqda$.FileofCat) <- FALSE
+  enabled(button$profmatB) <- FALSE
 
 ##########################
 ### set the positions
@@ -334,6 +335,7 @@ AddHandler <- function(){
     if (length(SelectedCase)!=0) {
       enabled(button$DelCasB) <- TRUE
       enabled(button$CasRenB) <- TRUE
+      enabled(button$profmatB) <- TRUE
       if ((nattr <- length(.rqda$.AttrNamesWidget[]))!=0) {
           enabled(button$CasAttrB) <- TRUE
           if (length(svalue(.rqda$.AttrNamesWidget))>1 || nattr>1) {

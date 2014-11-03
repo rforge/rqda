@@ -5,6 +5,7 @@ AddCaseButton <- function(label="ADD"){
       Encoding(CaseName) <- "UTF-8"
       AddCase(CaseName)
       CaseNamesUpdate()
+      enabled(button$profmatB) <- TRUE
       idx <- as.character(which(.rqda$.CasesNamesWidget[] %in%  CaseName) -1)
       ## note the position, before manipulation of items
       path <-gtkTreePathNewFromString(idx)

@@ -374,6 +374,34 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
         CallBackFUN
       } ## end of ComputeCallbackFun
 
+    ComputeRecodeFun <- function(rowid){
+      RecodeFun <- function(widget, event, ...){
+        SelectedCode <- svalue(.rqda$.codes_rqda)
+        if (length(SelectedCode)!=0){
+          Encoding(SelectedCode) <- "UTF-8"
+          SelectedCode2 <- enc(SelectedCode, encoding="UTF-8")
+          currentCid <-  dbGetQuery(.rqda$qdacon, sprintf("select id from freecode where name='%s'",SelectedCode2))$id
+          DAT <- RQDAQuery(sprintf("select * from coding where rowid=%s", rowid))
+          DAT$seltext <- enc(DAT$seltext)
+          if (currentCid != DAT$cid) {
+          success <- is.null(try(RQDAQuery(sprintf("insert into %s (cid,fid, seltext, selfirst, selend, status, owner, date) values (%s, %s, '%s', %s, %s, %s, '%s', '%s') ", codingTable, currentCid, DAT$fid, DAT$seltext, DAT$selfirst, DAT$selend, 1, .rqda$owner, as.character(date()))),silent=TRUE))
+          if (!success) gmessage("cannot recode this text segment.", type="warning") else{
+            freq <- RQDAQuery(sprintf("select count(cid) as freq from coding where status=1 and cid=%s", currentCid))$freq
+            names(CodeNameWidget) <- sprintf("Selected code id is %s__%s codings",currentCid, freq)
+          }
+          }
+        }
+      }
+      RecodeFun
+    } ## end of ComputeRecodeFun
+
+    ComputeUnMarkFun <- function(rowid){
+      RecodeFun <- function(widget, event, ...){
+        RQDAQuery(sprintf("update %s set status=-1 where rowid=%s", .rqda$codingTable, rowid))
+        freq <- RQDAQuery(sprintf("select count(cid) as freq from coding where status=1 and cid=%s", currentCid))$freq
+        names(CodeNameWidget) <- sprintf("Selected code id is %s__%s codings",currentCid, freq)
+      }} ## end of ComputeUnMarkFun
+
       buffer <- .retreivalgui@widget@widget$GetBuffer()
       buffer$createTag("red", foreground = "red")
       iter <- buffer$getIterAtOffset(0)$iter
@@ -382,6 +410,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
         metaData <- sprintf("%s [%i:%i]",x[['fname']],as.numeric(x[['selfirst']]),as.numeric(x[['selend']]))
         ## buffer$InsertWithTagsByName(iter, metaData,"x-large","red")
         buffer$InsertWithTagsByName(iter, metaData,"red")
+        iter$ForwardChar()
         anchorcreated <- buffer$createChildAnchor(iter)
         iter$BackwardChar()
         anchor <- iter$getChildAnchor()
@@ -391,6 +420,28 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
         gSignalConnect(widget, "button-press-event",
                        ComputeCallbackFun(x[["fname"]],as.numeric(x[["rowid"]])))
         .retreivalgui@widget@widget$addChildAtAnchor(widget, anchor)
+        iter$ForwardChar()
+        buffer$Insert(iter, " ")
+        buffer$createChildAnchor(iter)
+        iter$BackwardChar()
+        anchor_recode <- iter$getChildAnchor()
+        lab_recode <- gtkLabelNew("Recode")
+        widget_recode <- gtkEventBoxNew()
+        widget_recode$Add(lab_recode)
+        gSignalConnect(widget_recode, "button-press-event",
+                       ComputeRecodeFun(as.numeric(x[["rowid"]])))
+        .retreivalgui@widget@widget$addChildAtAnchor(widget_recode, anchor_recode)
+        iter$ForwardChar()
+        buffer$Insert(iter, " ")
+        buffer$createChildAnchor(iter)
+        iter$BackwardChar()
+        anchor_unmark <- iter$getChildAnchor()
+        lab_unmark<- gtkLabelNew("Unmark")
+        widget_unmark <- gtkEventBoxNew()
+        widget_unmark$Add(lab_unmark)
+        gSignalConnect(widget_unmark, "button-press-event",
+                       ComputeUnMarkFun(as.numeric(x[["rowid"]])))
+        .retreivalgui@widget@widget$addChildAtAnchor(widget_unmark, anchor_unmark)
         widget$showAll()
         iter$ForwardChar()
         buffer$insert(iter, "\n")
