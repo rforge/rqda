@@ -383,7 +383,8 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
           currentCid <-  dbGetQuery(.rqda$qdacon, sprintf("select id from freecode where name='%s'",SelectedCode2))$id
           DAT <- RQDAQuery(sprintf("select * from coding where rowid=%s", rowid))
           DAT$seltext <- enc(DAT$seltext)
-          if (currentCid != DAT$cid) {
+          Exists <- RQDAQuery(sprintf("select * from coding where cid=%s and selfirst=%s and selend=%s and status=1", currentCid, DAT$selfirst, DAT$selend))
+          if (nrow(Exists)==0) {
           success <- is.null(try(RQDAQuery(sprintf("insert into %s (cid,fid, seltext, selfirst, selend, status, owner, date) values (%s, %s, '%s', %s, %s, %s, '%s', '%s') ", codingTable, currentCid, DAT$fid, DAT$seltext, DAT$selfirst, DAT$selend, 1, .rqda$owner, as.character(date()))),silent=TRUE))
           if (!success) gmessage("cannot recode this text segment.", type="warning") else{
             freq <- RQDAQuery(sprintf("select count(cid) as freq from coding where status=1 and cid=%s", currentCid))$freq
@@ -413,6 +414,7 @@ retrieval <- function(Fid=NULL,order=c("fname","ftime","ctime"),CodeNameWidget=.
         ## buffer$InsertWithTagsByName(iter, metaData,"x-large","red")
         buffer$InsertWithTagsByName(iter, metaData,"red")
         iter$ForwardChar()
+        buffer$Insert(iter, "\n")
         anchorcreated <- buffer$createChildAnchor(iter)
         iter$BackwardChar()
         anchor <- iter$getChildAnchor()
