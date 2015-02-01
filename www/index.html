@@ -61,7 +61,7 @@ div.vignettes a:hover {
 
 <h1>What is RQDA and what are its features?</h1>
 
-<P>RDQA is a <A HREF="http://www.r-project.org/">R</A> package for Qualitative Data Analysis, a <B>free</B> (free as freedom) qualitative analysis software application (<A HREF="License.html">BSD</A> license). It works  on Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and (probably) the Mac OSX platforms (PS: RQDA does not work on OS X Mavericks). RQDA is an easy to use tool to assist in the analysis of textual data. At the moment it only supports plain text formatted data. All the information is stored in a <A HREF="http://www.sqlite.org/">SQLite</A> database via the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>. The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>, via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>. It includes a number of standard Computer-Aided Qualitative Data Analysis features. In addition it seamlessly integrates with R, which means that a) statistical analysis on the coding is possible, and b) functions for data manipulation and analysis can be easily extended by writing R functions. To some extent, <B>RQDA and R make an integrated platform for both quantitative and qualitative data analysis.</B>
+<P>RDQA is a <A HREF="http://www.r-project.org/">R</A> package for Qualitative Data Analysis, a <B>free</B> (free as freedom) qualitative analysis software application (<A HREF="License.html">BSD</A> license). It works  on Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and the Mac OSX platforms. RQDA is an easy to use tool to assist in the analysis of textual data. At the moment it only supports plain text formatted data. All the information is stored in a <A HREF="http://www.sqlite.org/">SQLite</A> database via the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>. The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>, via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>. It includes a number of standard Computer-Aided Qualitative Data Analysis features. In addition it seamlessly integrates with R, which means that a) statistical analysis on the coding is possible, and b) functions for data manipulation and analysis can be easily extended by writing R functions. To some extent, <B>RQDA and R make an integrated platform for both quantitative and qualitative data analysis.</B>
 
 <p>Through the GUI, RQDA can:
 <li>Import documents from plain text or on-the-fly
@@ -109,6 +109,22 @@ div.vignettes a:hover {
 <li><B>Step five</B>, Launch RQDA using command <I>library(RQDA)</I> from within R. Then you can see the RQDA <A HREF="screenshots/Main_Debian_linux.png" target="_blank">GUI</A>.
 <!<p>For Debian Linux users, there is a apt <A HREF='http://debian.cran.r-project.org/'>repositories</A>, you can follow the guidelines there.>
 <p>For non-R-users who use Windows, you can download a rar file from <a href="http://pan.baidu.com/share/home?uk=3691332575#category/type=0">Baidu Yun Pan</A>, extract it to, say, c:\. Then you can launch the RQDA by double clicking the RQDA.bat file.
+
+<p>For Mac users who can not install RQDA according the above instruction, please follow the following steps:
+<li> install xcode and x11
+<li> go to https://www.macports.org/, download and install macport
+<li> open a Terminal and run the following command: 
+<br>> sudo port install pkgconfig
+<br>> sudo port install gtk2
+<li> Go to www.ran.r-project.org and download RGtk2_2.20.31.tar.gz (the version might be different)
+<li> from within the Terminal, and run the following command:
+<br>> sudo R CMD INSTALL ~/Download/RGtk2_2.20.31.tar.gz
+(assume RGtk2_2.20.31.tar.gz is located in ~/Download)
+<li> If step 4 is successful, launch R and install RQDA from within R:
+<br>> install.packages(¡®RQDA¡¯, type=¡®source¡¯)
+<li> If all steps are successful, then we can laugh RQDA by the following R command:
+<br>> library(RQDA)
+ 
 
 <h1>RQDA Documentation</h1>
 <li><A HREF="documentation_2.html#manual" target="_blank">User Manual</A>, <A HREF="documentation_2.html#tips" target="_blank">Tips</A>, <A HREF="documentation_2.html#faq" target="_blank">FAQ</A> (version 0.2-1 onwards)
