@@ -110,21 +110,30 @@ div.vignettes a:hover {
 <!<p>For Debian Linux users, there is a apt <A HREF='http://debian.cran.r-project.org/'>repositories</A>, you can follow the guidelines there.>
 <p>For non-R-users who use Windows, you can download a rar file from <a href="http://pan.baidu.com/share/home?uk=3691332575#category/type=0">Baidu Yun Pan</A>, extract it to, say, c:\. Then you can launch the RQDA by double clicking the RQDA.bat file.
 
+<h1>Futher instuction for Mac OSX users</h1>
 <p>For Mac users who can not install RQDA according the above instruction, please follow the following steps (tested on Yosemite):
 <li> install xcode and x11
 <li> go to https://www.macports.org/, download and install macport
-<li> open a Terminal and run the following command: 
+<li> open a Terminal and run the following commands: 
 <br>> sudo port install pkgconfig
 <br>> sudo port install gtk2
 <li> Go to www.cran.r-project.org and download RGtk2_2.20.31.tar.gz (the version might be different)
 <li> from within the Terminal, and run the following command:
 <br>> sudo R CMD INSTALL ~/Download/RGtk2_2.20.31.tar.gz
 (assume RGtk2_2.20.31.tar.gz is located in ~/Download)
-<li> If step 4 is successful, launch R and install RQDA from within R:
-<br>> install.packages(¡®RQDA¡¯, type=¡®source¡¯)
+<li> If the above step is successful, launch R and install RQDA from within R:
+<br>> install.packages('RQDA', type='source')
 <li> If all steps are successful, then we can laugh RQDA by the following R command:
 <br>> library(RQDA)
- 
+
+<p>If gtk2 has been installed appropriately and the following error is raised when loading RQDA: <i>unable to load shared object '/Library/R/3.1/library/RGtk2/libs/RGtk2.so':</i>
+<br>It is possible that RGtk2 can not find the libary because the Path Environment Variables have not been set correctly. You might try to fix it by including the following lines in the file '.bash_profile':
+<i>
+<br>export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+<br>export PATH=/opt/pkgconfig/bin:$PATH
+<br>export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig
+<br>export PATH=/Library/Frameworks/GTK+.framework/Resources/bin:$PATH
+</i>
 
 <h1>RQDA Documentation</h1>
 <li><A HREF="documentation_2.html#manual" target="_blank">User Manual</A>, <A HREF="documentation_2.html#tips" target="_blank">Tips</A>, <A HREF="documentation_2.html#faq" target="_blank">FAQ</A> (version 0.2-1 onwards)
