@@ -112,9 +112,11 @@ div.vignettes a:hover {
 
 <h1>Futher instruction for Mac OSX users</h1>
 <p>For Mac users who can not install RQDA according the above instruction, please follow the following steps (tested on Yosemite):
-<li> install xcode and x11
-<li> go to https://www.macports.org/, download and install macport
-<li> open a Terminal and run the following commands: 
+<li> Open a Terminal and run the following command to install xcode: 
+<br>> sudo xcode-select --install
+<li> Go to http://xquartz.macosforge.org/landing/, download XQuartz-2.7.7.dmg and install it. [Vedio tutorial on <A HREF="https://www.youtube.com/watch?v=XGpNgYhyMvY">Youtube</A>]
+<li> Go to https://www.macports.org/install.php, download and install macport (Install MacPorts for your version of OS X)
+<li> Open a Terminal and run the following commands: 
 <br>> sudo port install pkgconfig
 <br>> sudo port install gtk2
 <li> Go to http://cran.r-project.org/web/packages/RGtk2/index.html and download RGtk2_2.20.31.tar.gz (the version might be different)
