@@ -1,0 +1,39 @@
+<html>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf8">
+	<TITLE>Publications using and/or citing RQDA package</TITLE>
+<body>
+<table align='center' width=950>
+
+	<p> This installation guide is tested on Yosemite.
+	<li> Open a Terminal and run the following command to install xcode:
+	<br>> sudo xcode-select --install
+	<li> Go to http://xquartz.macosforge.org/landing/, download XQuartz-2.7.7.dmg and install it. Vedio tutorial can be found on <A HREF="https://www.youtube.com/watch?v=XGpNgYhyMvY">Youtube</A>.
+	<li> Go to https://www.macports.org/install.php, download and install macport (Install MacPorts for your version of OS X)
+	<li> Open a Terminal and run the following commands:
+	<br>> sudo port install pkgconfig
+	<br>> sudo port install gtk2
+	<li> Install R: download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download page</A> and install it.
+	<li> Go to http://cran.r-project.org/web/packages/RGtk2/index.html and download RGtk2_2.20.31.tar.gz (the version might be different)
+	<li> from within the Terminal, and run the following command:
+	<br>> sudo R CMD INSTALL ~/Download/RGtk2_2.20.31.tar.gz
+	(assume RGtk2_2.20.31.tar.gz is located in ~/Download)
+	<li> If the above step is successful, launch R and install RQDA from within R:
+	<br>> install.packages('RQDA', type='source')
+	<li> If all steps are successful, then we can laugh RQDA by the following R command:
+	<br>> library(RQDA)
+
+	<p>If gtk2 has been installed appropriately and the following error is raised when loading RQDA: <i>unable to load shared object '/Library/R/3.1/library/RGtk2/libs/RGtk2.so':</i>
+	<br>It is possible that RGtk2 can not find the libary because the Path Environment Variables have not been set correctly. You might try to fix it by including the following lines in the file '.bash_profile':
+	<i>
+	<br>export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+	<br>export PATH=/opt/pkgconfig/bin:$PATH
+	<br>export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig
+	<br>export PATH=/Library/Frameworks/GTK+.framework/Resources/bin:$PATH
+	</i>
+
+	<p> Binary package of GTK+ is available <A HREF="http://r.research.att.com/#other">here</A> for some vesion of Mac OSX.
+
+
+</table>
+</body>

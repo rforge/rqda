@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=gb2312">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf8">
 	<TITLE>Welcome to RQDA Project</TITLE>
 	<META NAME="AUTHOR" CONTENT="wincent">
 	<META NAME="CREATED" CONTENT="20081101;12455800">
@@ -55,13 +55,13 @@ div.vignettes a:hover {
 
 <BODY>
 <table align='center' width=950>
-<tr><td> 
+<tr><td>
 
 <!--- P ALIGN=CENTER><FONT COLOR="#008000"><FONT FACE="Times New Roman, serif"><FONT SIZE=4 STYLE="font-size: 15pt"><SPAN LANG="en-US">Welcome to RQDA Project!</SPAN></FONT></FONT></FONT></P--->
 
 <h1>What is RQDA and what are its features?</h1>
 
-<P>RDQA is a <A HREF="http://www.r-project.org/">R</A> package for Qualitative Data Analysis, a <B>free</B> (free as freedom) qualitative analysis software application (<A HREF="License.html">BSD</A> license). It works  on Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and the Mac OSX platforms. RQDA is an easy to use tool to assist in the analysis of textual data. At the moment it only supports plain text formatted data. All the information is stored in a <A HREF="http://www.sqlite.org/">SQLite</A> database via the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>. The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>, via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>. It includes a number of standard Computer-Aided Qualitative Data Analysis features. In addition it seamlessly integrates with R, which means that a) statistical analysis on the coding is possible, and b) functions for data manipulation and analysis can be easily extended by writing R functions. To some extent, <B>RQDA and R make an integrated platform for both quantitative and qualitative data analysis.</B>
+<P>RDQA is a <A HREF="http://www.r-project.org/">R</A> package for Qualitative Data Analysis, a <B>free</B> (free as freedom) qualitative analysis software application (<A HREF="License.html">BSD</A> license). It works  on Windows, Linux/<A HREF="http://www.freebsd.org/">FreeBSD</A> and Mac OSX platforms. RQDA is an easy to use tool to assist in the analysis of textual data. At the moment it only supports plain text formatted data. All the information is stored in a <A HREF="http://www.sqlite.org/">SQLite</A> database via the R package of <A HREF="http://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</A>. The GUI is based on <A HREF="http://www.ggobi.org/rgtk2/">RGtk2</A>, via the aid of <A HREF="http://cran.r-project.org/web/packages/gWidgetsRGtk2/index.html">gWidgetsRGtk2</A>. It includes a number of standard Computer-Aided Qualitative Data Analysis features. In addition it seamlessly integrates with R, which means that a) statistical analysis on the coding is possible, and b) functions for data manipulation and analysis can be easily extended by writing R functions. To some extent, <B>RQDA and R make an integrated platform for both quantitative and qualitative data analysis.</B>
 
 <p>Through the GUI, RQDA can:
 <li>Import documents from plain text or on-the-fly
@@ -92,7 +92,7 @@ div.vignettes a:hover {
 <li>Perform more flexible ways of conditional retrieval
 <li>Perform Boolean operations <i>and</i>, <i>or</i>, and <i>not</i> for codings, files or cases coded by codes (since rev 280).
 
-<p>You can use <i>help(package="RQDA")</i> to see more functions of the RQDA package. 
+<p>You can use <i>help(package="RQDA")</i> to see more functions of the RQDA package.
 
 <p>
 <h1>Installation for Windows and Linux</h1>
@@ -111,42 +111,21 @@ div.vignettes a:hover {
 <p>For non-R-users who use Windows, you can download a rar file from <a href="http://pan.baidu.com/share/home?uk=3691332575#category/type=0">Baidu Yun Pan</A>, extract it to, say, c:\. Then you can launch the RQDA by double clicking the RQDA.bat file.
 
 <h1>Installation for Mac OSX</h1>
-<p> This installation guide is tested on Yosemite.
-<li> Open a Terminal and run the following command to install xcode: 
-<br>> sudo xcode-select --install
-<li> Go to http://xquartz.macosforge.org/landing/, download XQuartz-2.7.7.dmg and install it. Vedio tutorial can be found on <A HREF="https://www.youtube.com/watch?v=XGpNgYhyMvY">Youtube</A>.
-<li> Go to https://www.macports.org/install.php, download and install macport (Install MacPorts for your version of OS X)
-<li> Open a Terminal and run the following commands: 
-<br>> sudo port install pkgconfig
-<br>> sudo port install gtk2
-<li> Install R: download the binary version of R from the <A HREF="http://cran.r-project.org/bin/macosx/">download page</A> and install it.
-<li> Go to http://cran.r-project.org/web/packages/RGtk2/index.html and download RGtk2_2.20.31.tar.gz (the version might be different)
-<li> from within the Terminal, and run the following command:
-<br>> sudo R CMD INSTALL ~/Download/RGtk2_2.20.31.tar.gz
-(assume RGtk2_2.20.31.tar.gz is located in ~/Download)
-<li> If the above step is successful, launch R and install RQDA from within R:
-<br>> install.packages('RQDA', type='source')
-<li> If all steps are successful, then we can laugh RQDA by the following R command:
-<br>> library(RQDA)
+This instruction has been tested on OS X EI Capitan (2016/06/23).
+<li>Install X11: go to <a href="https://www.xquartz.org/">https://www.xquartz.org/</a>, download and install XQuartz-2.7.7.
+<li> Install GTK+: go to <a href="http://r.research.att.com">http://r.research.att.com</a>, download and install the binary package of GTK+ 2.24.17.
+<li> Install R: download the binary version of R from the <a href="https://cran.r-project.org/bin/macosx/">download</a> page and install it.
+<li> Install RQDA: launch R and install RQDA from within R by this command <i>install.packages('RQDA')</i>
+<li> If all steps are successful, then laugh RQDA by this R command: <i>library(RQDA)</i>
 
-<p>If gtk2 has been installed appropriately and the following error is raised when loading RQDA: <i>unable to load shared object '/Library/R/3.1/library/RGtk2/libs/RGtk2.so':</i>
-<br>It is possible that RGtk2 can not find the libary because the Path Environment Variables have not been set correctly. You might try to fix it by including the following lines in the file '.bash_profile':
-<i>
-<br>export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-<br>export PATH=/opt/pkgconfig/bin:$PATH
-<br>export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig
-<br>export PATH=/Library/Frameworks/GTK+.framework/Resources/bin:$PATH
-</i>
-
-<p> Binary package of GTK+ is available <A HREF="http://r.research.att.com/#other">here</A> for some vesion of Mac OSX.
-
+<p>Old <a href="installation_mac_old.html">instruction</a> for Yosemite users.
 
 <h1>RQDA Documentation</h1>
 <li><A HREF="documentation_2.html#manual" target="_blank">User Manual</A>, <A HREF="documentation_2.html#tips" target="_blank">Tips</A>, <A HREF="documentation_2.html#faq" target="_blank">FAQ</A> (version 0.2-1 onwards)
 <li><A HREF="documentation.html#manual" target="_blank">User Manual</A>, <A HREF="documentation.html#tips" target="_blank">Tips</A>, <A HREF="documentation.html#faq" target="_blank">FAQ</A> (version 0.2-0 and previous)
 <li>Introduction to CAQDA (26 Jan 2010) <A HREF="Introduction.to.CAQDA.pdf" target="_blank">(PDF)</A>.
 <li>How to import PDF highlights into RQDA<A HREF="manuals/PDFImport1Jan13.pdf">(PDF)</A>
-<li>定性分析软件RQDA简明使用手册(<A href="http://homepage.fudan.edu.cn/rghuang/files/2012/04/RQDA-intro.pdf">PDF</A> in Chinese).
+<li>瀹氭�у垎鏋愯蒋浠禦QDA绠�鏄庝娇鐢ㄦ墜鍐�(<A href="http://homepage.fudan.edu.cn/rghuang/files/2012/04/RQDA-intro.pdf">PDF</A> in Chinese).
 
 <br><br>
 <u>User contributed documentation</u>
@@ -169,10 +148,11 @@ div.vignettes a:hover {
 <h1>How to cite the software</h1>
 <p>I have put a lot of effort in this project. I appreciate if you can cite this software in your research. You can use <i>citation("RQDA")</i> to get this citation.
 
-<p>HUANG Ronggui (2014). RQDA: R-based Qualitative Data Analysis. R package version 0.2-7. http://rqda.r-forge.r-project.org/
+<p>HUANG Ronggui (2016). RQDA: R-based Qualitative Data Analysis. R package version 0.2-8. http://rqda.r-forge.r-project.org/
 
 <h1>What's new?</h1>
-<p>RQDA 0.2-5 is released on <a href=http://cran.r-project.org/web/packages/RQDA/index.html>CRAN</a>  (2014-03-26). This update is in compliance with CRAN policies, but has no significant new features. JRE is required to used rjpod enhancement. 
+<p>RQDA 0.2-7 is released on <a href="http://cran.r-project.org/web/packages/RQDA/index.html">CRAN</a>  (2016-12-12). The most important changes include profile matrix (Kuckartz, 2014) and Portuguese translation, among others. Unfortunately, this release is not compatible with RSQLite 1.1.0, which means that you need to downgrade RSQLite to 1.0.0 to make RQDA works properly. This problem will be fixed in development version on <a href="https://github.com/Ronggui/RQDA">GitHub</a>.
+<p>RQDA 0.2-5 is released on <a href="http://cran.r-project.org/src/contrib/Archive/RQDA/">CRAN</a>  (2014-03-26). This update is in compliance with CRAN policies, but has no significant new features. JRE is required to used rjpod enhancement.
 <p>RQDA 0.2-3 is released with several <A href="https://r-forge.r-project.org/scm/viewvc.php/pkg/RQDA/inst/NEWS?view=markup&revision=491&root=rqda">new</a> features (2012-12-12).
 <p>rmmseg4j 0.1-0 is released to <A HREF="http://cran.r-project.org/web/packages/rmmseg4j/index.html">CRAN</A> (2012-06-18)
 <p>RQDA 0.2-2 is now on <A href ="http://cran.r-project.org/src/contrib/Archive/RQDA/" target="_blank">CRAN</a> (2011-12-27)
@@ -207,7 +187,7 @@ Main windows under <A HREF="screenshots/Main.png" target="_blank">Vista</A> and 
 <br>Journals window under <A HREF="screenshots/Journals_Debian_Linux.png" target="_blank">Debian Linux</A>
 <br>Settings window under <A HREF="screenshots/Settings.png" target="_blank">XP</A>and under <A HREF="screenshots/Settings_Debian_Linux.png" target="_blank">Debian Linux</A>
 
-</tr></td> 
+</tr></td>
 </table>
 </BODY>
 </HTML>
